@@ -30,7 +30,8 @@ const MyDocument = () => {
       <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#404756" />
       <meta name="msapplication-TileColor" content="#2b5797" />
       <meta name="theme-color" content="#23272f" />
-      <script
+      <script async src={`https://www.zhcndoc.com/js/common.js`} />
+      {/* <script
         async
         src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_TRACKING_ID}`}
       />
@@ -38,7 +39,7 @@ const MyDocument = () => {
         dangerouslySetInnerHTML={{
           __html: `window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', '${process.env.NEXT_PUBLIC_GA_TRACKING_ID}');`,
         }}
-      />
+      /> */}
       <body className="font-text font-medium antialiased text-lg bg-wash dark:bg-wash-dark text-secondary dark:text-secondary-dark leading-base">
         <script
           dangerouslySetInnerHTML={{
@@ -141,7 +142,7 @@ const MyDocument = () => {
                   // An example of such content can be the keyboard shortcut displayed in the search bar
                   document.documentElement.classList.add(
                       window.navigator.platform.includes('Mac')
-                      ? "platform-mac" 
+                      ? "platform-mac"
                       : "platform-win"
                   );
                 })();

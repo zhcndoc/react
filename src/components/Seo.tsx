@@ -23,8 +23,8 @@ export interface SeoProps {
 // deployedTranslations has been moved to src/utils/finishedTranslations.ts.
 
 function getDomain(languageCode: string): string {
-  const subdomain = languageCode === 'en' ? '' : languageCode + '.';
-  return subdomain + 'react.dev';
+  const subdomain = languageCode === 'en' ? 'react' : 'react' + '.';
+  return subdomain + 'zhcndoc.com';
 }
 
 export const Seo = withRouter(
@@ -47,8 +47,8 @@ export const Seo = withRouter(
     // Twitter's meta parser is not very good.
     const twitterTitle = pageTitle.replace(/[<>]/g, '');
     let description = isHomePage
-      ? 'React is the library for web and native user interfaces. Build user interfaces out of individual pieces called components written in JavaScript. React is designed to let you seamlessly combine components written by independent people, teams, and organizations.'
-      : 'The library for web and native user interfaces';
+      ? 'React 是用于构建网页和原生用户界面的库。它允许你使用称为组件的独立片段来构建用户界面，这些组件是用 JavaScript 编写的。React 的设计旨在让你无缝地整合由不同个人、团队和组织编写的组件。'
+      : '用于构建 Web 和原生交互界面的库';
     return (
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />

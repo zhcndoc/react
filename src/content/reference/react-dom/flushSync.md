@@ -131,3 +131,75 @@ export default function PrintApp() {
 大多数时候都不需要使用 `flushSync`，请将其作为最后的手段使用。
 
 </Pitfall>
+
+---
+
+## 故障排除 {/*troubleshooting*/}
+
+### 我收到了一个错误："flushSync was called from inside a lifecycle method" {/*im-getting-an-error-flushsync-was-called-from-inside-a-lifecycle-method*/}
+
+
+React 不能在渲染中调用 `flushSync`。如果你这样做，它将不执行任何操作并发出警告：
+
+<ConsoleBlock level="error">
+
+警告: flushSync 在生命周期方法中被调用。当 React 已经在渲染时，React 无法刷新。考虑将此调用移至调度器任务或微任务中。
+
+</ConsoleBlock>
+
+这包括在以下场景中调用 `flushSync`：
+
+- 渲染组件时。
+- `useLayoutEffect` 或 `useEffect` hooks 中。
+- 类组件的生命周期方法中。
+
+例如，在 Effect 中调用 `flushSync` 将不执行任何操作并发出警告：
+
+```js
+import { useEffect } from 'react';
+import { flushSync } from 'react-dom';
+
+function MyComponent() {
+  useEffect(() => {
+    // 🚩 错误：在 Effect 内部调用 flushSync
+    flushSync(() => {
+      setSomething(newValue);
+    });
+  }, []);
+
+  return <div>{/* ... */}</div>;
+}
+```
+
+要修复此问题，通常需要将 `flushSync` 调用移至一个事件处理函数：
+
+```js
+function handleClick() {
+  // ✅ 正确: 在事件处理函数中使用 flushSync 是安全的
+  flushSync(() => {
+    setSomething(newValue);
+  });
+}
+```
+
+
+如果很难将其移至事件处理函数中，你可以通过微任务来延迟 `flushSync`：
+
+```js {3,7}
+useEffect(() => {
+  // ✅ 正确: 将 flushSync 延迟到微任务中
+  queueMicrotask(() => {
+    flushSync(() => {
+      setSomething(newValue);
+    });
+  });
+}, []);
+```
+
+这将允许当前渲染完成，并调度另一次同步渲染来刷新更新。
+
+<Pitfall>
+
+`flushSync` 会严重影响性能，而在微任务中调用 `flushSync` 这种特殊模式对性能的损害则更为严重。因此，仅当所有其他方案都无效时，才应考虑在微任务中调用 `flushSync` 作为最后的应急手段。
+
+</Pitfall>

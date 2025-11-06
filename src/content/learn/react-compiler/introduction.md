@@ -3,7 +3,7 @@ title: 介绍
 ---
 
 <Intro>
-React Compiler 是一个新的构建时工具，它可以自动优化你的 React 应用。它支持纯 JavaScript，并且了解 [React 的规则](/reference/rules)，因此你无需重写任何代码即可使用它。
+React 编译器是一个新的构建时工具，它可以自动优化你的 React 应用。它支持纯 JavaScript，并且了解 [React 的规则](/reference/rules)，因此你无需重写任何代码即可使用它。
 </Intro>
 
 <YouWillLearn>
@@ -16,19 +16,15 @@ React Compiler 是一个新的构建时工具，它可以自动优化你的 Reac
 
 </YouWillLearn>
 
-<Note>
-React Compiler 目前处于发布候选（RC）阶段。我们现在建议所有人尝试使用该编译器并提供反馈。最新的 RC 版本可以通过 `@rc` 标签找到。
-</Note>
+## What does React Compiler do? {/*what-does-react-compiler-do*/}
 
-## React 编译器是做什么的？ {/*what-does-react-compiler-do*/}
-
-React Compiler 会在构建时自动优化你的 React 应用。通常情况下，即使不进行优化，React 的性能也已经足够快，但有时你需要手动对组件和值进行记忆化（memoization）以保持应用的响应速度。这种手动记忆化既繁琐又容易出错，并且会增加需要维护的额外代码。React Compiler 为你自动完成这些优化，减轻了你的思维负担，使你可以专注于功能的开发。
+React 编译器会在构建时自动优化你的 React 应用。通常情况下，即使不进行优化，React 的性能也已经足够快，但有时你需要手动对组件和值进行记忆化（memoization）以保持应用的响应速度。这种手动记忆化既繁琐又容易出错，并且会增加需要维护的额外代码。React 编译器为你自动完成这些优化，减轻了你的思维负担，使你可以专注于功能的开发。
 
 ### 在使用 React 编译器之前 {/*before-react-compiler*/}
 
 没有编译器的情况下，你需要手动对组件和值进行记忆化以优化重新渲染：
 
-```js {expectedErrors: {'react-compiler': [4]}}
+```js
 import { useMemo, useCallback, memo } from 'react';
 
 const ExpensiveComponent = memo(function ExpensiveComponent({ data, onClick }) {
@@ -52,15 +48,15 @@ const ExpensiveComponent = memo(function ExpensiveComponent({ data, onClick }) {
 
 <Note>
 
-This manual memoization has a subtle bug that breaks memoization:
+这种手动记忆化存在一个会破坏记忆化效果的细微 bug：
 
 ```js [[2, 1, "() => handleClick(item)"]]
 <Item key={item.id} onClick={() => handleClick(item)} />
 ```
 
-Even though `handleClick` is wrapped in `useCallback`, the arrow function `() => handleClick(item)` creates a new function every time the component renders. This means that `Item` will always receive a new `onClick` prop, breaking memoization.
+尽管 `handleClick` 被 `useCallback` 包裹，但每次组件渲染时，箭头函数 `() => handleClick(item)` 都会创建一个新的函数。这意味着 `Item` 总会接收到一个新的 `onClick` prop，从而破坏了记忆化效果。
 
-React Compiler is able to optimize this correctly with or without the arrow function, ensuring that `Item` only re-renders when `props.onClick` changes.
+React 编译器无论是否存在这个箭头函数，都能够正确地进行优化，确保 `Item`  仅在 `props.onClick` 变化时才重新渲染。
 
 </Note>
 
@@ -121,33 +117,33 @@ function FriendList({ friends }) {
   );
 }
 ```
-[_See this example in the React Compiler Playground_](https://playground.react.dev/#N4Igzg9grgTgxgUxALhAMygOzgFwJYSYAEAYjHgpgCYAyeYOAFMEWuZVWEQL4CURwADrEicQgyKEANnkwIAwtEw4iAXiJQwCMhWoB5TDLmKsTXgG5hRInjRFGbXZwB0UygHMcACzWr1ABn4hEWsYBBxYYgAeADkIHQ4uAHoAPksRbisiMIiYYkYs6yiqPAA3FMLrIiiwAAcAQ0wU4GlZBSUcbklDNqikusaKkKrgR0TnAFt62sYHdmp+VRT7SqrqhOo6Bnl6mCoiAGsEAE9VUfmqZzwqLrHqM7ubolTVol5eTOGigFkEMDB6u4EAAhKA4HCEZ5DNZ9ErlLIWYTcEDcIA)
+[__在 React 编译器游乐场中查看此示例__](https://playground.react.dev/#N4Igzg9grgTgxgUxALhAMygOzgFwJYSYAEAYjHgpgCYAyeYOAFMEWuZVWEQL4CURwADrEicQgyKEANnkwIAwtEw4iAXiJQwCMhWoB5TDLmKsTXgG5hRInjRFGbXZwB0UygHMcACzWr1ABn4hEWsYBBxYYgAeADkIHQ4uAHoAPksRbisiMIiYYkYs6yiqPAA3FMLrIiiwAAcAQ0wU4GlZBSUcbklDNqikusaKkKrgR0TnAFt62sYHdmp+VRT7SqrqhOo6Bnl6mCoiAGsEAE9VUfmqZzwqLrHqM7ubolTVol5eTOGigFkEMDB6u4EAAhKA4HCEZ5DNZ9ErlLIWYTcEDcIA)
 
-React Compiler automatically applies the equivalent of manual memoization, ensuring that only the relevant parts of an app re-render as state changes, which is sometimes referred to as "fine-grained reactivity". In the above example, React Compiler determines that the return value of `<FriendListCard />` can be reused even as `friends` changes, and can avoid recreating this JSX _and_ avoid re-rendering `<MessageButton>` as the count changes.
+React 编译器会自动应用与手动记忆化等效的优化，确保随着状态的变化，应用中只有相关的部分会重新渲染，这有时被称为“细粒度响应式”。在上面的示例中，React 编译器确定即使 `friends` 发生变化，`<FriendListCard />` 的返回值也可以被重用，并且可以避免重新创建此 JSX，同时避免在 count 变化时重新渲染 `<MessageButton>`。
 
-#### Expensive calculations also get memoized {/*expensive-calculations-also-get-memoized*/}
+#### 昂贵的计算也会被记忆化 {/*expensive-calculations-also-get-memoized*/}
 
-React Compiler can also automatically memoize expensive calculations used during rendering:
+React 编译器还可以自动记忆化渲染期间使用的昂贵计算：
 
 ```js
-// **Not** memoized by React Compiler, since this is not a component or hook
+// **不会** 被 React 编译器记忆化，因为它不是一个组件或 hook
 function expensivelyProcessAReallyLargeArrayOfObjects() { /* ... */ }
 
-// Memoized by React Compiler since this is a component
+// 会被 React 编译器记忆化，因为它是一个组件
 function TableContainer({ items }) {
-  // This function call would be memoized:
+  // 这个函数调用将被记忆化：
   const data = expensivelyProcessAReallyLargeArrayOfObjects(items);
   // ...
 }
 ```
-[_See this example in the React Compiler Playground_](https://playground.react.dev/#N4Igzg9grgTgxgUxALhAejQAgFTYHIQAuumAtgqRAJYBeCAJpgEYCemASggIZyGYDCEUgAcqAGwQwANJjBUAdokyEAFlTCZ1meUUxdMcIcIjyE8vhBiYVECAGsAOvIBmURYSonMCAB7CzcgBuCGIsAAowEIhgYACCnFxioQAyXDAA5gixMDBcLADyzvlMAFYIvGAAFACUmMCYaNiYAHStOFgAvk5OGJgAshTUdIysHNy8AkbikrIKSqpaWvqGIiZmhE6u7p7ymAAqXEwSguZcCpKV9VSEFBodtcBOmAYmYHz0XIT6ALzefgFUYKhCJRBAxeLcJIsVIZLI5PKFYplCqVa63aoAbm6u0wMAQhFguwAPPRAQA+YAfL4dIloUmBMlODogDpAA)
+[__在 React 编译器游乐场中查看此示例__](https://playground.react.dev/#N4Igzg9grgTgxgUxALhAejQAgFTYHIQAuumAtgqRAJYBeCAJpgEYCemASggIZyGYDCEUgAcqAGwQwANJjBUAdokyEAFlTCZ1meUUxdMcIcIjyE8vhBiYVECAGsAOvIBmURYSonMCAB7CzcgBuCGIsAAowEIhgYACCnFxioQAyXDAA5gixMDBcLADyzvlMAFYIvGAAFACUmMCYaNiYAHStOFgAvk5OGJgAshTUdIysHNy8AkbikrIKSqpaWvqGIiZmhE6u7p7ymAAqXEwSguZcCpKV9VSEFBodtcBOmAYmYHz0XIT6ALzefgFUYKhCJRBAxeLcJIsVIZLI5PKFYplCqVa63aoAbm6u0wMAQhFguwAPPRAQA+YAfL4dIloUmBMlODogDpAA)
 
-However, if `expensivelyProcessAReallyLargeArrayOfObjects` is truly an expensive function, you may want to consider implementing its own memoization outside of React, because:
+然而，如果 `expensivelyProcessAReallyLargeArrayOfObjects` 真的是一个昂贵的函数，你可能需要考虑在 React 之外实现其自身的记忆化，因为：
 
-- React Compiler only memoizes React components and hooks, not every function
-- React Compiler's memoization is not shared across multiple components or hooks
+- React 编译器只对 React 组件和 Hook 进行记忆化，而不是所有函数
+- React 编译器的记忆化不会在多个组件或 Hook 之间共享
 
-So if `expensivelyProcessAReallyLargeArrayOfObjects` was used in many different components, even if the same exact items were passed down, that expensive calculation would be run repeatedly. We recommend [profiling](reference/react/useMemo#how-to-tell-if-a-calculation-is-expensive) first to see if it really is that expensive before making code more complicated.
+因此，如果 `expensivelyProcessAReallyLargeArrayOfObjects` 在许多不同的组件中使用，即使传递了完全相同的 items，这个昂贵的计算也会被重复运行。我们建议在使代码变得更复杂之前，先 [profiling](reference/react/useMemo#how-to-tell-if-a-calculation-is-expensive) 以确定计算是否真的那么昂贵。
 </DeepDive>
 
 ## 我应该尝试这个编译器吗？ {/*should-i-try-out-the-compiler*/}
@@ -156,21 +152,25 @@ So if `expensivelyProcessAReallyLargeArrayOfObjects` was used in many different 
 
 ### 使用起来安全吗？ {/*is-it-safe-to-use*/}
 
-React 编译器目前已进入 RC 阶段，并已在生产环境中进行了广泛测试。虽然像 Meta 这样的公司已经在生产中使用了它，但是否将编译器部署到你的应用程序生产环境，将取决于你的代码库状况以及你对 [React 规则](/reference/rules) 的遵循程度。
+React 编译器目前已经稳定，并且在生产环境中进行了广泛测试。虽然像 Meta 这样的公司已经在生产中使用了它，但是否将编译器部署到你的应用程序生产环境，将取决于你的代码库状况以及你对 [React 规则](/reference/rules) 的遵循程度。
 
 ## 支持哪些构建工具？ {/*what-build-tools-are-supported*/}
 
-React Compiler 可以在多个构建工具中安装，例如 [Babel、Vite、Metro 和 Rsbuild](/learn/react-compiler/installation)。
+React 编译器可以在多个构建工具中安装，例如 [Babel、Vite、Metro 和 Rsbuild](/learn/react-compiler/installation)。
 
-React Compiler 主要是围绕核心编译器构建的一个轻量级 Babel 插件封装，其设计初衷是为了与 Babel 本身解耦。尽管编译器的第一个稳定版本主要仍然是一个 Babel 插件，但我们正在与 swc 和 [oxc](https://github.com/oxc-project/oxc/issues/10048) 团队合作，为 React Compiler 构建一流的支持，这样你将来无需再将 Babel 添加到你的构建流程中。
+React 编译器主要是围绕核心编译器构建的一个轻量级 Babel 插件封装，其设计初衷是为了与 Babel 本身解耦。尽管编译器的第一个稳定版本主要仍然是一个 Babel 插件，但我们正在与 swc 和 [oxc](https://github.com/oxc-project/oxc/issues/10048) 团队合作，为 React 编译器构建一流的支持，这样你将来无需再将 Babel 添加到你的构建流程中。
 
-Next.js 用户可以通过使用 [v15.3.1](https://github.com/vercel/next.js/releases/tag/v15.3.1) 或更高版本来启用由 swc 调用的 React Compiler。
+Next.js 用户可以通过使用 [v15.3.1](https://github.com/vercel/next.js/releases/tag/v15.3.1) 或更高版本来启用由 swc 调用的 React 编译器。
 
 ## 关于 useMemo、useCallback 和 React.memo 我应该怎么做？ {/*what-should-i-do-about-usememo-usecallback-and-reactmemo*/}
 
-React 编译器能够比手动使用 [`useMemo`](/reference/react/useMemo)、[`useCallback`](/reference/react/useCallback) 和 [`React.memo`](/reference/react/memo) 更精确和细致地添加自动记忆化。如果你选择保留手动记忆化，React 编译器会分析它们，并判断你的手动记忆化是否与其自动推断出的记忆化一致。如果不一致，编译器将选择放弃优化该组件。
+By default, React Compiler will memoize your code based on its analysis and heuristics. In most cases, this memoization will be as precise, or moreso, than what you may have written.
 
-这样做是出于谨慎考虑，因为手动记忆化常见的反模式是为了保证程序的正确性。这意味着你的应用依赖于对特定值进行记忆化才能正常运行。例如，为了防止无限循环，你可能会记忆某些值来阻止 `useEffect` 被触发。这违反了 React 的规则，但因为编译器自动移除手动记忆化可能会有潜在危险，所以会直接放弃优化。你应该手动移除自己的手动记忆化代码，并验证应用是否仍能按预期运行。
+However, in some cases developers may need more control over memoization. The `useMemo` and `useCallback` hooks can continue to be used with React Compiler as an escape hatch to provide control over which values are memoized. A common use-case for this is if a memoized value is used as an effect dependency, in order to ensure that an effect does not fire repeatedly even when its dependencies do not meaningfully change.
+
+For new code, we recommend relying on the compiler for memoization and using `useMemo`/`useCallback` where needed to achieve precise control.
+
+For existing code, we recommend either leaving existing memoization in place (removing it can change compilation output) or carefully testing before removing the memoization.
 
 ## 尝试 React 编译器 {/*try-react-compiler*/}
 

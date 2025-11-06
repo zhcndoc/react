@@ -3,7 +3,7 @@ title: 安装
 ---
 
 <Intro>
-本指南将帮助你在 React 应用程序中安装和配置 React Compiler。
+本指南将帮助你在 React 应用程序中安装和配置 React 编译器。
 </Intro>
 
 <YouWillLearn>
@@ -18,38 +18,34 @@ title: 安装
 
 React 编译器专为与 React 19 配合使用而设计，但也支持 React 17 和 18。了解有关 [React 版本兼容性](/reference/react-compiler/target) 的更多信息。
 
-<Note>
-React Compiler 当前处于 RC 阶段。请使用 `@rc` 标签安装，以获取最新的发布候选版本。
-</Note>
-
 ## 安装 {/*installation*/}
 
 将 React 编译器安装为 `devDependency`：
 
 <TerminalBlock>
-npm install -D babel-plugin-react-compiler@rc
+npm install -D babel-plugin-react-compiler@latest
 </TerminalBlock>
 
 或者使用 Yarn：
 
 <TerminalBlock>
-yarn add -D babel-plugin-react-compiler@rc
+yarn add -D babel-plugin-react-compiler@latest
 </TerminalBlock>
 
 或者使用 pnpm：
 
 <TerminalBlock>
-pnpm install -D babel-plugin-react-compiler@rc
+pnpm install -D babel-plugin-react-compiler@latest
 </TerminalBlock>
 
 ## 基本设置 {/*basic-setup*/}
 
-React Compiler 默认无需任何配置即可工作。不过，如果你需要在特殊情况下进行配置（例如，要支持低于 19 版本的 React），请参考[编译器选项参考文档](/reference/react-compiler/configuration)。
+React 编译器默认无需任何配置即可工作。不过，如果你需要在特殊情况下进行配置（例如，要支持低于 19 版本的 React），请参考[编译器选项参考文档](/reference/react-compiler/configuration)。
 
-设置过程取决于你使用的构建工具。React Compiler 包含一个 Babel 插件，可以集成到你的构建流程中。
+设置过程取决于你使用的构建工具。React 编译器包含一个 Babel 插件，可以集成到你的构建流程中。
 
 <Pitfall>
-React Compiler 必须在你的 Babel 插件管道中 **首先** 运行。编译器需要原始的源代码信息来进行正确的分析，因此它必须在其他转换操作之前处理你的代码。
+React 编译器必须在你的 Babel 插件管道中 **首先** 运行。编译器需要原始的源代码信息来进行正确的分析，因此它必须在其他转换操作之前处理你的代码。
 </Pitfall>
 
 ### Babel {/*babel*/}
@@ -59,10 +55,10 @@ React Compiler 必须在你的 Babel 插件管道中 **首先** 运行。编译�
 ```js {3}
 module.exports = {
   plugins: [
-    'babel-plugin-react-compiler', // must run first!
-    // ... other plugins
+    'babel-plugin-react-compiler', // 必须首先运行！
+    // ... 其他插件 
   ],
-  // ... other config
+  // ... 其他配置 
 };
 ```
 
@@ -135,7 +131,7 @@ export default defineConfig({
     babel({
       filter: /\.[jt]sx?$/,
       babelConfig: {
-        presets: ["@babel/preset-typescript"], // if you use TypeScript
+        presets: ["@babel/preset-typescript"], // 如果你使用 TypeScript 
         plugins: [
           ["babel-plugin-react-compiler", ReactCompilerConfig],
         ],
@@ -168,15 +164,15 @@ React Native 通过 Metro 使用 Babel，因此请参考 [与 Babel 配合使用
 
 ## ESLint Integration {/*eslint-integration*/}
 
-React Compiler 包含一条 ESLint 规则，可帮助识别无法优化的代码。当 ESLint 规则报告错误时，意味着编译器将跳过对该特定组件或 Hook 的优化。这是安全的：编译器将继续优化代码库的其他部分。你不需要立即修复所有违规之处。可以按照自己的节奏逐步解决这些问题，以逐渐增加已优化组件的数量。
+React 编译器包含一条 ESLint 规则，可帮助识别无法优化的代码。当 ESLint 规则报告错误时，意味着编译器将跳过对该特定组件或 Hook 的优化。这是安全的：编译器将继续优化代码库的其他部分。你不需要立即修复所有违规之处。可以按照自己的节奏逐步解决这些问题，以逐渐增加已优化组件的数量。
 
 安装 ESLint 插件：
 
 <TerminalBlock>
-npm install -D eslint-plugin-react-hooks@rc
+npm install -D eslint-plugin-react-hooks@latest
 </TerminalBlock>
 
-如果你尚未配置好 eslint-plugin-react-hooks，参考 [readme 的安装说明来进行配置](https://github.com/facebook/react/blob/main/packages/eslint-plugin-react-hooks/README.md#installation)。最新的 RC 版本中默认启用了编译器规则，因此不需要其他配置。
+如果你尚未配置好 eslint-plugin-react-hooks，参考 [readme 的安装说明来进行配置](https://github.com/facebook/react/blob/main/packages/eslint-plugin-react-hooks/README.md#installation)。编译器规则可在 `recommended-latest` 预设中找到。
 
 ESLint 规则将会：
 - 识别对 [React 规则](/reference/rules) 的违反情况
@@ -230,7 +226,7 @@ export default function MyApp() {
 ```js
 function ProblematicComponent() {
   "use no memo";
-  // Component code here
+  // 这里是组件代码
 }
 ```
 

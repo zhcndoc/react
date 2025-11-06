@@ -7,7 +7,7 @@ title: prerenderToNodeStream
 `prerenderToNodeStream` 使用 [Node.js 流](https://nodejs.org/api/stream.html) 将 React 树渲染为静态 HTML 字符串。
 
 ```js
-const {prelude} = await prerenderToNodeStream(reactNode, options?)
+const {prelude, postponed} = await prerenderToNodeStream(reactNode, options?)
 ```
 
 </Intro>
@@ -31,7 +31,7 @@ const {prelude} = await prerenderToNodeStream(reactNode, options?)
 ```js
 import { prerenderToNodeStream } from 'react-dom/static';
 
-// The route handler syntax depends on your backend framework
+// 路由处理的语法取决于后端框架 
 app.use('/', async (request, response) => {
   const { prelude } = await prerenderToNodeStream(<App />, {
     bootstrapScripts: ['/main.js'],
@@ -65,6 +65,7 @@ app.use('/', async (request, response) => {
 `prerenderToNodeStream` 返回一个 Promise：
 - 如果渲染成功，该 Promise 会解析为一个对象，包含：
   - `prelude`：用于 HTML 的 [Node.js 流](https://nodejs.org/api/stream.html)。你可以使用这个流按块（chunk）发送响应，也可以将整个流读取为一个字符串。
+  - `postponed`: a JSON-serializeable, opaque object that can be passed to [`resumeToPipeableStream`](/reference/react-dom/server/resumeToPipeableStream) if `prerenderToNodeStream` did not finish. Otherwise `null` indicating that the `prelude` contains all the content and no resume is necessary.
 - 如果渲染失败，该 Promise 将被拒绝。请参阅 [使用此方法输出 fallback（占位 UI）外壳](/reference/react-dom/server/renderToPipeableStream#recovering-from-errors-inside-the-shell)，了解如何在出错时提供占位页面。
 
 #### 注意事项 {/*caveats*/}
@@ -76,6 +77,8 @@ app.use('/', async (request, response) => {
 ### 何时应使用 `prerenderToNodeStream`？ {/*when-to-use-prerender*/}
 
 静态的 `prerenderToNodeStream` API 用于静态服务器端生成（SSG）。与 `renderToString` 不同，`prerenderToNodeStream` 会等待所有数据加载完成后才 resolve，因此适合为整个页面生成包含需通过 Suspense 获取的数据的静态 HTML。若想在内容加载时就开始流式输出，请使用流式 SSR API（例如 [renderToReadableStream](/reference/react-dom/server/renderToReadableStream)）。
+
+`prerenderToNodeStream` can be aborted and resumed later with `resumeToPipeableStream` to support partial pre-rendering.
 
 </Note>
 
@@ -90,7 +93,7 @@ app.use('/', async (request, response) => {
 ```js [[1, 5, "<App />"], [2, 6, "['/main.js']"]]
 import { prerenderToNodeStream } from 'react-dom/static';
 
-// The route handler syntax depends on your backend framework
+// 路由处理的语法取决于后端框架
 app.use('/', async (request, response) => {
   const { prelude } = await prerenderToNodeStream(<App />, {
     bootstrapScripts: ['/main.js'],
@@ -128,7 +131,7 @@ React 会将 [doctype](https://developer.mozilla.org/en-US/docs/Glossary/Doctype
 ```html [[2, 5, "/main.js"]]
 <!DOCTYPE html>
 <html>
-  <!-- ... HTML from your components ... -->
+  <!-- ... 组件中的 HTML ... -->
 </html>
 <script src="/main.js" async=""></script>
 ```
@@ -169,7 +172,7 @@ export default function App({ assetMap }) {
 在服务器端，渲染 `<App assetMap={assetMap} />` 并传入 `assetMap`：
 
 ```js {1-5,8,9}
-// You'd need to get this JSON from your build tooling, e.g. read it from the build output.
+// 您需要从构建工具中获取 JSON。例如，从构建输出中阅读。
 const assetMap = {
   'styles.css': '/styles.123456.css',
   'main.js': '/main.123456.js'
@@ -188,7 +191,7 @@ app.use('/', async (request, response) => {
 因为现在服务器端是用 `assetMap` 渲染 `<App assetMap={assetMap} />`，客户端也需要以相同方式渲染以避免 hydration 错误。你可以像下面这样将 `assetMap` 序列化并传给客户端：
 
 ```js {9-10}
-// You'd need to get this JSON from your build tooling.
+// 您需要从构建工具中获取 JSON。
 const assetMap = {
   'styles.css': '/styles.123456.css',
   'main.js': '/main.123456.js'
@@ -301,8 +304,8 @@ async function renderToString() {
   }, 10000);
 
   try {
-    // the prelude will contain all the HTML that was prerendered
-    // before the controller aborted.
+    // prelude 将包含预渲染的所有 HTML 代码
+    // 在控制器终止之前。
     const {prelude} = await prerenderToNodeStream(<App />, {
       signal: controller.signal,
     });
@@ -311,7 +314,7 @@ async function renderToString() {
 
 任何仍未完成的 Suspense 边界会以 fallback 状态包含在 prelude 中。
 
----
+This can be used for partial prerendering together with [`resumeToPipeableStream`](/reference/react-dom/server/resumeToPipeableStream) or [`resumeAndPrerenderToNodeStream`](/reference/react-dom/static/resumeAndPrerenderToNodeStream).
 
 ## Troubleshooting {/*troubleshooting*/}
 

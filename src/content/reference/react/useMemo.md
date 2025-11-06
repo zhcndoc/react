@@ -14,7 +14,7 @@ const cachedValue = useMemo(calculateValue, dependencies)
 
 <Note>
 
-[React Compiler](/learn/react-compiler) 会自动对值和函数进行记忆化处理，从而减少手动调用 `useMemo` 的需求。你可以使用编译器自动处理记忆化。
+[React 编译器](/learn/react-compiler) 会自动对值和函数进行记忆化处理，从而减少手动调用 `useMemo` 的需求。你可以使用编译器自动处理记忆化。
 
 </Note>
 
@@ -225,8 +225,7 @@ export default function App() {
 
 ```
 
-{/* TODO(@poteto) - investigate potential false positives in react compiler validation */}
-```js {expectedErrors: {'react-compiler': [5]}} src/TodoList.js active
+```js src/TodoList.js active
 import { useMemo } from 'react';
 import { filterTodos } from './utils.js'
 

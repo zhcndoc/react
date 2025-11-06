@@ -10,7 +10,7 @@ title: target
 
 ```js
 {
-  target: '19' // or '18', '17'
+  target: '19' // 或 '18' 和 '17'
 }
 ```
 
@@ -45,7 +45,7 @@ title: target
 - 始终使用字符串值，不要用数字（例如使用 `'17'` 而非 `17`）
 - 不要包含补丁版本号（例如使用 `'18'` 而非 `'18.2.0'`）
 - React 19 已内置编译器运行时 API
-- React 17 与 18 需要安装 `react-compiler-runtime@rc`
+- React 17 与 18 需要安装 `react-compiler-runtime@latest`
   
 ---
 
@@ -57,7 +57,7 @@ title: target
 
 ```js
 {
-  // defaults to target: '19'
+  // 默认目标为 '19'
 }
 ```
 
@@ -75,7 +75,7 @@ import { c as _c } from 'react/compiler-runtime';
 1. 安装运行环境包：
 
 ```bash
-npm install react-compiler-runtime@rc
+npm install react-compiler-runtime@latest
 ```
 
 2. 配置 target:
@@ -95,7 +95,7 @@ npm install react-compiler-runtime@rc
 编译器会在这两个版本上使用 polyfill 运行环境：
 
 ```js
-// Compiled output uses the polyfill
+// 编译后的输出使用 polyfill
 import { c as _c } from 'react-compiler-runtime';
 ```
 
@@ -114,7 +114,7 @@ import { c as _c } from 'react-compiler-runtime';
 
 2. 如果使用 React 17 或 18，安装运行环境：
    ```bash
-   npm install react-compiler-runtime@rc
+   npm install react-compiler-runtime@latest
    ```
 
 3. 确保你的 target 和你的 React 版本一致：
@@ -129,8 +129,8 @@ import { c as _c } from 'react-compiler-runtime';
 请确保运行环境包：
 
 1. 安装在你的项目中（而非全局）
-2. 被列在 `package.json` 的 dependencies 中
-3. 使用正确版本（`@rc` 标签）
+2. 被列在 `package.json` 的依赖中
+3. 使用正确版本（`@latest` 标签）
 4. 不在 `devDependencies` 中（运行环境需要）
 
 ### 检查编译输出 {/*checking-output*/}

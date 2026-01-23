@@ -21,6 +21,10 @@ export function Toc({headings}: {headings: Toc}) {
   const selectedIndex = Math.min(currentIndex, headings.length - 1);
   return (
     <nav role="navigation" className="pt-20 sticky top-0 end-0">
+      <div
+        className="wwads-cn wwads-vertical"
+        data-id="354"
+        style={{width: '100%', margin: '16px'}}></div>
       {headings.length > 0 && (
         <h2 className="mb-3 lg:mb-3 uppercase tracking-wide font-bold text-sm text-secondary dark:text-secondary-dark px-4 w-full">
           目录

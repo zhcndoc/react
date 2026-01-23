@@ -34,6 +34,10 @@ export const DocsPageFooter = memo<DocsPageFooterProps>(
       <>
         {prevRoute?.path || nextRoute?.path ? (
           <>
+            <div
+              className="wwads-cn wwads-horizontal"
+              data-id="354"
+              style={{width: '100%', margin: '16px'}}></div>
             <div className="grid grid-cols-1 gap-4 py-4 mx-auto max-w-7xl md:grid-cols-2 md:py-12">
               {prevRoute?.path ? (
                 <FooterLink

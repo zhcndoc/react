@@ -24,7 +24,11 @@ export function Toc({headings}: {headings: Toc}) {
       <div
         className="wwads-cn wwads-vertical"
         data-id="354"
-        style={{width: '100%', margin: '16px'}}></div>
+        style={{
+          maxWidth: '200px',
+          marginBottom: '16px',
+          marginLeft: '16px',
+        }}></div>
       {headings.length > 0 && (
         <h2 className="mb-3 lg:mb-3 uppercase tracking-wide font-bold text-sm text-secondary dark:text-secondary-dark px-4 w-full">
           目录

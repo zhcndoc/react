@@ -4,94 +4,94 @@ title: exhaustive-deps
 
 <Intro>
 
-Validates that dependency arrays for React hooks contain all necessary dependencies.
+验证 React hooks 的依赖数组是否包含所有必要的依赖。
 
 </Intro>
 
-## Rule Details {/*rule-details*/}
+## 规则详情 {/*rule-details*/}
 
-React hooks like `useEffect`, `useMemo`, and `useCallback` accept dependency arrays. When a value referenced inside these hooks isn't included in the dependency array, React won't re-run the effect or recalculate the value when that dependency changes. This causes stale closures where the hook uses outdated values.
+像 `useEffect`、`useMemo` 和 `useCallback` 这样的 React hooks 接受依赖数组。当这些 hooks 内部引用的值未包含在依赖数组中时，React 在该依赖变化时不会重新执行 effect 或重新计算该值。这会导致陈旧闭包，hooks 使用到的是过时的值。
 
-## Common Violations {/*common-violations*/}
+## 常见违规 {/*common-violations*/}
 
-This error often happens when you try to "trick" React about dependencies to control when an effect runs. Effects should synchronize your component with external systems. The dependency array tells React which values the effect uses, so React knows when to re-synchronize.
+当你试图通过“欺骗” React 关于依赖关系来控制 effect 何时运行时，通常会发生这个错误。Effect 应该让你的组件与外部系统保持同步。依赖数组会告诉 React 这个 effect 使用了哪些值，因此 React 才知道何时需要重新同步。
 
-If you find yourself fighting with the linter, you likely need to restructure your code. See [Removing Effect Dependencies](/learn/removing-effect-dependencies) to learn how.
+如果你发现自己在和 linter 对抗，你很可能需要重构代码。查看 [移除 Effect 依赖](/learn/removing-effect-dependencies) 了解方法。
 
-### Invalid {/*invalid*/}
+### 无效 {/*invalid*/}
 
-Examples of incorrect code for this rule:
+以下是此规则的错误代码示例：
 
 ```js
-// ❌ Missing dependency
+// ❌ 缺少依赖
 useEffect(() => {
   console.log(count);
-}, []); // Missing 'count'
+}, []); // 缺少 'count'
 
-// ❌ Missing prop
+// ❌ 缺少 prop
 useEffect(() => {
   fetchUser(userId);
-}, []); // Missing 'userId'
+}, []); // 缺少 'userId'
 
-// ❌ Incomplete dependencies
+// ❌ 依赖不完整
 useMemo(() => {
   return items.sort(sortOrder);
-}, [items]); // Missing 'sortOrder'
+}, [items]); // 缺少 'sortOrder'
 ```
 
-### Valid {/*valid*/}
+### 有效 {/*valid*/}
 
-Examples of correct code for this rule:
+以下是此规则的正确代码示例：
 
 ```js
-// ✅ All dependencies included
+// ✅ 包含所有依赖
 useEffect(() => {
   console.log(count);
 }, [count]);
 
-// ✅ All dependencies included
+// ✅ 包含所有依赖
 useEffect(() => {
   fetchUser(userId);
 }, [userId]);
 ```
 
-## Troubleshooting {/*troubleshooting*/}
+## 故障排查 {/*troubleshooting*/}
 
-### Adding a function dependency causes infinite loops {/*function-dependency-loops*/}
+### 添加函数依赖会导致无限循环 {/*function-dependency-loops*/}
 
-You have an effect, but you're creating a new function on every render:
+你有一个 effect，但你在每次渲染时都创建了一个新函数：
 
 ```js
-// ❌ Causes infinite loop
+// ❌ 会导致无限循环
 const logItems = () => {
   console.log(items);
 };
 
 useEffect(() => {
   logItems();
-}, [logItems]); // Infinite loop!
+}, [logItems]); // 无限循环！
 ```
 
-In most cases, you don't need the effect. Call the function where the action happens instead:
+在大多数情况下，你并不需要这个 effect。改为在动作发生的地方调用这个函数：
 
 ```js
-// ✅ Call it from the event handler
+// ✅ 在事件处理函数中调用它
 const logItems = () => {
   console.log(items);
 };
 
-return <button onClick={logItems}>Log</button>;
+return <button onClick={logItems}>记录</button>;
 
-// ✅ Or derive during render if there's no side effect
+// ✅ 或者如果没有副作用，就在渲染过程中直接派生
 items.forEach(item => {
   console.log(item);
 });
 ```
 
-If you genuinely need the effect (for example, to subscribe to something external), make the dependency stable:
+如果你确实需要这个 effect（例如，订阅某个外部内容），请让依赖保持稳定：
 
 ```js
-// ✅ useCallback keeps the function reference stable
+// ✅ useCallback 会保持函数引用稳定
 const logItems = useCallback(() => {
   console.log(items);
 }, [items]);
@@ -100,32 +100,32 @@ useEffect(() => {
   logItems();
 }, [logItems]);
 
-// ✅ Or move the logic straight into the effect
+// ✅ 或者直接把逻辑移到 effect 中
 useEffect(() => {
   console.log(items);
 }, [items]);
 ```
 
-### Running an effect only once {/*effect-on-mount*/}
+### 只运行一次 effect {/*effect-on-mount*/}
 
-You want to run an effect once on mount, but the linter complains about missing dependencies:
+你希望 effect 在挂载时只运行一次，但 linter 提示缺少依赖：
 
 ```js
-// ❌ Missing dependency
+// ❌ 缺少依赖
 useEffect(() => {
   sendAnalytics(userId);
-}, []); // Missing 'userId'
+}, []); // 缺少 'userId'
 ```
 
-Either include the dependency (recommended) or use a ref if you truly need to run once:
+要么包含该依赖（推荐），要么如果你确实只需要运行一次，就使用 ref：
 
 ```js
-// ✅ Include dependency
+// ✅ 包含依赖
 useEffect(() => {
   sendAnalytics(userId);
 }, [userId]);
 
-// ✅ Or use a ref guard inside an effect
+// ✅ 或者在 effect 中使用 ref 保护
 const sent = useRef(false);
 
 useEffect(() => {
@@ -138,9 +138,9 @@ useEffect(() => {
 }, [userId]);
 ```
 
-## Options {/*options*/}
+## 选项 {/*options*/}
 
-You can configure custom effect hooks using shared ESLint settings (available in `eslint-plugin-react-hooks` 6.1.1 and later):
+你可以使用共享的 ESLint 设置来配置自定义 effect hooks（适用于 `eslint-plugin-react-hooks` 6.1.1 及更高版本）：
 
 ```js
 {
@@ -152,9 +152,9 @@ You can configure custom effect hooks using shared ESLint settings (available in
 }
 ```
 
-- `additionalEffectHooks`: Regex pattern matching custom hooks that should be checked for exhaustive dependencies. This configuration is shared across all `react-hooks` rules.
+- `additionalEffectHooks`：用于匹配应检查完整依赖项的自定义 hooks 的正则表达式模式。此配置会在所有 `react-hooks` 规则之间共享。
 
-For backward compatibility, this rule also accepts a rule-level option:
+为了向后兼容，此规则也接受规则级别的选项：
 
 ```js
 {
@@ -166,4 +166,4 @@ For backward compatibility, this rule also accepts a rule-level option:
 }
 ```
 
-- `additionalHooks`: Regex for hooks that should be checked for exhaustive dependencies. **Note:** If this rule-level option is specified, it takes precedence over the shared `settings` configuration.
+- `additionalHooks`：用于检查完整依赖项的 hooks 的正则表达式。**注意：**如果指定了此规则级别的选项，它将优先于共享的 `settings` 配置。

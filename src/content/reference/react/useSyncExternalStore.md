@@ -4,7 +4,7 @@ title: useSyncExternalStore
 
 <Intro>
 
-`useSyncExternalStore` is a React Hook that lets you subscribe to an external store.
+`useSyncExternalStore` 是一个 React Hook，允许你订阅一个外部 store。
 
 ```js
 const snapshot = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot?)
@@ -16,11 +16,11 @@ const snapshot = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot?
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot?)` {/*usesyncexternalstore*/}
 
-Call `useSyncExternalStore` at the top level of your component to read a value from an external data store.
+在组件顶层调用 `useSyncExternalStore`，以便从外部数据 store 中读取一个值。
 
 ```js
 import { useSyncExternalStore } from 'react';
@@ -32,36 +32,36 @@ function TodosApp() {
 }
 ```
 
-It returns the snapshot of the data in the store. You need to pass two functions as arguments:
+它返回 store 中数据的快照。你需要传入两个函数作为参数：
 
-1. The `subscribe` function should subscribe to the store and return a function that unsubscribes.
-2. The `getSnapshot` function should read a snapshot of the data from the store.
+1. `subscribe` 函数应该订阅该 store，并返回一个用于取消订阅的函数。
+2. `getSnapshot` 函数应该从 store 中读取一份数据快照。
 
-[See more examples below.](#usage)
+[查看更多示例。](#usage)
 
-#### Parameters {/*parameters*/}
+#### 参数 {/*parameters*/}
 
-* `subscribe`: A function that takes a single `callback` argument and subscribes it to the store. When the store changes, it should invoke the provided `callback`, which will cause React to re-call `getSnapshot` and (if needed) re-render the component. The `subscribe` function should return a function that cleans up the subscription.
+* `subscribe`：一个接收单个 `callback` 参数的函数，并将其订阅到 store。当 store 变化时，它应调用所提供的 `callback`，这会让 React 重新调用 `getSnapshot`，并在需要时重新渲染组件。`subscribe` 函数应返回一个用于清理订阅的函数。
 
-* `getSnapshot`: A function that returns a snapshot of the data in the store that's needed by the component. While the store has not changed, repeated calls to `getSnapshot` must return the same value. If the store changes and the returned value is different (as compared by [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is)), React re-renders the component.
+* `getSnapshot`：一个返回组件所需 store 数据快照的函数。当 store 未变化时，对 `getSnapshot` 的重复调用必须返回相同的值。如果 store 发生变化且返回值不同（按 [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is) 比较），React 会重新渲染该组件。
 
-* **optional** `getServerSnapshot`: A function that returns the initial snapshot of the data in the store. It will be used only during server rendering and during hydration of server-rendered content on the client. The server snapshot must be the same between the client and the server, and is usually serialized and passed from the server to the client. If you omit this argument, rendering the component on the server will throw an error.
+* **可选** `getServerSnapshot`：一个返回 store 中数据初始快照的函数。它只会在服务端渲染期间，以及客户端对服务端渲染内容进行 hydration 期间使用。服务端快照必须在客户端和服务端之间保持一致，通常会被序列化并从服务端传递到客户端。如果省略这个参数，在服务端渲染组件时会抛出错误。
 
-#### Returns {/*returns*/}
+#### 返回值 {/*returns*/}
 
-The current snapshot of the store which you can use in your rendering logic.
+当前 store 的快照，你可以在渲染逻辑中使用它。
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-* The store snapshot returned by `getSnapshot` must be immutable. If the underlying store has mutable data, return a new immutable snapshot if the data has changed. Otherwise, return a cached last snapshot.
+* `getSnapshot` 返回的 store 快照必须是不可变的。如果底层 store 拥有可变数据，请在数据变化时返回一个新的不可变快照。否则，返回缓存的上一次快照。
 
-* If a different `subscribe` function is passed during a re-render, React will re-subscribe to the store using the newly passed `subscribe` function. You can prevent this by declaring `subscribe` outside the component.
+* 如果在重新渲染期间传入了不同的 `subscribe` 函数，React 会使用新传入的 `subscribe` 函数重新订阅该 store。你可以通过在组件外部声明 `subscribe` 来避免这一点。
 
-* If the store is mutated during a [non-blocking Transition update](/reference/react/useTransition), React will fall back to performing that update as blocking. Specifically, for every Transition update, React will call `getSnapshot` a second time just before applying changes to the DOM. If it returns a different value than when it was called originally, React will restart the update from scratch, this time applying it as a blocking update, to ensure that every component on screen is reflecting the same version of the store.
+* 如果在一次 [非阻塞的 Transition 更新](/reference/react/useTransition) 期间 store 被修改，React 会回退为将该更新作为阻塞更新来执行。具体来说，对于每一次 Transition 更新，React 会在将变更应用到 DOM 之前再次调用一次 `getSnapshot`。如果它返回的值与最初调用时不同，React 会从头重新开始更新，这一次会作为阻塞更新执行，以确保屏幕上的每个组件都反映同一个 store 版本。
 
-* It's not recommended to _suspend_ a render based on a store value returned by `useSyncExternalStore`. The reason is that mutations to the external store cannot be marked as [non-blocking Transition updates](/reference/react/useTransition), so they will trigger the nearest [`Suspense` fallback](/reference/react/Suspense), replacing already-rendered content on screen with a loading spinner, which typically makes a poor UX.
+* 不建议基于 `useSyncExternalStore` 返回的 store 值来在渲染中进行 _suspend_。原因是，外部 store 的变更无法被标记为 [非阻塞的 Transition 更新](/reference/react/useTransition)，因此它们会触发最近的 [`Suspense` fallback](/reference/react/Suspense)，用加载指示器替换屏幕上已经渲染的内容，这通常会带来较差的用户体验。
 
-  For example, the following are discouraged:
+  例如，以下做法不推荐：
 
   ```js
   const LazyProductDetailPage = lazy(() => import('./ProductDetailPage.js'));
@@ -69,26 +69,26 @@ The current snapshot of the store which you can use in your rendering logic.
   function ShoppingApp() {
     const selectedProductId = useSyncExternalStore(...);
 
-    // ❌ Calling `use` with a Promise dependent on `selectedProductId`
+    // ❌ 使用依赖于 `selectedProductId` 的 Promise 调用 `use`
     const data = use(fetchItem(selectedProductId))
 
-    // ❌ Conditionally rendering a lazy component based on `selectedProductId`
+    // ❌ 根据 `selectedProductId` 有条件地渲染懒加载组件
     return selectedProductId != null ? <LazyProductDetailPage /> : <FeaturedProducts />;
   }
   ```
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Subscribing to an external store {/*subscribing-to-an-external-store*/}
+### 订阅外部 store {/*subscribing-to-an-external-store*/}
 
-Most of your React components will only read data from their [props,](/learn/passing-props-to-a-component) [state,](/reference/react/useState) and [context.](/reference/react/useContext) However, sometimes a component needs to read some data from some store outside of React that changes over time. This includes:
+大多数 React 组件只会从它们的 [props,](/learn/passing-props-to-a-component) [state,](/reference/react/useState) 和 [context.](/reference/react/useContext) 中读取数据。然而，有时组件需要从 React 之外的某个会随时间变化的 store 中读取一些数据。这包括：
 
-* Third-party state management libraries that hold state outside of React.
-* Browser APIs that expose a mutable value and events to subscribe to its changes.
+* 保存 React 之外状态的第三方状态管理库。
+* 暴露可变值以及用于订阅其变化事件的浏览器 API。
 
-Call `useSyncExternalStore` at the top level of your component to read a value from an external data store.
+在组件顶层调用 `useSyncExternalStore`，以便从外部数据 store 中读取一个值。
 
 ```js [[1, 5, "todosStore.subscribe"], [2, 5, "todosStore.getSnapshot"], [3, 5, "todos", 0]]
 import { useSyncExternalStore } from 'react';
@@ -100,14 +100,14 @@ function TodosApp() {
 }
 ```
 
-It returns the <CodeStep step={3}>snapshot</CodeStep> of the data in the store. You need to pass two functions as arguments:
+它返回 store 中数据的 <CodeStep step={3}>快照</CodeStep>。你需要传入两个函数作为参数：
 
-1. The <CodeStep step={1}>`subscribe` function</CodeStep> should subscribe to the store and return a function that unsubscribes.
-2. The <CodeStep step={2}>`getSnapshot` function</CodeStep> should read a snapshot of the data from the store.
+1. <CodeStep step={1}>`subscribe` 函数</CodeStep> 应该订阅该 store，并返回一个用于取消订阅的函数。
+2. <CodeStep step={2}>`getSnapshot` 函数</CodeStep> 应该从 store 中读取一份数据快照。
 
-React will use these functions to keep your component subscribed to the store and re-render it on changes.
+React 会使用这些函数保持组件订阅该 store，并在发生变化时重新渲染。
 
-For example, in the sandbox below, `todosStore` is implemented as an external store that stores data outside of React. The `TodosApp` component connects to that external store with the `useSyncExternalStore` Hook.
+例如，在下面的沙盒中，`todosStore` 被实现为一个位于 React 之外、用于存储数据的外部 store。`TodosApp` 组件通过 `useSyncExternalStore` Hook 连接到该外部 store。
 
 <Sandpack>
 
@@ -119,7 +119,7 @@ export default function TodosApp() {
   const todos = useSyncExternalStore(todosStore.subscribe, todosStore.getSnapshot);
   return (
     <>
-      <button onClick={() => todosStore.addTodo()}>Add todo</button>
+      <button onClick={() => todosStore.addTodo()}>添加待办</button>
       <hr />
       <ul>
         {todos.map(todo => (
@@ -132,11 +132,11 @@ export default function TodosApp() {
 ```
 
 ```js src/todoStore.js
-// This is an example of a third-party store
-// that you might need to integrate with React.
+// 这是一个第三方 store 的示例
+// 你可能需要将它与你的 React 代码集成。
 
-// If your app is fully built with React,
-// we recommend using React state instead.
+// 如果你的应用完全由 React 构建，
+// 我们建议改用 React state。
 
 let nextId = 0;
 let todos = [{ id: nextId++, text: 'Todo #1' }];
@@ -169,17 +169,17 @@ function emitChange() {
 
 <Note>
 
-When possible, we recommend using built-in React state with [`useState`](/reference/react/useState) and [`useReducer`](/reference/react/useReducer) instead. The `useSyncExternalStore` API is mostly useful if you need to integrate with existing non-React code.
+在可能的情况下，我们建议改用内置的 React state，例如 [`useState`](/reference/react/useState) 和 [`useReducer`](/reference/react/useReducer)。`useSyncExternalStore` API 主要适用于需要与已有的非 React 代码集成的场景。
 
 </Note>
 
 ---
 
-### Subscribing to a browser API {/*subscribing-to-a-browser-api*/}
+### 订阅浏览器 API {/*subscribing-to-a-browser-api*/}
 
-Another reason to add `useSyncExternalStore` is when you want to subscribe to some value exposed by the browser that changes over time. For example, suppose that you want your component to display whether the network connection is active. The browser exposes this information via a property called [`navigator.onLine`.](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/onLine)
+添加 `useSyncExternalStore` 的另一个原因是：当你想订阅浏览器暴露的某个会随时间变化的值时。例如，假设你希望组件显示网络连接是否处于活动状态。浏览器会通过名为 [`navigator.onLine`.](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/onLine) 的属性暴露这一信息。
 
-This value can change without React's knowledge, so you should read it with `useSyncExternalStore`.
+这个值可以在 React 不知情的情况下变化，所以你应该使用 `useSyncExternalStore` 来读取它。
 
 ```js
 import { useSyncExternalStore } from 'react';
@@ -190,7 +190,7 @@ function ChatIndicator() {
 }
 ```
 
-To implement the `getSnapshot` function, read the current value from the browser API:
+要实现 `getSnapshot` 函数，请从浏览器 API 中读取当前值：
 
 ```js
 function getSnapshot() {
@@ -198,7 +198,7 @@ function getSnapshot() {
 }
 ```
 
-Next, you need to implement the `subscribe` function. For example, when `navigator.onLine` changes, the browser fires the [`online`](https://developer.mozilla.org/en-US/docs/Web/API/Window/online_event) and [`offline`](https://developer.mozilla.org/en-US/docs/Web/API/Window/offline_event) events on the `window` object. You need to subscribe the `callback` argument to the corresponding events, and then return a function that cleans up the subscriptions:
+接下来，你需要实现 `subscribe` 函数。例如，当 `navigator.onLine` 变化时，浏览器会在 `window` 对象上触发 [`online`](https://developer.mozilla.org/en-US/docs/Web/API/Window/online_event) 和 [`offline`](https://developer.mozilla.org/en-US/docs/Web/API/Window/offline_event) 事件。你需要将 `callback` 参数订阅到相应事件上，然后返回一个用于清理这些订阅的函数：
 
 ```js
 function subscribe(callback) {
@@ -211,7 +211,7 @@ function subscribe(callback) {
 }
 ```
 
-Now React knows how to read the value from the external `navigator.onLine` API and how to subscribe to its changes. Disconnect your device from the network and notice that the component re-renders in response:
+现在 React 知道如何从外部的 `navigator.onLine` API 中读取值，以及如何订阅它的变化。断开设备的网络连接，看看组件是否会响应式重新渲染：
 
 <Sandpack>
 
@@ -220,7 +220,7 @@ import { useSyncExternalStore } from 'react';
 
 export default function ChatIndicator() {
   const isOnline = useSyncExternalStore(subscribe, getSnapshot);
-  return <h1>{isOnline ? '✅ Online' : '❌ Disconnected'}</h1>;
+  return <h1>{isOnline ? '✅ 在线' : '❌ 已断开连接'}</h1>;
 }
 
 function getSnapshot() {
@@ -241,11 +241,11 @@ function subscribe(callback) {
 
 ---
 
-### Extracting the logic to a custom Hook {/*extracting-the-logic-to-a-custom-hook*/}
+### 将逻辑抽取到自定义 Hook 中 {/*extracting-the-logic-to-a-custom-hook*/}
 
-Usually you won't write `useSyncExternalStore` directly in your components. Instead, you'll typically call it from your own custom Hook. This lets you use the same external store from different components.
+通常你不会直接在组件中编写 `useSyncExternalStore`。相反，你通常会从自己编写的自定义 Hook 中调用它。这让你可以在不同组件中使用同一个外部 store。
 
-For example, this custom `useOnlineStatus` Hook tracks whether the network is online:
+例如，这个自定义 `useOnlineStatus` Hook 会追踪网络是否在线：
 
 ```js {3,6}
 import { useSyncExternalStore } from 'react';
@@ -264,7 +264,7 @@ function subscribe(callback) {
 }
 ```
 
-Now different components can call `useOnlineStatus` without repeating the underlying implementation:
+现在不同的组件可以调用 `useOnlineStatus`，而无需重复底层实现：
 
 <Sandpack>
 
@@ -273,19 +273,19 @@ import { useOnlineStatus } from './useOnlineStatus.js';
 
 function StatusBar() {
   const isOnline = useOnlineStatus();
-  return <h1>{isOnline ? '✅ Online' : '❌ Disconnected'}</h1>;
+  return <h1>{isOnline ? '✅ 在线' : '❌ 已断开连接'}</h1>;
 }
 
 function SaveButton() {
   const isOnline = useOnlineStatus();
 
   function handleSaveClick() {
-    console.log('✅ Progress saved');
+    console.log('✅ 进度已保存');
   }
 
   return (
     <button disabled={!isOnline} onClick={handleSaveClick}>
-      {isOnline ? 'Save progress' : 'Reconnecting...'}
+      {isOnline ? '保存进度' : '正在重新连接...'}
     </button>
   );
 }
@@ -326,14 +326,14 @@ function subscribe(callback) {
 
 ---
 
-### Adding support for server rendering {/*adding-support-for-server-rendering*/}
+### 添加对服务端渲染的支持 {/*adding-support-for-server-rendering*/}
 
-If your React app uses [server rendering,](/reference/react-dom/server) your React components will also run outside the browser environment to generate the initial HTML. This creates a few challenges when connecting to an external store:
+如果你的 React 应用使用了[服务端渲染，](/reference/react-dom/server)你的 React 组件也会在浏览器环境之外运行，以生成初始 HTML。在连接外部 store 时，这会带来一些挑战：
 
-- If you're connecting to a browser-only API, it won't work because it does not exist on the server.
-- If you're connecting to a third-party data store, you'll need its data to match between the server and client.
+- 如果你连接的是仅浏览器可用的 API，它将无法工作，因为它在服务器上不存在。
+- 如果你连接的是第三方数据 store，你需要确保服务端和客户端上的数据一致。
 
-To solve these issues, pass a `getServerSnapshot` function as the third argument to `useSyncExternalStore`:
+要解决这些问题，请将一个 `getServerSnapshot` 函数作为 `useSyncExternalStore` 的第三个参数传入：
 
 ```js {4,12-14}
 import { useSyncExternalStore } from 'react';
@@ -348,7 +348,7 @@ function getSnapshot() {
 }
 
 function getServerSnapshot() {
-  return true; // Always show "Online" for server-generated HTML
+  return true; // 对于服务端生成的 HTML，始终显示“在线”
 }
 
 function subscribe(callback) {
@@ -356,58 +356,58 @@ function subscribe(callback) {
 }
 ```
 
-The `getServerSnapshot` function is similar to `getSnapshot`, but it runs only in two situations:
+`getServerSnapshot` 函数类似于 `getSnapshot`，但它只在两种情况下运行：
 
-- It runs on the server when generating the HTML.
-- It runs on the client during [hydration](/reference/react-dom/client/hydrateRoot), i.e. when React takes the server HTML and makes it interactive.
+- 它在服务器上生成 HTML 时运行。
+- 它在客户端进行 [hydration](/reference/react-dom/client/hydrateRoot) 时运行，也就是 React 接收服务端 HTML 并使其具备交互能力时运行。
 
-This lets you provide the initial snapshot value which will be used before the app becomes interactive. If there is no meaningful initial value for the server rendering, omit this argument to [force rendering on the client.](/reference/react/Suspense#providing-a-fallback-for-server-errors-and-client-only-content)
+这让你可以提供一个初始快照值，该值会在应用变得可交互之前使用。如果服务端渲染没有有意义的初始值，请省略此参数以[强制在客户端渲染。](/reference/react/Suspense#providing-a-fallback-for-server-errors-and-client-only-content)
 
 <Note>
 
-Make sure that `getServerSnapshot` returns the same exact data on the initial client render as it returned on the server. For example, if `getServerSnapshot` returned some prepopulated store content on the server, you need to transfer this content to the client. One way to do this is to emit a `<script>` tag during server rendering that sets a global like `window.MY_STORE_DATA`, and read from that global on the client in `getServerSnapshot`. Your external store should provide instructions on how to do that.
+请确保 `getServerSnapshot` 在初始客户端渲染时返回的数据与它在服务器上返回的数据完全一致。例如，如果 `getServerSnapshot` 在服务器上返回了一些预填充的 store 内容，你需要将这些内容传输到客户端。一种做法是在服务端渲染期间输出一个 `<script>` 标签，用来设置诸如 `window.MY_STORE_DATA` 之类的全局变量，然后在客户端的 `getServerSnapshot` 中从这个全局变量读取。你的外部 store 应该提供如何执行此操作的说明。
 
 </Note>
 
 ---
 
-## Troubleshooting {/*troubleshooting*/}
+## 故障排除 {/*troubleshooting*/}
 
-### I'm getting an error: "The result of `getSnapshot` should be cached" {/*im-getting-an-error-the-result-of-getsnapshot-should-be-cached*/}
+### 我遇到一个错误："`getSnapshot` 的结果应该被缓存" {/*im-getting-an-error-the-result-of-getsnapshot-should-be-cached*/}
 
-This error means your `getSnapshot` function returns a new object every time it's called, for example:
+这个错误意味着你的 `getSnapshot` 函数每次被调用时都会返回一个新对象，例如：
 
 ```js {2-5}
 function getSnapshot() {
-  // 🔴 Do not return always different objects from getSnapshot
+  // 🔴 不要总是从 getSnapshot 返回不同的对象
   return {
     todos: myStore.todos
   };
 }
 ```
 
-React will re-render the component if `getSnapshot` return value is different from the last time. This is why, if you always return a different value, you will enter an infinite loop and get this error.
+如果 `getSnapshot` 的返回值与上一次不同，React 会重新渲染组件。这就是为什么如果你总是返回不同的值，就会进入无限循环并出现这个错误。
 
-Your `getSnapshot` object should only return a different object if something has actually changed. If your store contains immutable data, you can return that data directly:
+你的 `getSnapshot` 对象只有在某些内容确实发生变化时才应该返回不同的对象。如果你的 store 包含不可变数据，你可以直接返回这些数据：
 
 ```js {2-3}
 function getSnapshot() {
-  // ✅ You can return immutable data
+  // ✅ 你可以返回不可变数据
   return myStore.todos;
 }
 ```
 
-If your store data is mutable, your `getSnapshot` function should return an immutable snapshot of it. This means it *does* need to create new objects, but it shouldn't do this for every single call. Instead, it should store the last calculated snapshot, and return the same snapshot as the last time if the data in the store has not changed. How you determine whether mutable data has changed depends on your mutable store.
+如果你的 store 数据是可变的，你的 `getSnapshot` 函数应该返回它的一个不可变快照。这意味着它 *确实* 需要创建新对象，但不应该在每次调用时都这样做。相反，它应该保存上一次计算出的快照，并在 store 中的数据没有改变时返回与上一次相同的快照。如何判断可变数据是否发生变化，取决于你的可变 store。
 
 ---
 
-### My `subscribe` function gets called after every re-render {/*my-subscribe-function-gets-called-after-every-re-render*/}
+### 我的 `subscribe` 函数在每次重新渲染后都会被调用 {/*my-subscribe-function-gets-called-after-every-re-render*/}
 
-This `subscribe` function is defined *inside* a component so it is different on every re-render:
+这个 `subscribe` 函数定义在组件 *内部*，因此它在每次重新渲染时都不同：
 
 ```js {2-5}
 function ChatIndicator() {
-  // 🚩 Always a different function, so React will resubscribe on every re-render
+  // 🚩 总是不同的函数，因此 React 会在每次重新渲染时重新订阅
   function subscribe() {
     // ...
   }
@@ -418,10 +418,10 @@ function ChatIndicator() {
 }
 ```
 
-React will resubscribe to your store if you pass a different `subscribe` function between re-renders. If this causes performance issues and you'd like to avoid resubscribing, move the `subscribe` function outside:
+如果你在重新渲染之间传入不同的 `subscribe` 函数，React 就会重新订阅你的 store。如果这导致性能问题，而你想避免重新订阅，可以把 `subscribe` 函数移到外部：
 
 ```js {1-4}
-// ✅ Always the same function, so React won't need to resubscribe
+// ✅ 始终是同一个函数，因此 React 不需要重新订阅
 function subscribe() {
   // ...
 }
@@ -432,11 +432,11 @@ function ChatIndicator() {
 }
 ```
 
-Alternatively, wrap `subscribe` into [`useCallback`](/reference/react/useCallback) to only resubscribe when some argument changes:
+或者，把 `subscribe` 包装进 [`useCallback`](/reference/react/useCallback) 中，这样只有在某个参数改变时才会重新订阅：
 
 ```js {2-5}
 function ChatIndicator({ userId }) {
-  // ✅ Same function as long as userId doesn't change
+  // ✅ 只要 userId 不变，就是同一个函数
   const subscribe = useCallback(() => {
     // ...
   }, [userId]);

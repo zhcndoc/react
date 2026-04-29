@@ -4,7 +4,7 @@ title: useOptimistic
 
 <Intro>
 
-`useOptimistic` is a React Hook that lets you optimistically update the UI.
+`useOptimistic` 是一个 React Hook，允许你以乐观方式更新 UI。
 
 ```js
 const [optimisticState, setOptimistic] = useOptimistic(value, reducer?);
@@ -16,11 +16,11 @@ const [optimisticState, setOptimistic] = useOptimistic(value, reducer?);
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `useOptimistic(value, reducer?)` {/*useoptimistic*/}
 
-Call `useOptimistic` at the top level of your component to create optimistic state for a value.
+在组件顶层调用 `useOptimistic` 来为某个值创建乐观状态。
 
 ```js
 import { useOptimistic } from 'react';
@@ -33,25 +33,25 @@ function MyComponent({name, todos}) {
 }
 ```
 
-[See more examples below.](#usage)
+[查看更多示例。](#usage)
 
-#### Parameters {/*parameters*/}
+#### 参数 {/*parameters*/}
 
-* `value`: The value returned when there are no pending Actions.
-* **optional** `reducer(currentState, action)`: The reducer function that specifies how the optimistic state gets updated. It must be pure, should take the current state and reducer action arguments, and should return the next optimistic state.
+* `value`：当没有待处理的 Action 时返回的值。
+* **可选** `reducer(currentState, action)`：指定乐观状态如何更新的 reducer 函数。它必须是纯函数，应接收当前状态和 reducer action 参数，并返回下一个乐观状态。
 
-#### Returns {/*returns*/}
+#### 返回值 {/*returns*/}
 
-`useOptimistic` returns an array with exactly two values:
+`useOptimistic` 返回一个恰好包含两个值的数组：
 
-1. `optimisticState`: The current optimistic state. It is equal to `value` unless an Action is pending, in which case it is equal to the state returned by `reducer` (or the value passed to the set function if no `reducer` was provided).
-2. The [`set` function](#setoptimistic) that lets you update the optimistic state to a different value inside an Action.
+1. `optimisticState`：当前的乐观状态。它等于 `value`，除非有 Action 处于待处理状态；在这种情况下，它等于 `reducer` 返回的状态（如果没有提供 `reducer`，则等于传给 set 函数的值）。
+2. [`set` 函数](#setoptimistic)，允许你在 Action 内部将乐观状态更新为不同的值。
 
 ---
 
-### `set` functions, like `setOptimistic(optimisticState)` {/*setoptimistic*/}
+### `set` 函数，例如 `setOptimistic(optimisticState)` {/*setoptimistic*/}
 
-The `set` function returned by `useOptimistic` lets you update the state for the duration of an [Action](reference/react/useTransition#functions-called-in-starttransition-are-called-actions). You can pass the next state directly, or a function that calculates it from the previous state:
+`useOptimistic` 返回的 `set` 函数允许你在 [Action](reference/react/useTransition#functions-called-in-starttransition-are-called-actions) 持续期间更新状态。你可以直接传入下一个状态，或者传入一个根据前一个状态计算结果的函数：
 
 ```js
 const [optimisticLike, setOptimisticLike] = useOptimistic(false);
@@ -66,24 +66,24 @@ function handleClick() {
 }
 ```
 
-#### Parameters {/*setoptimistic-parameters*/}
+#### 参数 {/*setoptimistic-parameters*/}
 
-* `optimisticState`: The value that you want the optimistic state to be during an [Action](reference/react/useTransition#functions-called-in-starttransition-are-called-actions). If you provided a `reducer` to `useOptimistic`, this value will be passed as the second argument to your reducer. It can be a value of any type.
-    * If you pass a function as `optimisticState`, it will be treated as an _updater function_. It must be pure, should take the pending state as its only argument, and should return the next optimistic state. React will put your updater function in a queue and re-render your component. During the next render, React will calculate the next state by applying the queued updaters to the previous state similar to [`useState` updaters](/reference/react/useState#setstate-parameters).
+* `optimisticState`：你希望在 [Action](reference/react/useTransition#functions-called-in-starttransition-are-called-actions) 期间乐观状态所处的值。如果你为 `useOptimistic` 提供了 `reducer`，这个值将作为第二个参数传给 reducer。它可以是任意类型的值。
+    * 如果你把函数作为 `optimisticState` 传入，它会被视为一个 _updater function_。它必须是纯函数，应将待处理状态作为唯一参数，并返回下一个乐观状态。React 会将你的 updater function 放入队列并重新渲染组件。在下一次渲染期间，React 会通过将队列中的 updaters 应用到前一个状态来计算下一个状态，这与 [`useState` updaters](/reference/react/useState#setstate-parameters) 类似。
 
-#### Returns {/*setoptimistic-returns*/}
+#### 返回值 {/*setoptimistic-returns*/}
 
-`set` functions do not have a return value.
+`set` 函数没有返回值。
 
-#### Caveats {/*setoptimistic-caveats*/}
+#### 注意事项 {/*setoptimistic-caveats*/}
 
-* The `set` function must be called inside an [Action](reference/react/useTransition#functions-called-in-starttransition-are-called-actions). If you call the setter outside an Action, [React will show a warning](#an-optimistic-state-update-occurred-outside-a-transition-or-action) and the optimistic state will briefly render.
+* `set` 函数必须在 [Action](reference/react/useTransition#functions-called-in-starttransition-are-called-actions) 内部调用。如果你在 Action 之外调用 setter，[React 会显示警告](#an-optimistic-state-update-occurred-outside-a-transition-or-action)，并且乐观状态会短暂渲染。
 
 <DeepDive>
 
-#### How optimistic state works {/*how-optimistic-state-works*/}
+#### 乐观状态如何工作 {/*how-optimistic-state-works*/}
 
-`useOptimistic` lets you show a temporary value while a Action is in progress:
+`useOptimistic` 允许你在 Action 执行期间显示一个临时值：
 
 ```js
 const [value, setValue] = useState('a');
@@ -96,57 +96,57 @@ startTransition(async () => {
 });
 ```
 
-When the setter is called inside an Action, `useOptimistic` will trigger a re-render to show that state while the Action is in progress. Otherwise, the `value` passed to `useOptimistic` is returned.
+当 setter 在 Action 内部被调用时，`useOptimistic` 会触发一次重新渲染，在 Action 执行期间显示该状态。否则，将返回传给 `useOptimistic` 的 `value`。
 
-This state is called the "optimistic" because it is used to immediately present the user with the result of performing an Action, even though the Action actually takes time to complete.
+这个状态之所以称为“optimistic（乐观）”，是因为它会立即向用户展示执行某个 Action 的结果，即使这个 Action 实际上需要一些时间才能完成。
 
-**How the update flows**
+**更新流程如何进行**
 
-1. **Update immediately**: When `setOptimistic('b')` is called, React immediately renders with `'b'`.
+1. **立即更新**：当调用 `setOptimistic('b')` 时，React 会立即使用 `'b'` 进行渲染。
 
-2. **(Optional) await in Action**: If you await in the Action, React continues showing `'b'`.
+2. **（可选）在 Action 中等待**：如果你在 Action 中执行 await，React 会继续显示 `'b'`。
 
-3. **Transition scheduled**: `setValue(newValue)` schedules an update to the real state.
+3. **安排 Transition**：`setValue(newValue)` 会安排对真实状态的更新。
 
-4. **(Optional) wait for Suspense**: If `newValue` suspends, React continues showing `'b'`.
+4. **（可选）等待 Suspense**：如果 `newValue` 触发暂停，React 会继续显示 `'b'`。
 
-5. **Single render commit**: Finally, the `newValue` commits for `value` and `optimistic`.
+5. **单次渲染提交**：最后，`newValue` 会同时作为 `value` 和 `optimistic` 提交。
 
-There's no extra render to "clear" the optimistic state. The optimistic and real state converge in the same render when the Transition completes.
+不会有额外的渲染来“清除”乐观状态。当 Transition 完成时，乐观状态和真实状态会在同一次渲染中收敛。
 
 <Note>
 
-#### Optimistic state is temporary {/*optimistic-state-is-temporary*/}
+#### 乐观状态是临时的 {/*optimistic-state-is-temporary*/}
 
-Optimistic state only renders while an Action is in progress, otherwise `value` is rendered.
+乐观状态只会在 Action 执行期间渲染，否则会渲染 `value`。
 
-If `saveChanges` returned `'c'`, then both `value` and `optimistic` will be `'c'`, not `'b'`.
+如果 `saveChanges` 返回 `'c'`，那么 `value` 和 `optimistic` 都将是 `'c'`，而不是 `'b'`。
 
 </Note>
 
-**How the final state is determined**
+**最终状态如何确定**
 
-The `value` argument to `useOptimistic` determines what displays after the Action finishes. How this works depends on the pattern you use:
+传给 `useOptimistic` 的 `value` 参数决定了 Action 完成后显示什么。这具体取决于你使用的模式：
 
-- **Hardcoded values** like `useOptimistic(false)`: After the Action, `state` is still `false`, so the UI shows `false`. This is useful for pending states where you always start from `false`.
+- **硬编码值**，例如 `useOptimistic(false)`：Action 结束后，`state` 仍然是 `false`，因此 UI 显示 `false`。这适用于始终从 `false` 开始的待处理状态。
 
-- **Props or state passed in** like `useOptimistic(isLiked)`: If the parent updates `isLiked` during the Action, the new value is used after the Action completes. This is how the UI reflects the result of the Action.
+- **传入的 props 或 state**，例如 `useOptimistic(isLiked)`：如果父组件在 Action 期间更新了 `isLiked`，那么 Action 完成后会使用新值。这就是 UI 反映 Action 结果的方式。
 
-- **Reducer pattern** like `useOptimistic(items, fn)`: If `items` changes while the Action is pending, React re-runs your `reducer` with the new `items` to recalculate the state. This keeps your optimistic additions on top of the latest data.
+- **reducer 模式**，例如 `useOptimistic(items, fn)`：如果在 Action 待处理期间 `items` 改变了，React 会使用新的 `items` 重新运行你的 `reducer` 来重新计算状态。这样可以让你的乐观增量叠加在最新数据之上。
 
-**What happens when the Action fails**
+**Action 失败时会发生什么**
 
-If the Action throws an error, the Transition still ends, and React renders with whatever `value` currently is. Since the parent typically only updates `value` on success, a failure means `value` hasn't changed, so the UI shows what it showed before the optimistic update. You can catch the error to show a message to the user.
+如果 Action 抛出错误，Transition 仍然会结束，而 React 会使用当前的 `value` 进行渲染。由于父组件通常只在成功时更新 `value`，失败意味着 `value` 没有变化，所以 UI 会显示乐观更新之前的内容。你可以捕获错误来向用户显示消息。
 
 </DeepDive>
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Adding optimistic state to a component {/*adding-optimistic-state-to-a-component*/}
+### 向组件添加乐观状态 {/*adding-optimistic-state-to-a-component*/}
 
-Call `useOptimistic` at the top level of your component to declare one or more optimistic states.
+在组件顶层调用 `useOptimistic` 来声明一个或多个乐观状态。
 
 ```js [[1, 4, "age"], [1, 5, "name"], [1, 6, "todos"], [2, 4, "optimisticAge"], [2, 5, "optimisticName"], [2, 6, "optimisticTodos"], [3, 4, "setOptimisticAge"], [3, 5, "setOptimisticName"], [3, 6, "setOptimisticTodos"], [4, 6, "reducer"]]
 import { useOptimistic } from 'react';
@@ -158,15 +158,15 @@ function MyComponent({age, name, todos}) {
   // ...
 ```
 
-`useOptimistic` returns an array with exactly two items:
+`useOptimistic` 恰好返回两个项：
 
-1. The <CodeStep step={2}>optimistic state</CodeStep>, initially set to the <CodeStep step={1}>value</CodeStep> provided.
-2. The <CodeStep step={3}>set function</CodeStep> that lets you temporarily change the state during an [Action](reference/react/useTransition#functions-called-in-starttransition-are-called-actions).
-   * If a <CodeStep step={4}>reducer</CodeStep> is provided, it will run before returning the optimistic state.
+1. <CodeStep step={2}>乐观状态</CodeStep>，初始设置为提供的 <CodeStep step={1}>值</CodeStep>。
+2. <CodeStep step={3}>set 函数</CodeStep>，允许你在 [Action](reference/react/useTransition#functions-called-in-starttransition-are-called-actions) 期间临时更改状态。
+   * 如果提供了 <CodeStep step={4}>reducer</CodeStep>，它会在返回乐观状态之前运行。
 
-To use the <CodeStep step={2}>optimistic state</CodeStep>, call the `set` function inside an Action.
+要使用 <CodeStep step={2}>乐观状态</CodeStep>，请在 Action 内部调用 `set` 函数。
 
-Actions are functions called inside `startTransition`:
+Action 是在 `startTransition` 内部调用的函数：
 
 ```js {3}
 function onAgeChange(e) {
@@ -178,13 +178,13 @@ function onAgeChange(e) {
 }
 ```
 
-React will render the optimistic state `42` first while the `age` remains the current age. The Action waits for POST, and then renders the `newAge` for both `age` and `optimisticAge`.
+React 会先渲染乐观状态 `42`，同时 `age` 仍然是当前年龄。Action 会等待 POST，然后再为 `age` 和 `optimisticAge` 同时渲染 `newAge`。
 
-See [How optimistic state works](#how-optimistic-state-works) for a deep dive.
+深入了解请参见 [乐观状态如何工作](#how-optimistic-state-works)。
 
 <Note>
 
-When using [Action props](/reference/react/useTransition#exposing-action-props-from-components), you can call the set function without `startTransition`:
+使用 [Action props](/reference/react/useTransition#exposing-action-props-from-components) 时，你可以不使用 `startTransition` 直接调用 set 函数：
 
 ```js [[3, 2, "setOptimisticName"]]
 async function submitAction() {
@@ -193,19 +193,19 @@ async function submitAction() {
 }
 ```
 
-This works because Action props are already called inside `startTransition`.
+这是因为 Action props 本身就是在 `startTransition` 内部被调用的。
 
-For an example, see: [Using optimistic state in Action props](#using-optimistic-state-in-action-props).
+示例请参见：[在 Action props 中使用乐观状态](#using-optimistic-state-in-action-props)。
 
 </Note>
 
 ---
 
-### Using optimistic state in Action props {/*using-optimistic-state-in-action-props*/}
+### 在 Action props 中使用乐观状态 {/*using-optimistic-state-in-action-props*/}
 
-In an [Action prop](/reference/react/useTransition#exposing-action-props-from-components), you can call the optimistic setter directly without `startTransition`.
+在 [Action prop](/reference/react/useTransition#exposing-action-props-from-components) 中，你可以直接调用乐观 setter，而不需要 `startTransition`。
 
-This example sets optimistic state inside a `<form>` `submitAction` prop:
+这个示例在 `<form>` 的 `submitAction` prop 内设置乐观状态：
 
 <Sandpack>
 
@@ -262,27 +262,27 @@ export async function updateName(name) {
 
 </Sandpack>
 
-In this example, when the user submits the form, the `optimisticName` updates immediately to show the `newName` optimistically while the server request is in progress. When the request completes, `name` and `optimisticName` are rendered with the actual `updatedName` from the response.
+在这个示例中，当用户提交表单时，`optimisticName` 会立即更新，在服务器请求进行期间以乐观方式显示 `newName`。当请求完成后，`name` 和 `optimisticName` 会使用响应中的实际 `updatedName` 进行渲染。
 
 <DeepDive>
 
-#### Why doesn't this need `startTransition`? {/*why-doesnt-this-need-starttransition*/}
+#### 为什么这里不需要 `startTransition`？ {/*why-doesnt-this-need-starttransition*/}
 
-By convention, props called inside `startTransition` are named with "Action".
+按照惯例，在 `startTransition` 内部调用的 props 会命名为 “Action”。
 
-Since `submitAction` is named with "Action", you know it's already called inside `startTransition`.
+由于 `submitAction` 的命名包含 “Action”，你就知道它本身已经是在 `startTransition` 内部被调用的。
 
-See [Exposing `action` prop from components](/reference/react/useTransition#exposing-action-props-from-components) for the Action prop pattern.
+有关 Action prop 模式，请参见 [从组件中暴露 `action` prop](/reference/react/useTransition#exposing-action-props-from-components)。
 
 </DeepDive>
 
 ---
 
-### Adding optimistic state to Action props {/*adding-optimistic-state-to-action-props*/}
+### 向 Action props 添加乐观状态 {/*adding-optimistic-state-to-action-props*/}
 
-When creating an [Action prop](/reference/react/useTransition#exposing-action-props-from-components), you can add `useOptimistic` to show immediate feedback.
+在创建 [Action prop](/reference/react/useTransition#exposing-action-props-from-components) 时，你可以添加 `useOptimistic` 来显示即时反馈。
 
-Here's a button that shows "Submitting..." while the `action` is pending:
+这里有一个按钮，会在 `action` 处于待处理状态时显示“Submitting...”：
 
 <Sandpack>
 
@@ -337,21 +337,21 @@ export async function submitForm() {
 
 </Sandpack>
 
-When the button is clicked, `setIsPending(true)` uses optimistic state to immediately show "Submitting..." and disable the button. When the Action is done, `isPending` is rendered as `false` automatically.
+当按钮被点击时，`setIsPending(true)` 会使用乐观状态立即显示“Submitting...”并禁用按钮。当 Action 完成时，`isPending` 会自动渲染为 `false`。
 
-This pattern automatically shows a pending state however `action` prop is used with `Button`:
+无论 `action` prop 如何与 `Button` 一起使用，这种模式都会自动显示待处理状态：
 
 ```js
-// Show pending state for a state update
+// 显示状态更新的待处理状态
 <Button action={() => { setState(c => c + 1) }} />
 
-// Show pending state for a navigation
+// 显示导航的待处理状态
 <Button action={() => { navigate('/done') }} />
 
-// Show pending state for a POST
+// 显示 POST 的待处理状态
 <Button action={async () => { await fetch(/* ... */) }} />
 
-// Show pending state for any combination
+// 显示任意组合的待处理状态
 <Button action={async () => {
   setState(c => c + 1);
   await fetch(/* ... */);
@@ -359,23 +359,23 @@ This pattern automatically shows a pending state however `action` prop is used w
 }} />
 ```
 
-The pending state will be shown until everything in the `action` prop is finished.
+待处理状态会一直显示，直到 `action` prop 中的所有内容都完成。
 
 <Note>
 
-You can also use [`useTransition`](/reference/react/useTransition) to get pending state via `isPending`.
+你也可以使用 [`useTransition`](/reference/react/useTransition) 通过 `isPending` 获取待处理状态。
 
-The difference is that `useTransition` gives you the `startTransition` function, while `useOptimistic` works with any Transition. Use whichever fits your component's needs.
+区别在于，`useTransition` 会提供 `startTransition` 函数，而 `useOptimistic` 可与任何 Transition 配合使用。请选择最适合你组件需求的方案。
 
 </Note>
 
 ---
 
-### Updating props or state optimistically {/*updating-props-or-state-optimistically*/}
+### 乐观地更新 props 或 state {/*updating-props-or-state-optimistically*/}
 
-You can wrap props or state in `useOptimistic` to update it immediately while an Action is in progress.
+你可以将 props 或 state 包装进 `useOptimistic`，以便在 Action 执行期间立即更新它。
 
-In this example, `LikeButton` receives `isLiked` as a prop and immediately toggles it when clicked:
+在这个示例中，`LikeButton` 接收 `isLiked` 作为 prop，并在点击时立即切换它：
 
 <Sandpack>
 
@@ -420,7 +420,7 @@ export default function App() {
 ```js src/actions.js hidden
 export async function toggleLike(value) {
   return await new Promise((res) => setTimeout(() => res(value), 1000));
-  // In a real app, this would update the server
+  // 在真实应用中，这会更新服务器
 }
 ```
 
@@ -432,29 +432,29 @@ import './styles.css';
 import App from './App';
 
 const root = createRoot(document.getElementById('root'));
-// Not using StrictMode so double render logs are not shown.
+// 未使用 StrictMode，因此不会显示双重渲染日志。
 root.render(<App />);
 ```
 
 </Sandpack>
 
-When the button is clicked, `setOptimisticIsLiked` immediately updates the displayed state to show the heart as liked. Meanwhile, `await toggleLike` runs in the background. When the `await` completes, `setIsLiked` parent updates the "real" `isLiked` state, and the optimistic state is rendered to match this new value.
+当按钮被点击时，`setOptimisticIsLiked` 会立即更新显示的状态，把心形显示为已点赞。与此同时，`await toggleLike` 在后台运行。当 `await` 完成后，`setIsLiked` 父组件更新 “真实” 的 `isLiked` 状态，随后乐观状态会按这个新值进行渲染。
 
 <Note>
 
-This example reads from `optimisticIsLiked` to calculate the next value. This works when the base state won't change, but if the base state might change while your Action is pending, you may want to use a state updater or the reducer.
+这个示例读取 `optimisticIsLiked` 来计算下一个值。当基础状态不会变化时，这种方式有效；但如果在 Action 处于待处理状态时基础状态可能发生变化，你可能更适合使用 state updater 或 reducer。
 
-See [Updating state based on the current state](#updating-state-based-on-current-state) for an example.
+示例请参见 [基于当前状态更新 state](#updating-state-based-on-current-state)。
 
 </Note>
 
 ---
 
-### Updating multiple values together {/*updating-multiple-values-together*/}
+### 同时更新多个值 {/*updating-multiple-values-together*/}
 
-When an optimistic update affects multiple related values, use a reducer to update them together. This ensures the UI stays consistent.
+当一次乐观更新影响多个相关值时，请使用 reducer 将它们一起更新。这样可以确保 UI 保持一致。
 
-Here's a follow button that updates both the follow state and follower count:
+这里有一个关注按钮，同时更新关注状态和粉丝数量：
 
 <Sandpack>
 
@@ -533,48 +533,48 @@ export async function unfollowUser(name) {
 
 </Sandpack>
 
-The reducer receives the new `isFollowing` value and calculates both the new follow state and the updated follower count in a single update. This ensures the button text and count always stay in sync.
+reducer 接收新的 `isFollowing` 值，并在一次更新中同时计算新的关注状态和更新后的粉丝数量。这样可以确保按钮文字和数量始终保持同步。
 
 
 <DeepDive>
 
-#### Choosing between updaters and reducers {/*choosing-between-updaters-and-reducers*/}
+#### 在 updaters 和 reducers 之间选择 {/*choosing-between-updaters-and-reducers*/}
 
-`useOptimistic` supports two patterns for calculating state based on current state:
+`useOptimistic` 支持两种基于当前状态计算状态的模式：
 
-**Updater functions** work like [useState updaters](/reference/react/useState#updating-state-based-on-the-previous-state). Pass a function to the setter:
+**Updater 函数** 的工作方式类似于 [useState updaters](/reference/react/useState#updating-state-based-on-the-previous-state)。向 setter 传入一个函数：
 
 ```js
 const [optimistic, setOptimistic] = useOptimistic(value);
 setOptimistic(current => !current);
 ```
 
-**Reducers** separate the update logic from the setter call:
+**Reducer** 将更新逻辑与 setter 调用分离：
 
 ```js
 const [optimistic, dispatch] = useOptimistic(value, (current, action) => {
-  // Calculate next state based on current and action
+  // 根据 current 和 action 计算下一个状态
 });
 dispatch(action);
 ```
 
-**Use updaters** for calculations where the setter call naturally describes the update. This is similar to using `setState(prev => ...)` with `useState`.
+**使用 updater** 适合那些 setter 调用本身就能自然描述更新的计算。这和在 `useState` 中使用 `setState(prev => ...)` 类似。
 
-**Use reducers** when you need to pass data to the update (like which item to add) or when handling multiple types of updates with a single hook.
+**使用 reducer** 适合需要向更新传递数据（例如要添加哪个项目），或者需要用一个 hook 处理多种更新类型的情况。
 
-**Why use a reducer?**
+**为什么要使用 reducer？**
 
-Reducers are essential when the base state might change while your Transition is pending. If `todos` changes while your add is pending (for example, another user added a todo), React will re-run your reducer with the new `todos` to recalculate what to show. This ensures your new todo is added to the latest list, not an outdated copy.
+当基础状态可能在 Transition 处于待处理期间发生变化时，reducer 至关重要。如果 `todos` 在你的添加操作等待期间发生变化（例如，另一个用户添加了一个 todo），React 会使用新的 `todos` 重新运行你的 reducer 来重新计算要显示的内容。这样可以确保新 todo 被添加到最新列表，而不是过时副本。
 
-An updater function like `setOptimistic(prev => [...prev, newItem])` would only see the state from when the Transition started, missing any updates that happened during the async work.
+像 `setOptimistic(prev => [...prev, newItem])` 这样的 updater 函数，只会看到 Transition 开始时的状态，而看不到异步工作期间发生的任何更新。
 
 </DeepDive>
 
 ---
 
-### Optimistically adding to a list {/*optimistically-adding-to-a-list*/}
+### 乐观地向列表中添加内容 {/*optimistically-adding-to-a-list*/}
 
-When you need to optimistically add items to a list, use a `reducer`:
+当你需要以乐观方式向列表中添加项目时，请使用 `reducer`：
 
 <Sandpack>
 
@@ -637,28 +637,28 @@ export default function TodoList({ todos, addTodoAction }) {
 ```js src/actions.js hidden
 export async function addTodo(todo) {
   await new Promise((res) => setTimeout(res, 1000));
-  // In a real app, this would save to the server
+  // 在真实应用中，这会保存到服务器
   return { ...todo, pending: false };
 }
 ```
 
 </Sandpack>
 
-The `reducer` receives the current list of todos and the new todo to add. This is important because if the `todos` prop changes while your add is pending (for example, another user added a todo), React will update your optimistic state by re-running the reducer with the updated list. This ensures your new todo is added to the latest list, not an outdated copy.
+`reducer` 接收当前 todo 列表和要添加的新 todo。这一点很重要，因为如果在添加操作待处理期间 `todos` prop 发生变化（例如，另一个用户添加了一个 todo），React 会通过使用更新后的列表重新运行 reducer 来更新你的乐观状态。这样可以确保新 todo 被添加到最新列表，而不是过时副本。
 
 <Note>
 
-Each optimistic item includes a `pending: true` flag so you can show loading state for individual items. When the server responds and the parent updates the canonical `todos` list with the saved item, the optimistic state updates to the confirmed item without the pending flag.
+每个乐观项都包含一个 `pending: true` 标记，因此你可以为单个项目显示加载状态。当服务器响应并且父组件使用已保存的项目更新标准 `todos` 列表时，乐观状态会更新为已确认的项目，并移除 pending 标记。
 
 </Note>
 
 ---
 
-### Handling multiple `action` types {/*handling-multiple-action-types*/}
+### 处理多种 `action` 类型 {/*handling-multiple-action-types*/}
 
-When you need to handle multiple types of optimistic updates (like adding and removing items), use a reducer pattern with `action` objects.
+当你需要处理多种乐观更新类型（例如添加和删除项目）时，请使用带有 `action` 对象的 reducer 模式。
 
-This shopping cart example shows how to handle add and remove with a single reducer:
+这个购物车示例展示了如何使用单个 reducer 处理添加和删除：
 
 <Sandpack>
 
@@ -822,15 +822,15 @@ export async function updateQuantity(id, quantity) {
 
 </Sandpack>
 
-The reducer handles three `action` types (`add`, `remove`, `update_quantity`) and returns the new optimistic state for each. Each `action` sets a `pending: true` flag so you can show visual feedback while the [Server Function](/reference/rsc/server-functions) runs.
+reducer 处理三种 `action` 类型（`add`、`remove`、`update_quantity`），并为每种类型返回新的乐观状态。每个 `action` 都会设置 `pending: true` 标记，这样你就可以在 [Server Function](/reference/rsc/server-functions) 运行时显示视觉反馈。
 
 ---
 
-### Optimistic delete with error recovery {/*optimistic-delete-with-error-recovery*/}
+### 带错误恢复的乐观删除 {/*optimistic-delete-with-error-recovery*/}
 
-When deleting items optimistically, you should handle the case where the Action fails.
+在以乐观方式删除项目时，你应该处理 Action 失败的情况。
 
-This example shows how to display an error message when a delete fails, and the UI automatically rolls back to show the item again.
+这个示例展示了当删除失败时如何显示错误消息，并且 UI 会自动回滚以再次显示该项目。
 
 <Sandpack>
 
@@ -921,7 +921,7 @@ export default function ItemList({ items, deleteAction }) {
 ```js src/actions.js hidden
 export async function deleteItem(id) {
   await new Promise((res) => setTimeout(res, 1000));
-  // Item 3 always fails to demonstrate error recovery
+  // 项目 3 始终失败，用于演示错误恢复
   if (id === 3) {
     throw new Error('Cannot delete. Permission denied.');
   }
@@ -930,15 +930,15 @@ export async function deleteItem(id) {
 
 </Sandpack>
 
-Try deleting 'Deploy to production'. When the delete fails, the item automatically reappears in the list.
+试着删除 “Deploy to production”。当删除失败时，该项目会自动重新出现在列表中。
 
 ---
 
-## Troubleshooting {/*troubleshooting*/}
+## 故障排查 {/*troubleshooting*/}
 
-### I'm getting an error: "An optimistic state update occurred outside a Transition or Action" {/*an-optimistic-state-update-occurred-outside-a-transition-or-action*/}
+### 我遇到了一个错误：“An optimistic state update occurred outside a Transition or Action” {/*an-optimistic-state-update-occurred-outside-a-transition-or-action*/}
 
-You may see this error:
+你可能会看到这个错误：
 
 <ConsoleBlockMulti>
 
@@ -950,16 +950,16 @@ An optimistic state update occurred outside a Transition or Action. To fix, move
 
 </ConsoleBlockMulti>
 
-The optimistic setter function must be called inside `startTransition`:
+乐观更新的 setter 函数必须在 `startTransition` 内调用：
 
 ```js
-// 🚩 Incorrect: outside a Transition
+// 🚩 不正确：在 Transition 之外
 function handleClick() {
-  setOptimistic(newValue);  // Warning!
+  setOptimistic(newValue);  // 警告！
   // ...
 }
 
-// ✅ Correct: inside a Transition
+// ✅ 正确：在 Transition 内
 function handleClick() {
   startTransition(async () => {
     setOptimistic(newValue);
@@ -967,18 +967,18 @@ function handleClick() {
   });
 }
 
-// ✅ Also correct: inside an Action prop
+// ✅ 也正确：在 Action prop 内
 function submitAction(formData) {
   setOptimistic(newValue);
   // ...
 }
 ```
 
-When you call the setter outside an Action, the optimistic state will briefly appear and then immediately revert back to the original value. This happens because there's no Transition to "hold" the optimistic state while your Action runs.
+当你在 Action 之外调用 setter 时，乐观状态会短暂出现，然后立即回退到原始值。这是因为没有 Transition 在你的 Action 运行时“维持”这个乐观状态。
 
-### I'm getting an error: "Cannot update optimistic state while rendering" {/*cannot-update-optimistic-state-while-rendering*/}
+### 我遇到了一个错误：“Cannot update optimistic state while rendering” {/*cannot-update-optimistic-state-while-rendering*/}
 
-You may see this error:
+你可能会看到这个错误：
 
 <ConsoleBlockMulti>
 
@@ -990,20 +990,20 @@ Cannot update optimistic state while rendering.
 
 </ConsoleBlockMulti>
 
-This error occurs when you call the optimistic setter during the render phase of a component. You can only call it from event handlers, effects, or other callbacks:
+当你在组件的渲染阶段调用乐观更新的 setter 时，就会发生此错误。你只能在事件处理函数、effects 或其他回调中调用它：
 
 ```js
-// 🚩 Incorrect: calling during render
+// 🚩 不正确：在渲染期间调用
 function MyComponent({ items }) {
   const [isPending, setPending] = useOptimistic(false);
 
-  // This runs during render - not allowed!
+  // 这会在渲染期间运行 - 不允许！
   setPending(true);
 
   // ...
 }
 
-// ✅ Correct: calling inside startTransition
+// ✅ 正确：在 startTransition 中调用
 function MyComponent({ items }) {
   const [isPending, setPending] = useOptimistic(false);
 
@@ -1017,7 +1017,7 @@ function MyComponent({ items }) {
   // ...
 }
 
-// ✅ Also correct: calling from an Action
+// ✅ 也正确：从 Action 中调用
 function MyComponent({ items }) {
   const [isPending, setPending] = useOptimistic(false);
 
@@ -1030,36 +1030,36 @@ function MyComponent({ items }) {
 }
 ```
 
-### My optimistic updates show stale values {/*my-optimistic-updates-show-stale-values*/}
+### 我的乐观更新显示的是过期值 {/*my-optimistic-updates-show-stale-values*/}
 
-If your optimistic state seems to be based on old data, consider using an updater function or reducer to calculate the optimistic state relative to the current state.
+如果你的乐观状态似乎基于旧数据，请考虑使用更新器函数或 reducer 来相对于当前状态计算乐观状态。
 
 ```js
-// May show stale data if state changes during Action
+// 如果状态在 Action 期间发生变化，可能会显示过期数据
 const [optimistic, setOptimistic] = useOptimistic(count);
-setOptimistic(5);  // Always sets to 5, even if count changed
+setOptimistic(5);  // 始终设置为 5，即使 count 已更改
 
-// Better: relative updates handle state changes correctly
+// 更好：相对更新能正确处理状态变化
 const [optimistic, adjust] = useOptimistic(count, (current, delta) => current + delta);
-adjust(1);  // Always adds 1 to whatever the current count is
+adjust(1);  // 始终在当前 count 的基础上加 1
 ```
 
-See [Updating state based on the current state](#updating-state-based-on-current-state) for details.
+详情请参见[基于当前状态更新状态](#updating-state-based-on-current-state)。
 
-### I don't know if my optimistic update is pending {/*i-dont-know-if-my-optimistic-update-is-pending*/}
+### 我不知道我的乐观更新是否处于 pending 状态 {/*i-dont-know-if-my-optimistic-update-is-pending*/}
 
-To know when `useOptimistic` is pending, you have three options:
+要知道 `useOptimistic` 是否处于 pending 状态，你有三种选择：
 
-1. **Check if `optimisticValue === value`**
+1. **检查 `optimisticValue === value` 是否成立**
 
 ```js
 const [optimistic, setOptimistic] = useOptimistic(value);
 const isPending = optimistic !== value;
 ```
 
-If the values are not equal, there's a Transition in progress.
+如果这些值不相等，就表示有一个 Transition 正在进行中。
 
-2. **Add a `useTransition`**
+2. **添加一个 `useTransition`**
 
 ```js
 const [isPending, startTransition] = useTransition();
@@ -1071,9 +1071,9 @@ startTransition(() => {
 })
 ```
 
-Since `useTransition` uses `useOptimistic` for `isPending` under the hood, this is equivalent to option 1.
+由于 `useTransition` 在底层使用 `useOptimistic` 来提供 `isPending`，这与选项 1 等价。
 
-3. **Add a `pending` flag in your reducer**
+3. **在 reducer 中添加一个 `pending` 标志**
 
 ```js
 const [optimistic, addOptimistic] = useOptimistic(
@@ -1082,4 +1082,4 @@ const [optimistic, addOptimistic] = useOptimistic(
 );
 ```
 
-Since each optimistic item has its own flag, you can show loading state for individual items.
+由于每个乐观项都有自己的标志，你可以为单个项目显示加载状态。

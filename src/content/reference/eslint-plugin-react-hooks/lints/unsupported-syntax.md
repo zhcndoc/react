@@ -4,33 +4,33 @@ title: unsupported-syntax
 
 <Intro>
 
-Validates against syntax that React Compiler does not support. If you need to, you can still use this syntax outside of React, such as in a standalone utility function.
+验证 React Compiler 不支持的语法。如果需要，你仍然可以在 React 之外使用这种语法，例如在独立的工具函数中。
 
 </Intro>
 
 ## Rule Details {/*rule-details*/}
 
-React Compiler needs to statically analyze your code to apply optimizations. Features like `eval` and `with` make it impossible to statically understand what the code does at compile time, so the compiler can't optimize components that use them.
+React Compiler 需要静态分析你的代码以应用优化。像 `eval` 和 `with` 这样的特性会使编译时不可能静态理解代码在做什么，因此编译器无法优化使用它们的组件。
 
 ### Invalid {/*invalid*/}
 
-Examples of incorrect code for this rule:
+此规则的错误代码示例：
 
 ```js
-// ❌ Using eval in component
+// ❌ 在组件中使用 eval
 function Component({ code }) {
-  const result = eval(code); // Can't be analyzed
+  const result = eval(code); // 无法被分析
   return <div>{result}</div>;
 }
 
-// ❌ Using with statement
+// ❌ 使用 with 语句
 function Component() {
-  with (Math) { // Changes scope dynamically
+  with (Math) { // 动态改变作用域
     return <div>{sin(PI / 2)}</div>;
   }
 }
 
-// ❌ Dynamic property access with eval
+// ❌ 使用 eval 进行动态属性访问
 function Component({propName}) {
   const value = eval(`props.${propName}`);
   return <div>{value}</div>;
@@ -39,16 +39,16 @@ function Component({propName}) {
 
 ### Valid {/*valid*/}
 
-Examples of correct code for this rule:
+此规则的正确代码示例：
 
 ```js
-// ✅ Use normal property access
+// ✅ 使用普通属性访问
 function Component({propName, props}) {
-  const value = props[propName]; // Analyzable
+  const value = props[propName]; // 可分析
   return <div>{value}</div>;
 }
 
-// ✅ Use standard Math methods
+// ✅ 使用标准的 Math 方法
 function Component() {
   return <div>{Math.sin(Math.PI / 2)}</div>;
 }
@@ -58,38 +58,38 @@ function Component() {
 
 ### I need to evaluate dynamic code {/*evaluate-dynamic-code*/}
 
-You might need to evaluate user-provided code:
+你可能需要执行用户提供的代码：
 
 ```js {expectedErrors: {'react-compiler': [3]}}
-// ❌ Wrong: eval in component
+// ❌ 错误：在组件中使用 eval
 function Calculator({expression}) {
-  const result = eval(expression); // Unsafe and unoptimizable
-  return <div>Result: {result}</div>;
+  const result = eval(expression); // 不安全且无法优化
+  return <div>结果：{result}</div>;
 }
 ```
 
-Use a safe expression parser instead:
+改用安全的表达式解析器：
 
 ```js
-// ✅ Better: Use a safe parser
-import {evaluate} from 'mathjs'; // or similar library
+// ✅ 更好的方式：使用安全的解析器
+import {evaluate} from 'mathjs'; // 或类似的库
 
 function Calculator({expression}) {
   const [result, setResult] = useState(null);
 
   const calculate = () => {
     try {
-      // Safe mathematical expression evaluation
+      // 安全的数学表达式求值
       setResult(evaluate(expression));
     } catch (error) {
-      setResult('Invalid expression');
+      setResult('无效表达式');
     }
   };
 
   return (
     <div>
-      <button onClick={calculate}>Calculate</button>
-      {result && <div>Result: {result}</div>}
+      <button onClick={calculate}>计算</button>
+      {result && <div>结果：{result}</div>}
     </div>
   );
 }
@@ -97,6 +97,6 @@ function Calculator({expression}) {
 
 <Note>
 
-Never use `eval` with user input - it's a security risk. Use dedicated parsing libraries for specific use cases like mathematical expressions, JSON parsing, or template evaluation.
+绝不要将 `eval` 与用户输入一起使用——这有安全风险。针对特定用例请使用专门的解析库，例如数学表达式、JSON 解析或模板求值。
 
 </Note>

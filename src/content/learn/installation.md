@@ -1,16 +1,16 @@
 ---
-title: Installation
+title: 安装
 ---
 
 <Intro>
 
-React has been designed from the start for gradual adoption. You can use as little or as much React as you need. Whether you want to get a taste of React, add some interactivity to an HTML page, or start a complex React-powered app, this section will help you get started.
+React 从一开始就被设计为可逐步采用。你可以按需使用任意少量或大量的 React。无论你是想先体验一下 React，给 HTML 页面添加一些交互性，还是开始构建一个复杂的 React 驱动应用，本节都将帮助你入门。
 
 </Intro>
 
-## Try React {/*try-react*/}
+## 试用 React {/*try-react*/}
 
-You don't need to install anything to play with React. Try editing this sandbox!
+你不需要安装任何东西就可以体验 React。试试编辑这个沙盒！
 
 <Sandpack>
 
@@ -26,34 +26,34 @@ export default function App() {
 
 </Sandpack>
 
-You can edit it directly or open it in a new tab by pressing the "Fork" button in the upper right corner.
+你可以直接编辑它，或者点击右上角的“Fork”按钮，在新标签页中打开它。
 
-Most pages in the React documentation contain sandboxes like this. Outside of the React documentation, there are many online sandboxes that support React: for example, [CodeSandbox](https://codesandbox.io/s/new), [StackBlitz](https://stackblitz.com/fork/react), or [CodePen.](https://codepen.io/pen?template=QWYVwWN)
+React 文档中的大多数页面都包含这样的沙盒。在 React 文档之外，也有许多支持 React 的在线沙盒：例如 [CodeSandbox](https://codesandbox.io/s/new)、[StackBlitz](https://stackblitz.com/fork/react) 或 [CodePen.](https://codepen.io/pen?template=QWYVwWN)
 
-To try React locally on your computer, [download this HTML page.](https://gist.githubusercontent.com/gaearon/0275b1e1518599bbeafcde4722e79ed1/raw/db72dcbf3384ee1708c4a07d3be79860db04bff0/example.html) Open it in your editor and in your browser!
+要在你的电脑上本地体验 React，请[下载这个 HTML 页面。](https://gist.githubusercontent.com/gaearon/0275b1e1518599bbeafcde4722e79ed1/raw/db72dcbf3384ee1708c4a07d3be79860db04bff0/example.html) 在你的编辑器和浏览器中打开它！
 
-## Creating a React App {/*creating-a-react-app*/}
+## 创建一个 React 应用 {/*creating-a-react-app*/}
 
-If you want to start a new React app, you can [create a React app](/learn/creating-a-react-app) using a recommended framework.
+如果你想开始一个新的 React 应用，你可以使用推荐的框架[创建一个 React 应用](/learn/creating-a-react-app)。
 
-## Build a React App from Scratch {/*build-a-react-app-from-scratch*/}
+## 从零开始构建一个 React 应用 {/*build-a-react-app-from-scratch*/}
 
-If a framework is not a good fit for your project, you prefer to build your own framework, or you just want to learn the basics of a React app you can [build a React app from scratch](/learn/build-a-react-app-from-scratch).
+如果框架不适合你的项目，或者你更倾向于构建自己的框架，或者你只是想学习 React 应用的基础知识，你可以[从零开始构建一个 React 应用](/learn/build-a-react-app-from-scratch)。
 
-## Add React to an existing project {/*add-react-to-an-existing-project*/}
+## 将 React 添加到现有项目中 {/*add-react-to-an-existing-project*/}
 
-If want to try using React in your existing app or a website, you can [add React to an existing project.](/learn/add-react-to-an-existing-project)
+如果你想在现有应用或网站中尝试使用 React，你可以[将 React 添加到现有项目中。](/learn/add-react-to-an-existing-project)
 
 
 <Note>
 
-#### Should I use Create React App? {/*should-i-use-create-react-app*/}
+#### 我应该使用 Create React App 吗？ {/*should-i-use-create-react-app*/}
 
-No. Create React App has been deprecated. For more information, see [Sunsetting Create React App](/blog/2025/02/14/sunsetting-create-react-app).
+不。Create React App 已经被弃用。有关更多信息，请参阅 [Sunsetting Create React App](/blog/2025/02/14/sunsetting-create-react-app)。
 
 </Note>
 
-## Next steps {/*next-steps*/}
+## 下一步 {/*next-steps*/}
 
-Head to the [Quick Start](/learn) guide for a tour of the most important React concepts you will encounter every day.
+前往 [快速开始](/learn) 指南，了解你每天都会遇到的最重要的 React 概念。
 

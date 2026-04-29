@@ -4,7 +4,7 @@ title: <Activity>
 
 <Intro>
 
-`<Activity>` lets you hide and restore the UI and internal state of its children.
+`<Activity>` 允许你隐藏和恢复其子组件的 UI 和内部状态。
 
 ```js
 <Activity mode={visibility}>
@@ -18,11 +18,11 @@ title: <Activity>
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `<Activity>` {/*activity*/}
 
-You can use Activity to hide part of your application:
+你可以使用 Activity 来隐藏应用程序的一部分：
 
 ```js [[1, 1, "\\"hidden\\""], [2, 2, "<Sidebar />"], [3, 1, "\\"visible\\""]]
 <Activity mode={isShowingSidebar ? "visible" : "hidden"}>
@@ -30,33 +30,33 @@ You can use Activity to hide part of your application:
 </Activity>
 ```
 
-When an Activity boundary is <CodeStep step={1}>hidden</CodeStep>, React will visually hide <CodeStep step={2}>its children</CodeStep> using the `display: "none"` CSS property. It will also destroy their Effects, cleaning up any active subscriptions.
+当 Activity 边界处于 <CodeStep step={1}>hidden</CodeStep> 状态时，React 会使用 `display: "none"` CSS 属性在视觉上隐藏 <CodeStep step={2}>其子组件</CodeStep>。它还会销毁它们的 Effects，清理任何正在进行的订阅。
 
-While hidden, children still re-render in response to new props, albeit at a lower priority than the rest of the content.
+在隐藏期间，子组件仍然会因新的 props 而重新渲染，只是优先级低于其余内容。
 
-When the boundary becomes <CodeStep step={3}>visible</CodeStep> again, React will reveal the children with their previous state restored, and re-create their Effects.
+当边界再次变为 <CodeStep step={3}>visible</CodeStep> 时，React 会恢复显示子组件，并还原它们之前的状态，同时重新创建它们的 Effects。
 
-In this way, Activity can be thought of as a mechanism for rendering "background activity". Rather than completely discarding content that's likely to become visible again, you can use Activity to maintain and restore that content's UI and internal state, while ensuring that your hidden content has no unwanted side effects.
+通过这种方式，可以将 Activity 理解为一种渲染“后台活动”的机制。与其完全丢弃那些很可能再次变为可见的内容，不如使用 Activity 来维护和恢复这些内容的 UI 和内部状态，同时确保隐藏内容不会产生不希望的副作用。
 
-[See more examples below.](#usage)
+[在下方查看更多示例。](#usage)
 
-#### Props {/*props*/}
+#### 属性 {/*props*/}
 
-* `children`: The UI you intend to show and hide.
-* `mode`: A string value of either `'visible'` or `'hidden'`. If omitted, defaults to `'visible'`.
+* `children`：你打算显示和隐藏的 UI。
+* `mode`：字符串值 `'visible'` 或 `'hidden'`。如果省略，默认为 `'visible'`。
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-- If an Activity is rendered inside of a [ViewTransition](/reference/react/ViewTransition), and it becomes visible as a result of an update caused by [startTransition](/reference/react/startTransition), it will activate the ViewTransition's `enter` animation. If it becomes hidden, it will activate its `exit` animation.
-- A *hidden* Activity that just renders text will not render anything rather than rendering hidden text, because there’s no corresponding DOM element to apply visibility changes to. For example, `<Activity mode="hidden"><ComponentThatJustReturnsText /></Activity>` will not produce any output in the DOM for `const ComponentThatJustReturnsText = () => "Hello, World!"`. `<Activity mode="visible"><ComponentThatJustReturnsText /></Activity>` will render visible text.
+- 如果 Activity 渲染在 [ViewTransition](/reference/react/ViewTransition) 内部，并且它因为 [startTransition](/reference/react/startTransition) 触发的更新而变为可见，它将激活 ViewTransition 的 `enter` 动画。如果它变为隐藏，则会激活其 `exit` 动画。
+- 一个仅渲染文本的 *hidden* Activity 不会渲染任何内容，而不会渲染隐藏文本，因为没有对应的 DOM 元素可以应用可见性变更。例如，`<Activity mode="hidden"><ComponentThatJustReturnsText /></Activity>` 对于 `const ComponentThatJustReturnsText = () => "Hello, World!"` 不会在 DOM 中产生任何输出。`<Activity mode="visible"><ComponentThatJustReturnsText /></Activity>` 会渲染可见文本。
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Restoring the state of hidden components {/*restoring-the-state-of-hidden-components*/}
+### 恢复隐藏组件的状态 {/*restoring-the-state-of-hidden-components*/}
 
-In React, when you want to conditionally show or hide a component, you typically mount or unmount it based on that condition:
+在 React 中，当你想有条件地显示或隐藏一个组件时，通常会根据该条件挂载或卸载它：
 
 ```jsx
 {isShowingSidebar && (
@@ -64,9 +64,9 @@ In React, when you want to conditionally show or hide a component, you typically
 )}
 ```
 
-But unmounting a component destroys its internal state, which is not always what you want.
+但卸载组件会销毁其内部状态，而这并不总是你想要的。
 
-When you hide a component using an Activity boundary instead, React will "save" its state for later:
+当你改为使用 Activity 边界隐藏组件时，React 会把它的状态“保存”起来，以便稍后恢复：
 
 ```jsx
 <Activity mode={isShowingSidebar ? "visible" : "hidden"}>
@@ -74,11 +74,11 @@ When you hide a component using an Activity boundary instead, React will "save" 
 </Activity>
 ```
 
-This makes it possible to hide and then later restore components in the state they were previously in.
+这使得你可以先隐藏组件，之后再以其先前的状态恢复它们。
 
-The following example has a sidebar with an expandable section. You can press "Overview" to reveal the three subitems below it. The main app area also has a button that hides and shows the sidebar.
+下面这个例子有一个带可展开区域的侧边栏。你可以按下 “Overview” 来展开下面的三个子项。主应用区域还有一个按钮可以隐藏和显示侧边栏。
 
-Try expanding the Overview section, and then toggling the sidebar closed then open:
+试着展开 Overview 区域，然后把侧边栏关闭再打开：
 
 <Sandpack>
 
@@ -167,25 +167,25 @@ h1 {
 
 </Sandpack>
 
-The Overview section always starts out collapsed. Because we unmount the sidebar when `isShowingSidebar` flips to `false`, all its internal state is lost.
+Overview 区域始终从折叠状态开始。因为我们在 `isShowingSidebar` 变为 `false` 时卸载了侧边栏，所以它的所有内部状态都会丢失。
 
-This is a perfect use case for Activity. We can preserve the internal state of our sidebar, even when visually hiding it.
+这正是 Activity 的绝佳使用场景。即使在视觉上隐藏侧边栏，我们也可以保留它的内部状态。
 
-Let's replace the conditional rendering of our sidebar with an Activity boundary:
+让我们把侧边栏的条件渲染替换为一个 Activity 边界：
 
 ```jsx {7,9}
-// Before
+// 之前
 {isShowingSidebar && (
   <Sidebar />
 )}
 
-// After
+// 之后
 <Activity mode={isShowingSidebar ? 'visible' : 'hidden'}>
   <Sidebar />
 </Activity>
 ```
 
-and check out the new behavior:
+然后看看新的行为：
 
 <Sandpack>
 
@@ -275,15 +275,15 @@ h1 {
 
 </Sandpack>
 
-Our sidebar's internal state is now restored, without any changes to its implementation.
+现在，侧边栏的内部状态已经恢复，而无需对其实现做任何更改。
 
 ---
 
-### Restoring the DOM of hidden components {/*restoring-the-dom-of-hidden-components*/}
+### 恢复隐藏组件的 DOM {/*restoring-the-dom-of-hidden-components*/}
 
-Since Activity boundaries hide their children using `display: none`, their children's DOM is also preserved when hidden. This makes them great for maintaining ephemeral state in parts of the UI that the user is likely to interact with again.
+由于 Activity 边界通过 `display: none` 隐藏其子组件，因此在隐藏时，其子组件的 DOM 也会被保留。这使它们非常适合维护 UI 中用户很可能再次交互的部分里的短暂状态。
 
-In this example, the Contact tab has a `<textarea>` where the user can enter a message. If you enter some text, change to the Home tab, then change back to the Contact tab, the draft message is lost:
+在这个示例中，Contact 选项卡中有一个 `<textarea>`，用户可以在其中输入消息。如果你输入一些文本，切换到 Home 选项卡，再切回 Contact 选项卡，草稿消息会丢失：
 
 <Sandpack>
 
@@ -369,9 +369,9 @@ b { display: inline-block; margin-right: 10px; }
 
 </Sandpack>
 
-This is because we're fully unmounting `Contact` in `App`. When the Contact tab unmounts, the `<textarea>` element's internal DOM state is lost.
+这是因为我们在 `App` 中完全卸载了 `Contact`。当 Contact 选项卡卸载时，`<textarea>` 元素的内部 DOM 状态就会丢失。
 
-If we switch to using an Activity boundary to show and hide the active tab, we can preserve the state of each tab's DOM. Try entering text and switching tabs again, and you'll see the draft message is no longer reset:
+如果我们改为使用 Activity 边界来显示和隐藏当前选项卡，就可以保留每个选项卡的 DOM 状态。试着输入文本并再次切换选项卡，你会看到草稿消息不再被重置：
 
 <Sandpack>
 
@@ -461,15 +461,15 @@ b { display: inline-block; margin-right: 10px; }
 
 </Sandpack>
 
-Again, the Activity boundary let us preserve the Contact tab's internal state without changing its implementation.
+同样地，Activity 边界让我们在不改变 Contact 选项卡实现的情况下保留了它的内部状态。
 
 ---
 
-### Pre-rendering content that's likely to become visible {/*pre-rendering-content-thats-likely-to-become-visible*/}
+### 预渲染可能即将变为可见的内容 {/*pre-rendering-content-thats-likely-to-become-visible*/}
 
-So far, we've seen how Activity can hide some content that the user has interacted with, without discarding that content's ephemeral state.
+到目前为止，我们已经看到 Activity 如何在不丢弃内容短暂状态的情况下，隐藏用户已经交互过的某些内容。
 
-But Activity boundaries can also be used to _prepare_ content that the user has yet to see for the first time:
+但 Activity 边界也可用于为用户尚未首次看到的内容做“准备”：
 
 ```jsx [[1, 1, "\\"hidden\\""]]
 <Activity mode="hidden">
@@ -477,13 +477,13 @@ But Activity boundaries can also be used to _prepare_ content that the user has 
 </Activity>
 ```
 
-When an Activity boundary is <CodeStep step={1}>hidden</CodeStep> during its initial render, its children won't be visible on the page — but they will _still be rendered_, albeit at a lower priority than the visible content, and without mounting their Effects.
+当 Activity 边界在初始渲染期间处于 <CodeStep step={1}>hidden</CodeStep> 状态时，它的子组件不会在页面上可见——但它们仍然会被渲染，只是优先级低于可见内容，并且不会挂载它们的 Effects。
 
-This _pre-rendering_ allows the children to load any code or data they need ahead of time, so that later, when the Activity boundary becomes visible, the children can appear faster with reduced loading times.
+这种“预渲染”允许子组件提前加载所需的任何代码或数据，从而在稍后 Activity 边界变为可见时，子组件能够以更快的速度显示，减少加载时间。
 
-Let's look at an example.
+让我们看一个例子。
 
-In this demo, the Posts tab loads some data. If you press it, you'll see a Suspense fallback displayed while the data is being fetched:
+在这个演示中，Posts 选项卡会加载一些数据。如果你点击它，你会看到在数据获取期间显示一个 Suspense 回退内容：
 
 <Sandpack>
 
@@ -564,9 +564,9 @@ export default function Posts() {
 ```
 
 ```js src/data.js hidden
-// Note: the way you would do data fetching depends on
-// the framework that you use together with Suspense.
-// Normally, the caching logic would be inside a framework.
+// 注意：你如何进行数据获取取决于
+// 你与 Suspense 一起使用的框架。
+// 通常，缓存逻辑会在框架内部。
 
 let cache = new Map();
 
@@ -586,7 +586,7 @@ async function getData(url) {
 }
 
 async function getPosts() {
-  // Add a fake delay to make waiting noticeable.
+  // 添加一个假的延迟，使等待更明显。
   await new Promise(resolve => {
     setTimeout(resolve, 1000);
   });
@@ -611,11 +611,11 @@ video { width: 300px; margin-top: 10px; aspect-ratio: 16/9; }
 
 </Sandpack>
 
-This is because `App` doesn't mount `Posts` until its tab is active.
+这是因为 `App` 直到 `Posts` 选项卡处于激活状态才会挂载它。
 
-If we update `App` to use an Activity boundary to show and hide the active tab, `Posts` will be pre-rendered when the app first loads, allowing it to fetch its data before it becomes visible.
+如果我们更新 `App`，使用 Activity 边界来显示和隐藏当前选项卡，那么在应用首次加载时，`Posts` 就会被预渲染，这样在它变为可见之前就能先获取数据。
 
-Try clicking the Posts tab now:
+现在试着点击 Posts 选项卡：
 
 <Sandpack>
 
@@ -700,9 +700,9 @@ export default function Posts() {
 ```
 
 ```js src/data.js hidden
-// Note: the way you would do data fetching depends on
-// the framework that you use together with Suspense.
-// Normally, the caching logic would be inside a framework.
+// 注意：你如何进行数据获取取决于
+// 你与 Suspense 一起使用的框架。
+// 通常，缓存逻辑会在框架内部。
 
 let cache = new Map();
 
@@ -722,7 +722,7 @@ async function getData(url) {
 }
 
 async function getPosts() {
-  // Add a fake delay to make waiting noticeable.
+  // 添加一个假的延迟，使等待更明显。
   await new Promise(resolve => {
     setTimeout(resolve, 1000);
   });
@@ -747,36 +747,36 @@ video { width: 300px; margin-top: 10px; aspect-ratio: 16/9; }
 
 </Sandpack>
 
-`Posts` was able to prepare itself for a faster render, thanks to the hidden Activity boundary.
+`Posts` 已经能够为更快的渲染做好准备，这要归功于隐藏的 Activity 边界。
 
 ---
 
-Pre-rendering components with hidden Activity boundaries is a powerful way to reduce loading times for parts of the UI that the user is likely to interact with next.
+使用隐藏的 Activity 边界预渲染组件，是减少用户很可能下一步会交互的 UI 部分加载时间的一种强大方式。
 
 <Note>
 
-**Only Suspense-enabled data sources will be fetched during pre-rendering.** They include:
+**只有支持 Suspense 的数据源才会在预渲染期间被获取。** 它们包括：
 
-- Data fetching with Suspense-enabled frameworks like [Relay](https://relay.dev/docs/guided-tour/rendering/loading-states/) and [Next.js](https://nextjs.org/docs/app/building-your-application/routing/loading-ui-and-streaming#streaming-with-suspense)
-- Lazy-loading component code with [`lazy`](/reference/react/lazy)
-- Reading the value of a cached Promise with [`use`](/reference/react/use)
+- 使用支持 Suspense 的框架进行数据获取，例如 [Relay](https://relay.dev/docs/guided-tour/rendering/loading-states/) 和 [Next.js](https://nextjs.org/docs/app/building-your-application/routing/loading-ui-and-streaming#streaming-with-suspense)
+- 使用 [`lazy`](/reference/react/lazy) 懒加载组件代码
+- 使用 [`use`](/reference/react/use) 读取缓存 Promise 的值
 
-Activity **does not** detect data that is fetched inside an Effect.
+Activity **不会**检测在 Effect 中获取的数据。
 
-The exact way you would load data in the `Posts` component above depends on your framework. If you use a Suspense-enabled framework, you'll find the details in its data fetching documentation.
+上面 `Posts` 组件中如何加载数据，具体取决于你的框架。如果你使用支持 Suspense 的框架，你可以在其数据获取文档中找到详细信息。
 
-Suspense-enabled data fetching without the use of an opinionated framework is not yet supported. The requirements for implementing a Suspense-enabled data source are unstable and undocumented. An official API for integrating data sources with Suspense will be released in a future version of React.
+目前尚不支持在不使用特定框架的情况下进行支持 Suspense 的数据获取。实现支持 Suspense 的数据源所需的条件是不稳定且未文档化的。React 的未来版本将提供一个用于将数据源与 Suspense 集成的官方 API。
 
 </Note>
 
 ---
 
 
-### Speeding up interactions during page load {/*speeding-up-interactions-during-page-load*/}
+### 加快页面加载期间的交互速度 {/*speeding-up-interactions-during-page-load*/}
 
-React includes an under-the-hood performance optimization called Selective Hydration. It works by hydrating your app's initial HTML _in chunks_, enabling some components to become interactive even if other components on the page haven't loaded their code or data yet.
+React 内部包含一种称为 Selective Hydration 的性能优化。它通过“分块”对应用的初始 HTML 进行 hydration，使某些组件即使在页面上的其他组件尚未加载其代码或数据时，也能变得可交互。
 
-Suspense boundaries participate in Selective Hydration, because they naturally divide your component tree into units that are independent from one another:
+Suspense 边界参与了 Selective Hydration，因为它们天然地将组件树划分为彼此独立的单元：
 
 ```jsx
 function Page() {
@@ -792,13 +792,13 @@ function Page() {
 }
 ```
 
-Here, `MessageComposer` can be fully hydrated during the initial render of the page, even before `Chats` is mounted and starts to fetch its data.
+在这里，`MessageComposer` 可以在页面初始渲染期间完全完成 hydration，甚至可以早于 `Chats` 挂载并开始获取数据。
 
-So by breaking up your component tree into discrete units, Suspense allows React to hydrate your app's server-rendered HTML in chunks, enabling parts of your app to become interactive as fast as possible.
+因此，通过将组件树拆分为离散单元，Suspense 允许 React 将服务端渲染的 HTML 分块进行 hydration，从而使应用的各个部分尽可能快地变得可交互。
 
-But what about pages that don't use Suspense?
+但如果页面没有使用 Suspense 呢？
 
-Take this tabs example:
+来看这个选项卡示例：
 
 ```jsx
 function Page() {
@@ -824,9 +824,9 @@ function Page() {
 }
 ```
 
-Here, React must hydrate the entire page all at once. If `Home` or `Video` are slower to render, they could make the tab buttons feel unresponsive during hydration.
+在这里，React 必须一次性对整个页面进行 hydration。如果 `Home` 或 `Video` 的渲染更慢，它们可能会让选项卡按钮在 hydration 期间显得没有响应。
 
-Adding Suspense around the active tab would solve this:
+在活动选项卡周围添加 Suspense 可以解决这个问题：
 
 ```jsx {13,20}
 function Page() {
@@ -854,11 +854,11 @@ function Page() {
 }
 ```
 
-...but it would also change the UI, since the `Placeholder` fallback would be displayed on the initial render.
+……但这也会改变 UI，因为 `Placeholder` 回退内容会在初始渲染时显示出来。
 
-Instead, we can use Activity. Since Activity boundaries show and hide their children, they already naturally divide the component tree into independent units. And just like Suspense, this feature allows them to participate in Selective Hydration.
+相反，我们可以使用 Activity。由于 Activity 边界会显示和隐藏其子组件，它们天然地将组件树划分为独立单元。而且和 Suspense 一样，这个特性使它们能够参与 Selective Hydration。
 
-Let's update our example to use Activity boundaries around the active tab:
+让我们更新示例，在活动选项卡周围使用 Activity 边界：
 
 ```jsx {13-18}
 function Page() {
@@ -884,13 +884,13 @@ function Page() {
 }
 ```
 
-Now our initial server-rendered HTML looks the same as it did in the original version, but thanks to Activity, React can hydrate the tab buttons first, before it even mounts `Home` or `Video`.
+现在，我们最初服务端渲染的 HTML 看起来与原始版本相同，但借助 Activity，React 可以先对选项卡按钮进行 hydration，甚至在挂载 `Home` 或 `Video` 之前就开始。
 
 ---
 
-Thus, in addition to hiding and showing content, Activity boundaries help improve your app's performance during hydration by letting React know which parts of your page can become interactive in isolation.
+因此，除了隐藏和显示内容之外，Activity 边界还通过让 React 知道页面中哪些部分可以独立变得可交互，帮助提升应用在 hydration 过程中的性能。
 
-And even if your page doesn't ever hide part of its content, you can still add always-visible Activity boundaries to improve hydration performance:
+即使你的页面从不隐藏其内容的一部分，你仍然可以添加始终可见的 Activity 边界来提升 hydration 性能：
 
 ```jsx
 function Page() {
@@ -908,15 +908,15 @@ function Page() {
 
 ---
 
-## Troubleshooting {/*troubleshooting*/}
+## 故障排查 {/*troubleshooting*/}
 
-### My hidden components have unwanted side effects {/*my-hidden-components-have-unwanted-side-effects*/}
+### 我的隐藏组件有不希望出现的副作用 {/*my-hidden-components-have-unwanted-side-effects*/}
 
-An Activity boundary hides its content by setting `display: none` on its children and cleaning up any of their Effects. So, most well-behaved React components that properly clean up their side effects will already be robust to being hidden by Activity.
+Activity 边界会通过将其子组件设为 `display: none` 并清理它们的任何 Effects 来隐藏其内容。因此，大多数行为良好的 React 组件，只要正确清理了副作用，就已经能够很好地应对被 Activity 隐藏的情况。
 
-But there _are_ some situations where a hidden component behaves differently than an unmounted one. Most notably, since a hidden component's DOM is not destroyed, any side effects from that DOM will persist, even after the component is hidden.
+但在某些情况下，隐藏组件的行为会与卸载组件不同。最明显的是，由于隐藏组件的 DOM 并未被销毁，来自该 DOM 的任何副作用都会持续存在，即使组件已经被隐藏也是如此。
 
-As an example, consider a `<video>` tag. Typically it doesn't require any cleanup, because even if you're playing a video, unmounting the tag stops the video and audio from playing in the browser. Try playing the video and then pressing Home in this demo:
+例如，考虑一个 `<video>` 标签。通常它不需要任何清理，因为即使你正在播放视频，卸载该标签也会停止浏览器中的视频和音频播放。试着播放下面这个示例中的视频，然后按 Home：
 
 <Sandpack>
 
@@ -970,7 +970,7 @@ export default function TabButton({ onClick, children, isActive }) {
 ```js src/Home.js
 export default function Home() {
   return (
-    <p>Welcome to my profile!</p>
+    <p>欢迎来到我的个人资料！</p>
   );
 }
 ```
@@ -979,7 +979,7 @@ export default function Home() {
 export default function Video() {
   return (
     <video
-      // 'Big Buck Bunny' licensed under CC 3.0 by the Blender foundation. Hosted by archive.org
+      // “Big Buck Bunny” 由 Blender 基金会根据 CC 3.0 许可发布。由 archive.org 托管
       src="https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4"
       controls
       playsInline
@@ -999,13 +999,13 @@ video { width: 300px; margin-top: 10px; aspect-ratio: 16/9; }
 
 </Sandpack>
 
-The video stops playing as expected.
+视频会按预期停止播放。
 
-Now, let's say we wanted to preserve the timecode where the user last watched, so that when they tab back to the video, it doesn't start over from the beginning again.
+现在，假设我们想保留用户上次观看到的时间点，这样当他们切回视频时，就不会从头开始播放。
 
-This is a great use case for Activity!
+这正是 Activity 的一个很好的使用场景！
 
-Let's update `App` to hide the inactive tab with a hidden Activity boundary instead of unmounting it, and see how the demo behaves this time:
+让我们更新 `App`，用隐藏的 Activity 边界来隐藏未激活的标签页，而不是卸载它，并看看这次示例的表现：
 
 <Sandpack>
 
@@ -1063,7 +1063,7 @@ export default function TabButton({ onClick, children, isActive }) {
 ```js src/Home.js
 export default function Home() {
   return (
-    <p>Welcome to my profile!</p>
+    <p>欢迎来到我的个人资料！</p>
   );
 }
 ```
@@ -1074,7 +1074,7 @@ export default function Video() {
     <video
       controls
       playsInline
-      // 'Big Buck Bunny' licensed under CC 3.0 by the Blender foundation. Hosted by archive.org
+      // “Big Buck Bunny” 由 Blender 基金会根据 CC 3.0 许可发布。由 archive.org 托管
       src="https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4"
     />
 
@@ -1092,9 +1092,9 @@ video { width: 300px; margin-top: 10px; aspect-ratio: 16/9; }
 
 </Sandpack>
 
-Whoops! The video and audio continue to play even after it's been hidden, because the tab's `<video>` element is still in the DOM.
+糟了！即使标签页已经被隐藏，视频和音频仍然会继续播放，因为该标签页的 `<video>` 元素仍然保留在 DOM 中。
 
-To fix this, we can add an Effect with a cleanup function that pauses the video:
+为了解决这个问题，我们可以添加一个带有清理函数的 Effect，在清理时暂停视频：
 
 ```jsx {2,4-10,14}
 export default function VideoTab() {
@@ -1120,9 +1120,9 @@ export default function VideoTab() {
 }
 ```
 
-We call `useLayoutEffect` instead of `useEffect` because conceptually the clean-up code is tied to the component's UI being visually hidden. If we used a regular effect, the code could be delayed by (say) a re-suspending Suspense boundary or a View Transition.
+我们使用 `useLayoutEffect` 而不是 `useEffect`，因为从概念上讲，清理代码与组件 UI 在视觉上被隐藏这件事是绑定的。如果使用普通的 effect，这段代码可能会因为（比如说）重新挂起的 Suspense 边界或视图过渡而被延迟。
 
-Let's see the new behavior. Try playing the video, switching to the Home tab, then back to the Video tab:
+让我们看看新的行为。试着播放视频，切换到 Home 标签页，然后再切回 Video 标签页：
 
 <Sandpack>
 
@@ -1180,7 +1180,7 @@ export default function TabButton({ onClick, children, isActive }) {
 ```js src/Home.js
 export default function Home() {
   return (
-    <p>Welcome to my profile!</p>
+    <p>欢迎来到我的个人资料！</p>
   );
 }
 ```
@@ -1204,7 +1204,7 @@ export default function Video() {
       ref={ref}
       controls
       playsInline
-      // 'Big Buck Bunny' licensed under CC 3.0 by the Blender foundation. Hosted by archive.org
+      // “Big Buck Bunny” 由 Blender 基金会根据 CC 3.0 许可发布。由 archive.org 托管
       src="https://archive.org/download/BigBuckBunny_124/Content/big_buck_bunny_720p_surround.mp4"
     />
 
@@ -1222,31 +1222,31 @@ video { width: 300px; margin-top: 10px; aspect-ratio: 16/9; }
 
 </Sandpack>
 
-It works great! Our cleanup function ensures that the video stops playing if it's ever hidden by an Activity boundary, and even better, because the `<video>` tag is never destroyed, the timecode is preserved, and the video itself doesn't need to be initialized or downloaded again when the user switches back to keep watching it.
+效果很好！我们的清理函数确保视频在被 Activity 边界隐藏时会停止播放；更棒的是，由于 `<video>` 标签从未被销毁，时间点会被保留，而且当用户切回来继续观看时，视频本身也无需重新初始化或再次下载。
 
-This is a great example of using Activity to preserve ephemeral DOM state for parts of the UI that become hidden, but the user is likely to interact with again soon.
+这是一个很好的例子，说明如何使用 Activity 来保留那些会被隐藏、但用户很可能很快再次交互的 UI 部分的短暂 DOM 状态。
 
 ---
 
-Our example illustrates that for certain tags like `<video>`, unmounting and hiding have different behavior. If a component renders DOM that has a side effect, and you want to prevent that side effect when an Activity boundary hides it, add an Effect with a return function to clean it up.
+我们的示例说明了，对于某些像 `<video>` 这样的标签，卸载和隐藏会产生不同的行为。如果某个组件渲染了带有副作用的 DOM，并且你希望在 Activity 边界隐藏它时阻止该副作用，就添加一个带有返回函数的 Effect 来清理它。
 
-The most common cases of this will be from the following tags:
+最常见的情况来自以下标签：
 
   - `<video>`
   - `<audio>`
   - `<iframe>`
 
-Typically, though, most of your React components should already be robust to being hidden by an Activity boundary. And conceptually, you should think of "hidden" Activities as being unmounted.
+不过通常来说，你的大多数 React 组件本来就应该能够很好地应对被 Activity 边界隐藏。而从概念上讲，你应该把“隐藏”的 Activities 视为已卸载。
 
-To eagerly discover other Effects that don't have proper cleanup, which is important not only for Activity boundaries but for many other behaviors in React, we recommend using [`<StrictMode>`](/reference/react/StrictMode).
+为了主动发现其他没有正确清理的 Effects——这不仅对 Activity 边界很重要，对 React 中许多其他行为也很重要——我们建议使用 [`<StrictMode>`](/reference/react/StrictMode)。
 
 ---
 
 
-### My hidden components have Effects that aren't running {/*my-hidden-components-have-effects-that-arent-running*/}
+### 我的隐藏组件有没有运行的 Effects {/*my-hidden-components-have-effects-that-arent-running*/}
 
-When an `<Activity>` is "hidden", all its children's Effects are cleaned up. Conceptually, the children are unmounted, but React saves their state for later. This is a feature of Activity because it means subscriptions won't be active for hidden parts of the UI, reducing the amount of work needed for hidden content.
+当 `<Activity>` 处于“hidden”时，它所有子组件的 Effects 都会被清理。从概念上讲，这些子组件会被卸载，但 React 会将它们的状态保存起来，以便之后使用。这是 Activity 的一个特性，因为这意味着订阅不会对 UI 中隐藏的部分保持激活，从而减少处理隐藏内容所需的工作量。
 
-If you're relying on an Effect mounting to clean up a component's side effects, refactor the Effect to do the work in the returned cleanup function instead.
+如果你依赖某个 Effect 在挂载时去清理组件的副作用，请重构该 Effect，把工作放到返回的清理函数中去完成。
 
-To eagerly find problematic Effects, we recommend adding [`<StrictMode>`](/reference/react/StrictMode) which will eagerly perform Activity unmounts and mounts to catch any unexpected side-effects.
+为了尽早发现有问题的 Effects，我们建议添加 [`<StrictMode>`](/reference/react/StrictMode)，它会主动执行 Activity 的卸载和挂载，以捕获任何意料之外的副作用。

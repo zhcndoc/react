@@ -4,15 +4,15 @@ title: Server Functions
 
 <RSC>
 
-Server Functions are for use in [React Server Components](/reference/rsc/server-components).
+Server Functions 用于 [React Server Components](/reference/rsc/server-components)。
 
-**Note:** Until September 2024, we referred to all Server Functions as "Server Actions". If a Server Function is passed to an action prop or called from inside an action then it is a Server Action, but not all Server Functions are Server Actions. The naming in this documentation has been updated to reflect that Server Functions can be used for multiple purposes.
+**注意：** 直到 2024 年 9 月，我们一直将所有 Server Functions 称为 "Server Actions"。如果一个 Server Function 作为 action prop 传递，或者在 action 内部被调用，那么它就是一个 Server Action，但并非所有 Server Functions 都是 Server Actions。本文档中的命名已更新，以反映 Server Functions 可以用于多种用途。
 
 </RSC>
 
 <Intro>
 
-Server Functions allow Client Components to call async functions executed on the server.
+Server Functions 允许 Client Components 调用在服务器上执行的 async 函数。
 
 </Intro>
 
@@ -20,23 +20,23 @@ Server Functions allow Client Components to call async functions executed on the
 
 <Note>
 
-#### How do I build support for Server Functions? {/*how-do-i-build-support-for-server-functions*/}
+#### 如何为 Server Functions 构建支持？ {/*how-do-i-build-support-for-server-functions*/}
 
-While Server Functions in React 19 are stable and will not break between minor versions, the underlying APIs used to implement Server Functions in a React Server Components bundler or framework do not follow semver and may break between minors in React 19.x.
+虽然 React 19 中的 Server Functions 是稳定的，并且在 minor 版本之间不会破坏，但用于在 React Server Components bundler 或 framework 中实现 Server Functions 的底层 API 不遵循 semver，并且在 React 19.x 的 minor 版本之间可能会发生破坏性变化。
 
-To support Server Functions as a bundler or framework, we recommend pinning to a specific React version, or using the Canary release. We will continue working with bundlers and frameworks to stabilize the APIs used to implement Server Functions in the future.
+要以 bundler 或 framework 的形式支持 Server Functions，我们建议固定到某个特定的 React 版本，或者使用 Canary 版本。我们将继续与 bundlers 和 frameworks 合作，未来使用于实现 Server Functions 的 API 稳定下来。
 
 </Note>
 
-When a Server Function is defined with the [`"use server"`](/reference/rsc/use-server) directive, your framework will automatically create a reference to the Server Function, and pass that reference to the Client Component. When that function is called on the client, React will send a request to the server to execute the function, and return the result.
+当一个 Server Function 使用 [`"use server"`](/reference/rsc/use-server) 指令定义时，你的 framework 会自动创建该 Server Function 的引用，并将该引用传递给 Client Component。当该函数在客户端被调用时，React 会向服务器发送请求以执行该函数，并返回结果。
 
-Server Functions can be created in Server Components and passed as props to Client Components, or they can be imported and used in Client Components.
+Server Functions 可以在 Server Components 中创建并作为 props 传递给 Client Components，也可以被导入并在 Client Components 中使用。
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Creating a Server Function from a Server Component {/*creating-a-server-function-from-a-server-component*/}
+### 从 Server Component 创建 Server Function {/*creating-a-server-function-from-a-server-component*/}
 
-Server Components can define Server Functions with the `"use server"` directive:
+Server Components 可以使用 `"use server"` 指令定义 Server Functions：
 
 ```js [[2, 7, "'use server'"], [1, 5, "createNoteAction"], [1, 12, "createNoteAction"]]
 // Server Component
@@ -54,7 +54,7 @@ function EmptyNote () {
 }
 ```
 
-When React renders the `EmptyNote` Server Component, it will create a reference to the `createNoteAction` function, and pass that reference to the `Button` Client Component. When the button is clicked, React will send a request to the server to execute the `createNoteAction` function with the reference provided:
+当 React 渲染 `EmptyNote` Server Component 时，它会创建 `createNoteAction` 函数的引用，并将该引用传递给 `Button` Client Component。点击按钮时，React 会向服务器发送请求，使用提供的引用执行 `createNoteAction` 函数：
 
 ```js {5}
 "use client";
@@ -62,16 +62,16 @@ When React renders the `EmptyNote` Server Component, it will create a reference 
 export default function Button({onClick}) {
   console.log(onClick);
   // {$$typeof: Symbol.for("react.server.reference"), $$id: 'createNoteAction'}
-  return <button onClick={() => onClick()}>Create Empty Note</button>
+  return <button onClick={() => onClick()}>创建空笔记</button>
 }
 ```
 
-For more, see the docs for [`"use server"`](/reference/rsc/use-server).
+更多内容请参阅 [`"use server"`](/reference/rsc/use-server) 文档。
 
 
-### Importing Server Functions from Client Components {/*importing-server-functions-from-client-components*/}
+### 从 Client Component 导入 Server Functions {/*importing-server-functions-from-client-components*/}
 
-Client Components can import Server Functions from files that use the `"use server"` directive:
+Client Components 可以从使用 `"use server"` 指令的文件中导入 Server Functions：
 
 ```js [[1, 3, "createNote"]]
 "use server";
@@ -82,7 +82,7 @@ export async function createNote() {
 
 ```
 
-When the bundler builds the `EmptyNote` Client Component, it will create a reference to the `createNote` function in the bundle. When the `button` is clicked, React will send a request to the server to execute the `createNote` function using the reference provided:
+当 bundler 构建 `EmptyNote` Client Component 时，它会在 bundle 中为 `createNote` 函数创建一个引用。点击 `button` 时，React 会使用提供的引用向服务器发送请求，以执行 `createNote` 函数：
 
 ```js [[1, 2, "createNote"], [1, 5, "createNote"], [1, 7, "createNote"]]
 "use client";
@@ -95,18 +95,18 @@ function EmptyNote() {
 }
 ```
 
-For more, see the docs for [`"use server"`](/reference/rsc/use-server).
+更多内容请参阅 [`"use server"`](/reference/rsc/use-server) 文档。
 
-### Server Functions with Actions {/*server-functions-with-actions*/}
+### 带有 Actions 的 Server Functions {/*server-functions-with-actions*/}
 
-Server Functions can be called from Actions on the client:
+Server Functions 可以在客户端的 Actions 中被调用：
 
 ```js [[1, 3, "updateName"]]
 "use server";
 
 export async function updateName(name) {
   if (!name) {
-    return {error: 'Name is required'};
+    return {error: '需要姓名'};
   }
   await db.users.updateName(name);
 }
@@ -137,21 +137,21 @@ function UpdateName() {
   return (
     <form action={submitAction}>
       <input type="text" name="name" disabled={isPending}/>
-      {error && <span>Failed: {error}</span>}
+      {error && <span>失败：{error}</span>}
     </form>
   )
 }
 ```
 
-This allows you to access the `isPending` state of the Server Function by wrapping it in an Action on the client.
+这使你可以通过在客户端将其包装在一个 Action 中，来访问 Server Function 的 `isPending` 状态。
 
-For more, see the docs for [Calling a Server Function outside of `<form>`](/reference/rsc/use-server#calling-a-server-function-outside-of-form)
+更多内容请参阅 [在 `<form>` 外调用 Server Function](/reference/rsc/use-server#calling-a-server-function-outside-of-form) 文档
 
-### Server Functions with Form Actions {/*using-server-functions-with-form-actions*/}
+### 带有 Form Actions 的 Server Functions {/*using-server-functions-with-form-actions*/}
 
-Server Functions work with the new Form features in React 19.
+Server Functions 可与 React 19 中新的 Form 特性配合使用。
 
-You can pass a Server Function to a Form to automatically submit the form to the server:
+你可以将 Server Function 传递给 Form，以自动将表单提交到服务器：
 
 
 ```js [[1, 3, "updateName"], [1, 7, "updateName"]]
@@ -168,13 +168,13 @@ function UpdateName() {
 }
 ```
 
-When the Form submission succeeds, React will automatically reset the form. You can add `useActionState` to access the pending state, last response, or to support progressive enhancement.
+当 Form 提交成功时，React 会自动重置表单。你可以添加 `useActionState` 来访问 pending 状态、最后一次响应，或支持渐进增强。
 
-For more, see the docs for [Server Functions in Forms](/reference/rsc/use-server#server-functions-in-forms).
+更多内容请参阅 [Forms 中的 Server Functions](/reference/rsc/use-server#server-functions-in-forms) 文档。
 
-### Server Functions with `useActionState` {/*server-functions-with-use-action-state*/}
+### 与 `useActionState` 配合使用的 Server Functions {/*server-functions-with-use-action-state*/}
 
-You can call Server Functions with `useActionState` for the common case where you just need access to the action pending state and last returned response:
+对于只需要访问 action 的 pending 状态和最后返回响应的常见场景，你可以使用 `useActionState` 调用 Server Functions：
 
 ```js [[1, 3, "updateName"], [1, 6, "updateName"], [2, 6, "submitAction"], [2, 9, "submitAction"]]
 "use client";
@@ -187,19 +187,19 @@ function UpdateName() {
   return (
     <form action={submitAction}>
       <input type="text" name="name" disabled={isPending}/>
-      {state.error && <span>Failed: {state.error}</span>}
+      {state.error && <span>失败：{state.error}</span>}
     </form>
   );
 }
 ```
 
-When using `useActionState` with Server Functions, React will also automatically replay form submissions entered before hydration finishes. This means users can interact with your app even before the app has hydrated.
+在将 `useActionState` 与 Server Functions 一起使用时，React 还会自动回放在 hydration 完成前提交的表单。这意味着用户甚至可以在应用完成 hydration 之前与你的应用交互。
 
-For more, see the docs for [`useActionState`](/reference/react/useActionState).
+更多内容请参阅 [`useActionState`](/reference/react/useActionState) 文档。
 
-### Progressive enhancement with `useActionState` {/*progressive-enhancement-with-useactionstate*/}
+### 使用 `useActionState` 的渐进增强 {/*progressive-enhancement-with-useactionstate*/}
 
-Server Functions also support progressive enhancement with the third argument of `useActionState`.
+Server Functions 也支持通过 `useActionState` 的第三个参数实现渐进增强。
 
 ```js [[1, 3, "updateName"], [1, 6, "updateName"], [2, 6, "/name/update"], [3, 6, "submitAction"], [3, 9, "submitAction"]]
 "use client";
@@ -217,6 +217,6 @@ function UpdateName() {
 }
 ```
 
-When the <CodeStep step={2}>permalink</CodeStep> is provided to `useActionState`, React will redirect to the provided URL if the form is submitted before the JavaScript bundle loads.
+当将 <CodeStep step={2}>permalink</CodeStep> 提供给 `useActionState` 时，如果表单在 JavaScript bundle 加载前就被提交，React 会重定向到提供的 URL。
 
-For more, see the docs for [`useActionState`](/reference/react/useActionState).
+更多内容请参阅 [`useActionState`](/reference/react/useActionState) 文档。

@@ -4,7 +4,7 @@ title: useTransition
 
 <Intro>
 
-`useTransition` is a React Hook that lets you render a part of the UI in the background.
+`useTransition` 是一个 React Hook，允许你在后台渲染 UI 的一部分。
 
 ```js
 const [isPending, startTransition] = useTransition()
@@ -16,11 +16,11 @@ const [isPending, startTransition] = useTransition()
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `useTransition()` {/*usetransition*/}
 
-Call `useTransition` at the top level of your component to mark some state updates as Transitions.
+在组件顶层调用 `useTransition`，以将某些状态更新标记为 Transition。
 
 ```js
 import { useTransition } from 'react';
@@ -31,24 +31,24 @@ function TabContainer() {
 }
 ```
 
-[See more examples below.](#usage)
+[查看更多示例。](#usage)
 
-#### Parameters {/*parameters*/}
+#### 参数 {/*parameters*/}
 
-`useTransition` does not take any parameters.
+`useTransition` 不接受任何参数。
 
-#### Returns {/*returns*/}
+#### 返回值 {/*returns*/}
 
-`useTransition` returns an array with exactly two items:
+`useTransition` 返回一个包含恰好两个项目的数组：
 
-1. The `isPending` flag that tells you whether there is a pending Transition.
-2. The [`startTransition` function](#starttransition) that lets you mark updates as a Transition.
+1. `isPending` 标志，告诉你是否存在一个待处理的 Transition。
+2. [`startTransition` 函数](#starttransition)，让你可以将更新标记为 Transition。
 
 ---
 
 ### `startTransition(action)` {/*starttransition*/}
 
-The `startTransition` function returned by `useTransition` lets you mark an update as a Transition.
+`useTransition` 返回的 `startTransition` 函数允许你将更新标记为 Transition。
 
 ```js {6,8}
 function TabContainer() {
@@ -65,9 +65,9 @@ function TabContainer() {
 ```
 
 <Note>
-#### Functions called in `startTransition` are called "Actions". {/*functions-called-in-starttransition-are-called-actions*/}
+#### 在 `startTransition` 中调用的函数被称为“Actions”。 {/*functions-called-in-starttransition-are-called-actions*/}
 
-The function passed to `startTransition` is called an "Action". By convention, any callback called inside `startTransition` (such as a callback prop) should be named `action` or include the "Action" suffix:
+传递给 `startTransition` 的函数被称为 “Action”。按照约定，在 `startTransition` 内部调用的任何回调（例如回调 prop）都应命名为 `action`，或包含 “Action” 后缀：
 
 ```js {1,9}
 function SubmitButton({ submitAction }) {
@@ -93,37 +93,37 @@ function SubmitButton({ submitAction }) {
 
 
 
-#### Parameters {/*starttransition-parameters*/}
+#### 参数 {/*starttransition-parameters*/}
 
-* `action`: A function that updates some state by calling one or more [`set` functions](/reference/react/useState#setstate). React calls `action` immediately with no parameters and marks all state updates scheduled synchronously during the `action` function call as Transitions. Any async calls that are awaited in the `action` will be included in the Transition, but currently require wrapping any `set` functions after the `await` in an additional `startTransition` (see [Troubleshooting](#react-doesnt-treat-my-state-update-after-await-as-a-transition)). State updates marked as Transitions will be [non-blocking](#perform-non-blocking-updates-with-actions) and [will not display unwanted loading indicators](#preventing-unwanted-loading-indicators).
+* `action`：一个通过调用一个或多个 [`set` 函数](/reference/react/useState#setstate) 来更新某些状态的函数。React 会立即以无参数的形式调用 `action`，并将 `action` 函数调用期间同步调度的所有状态更新标记为 Transitions。`action` 中任何被 `await` 的异步调用也会包含在 Transition 中，但目前需要将 `await` 之后的任何 `set` 函数再用一个额外的 `startTransition` 包裹起来（参见[故障排除](#react-doesnt-treat-my-state-update-after-await-as-a-transition)）。被标记为 Transitions 的状态更新将是[非阻塞的](#perform-non-blocking-updates-with-actions)，并且[不会显示不必要的加载指示器](#preventing-unwanted-loading-indicators)。
 
-#### Returns {/*starttransition-returns*/}
+#### 返回值 {/*starttransition-returns*/}
 
-`startTransition` does not return anything.
+`startTransition` 不返回任何内容。
 
-#### Caveats {/*starttransition-caveats*/}
+#### 注意事项 {/*starttransition-caveats*/}
 
-* `useTransition` is a Hook, so it can only be called inside components or custom Hooks. If you need to start a Transition somewhere else (for example, from a data library), call the standalone [`startTransition`](/reference/react/startTransition) instead.
+* `useTransition` 是一个 Hook，因此它只能在组件或自定义 Hook 内部调用。如果你需要在别处启动 Transition（例如从数据库中），请改用独立的 [`startTransition`](/reference/react/startTransition)。
 
-* You can wrap an update into a Transition only if you have access to the `set` function of that state. If you want to start a Transition in response to some prop or a custom Hook value, try [`useDeferredValue`](/reference/react/useDeferredValue) instead.
+* 只有在你能够访问该状态的 `set` 函数时，才能将更新包装为 Transition。如果你想根据某个 prop 或自定义 Hook 的值启动 Transition，请尝试改用 [`useDeferredValue`](/reference/react/useDeferredValue)。
 
-* The function you pass to `startTransition` is called immediately, marking all state updates that happen while it executes as Transitions. If you try to perform state updates in a `setTimeout`, for example, they won't be marked as Transitions.
+* 传递给 `startTransition` 的函数会立即被调用，凡是在其执行期间发生的所有状态更新都会被标记为 Transitions。比如，如果你尝试在 `setTimeout` 中执行状态更新，它们就不会被标记为 Transitions。
 
-* You must wrap any state updates after any async requests in another `startTransition` to mark them as Transitions. This is a known limitation that we will fix in the future (see [Troubleshooting](#react-doesnt-treat-my-state-update-after-await-as-a-transition)).
+* 你必须将任何异步请求后的状态更新再包裹在另一个 `startTransition` 中，才能将它们标记为 Transitions。这是一个已知限制，我们会在未来修复（参见[故障排除](#react-doesnt-treat-my-state-update-after-await-as-a-transition)）。
 
-* The `startTransition` function has a stable identity, so you will often see it omitted from Effect dependencies, but including it will not cause the Effect to fire. If the linter lets you omit a dependency without errors, it is safe to do. [Learn more about removing Effect dependencies.](/learn/removing-effect-dependencies#move-dynamic-objects-and-functions-inside-your-effect)
+* `startTransition` 函数具有稳定的身份，因此你经常会在 Effect 依赖项中看到它被省略，但把它包含进去也不会导致 Effect 触发。如果 linter 允许你省略某个依赖而不报错，那么这样做是安全的。[了解更多关于移除 Effect 依赖项的内容。](/learn/removing-effect-dependencies#move-dynamic-objects-and-functions-inside-your-effect)
 
-* A state update marked as a Transition will be interrupted by other state updates. For example, if you update a chart component inside a Transition, but then start typing into an input while the chart is in the middle of a re-render, React will restart the rendering work on the chart component after handling the input update.
+* 被标记为 Transition 的状态更新会被其他状态更新中断。比如，如果你在 Transition 中更新一个图表组件，但在图表重新渲染到一半时开始在输入框中输入，React 会在处理输入更新后重新开始图表组件的渲染工作。
 
-* Transition updates can't be used to control text inputs.
+* Transition 更新不能用于控制文本输入框。
 
-* If there are multiple ongoing Transitions, React currently batches them together. This is a limitation that may be removed in a future release.
+* 如果存在多个正在进行的 Transitions，React 目前会将它们批量合并。这是一个在未来版本中可能被移除的限制。
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Perform non-blocking updates with Actions {/*perform-non-blocking-updates-with-actions*/}
+### 使用 Actions 执行非阻塞更新 {/*perform-non-blocking-updates-with-actions*/}
 
-Call `useTransition` at the top of your component to create Actions, and access the pending state:
+在组件顶部调用 `useTransition` 来创建 Actions，并访问 pending 状态：
 
 ```js [[1, 4, "isPending"], [2, 4, "startTransition"]]
 import {useState, useTransition} from 'react';
@@ -134,12 +134,12 @@ function CheckoutForm() {
 }
 ```
 
-`useTransition` returns an array with exactly two items:
+`useTransition` 返回一个包含恰好两个项目的数组：
 
-1. The <CodeStep step={1}>`isPending` flag</CodeStep> that tells you whether there is a pending Transition.
-2. The <CodeStep step={2}>`startTransition` function</CodeStep> that lets you create an Action.
+1. <CodeStep step={1}>`isPending` 标志</CodeStep>，告诉你是否存在一个待处理的 Transition。
+2. <CodeStep step={2}>`startTransition` 函数</CodeStep>，让你创建一个 Action。
 
-To start a Transition, pass a function to `startTransition` like this:
+要启动一个 Transition，像这样向 `startTransition` 传入一个函数：
 
 ```js
 import {useState, useTransition} from 'react';
@@ -161,17 +161,17 @@ function CheckoutForm() {
 }
 ```
 
-The function passed to `startTransition` is called the "Action". You can update state and (optionally) perform side effects within an Action, and the work will be done in the background without blocking user interactions on the page. A Transition can include multiple Actions, and while a Transition is in progress, your UI stays responsive. For example, if the user clicks a tab but then changes their mind and clicks another tab, the second click will be immediately handled without waiting for the first update to finish.
+传递给 `startTransition` 的函数被称为 “Action”。你可以在 Action 中更新状态，并且（可选地）执行副作用，这些工作会在后台完成，不会阻塞页面上的用户交互。一个 Transition 可以包含多个 Actions，而且在 Transition 进行期间，UI 会保持响应。例如，如果用户点击了一个标签页，然后又改变主意点击了另一个标签页，那么第二次点击会被立即处理，而无需等待第一次更新完成。
 
-To give the user feedback about in-progress Transitions, the `isPending` state switches to `true` at the first call to `startTransition`, and stays `true` until all Actions complete and the final state is shown to the user. Transitions ensure side effects in Actions to complete in order to [prevent unwanted loading indicators](#preventing-unwanted-loading-indicators), and you can provide immediate feedback while the Transition is in progress with `useOptimistic`.
+为了给用户提供正在进行中的 Transition 的反馈，`isPending` 状态会在第一次调用 `startTransition` 时切换为 `true`，并保持为 `true`，直到所有 Actions 都完成并且最终状态显示给用户。Transitions 会确保 Actions 中的副作用按顺序完成，以[防止不必要的加载指示器](#preventing-unwanted-loading-indicators)，并且你可以在 Transition 进行时使用 `useOptimistic` 提供即时反馈。
 
-<Recipes titleText="The difference between Actions and regular event handling">
+<Recipes titleText="Actions 与常规事件处理的区别">
 
-#### Updating the quantity in an Action {/*updating-the-quantity-in-an-action*/}
+#### 在 Action 中更新数量 {/*updating-the-quantity-in-an-action*/}
 
-In this example, the `updateQuantity` function simulates a request to the server to update the item's quantity in the cart. This function is *artificially slowed down* so that it takes at least a second to complete the request.
+在这个示例中，`updateQuantity` 函数模拟向服务器发送请求，以更新购物车中商品的数量。这个函数被*人为放慢*，因此请求至少需要一秒才能完成。
 
-Update the quantity multiple times quickly. Notice that the pending "Total" state is shown while any requests are in progress, and the "Total" updates only after the final request is complete. Because the update is in an Action, the "quantity" can continue to be updated while the request is in progress.
+快速多次更新数量。注意，在任何请求进行中时，pending 的 “Total” 状态会显示出来，而 “Total” 只会在最后一次请求完成后更新。由于更新是在 Action 中进行的，因此在请求进行期间，“quantity” 仍然可以继续更新。
 
 <Sandpack>
 
@@ -201,8 +201,8 @@ export default function App({}) {
   const [isPending, startTransition] = useTransition();
 
   const updateQuantityAction = async newQuantity => {
-    // To access the pending state of a transition,
-    // call startTransition again.
+    // 要访问 Transition 的 pending 状态，
+    // 再次调用 startTransition。
     startTransition(async () => {
       const savedQuantity = await updateQuantity(newQuantity);
       startTransition(() => {
@@ -213,7 +213,7 @@ export default function App({}) {
 
   return (
     <div>
-      <h1>Checkout</h1>
+      <h1>结账</h1>
       <Item action={updateQuantityAction}/>
       <hr />
       <Total quantity={quantity} isPending={isPending} />
@@ -227,15 +227,15 @@ import { startTransition } from "react";
 
 export default function Item({action}) {
   function handleChange(event) {
-    // To expose an action prop, await the callback in startTransition.
+    // 要暴露一个 action prop，请在 startTransition 中 await 该回调。
     startTransition(async () => {
       await action(event.target.value);
     })
   }
   return (
     <div className="item">
-      <span>Eras Tour Tickets</span>
-      <label htmlFor="name">Quantity: </label>
+      <span>Eras Tour 门票</span>
+      <label htmlFor="name">数量： </label>
       <input
         type="number"
         onChange={handleChange}
@@ -256,9 +256,9 @@ const intl = new Intl.NumberFormat("en-US", {
 export default function Total({quantity, isPending}) {
   return (
     <div className="total">
-      <span>Total:</span>
+      <span>总计：</span>
       <span>
-        {isPending ? "🌀 Updating..." : `${intl.format(quantity * 9999)}`}
+        {isPending ? "🌀 正在更新..." : `${intl.format(quantity * 9999)}`}
       </span>
     </div>
   )
@@ -268,7 +268,7 @@ export default function Total({quantity, isPending}) {
 ```js src/api.js
 export async function updateQuantity(newQuantity) {
   return new Promise((resolve, reject) => {
-    // Simulate a slow network request.
+    // 模拟一个缓慢的网络请求。
     setTimeout(() => {
       resolve(newQuantity);
     }, 2000);
@@ -305,22 +305,22 @@ export async function updateQuantity(newQuantity) {
 
 </Sandpack>
 
-This is a basic example to demonstrate how Actions work, but this example does not handle requests completing out of order. When updating the quantity multiple times, it's possible for the previous requests to finish after later requests causing the quantity to update out of order. This is a known limitation that we will fix in the future (see [Troubleshooting](#my-state-updates-in-transitions-are-out-of-order) below).
+这是一个演示 Actions 如何工作的基础示例，但它没有处理请求乱序完成的问题。当多次更新数量时，先前的请求有可能在后续请求之后完成，从而导致数量更新顺序错乱。这是一个已知限制，我们会在未来修复（见下方[故障排除](#my-state-updates-in-transitions-are-out-of-order)）。
 
-For common use cases, React provides built-in abstractions such as:
+对于常见用例，React 提供了内置抽象，例如：
 - [`useActionState`](/reference/react/useActionState)
 - [`<form>` actions](/reference/react-dom/components/form)
 - [Server Functions](/reference/rsc/server-functions)
 
-These solutions handle request ordering for you. When using Transitions to build your own custom hooks or libraries that manage async state transitions, you have greater control over the request ordering, but you must handle it yourself.
+这些解决方案会帮你处理请求顺序问题。使用 Transitions 构建自己管理异步状态转换的自定义 Hook 或库时，你拥有更高的请求顺序控制能力，但需要自行处理。
 
 <Solution />
 
-#### Updating the quantity without an Action {/*updating-the-users-name-without-an-action*/}
+#### 不使用 Action 更新数量 {/*updating-the-users-name-without-an-action*/}
 
-In this example, the `updateQuantity` function also simulates a request to the server to update the item's quantity in the cart. This function is *artificially slowed down* so that it takes at least a second to complete the request.
+在这个示例中，`updateQuantity` 函数同样模拟了向服务器发送请求，以更新购物车中商品的数量。这个函数被*人为放慢*，因此请求至少需要一秒才能完成。
 
-Update the quantity multiple times quickly. Notice that the pending "Total" state is shown while any requests is in progress, but the "Total" updates multiple times for each time the "quantity" was clicked:
+快速多次更新数量。注意，在任何请求进行中时，pending 的 “Total” 状态会显示出来，但每次点击 “quantity” 时，“Total” 会更新多次：
 
 <Sandpack>
 
@@ -350,7 +350,7 @@ export default function App({}) {
   const [isPending, setIsPending] = useState(false);
 
   const onUpdateQuantity = async newQuantity => {
-    // Manually set the isPending State.
+    // 手动设置 isPending 状态。
     setIsPending(true);
     const savedQuantity = await updateQuantity(newQuantity);
     setIsPending(false);
@@ -359,7 +359,7 @@ export default function App({}) {
 
   return (
     <div>
-      <h1>Checkout</h1>
+      <h1>结账</h1>
       <Item onUpdateQuantity={onUpdateQuantity}/>
       <hr />
       <Total quantity={quantity} isPending={isPending} />
@@ -376,8 +376,8 @@ export default function Item({onUpdateQuantity}) {
   }
   return (
     <div className="item">
-      <span>Eras Tour Tickets</span>
-      <label htmlFor="name">Quantity: </label>
+      <span>Eras Tour 门票</span>
+      <label htmlFor="name">数量： </label>
       <input
         type="number"
         onChange={handleChange}
@@ -398,9 +398,9 @@ const intl = new Intl.NumberFormat("en-US", {
 export default function Total({quantity, isPending}) {
   return (
     <div className="total">
-      <span>Total:</span>
+      <span>总计：</span>
       <span>
-        {isPending ? "🌀 Updating..." : `${intl.format(quantity * 9999)}`}
+        {isPending ? "🌀 正在更新..." : `${intl.format(quantity * 9999)}`}
       </span>
     </div>
   )
@@ -410,7 +410,7 @@ export default function Total({quantity, isPending}) {
 ```js src/api.js
 export async function updateQuantity(newQuantity) {
   return new Promise((resolve, reject) => {
-    // Simulate a slow network request.
+    // 模拟一个缓慢的网络请求。
     setTimeout(() => {
       resolve(newQuantity);
     }, 2000);
@@ -447,7 +447,7 @@ export async function updateQuantity(newQuantity) {
 
 </Sandpack>
 
-A common solution to this problem is to prevent the user from making changes while the quantity is updating:
+解决这个问题的一种常见方法是在数量更新期间阻止用户进行更改：
 
 <Sandpack>
 
@@ -478,7 +478,7 @@ export default function App({}) {
 
   const onUpdateQuantity = async event => {
     const newQuantity = event.target.value;
-    // Manually set the isPending state.
+    // 手动设置 isPending 状态。
     setIsPending(true);
     const savedQuantity = await updateQuantity(newQuantity);
     setIsPending(false);
@@ -487,7 +487,7 @@ export default function App({}) {
 
   return (
     <div>
-      <h1>Checkout</h1>
+      <h1>结账</h1>
       <Item isPending={isPending} onUpdateQuantity={onUpdateQuantity}/>
       <hr />
       <Total quantity={quantity} isPending={isPending} />
@@ -501,8 +501,8 @@ export default function App({}) {
 export default function Item({isPending, onUpdateQuantity}) {
   return (
     <div className="item">
-      <span>Eras Tour Tickets</span>
-      <label htmlFor="name">Quantity: </label>
+      <span>Eras Tour 门票</span>
+      <label htmlFor="name">数量： </label>
       <input
         type="number"
         disabled={isPending}
@@ -524,9 +524,9 @@ const intl = new Intl.NumberFormat("en-US", {
 export default function Total({quantity, isPending}) {
   return (
     <div className="total">
-      <span>Total:</span>
+      <span>总计：</span>
       <span>
-        {isPending ? "🌀 Updating..." : `${intl.format(quantity * 9999)}`}
+        {isPending ? "🌀 正在更新..." : `${intl.format(quantity * 9999)}`}
       </span>
     </div>
   )
@@ -536,7 +536,7 @@ export default function Total({quantity, isPending}) {
 ```js src/api.js
 export async function updateQuantity(newQuantity) {
   return new Promise((resolve, reject) => {
-    // Simulate a slow network request.
+    // 模拟一个缓慢的网络请求。
     setTimeout(() => {
       resolve(newQuantity);
     }, 2000);
@@ -573,7 +573,7 @@ export async function updateQuantity(newQuantity) {
 
 </Sandpack>
 
-This solution makes the app feel slow, because the user must wait each time they update the quantity. It's possible to add more complex handling manually to allow the user to interact with the UI while the quantity is updating, but Actions handle this case with a straight-forward built-in API.
+这个解决方案会让应用显得很慢，因为用户每次更新数量都必须等待。你可以手动添加更复杂的处理逻辑，让用户在数量更新时仍能与 UI 交互，但 Actions 通过一个简单直接的内置 API 处理了这个场景。
 
 <Solution />
 
@@ -581,11 +581,11 @@ This solution makes the app feel slow, because the user must wait each time they
 
 ---
 
-### Exposing `action` prop from components {/*exposing-action-props-from-components*/}
+### 从组件中暴露 `action` prop {/*exposing-action-props-from-components*/}
 
-You can expose an `action` prop from a component to allow a parent to call an Action.
+你可以从组件中暴露一个 `action` prop，让父组件可以调用一个 Action。
 
-For example, this `TabButton` component wraps its `onClick` logic in an `action` prop:
+例如，这个 `TabButton` 组件将其 `onClick` 逻辑封装在一个 `action` prop 中：
 
 ```js {8-12}
 export default function TabButton({ action, children, isActive }) {
@@ -596,8 +596,8 @@ export default function TabButton({ action, children, isActive }) {
   return (
     <button onClick={() => {
       startTransition(async () => {
-        // await the action that's passed in.
-        // This allows it to be either sync or async.
+        // 等待传入的 action。
+        // 这样它既可以是同步的，也可以是异步的。
         await action();
       });
     }}>
@@ -607,7 +607,7 @@ export default function TabButton({ action, children, isActive }) {
 }
 ```
 
-Because the parent component updates its state inside the `action`, that state update gets marked as a Transition. This means you can click on "Posts" and then immediately click "Contact" and it does not block user interactions:
+由于父组件在 `action` 中更新其状态，该状态更新会被标记为 Transition。这意味着你可以点击 “Posts”，然后立刻点击 “Contact”，而不会阻塞用户交互：
 
 <Sandpack>
 
@@ -663,8 +663,8 @@ export default function TabButton({ action, children, isActive }) {
   return (
     <button onClick={async () => {
       startTransition(async () => {
-        // await the action that's passed in.
-        // This allows it to be either sync or async.
+        // 等待传入的 action。
+        // 这样它既可以是同步的，也可以是异步的。
         await action();
       });
     }}>
@@ -677,7 +677,7 @@ export default function TabButton({ action, children, isActive }) {
 ```js src/AboutTab.js
 export default function AboutTab() {
   return (
-    <p>Welcome to my profile!</p>
+    <p>欢迎来到我的个人主页！</p>
   );
 }
 ```
@@ -686,7 +686,7 @@ export default function AboutTab() {
 import { memo } from 'react';
 
 const PostsTab = memo(function PostsTab() {
-  // Log once. The actual slowdown is inside SlowPost.
+  // 记录一次日志。实际的变慢发生在 SlowPost 内部。
   console.log('[ARTIFICIALLY SLOW] Rendering 500 <SlowPost />');
 
   let items = [];
@@ -703,7 +703,7 @@ const PostsTab = memo(function PostsTab() {
 function SlowPost({ index }) {
   let startTime = performance.now();
   while (performance.now() - startTime < 1) {
-    // Do nothing for 1 ms per item to emulate extremely slow code
+    // 每个项目空转 1 ms，以模拟极慢的代码
   }
 
   return (
@@ -721,7 +721,7 @@ export default function ContactTab() {
   return (
     <>
       <p>
-        You can find me online here:
+        你可以在这里找到我：
       </p>
       <ul>
         <li>admin@mysite.com</li>
@@ -742,17 +742,17 @@ b { display: inline-block; margin-right: 10px; }
 
 <Note>
 
-When exposing an `action` prop from a component, you should `await` it inside the transition.
+当从组件中暴露一个 `action` prop 时，你应该在 transition 内部 `await` 它。
 
-This allows the `action` callback to be either synchronous or asynchronous without requiring an additional `startTransition` to wrap the `await` in the action.
+这样 `action` 回调既可以是同步的，也可以是异步的，而不需要在 action 内部再用额外的 `startTransition` 去包裹 `await`。
 
 </Note>
 
 ---
 
-### Displaying a pending visual state {/*displaying-a-pending-visual-state*/}
+### 显示 pending 的视觉状态 {/*displaying-a-pending-visual-state*/}
 
-You can use the `isPending` boolean value returned by `useTransition` to indicate to the user that a Transition is in progress. For example, the tab button can have a special "pending" visual state:
+你可以使用 `useTransition` 返回的 `isPending` 布尔值来向用户指示一个 Transition 正在进行中。例如，标签按钮可以有一个特殊的 “pending” 视觉状态：
 
 ```js {4-6}
 function TabButton({ action, children, isActive }) {
@@ -764,7 +764,7 @@ function TabButton({ action, children, isActive }) {
   // ...
 ```
 
-Notice how clicking "Posts" now feels more responsive because the tab button itself updates right away:
+注意，现在点击 “Posts” 感觉更灵敏了，因为标签按钮本身会立即更新：
 
 <Sandpack>
 
@@ -832,7 +832,7 @@ export default function TabButton({ action, children, isActive }) {
 ```js src/AboutTab.js
 export default function AboutTab() {
   return (
-    <p>Welcome to my profile!</p>
+    <p>欢迎来到我的个人主页！</p>
   );
 }
 ```
@@ -841,7 +841,7 @@ export default function AboutTab() {
 import { memo } from 'react';
 
 const PostsTab = memo(function PostsTab() {
-  // Log once. The actual slowdown is inside SlowPost.
+  // 记录一次日志。实际的变慢发生在 SlowPost 内部。
   console.log('[ARTIFICIALLY SLOW] Rendering 500 <SlowPost />');
 
   let items = [];
@@ -858,7 +858,7 @@ const PostsTab = memo(function PostsTab() {
 function SlowPost({ index }) {
   let startTime = performance.now();
   while (performance.now() - startTime < 1) {
-    // Do nothing for 1 ms per item to emulate extremely slow code
+    // 每个项目空转 1 ms，以模拟极慢的代码
   }
 
   return (
@@ -876,7 +876,7 @@ export default function ContactTab() {
   return (
     <>
       <p>
-        You can find me online here:
+        你可以在这里找到我：
       </p>
       <ul>
         <li>admin@mysite.com</li>
@@ -897,9 +897,9 @@ b { display: inline-block; margin-right: 10px; }
 
 ---
 
-### Preventing unwanted loading indicators {/*preventing-unwanted-loading-indicators*/}
+### 防止不必要的加载指示器 {/*preventing-unwanted-loading-indicators*/}
 
-In this example, the `PostsTab` component fetches some data using [use](/reference/react/use). When you click the "Posts" tab, the `PostsTab` component *suspends*, causing the closest loading fallback to appear:
+在这个示例中，`PostsTab` 组件使用 [use](/reference/react/use) 获取一些数据。当你点击 “Posts” 标签时，`PostsTab` 组件会*挂起*，导致最近的加载 fallback 出现：
 
 <Sandpack>
 
@@ -913,7 +913,7 @@ import ContactTab from './ContactTab.js';
 export default function TabContainer() {
   const [tab, setTab] = useState('about');
   return (
-    <Suspense fallback={<h1>🌀 Loading...</h1>}>
+    <Suspense fallback={<h1>🌀 正在加载...</h1>}>
       <TabButton
         isActive={tab === 'about'}
         action={() => setTab('about')}
@@ -959,7 +959,7 @@ export default function TabButton({ action, children, isActive }) {
 ```js src/AboutTab.js hidden
 export default function AboutTab() {
   return (
-    <p>Welcome to my profile!</p>
+    <p>欢迎来到我的个人主页！</p>
   );
 }
 ```
@@ -995,7 +995,7 @@ export default function ContactTab() {
   return (
     <>
       <p>
-        You can find me online here:
+        你可以在这里找到我：
       </p>
       <ul>
         <li>admin@mysite.com</li>
@@ -1008,9 +1008,9 @@ export default function ContactTab() {
 
 
 ```js src/data.js hidden
-// Note: the way you would do data fetching depends on
-// the framework that you use together with Suspense.
-// Normally, the caching logic would be inside a framework.
+// 注意：你如何进行数据获取取决于
+// 你与 Suspense 一起使用的框架。
+// 通常，缓存逻辑会在框架内部。
 
 let cache = new Map();
 
@@ -1030,7 +1030,7 @@ async function getData(url) {
 }
 
 async function getPosts() {
-  // Add a fake delay to make waiting noticeable.
+  // 增加一个假的延迟，让等待更明显。
   await new Promise(resolve => {
     setTimeout(resolve, 1000);
   });
@@ -1053,9 +1053,9 @@ b { display: inline-block; margin-right: 10px; }
 
 </Sandpack>
 
-Hiding the entire tab container to show a loading indicator leads to a jarring user experience. If you add `useTransition` to `TabButton`, you can instead display the pending state in the tab button instead.
+隐藏整个标签容器来显示加载指示器会让用户体验很突兀。如果你给 `TabButton` 添加 `useTransition`，就可以改为在标签按钮中显示 pending 状态。
 
-Notice that clicking "Posts" no longer replaces the entire tab container with a spinner:
+注意，点击 “Posts” 不再会用一个 spinner 替换整个标签容器：
 
 <Sandpack>
 
@@ -1069,7 +1069,7 @@ import ContactTab from './ContactTab.js';
 export default function TabContainer() {
   const [tab, setTab] = useState('about');
   return (
-    <Suspense fallback={<h1>🌀 Loading...</h1>}>
+    <Suspense fallback={<h1>🌀 正在加载...</h1>}>
       <TabButton
         isActive={tab === 'about'}
         action={() => setTab('about')}
@@ -1123,7 +1123,7 @@ export default function TabButton({ action, children, isActive }) {
 ```js src/AboutTab.js hidden
 export default function AboutTab() {
   return (
-    <p>Welcome to my profile!</p>
+    <p>欢迎来到我的个人主页！</p>
   );
 }
 ```
@@ -1159,7 +1159,7 @@ export default function ContactTab() {
   return (
     <>
       <p>
-        You can find me online here:
+        你可以在这里找到我：
       </p>
       <ul>
         <li>admin@mysite.com</li>
@@ -1172,9 +1172,9 @@ export default function ContactTab() {
 
 
 ```js src/data.js hidden
-// Note: the way you would do data fetching depends on
-// the framework that you use together with Suspense.
-// Normally, the caching logic would be inside a framework.
+// 注意：你如何进行数据获取取决于
+// 你与 Suspense 一起使用的框架。
+// 通常，缓存逻辑会在框架内部。
 
 let cache = new Map();
 
@@ -1194,7 +1194,7 @@ async function getData(url) {
 }
 
 async function getPosts() {
-  // Add a fake delay to make waiting noticeable.
+  // 增加一个假的延迟，让等待更明显。
   await new Promise(resolve => {
     setTimeout(resolve, 1000);
   });
@@ -1217,19 +1217,19 @@ b { display: inline-block; margin-right: 10px; }
 
 </Sandpack>
 
-[Read more about using Transitions with Suspense.](/reference/react/Suspense#preventing-already-revealed-content-from-hiding)
+[阅读更多关于在 Suspense 中使用 Transitions 的内容。](/reference/react/Suspense#preventing-already-revealed-content-from-hiding)
 
 <Note>
 
-Transitions only "wait" long enough to avoid hiding *already revealed* content (like the tab container). If the Posts tab had a [nested `<Suspense>` boundary,](/reference/react/Suspense#revealing-nested-content-as-it-loads) the Transition would not "wait" for it.
+Transitions 只会“等待”足够长的时间，以避免隐藏*已经揭示*的内容（比如标签容器）。如果 Posts 标签有一个[嵌套的 `<Suspense>` 边界，](/reference/react/Suspense#revealing-nested-content-as-it-loads)那么 Transition 就不会“等待”它。
 
 </Note>
 
 ---
 
-### Building a Suspense-enabled router {/*building-a-suspense-enabled-router*/}
+### 构建一个支持 Suspense 的路由器 {/*building-a-suspense-enabled-router*/}
 
-If you're building a React framework or a router, we recommend marking page navigations as Transitions.
+如果你正在构建一个 React 框架或路由器，我们建议将页面导航标记为 Transitions。
 
 ```js {3,6,8}
 function Router() {
@@ -1244,13 +1244,13 @@ function Router() {
   // ...
 ```
 
-This is recommended for three reasons:
+这样做有三个原因：
 
-- [Transitions are interruptible,](#perform-non-blocking-updates-with-actions) which lets the user click away without waiting for the re-render to complete.
-- [Transitions prevent unwanted loading indicators,](#preventing-unwanted-loading-indicators) which lets the user avoid jarring jumps on navigation.
-- [Transitions wait for all pending actions](#perform-non-blocking-updates-with-actions) which lets the user wait for side effects to complete before the new page is shown.
+- [Transitions 是可中断的，](#perform-non-blocking-updates-with-actions)这让用户无需等待重新渲染完成就能切换出去。
+- [Transitions 可防止不必要的加载指示器，](#preventing-unwanted-loading-indicators)这让用户在导航时避免突兀的跳转。
+- [Transitions 会等待所有待处理的 actions](#perform-non-blocking-updates-with-actions)，这让用户在新页面显示前等待副作用完成。
 
-Here is a simplified router example using Transitions for navigations.
+下面是一个使用 Transitions 进行导航的简化路由器示例。
 
 <Sandpack>
 
@@ -1301,7 +1301,7 @@ function Router() {
 }
 
 function BigSpinner() {
-  return <h2>🌀 Loading...</h2>;
+  return <h2>🌀 正在加载...</h2>;
 }
 ```
 
@@ -1326,7 +1326,7 @@ export default function Layout({ children, isPending }) {
 export default function IndexPage({ navigate }) {
   return (
     <button onClick={() => navigate('/the-beatles')}>
-      Open The Beatles artist page
+      打开 The Beatles 艺术家页面
     </button>
   );
 }
@@ -1406,9 +1406,9 @@ export default function Panel({ children }) {
 ```
 
 ```js src/data.js hidden
-// Note: the way you would do data fetching depends on
-// the framework that you use together with Suspense.
-// Normally, the caching logic would be inside a framework.
+// 注意：你如何进行数据获取取决于
+// 你与 Suspense 一起使用的框架。
+// 通常，缓存逻辑会在框架内部。
 
 let cache = new Map();
 
@@ -1430,19 +1430,19 @@ async function getData(url) {
 }
 
 async function getBio() {
-  // Add a fake delay to make waiting noticeable.
+  // 增加一个假的延迟，让等待更明显。
   await new Promise(resolve => {
     setTimeout(resolve, 500);
   });
 
-  return `The Beatles were an English rock band,
-    formed in Liverpool in 1960, that comprised
-    John Lennon, Paul McCartney, George Harrison
-    and Ringo Starr.`;
+  return `The Beatles 是一支英国摇滚乐队，
+    成立于 1960 年的利物浦，由
+    John Lennon、Paul McCartney、George Harrison
+    和 Ringo Starr 组成。`;
 }
 
 async function getAlbums() {
-  // Add a fake delay to make waiting noticeable.
+  // 增加一个假的延迟，让等待更明显。
   await new Promise(resolve => {
     setTimeout(resolve, 3000);
   });
@@ -1551,15 +1551,15 @@ main {
 
 <Note>
 
-[Suspense-enabled](/reference/react/Suspense) routers are expected to wrap the navigation updates into Transitions by default.
+[支持 Suspense 的](/reference/react/Suspense)路由器预期会默认将导航更新包装为 Transitions。
 
 </Note>
 
 ---
 
-### Displaying an error to users with an error boundary {/*displaying-an-error-to-users-with-error-boundary*/}
+### 使用错误边界向用户显示错误 {/*displaying-an-error-to-users-with-error-boundary*/}
 
-If a function passed to `startTransition` throws an error, you can display an error to your user with an [error boundary](/reference/react/Component#catching-rendering-errors-with-an-error-boundary). To use an error boundary, wrap the component where you are calling the `useTransition` in an error boundary. Once the function passed to `startTransition` errors, the fallback for the error boundary will be displayed.
+如果传递给 `startTransition` 的函数抛出错误，你可以使用 [error boundary](/reference/react/Component#catching-rendering-errors-with-an-error-boundary) 向用户显示错误。要使用 error boundary，请将调用 `useTransition` 的组件包裹在 error boundary 中。一旦传递给 `startTransition` 的函数出错，就会显示 error boundary 的 fallback。
 
 <Sandpack>
 
@@ -1569,16 +1569,16 @@ import { ErrorBoundary } from "react-error-boundary";
 
 export function AddCommentContainer() {
   return (
-    <ErrorBoundary fallback={<p>⚠️Something went wrong</p>}>
+    <ErrorBoundary fallback={<p>⚠️ 出了点问题</p>}>
       <AddCommentButton />
     </ErrorBoundary>
   );
 }
 
 function addComment(comment) {
-  // For demonstration purposes to show Error Boundary
+  // 为了演示以显示 Error Boundary
   if (comment == null) {
-    throw new Error("Example Error: An error thrown to trigger error boundary");
+    throw new Error("示例错误：抛出一个错误以触发 error boundary");
   }
 }
 
@@ -1590,13 +1590,13 @@ function AddCommentButton() {
       disabled={pending}
       onClick={() => {
         startTransition(() => {
-          // Intentionally not passing a comment
-          // so error gets thrown
+          // 故意不传入 comment
+          // 这样就会抛出错误
           addComment();
         });
       }}
     >
-      Add comment
+      添加评论
     </button>
   );
 }
@@ -1639,17 +1639,17 @@ root.render(
 
 ---
 
-## Troubleshooting {/*troubleshooting*/}
+## 故障排查 {/*troubleshooting*/}
 
-### Updating an input in a Transition doesn't work {/*updating-an-input-in-a-transition-doesnt-work*/}
+### 在 Transition 中更新输入框不起作用 {/*updating-an-input-in-a-transition-doesnt-work*/}
 
-You can't use a Transition for a state variable that controls an input:
+你不能对控制输入框的状态变量使用 Transition：
 
 ```js {4,10}
 const [text, setText] = useState('');
 // ...
 function handleChange(e) {
-  // ❌ Can't use Transitions for controlled input state
+  // ❌ 不能将 Transitions 用于受控输入的状态
   startTransition(() => {
     setText(e.target.value);
   });
@@ -1658,41 +1658,41 @@ function handleChange(e) {
 return <input value={text} onChange={handleChange} />;
 ```
 
-This is because Transitions are non-blocking, but updating an input in response to the change event should happen synchronously. If you want to run a Transition in response to typing, you have two options:
+这是因为 Transitions 是非阻塞的，但响应 change 事件来更新输入框应该同步发生。如果你想在输入时运行 Transition，有两种选择：
 
-1. You can declare two separate state variables: one for the input state (which always updates synchronously), and one that you will update in a Transition. This lets you control the input using the synchronous state, and pass the Transition state variable (which will "lag behind" the input) to the rest of your rendering logic.
-2. Alternatively, you can have one state variable, and add [`useDeferredValue`](/reference/react/useDeferredValue) which will "lag behind" the real value. It will trigger non-blocking re-renders to "catch up" with the new value automatically.
+1. 你可以声明两个独立的状态变量：一个用于输入框状态（始终同步更新），另一个用于在 Transition 中更新的状态。这样你就可以使用同步状态来控制输入框，并将 Transition 状态变量（它会“落后于”输入）传递给其余渲染逻辑。
+2. 另外，你也可以只使用一个状态变量，并添加 [`useDeferredValue`](/reference/react/useDeferredValue)，它会“落后于”真实值。它会自动触发非阻塞重渲染来“追上”新值。
 
 ---
 
-### React doesn't treat my state update as a Transition {/*react-doesnt-treat-my-state-update-as-a-transition*/}
+### React 没有把我的状态更新视为 Transition {/*react-doesnt-treat-my-state-update-as-a-transition*/}
 
-When you wrap a state update in a Transition, make sure that it happens *during* the `startTransition` call:
+当你把状态更新包裹在 Transition 中时，请确保它发生在 `startTransition` 调用*期间*：
 
 ```js
 startTransition(() => {
-  // ✅ Setting state *during* startTransition call
+  // ✅ 在 startTransition 调用*期间*设置状态
   setPage('/about');
 });
 ```
 
-The function you pass to `startTransition` must be synchronous. You can't mark an update as a Transition like this:
+你传给 `startTransition` 的函数必须是同步的。你不能像这样把更新标记为 Transition：
 
 ```js
 startTransition(() => {
-  // ❌ Setting state *after* startTransition call
+  // ❌ 在 startTransition 调用*之后*设置状态
   setTimeout(() => {
     setPage('/about');
   }, 1000);
 });
 ```
 
-Instead, you could do this:
+相反，你可以这样做：
 
 ```js
 setTimeout(() => {
   startTransition(() => {
-    // ✅ Setting state *during* startTransition call
+    // ✅ 在 startTransition 调用*期间*设置状态
     setPage('/about');
   });
 }, 1000);
@@ -1700,43 +1700,43 @@ setTimeout(() => {
 
 ---
 
-### React doesn't treat my state update after `await` as a Transition {/*react-doesnt-treat-my-state-update-after-await-as-a-transition*/}
+### React 没有把 `await` 之后的状态更新视为 Transition {/*react-doesnt-treat-my-state-update-after-await-as-a-transition*/}
 
-When you use `await` inside a `startTransition` function, the state updates that happen after the `await` are not marked as Transitions. You must wrap state updates after each `await` in a `startTransition` call:
+当你在 `startTransition` 函数内部使用 `await` 时，发生在 `await` 之后的状态更新不会被标记为 Transitions。你必须在每个 `await` 之后使用 `startTransition` 调用来包裹状态更新：
 
 ```js
 startTransition(async () => {
   await someAsyncFunction();
-  // ❌ Not using startTransition after await
+  // ❌ 在 await 之后没有使用 startTransition
   setPage('/about');
 });
 ```
 
-However, this works instead:
+不过，下面这样才可以：
 
 ```js
 startTransition(async () => {
   await someAsyncFunction();
-  // ✅ Using startTransition *after* await
+  // ✅ 在 await *之后* 使用 startTransition
   startTransition(() => {
     setPage('/about');
   });
 });
 ```
 
-This is a JavaScript limitation due to React losing the scope of the async context. In the future, when [AsyncContext](https://github.com/tc39/proposal-async-context) is available, this limitation will be removed.
+这是一个 JavaScript 限制，因为 React 会丢失 async 上下文的作用域。未来当 [AsyncContext](https://github.com/tc39/proposal-async-context) 可用时，这一限制将被移除。
 
 ---
 
-### I want to call `useTransition` from outside a component {/*i-want-to-call-usetransition-from-outside-a-component*/}
+### 我想在组件外部调用 `useTransition` {/*i-want-to-call-usetransition-from-outside-a-component*/}
 
-You can't call `useTransition` outside a component because it's a Hook. In this case, use the standalone [`startTransition`](/reference/react/startTransition) method instead. It works the same way, but it doesn't provide the `isPending` indicator.
+你不能在组件外部调用 `useTransition`，因为它是一个 Hook。在这种情况下，请改用独立的 [`startTransition`](/reference/react/startTransition) 方法。它的工作方式相同，但不会提供 `isPending` 指示器。
 
 ---
 
-### The function I pass to `startTransition` executes immediately {/*the-function-i-pass-to-starttransition-executes-immediately*/}
+### 我传给 `startTransition` 的函数会立即执行 {/*the-function-i-pass-to-starttransition-executes-immediately*/}
 
-If you run this code, it will print 1, 2, 3:
+如果你运行这段代码，它会打印 1、2、3：
 
 ```js {1,3,6}
 console.log(1);
@@ -1747,10 +1747,10 @@ startTransition(() => {
 console.log(3);
 ```
 
-**It is expected to print 1, 2, 3.** The function you pass to `startTransition` does not get delayed. Unlike with the browser `setTimeout`, it does not run the callback later. React executes your function immediately, but any state updates scheduled *while it is running* are marked as Transitions. You can imagine that it works like this:
+**它预期会打印 1、2、3。** 你传给 `startTransition` 的函数不会被延迟。与浏览器的 `setTimeout` 不同，它不会稍后再运行回调。React 会立即执行你的函数，但任何在其*运行期间*调度的状态更新都会被标记为 Transitions。你可以把它想象成这样：
 
 ```js
-// A simplified version of how React works
+// React 工作方式的简化版本
 
 let isInsideTransition = false;
 
@@ -1762,20 +1762,20 @@ function startTransition(scope) {
 
 function setState() {
   if (isInsideTransition) {
-    // ... schedule a Transition state update ...
+    // ... 调度一个 Transition 状态更新 ...
   } else {
-    // ... schedule an urgent state update ...
+    // ... 调度一个紧急状态更新 ...
   }
 }
 ```
 
-### My state updates in Transitions are out of order {/*my-state-updates-in-transitions-are-out-of-order*/}
+### 我在 Transitions 中的状态更新顺序乱了 {/*my-state-updates-in-transitions-are-out-of-order*/}
 
-If you `await` inside `startTransition`, you might see the updates happen out of order.
+如果你在 `startTransition` 中使用 `await`，你可能会看到更新顺序乱掉。
 
-In this example, the `updateQuantity` function simulates a request to the server to update the item's quantity in the cart. This function *artificially returns every other request after the previous* to simulate race conditions for network requests.
+在这个示例中，`updateQuantity` 函数模拟了向服务器请求更新购物车中商品数量的过程。这个函数*人为地让每隔一个请求都比上一个更晚返回*，以模拟网络请求的竞态条件。
 
-Try updating the quantity once, then update it quickly multiple times. You might see the incorrect total:
+试着更新一次数量，然后快速多次更新。你可能会看到错误的总价：
 
 <Sandpack>
 
@@ -1803,14 +1803,14 @@ import Total from "./Total";
 export default function App({}) {
   const [quantity, setQuantity] = useState(1);
   const [isPending, startTransition] = useTransition();
-  // Store the actual quantity in separate state to show the mismatch.
+  // 将实际数量存储在单独的状态中，以显示不匹配。
   const [clientQuantity, setClientQuantity] = useState(1);
 
   const updateQuantityAction = newQuantity => {
     setClientQuantity(newQuantity);
 
-    // Access the pending state of the transition,
-    // by wrapping in startTransition again.
+    // 通过再次包裹在 startTransition 中，
+    // 访问该 Transition 的 pending 状态。
     startTransition(async () => {
       const savedQuantity = await updateQuantity(newQuantity);
       startTransition(() => {
@@ -1836,7 +1836,7 @@ import {startTransition} from 'react';
 
 export default function Item({action}) {
   function handleChange(e) {
-    // Update the quantity in an Action.
+    // 在一个 Action 中更新数量。
     startTransition(async () => {
       await action(e.target.value);
     });
@@ -1892,7 +1892,7 @@ export async function updateQuantity(newName) {
       setTimeout(() => {
         firstRequest = true;
         resolve(newName);
-        // Simulate every other request being slower
+        // 模拟每隔一个请求都更慢
       }, 1000);
     } else {
       setTimeout(() => {
@@ -1943,12 +1943,12 @@ export async function updateQuantity(newName) {
 </Sandpack>
 
 
-When clicking multiple times, it's possible for previous requests to finish after later requests. When this happens, React currently has no way to know the intended order. This is because the updates are scheduled asynchronously, and React loses context of the order across the async boundary.
+当多次点击时，先前的请求有可能在后来的请求之后完成。当这种情况发生时，React 目前没有办法知道期望的顺序。这是因为更新是异步调度的，而 React 会在异步边界之间丢失顺序上下文。
 
-This is expected, because Actions within a Transition do not guarantee execution order. For common use cases, React provides higher-level abstractions like [`useActionState`](/reference/react/useActionState) and [`<form>` actions](/reference/react-dom/components/form) that handle ordering for you. For advanced use cases, you'll need to implement your own queuing and abort logic to handle this.
+这是预期行为，因为 Transition 中的 Action 不保证执行顺序。对于常见用例，React 提供了更高层的抽象，例如 [`useActionState`](/reference/react/useActionState) 和 [`<form>` actions](/reference/react-dom/components/form)，它们会帮你处理顺序。对于高级用例，你需要自己实现排队和中止逻辑来处理这一点。
 
 
-Example of `useActionState` handling execution order:
+`useActionState` 处理执行顺序的示例：
 
 <Sandpack>
 
@@ -1974,15 +1974,15 @@ import Item from "./Item";
 import Total from "./Total";
 
 export default function App({}) {
-  // Store the actual quantity in separate state to show the mismatch.
+  // 将实际数量存储在单独的状态中，以显示不匹配。
   const [clientQuantity, setClientQuantity] = useState(1);
   const [quantity, updateQuantityAction, isPending] = useActionState(
     async (prevState, payload) => {
       setClientQuantity(payload);
       const savedQuantity = await updateQuantity(payload);
-      return savedQuantity; // Return the new quantity to update the state
+      return savedQuantity; // 返回新数量以更新状态
     },
-    1 // Initial quantity
+    1 // 初始数量
   );
 
   return (
@@ -2002,7 +2002,7 @@ import {startTransition} from 'react';
 
 export default function Item({action}) {
   function handleChange(e) {
-    // Update the quantity in an Action.
+    // 在一个 Action 中更新数量。
     startTransition(() => {
       action(e.target.value);
     });
@@ -2058,7 +2058,7 @@ export async function updateQuantity(newName) {
       setTimeout(() => {
         firstRequest = true;
         resolve(newName);
-        // Simulate every other request being slower
+        // 模拟每隔一个请求都更慢
       }, 1000);
     } else {
       setTimeout(() => {

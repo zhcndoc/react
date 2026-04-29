@@ -1,32 +1,32 @@
 ---
-title: React Community
+title: React 社区
 ---
 
 <Intro>
 
-React has a community of millions of developers. On this page we've listed some React-related communities that you can be a part of; see the other pages in this section for additional online and in-person learning materials.
+React 拥有数百万开发者组成的社区。在本页中，我们列出了一些你可以参与的 React 相关社区；有关其他在线和线下学习资料，请参阅本节中的其他页面。
 
 </Intro>
 
-## Code of Conduct {/*code-of-conduct*/}
+## 行为准则 {/*code-of-conduct*/}
 
-Before participating in React's communities, [please read our Code of Conduct.](https://github.com/facebook/react/blob/main/CODE_OF_CONDUCT.md) We have adopted the [Contributor Covenant](https://www.contributor-covenant.org/) and we expect that all community members adhere to the guidelines within.
+在参与 React 社区之前，[请阅读我们的行为准则。](https://github.com/facebook/react/blob/main/CODE_OF_CONDUCT.md) 我们采用了 [Contributor Covenant](https://www.contributor-covenant.org/)，并且我们期望所有社区成员都遵守其中的准则。
 
 ## Stack Overflow {/*stack-overflow*/}
 
-Stack Overflow is a popular forum to ask code-level questions or if you're stuck with a specific error. Read through the [existing questions](https://stackoverflow.com/questions/tagged/reactjs) tagged with **reactjs** or [ask your own](https://stackoverflow.com/questions/ask?tags=reactjs)!
+Stack Overflow 是一个很受欢迎的论坛，适合提出代码级问题，或者在遇到特定错误时寻求帮助。你可以浏览标记为 **reactjs** 的[现有问题](https://stackoverflow.com/questions/tagged/reactjs)，或者[提出你自己的问题](https://stackoverflow.com/questions/ask?tags=reactjs)！
 
-## Popular Discussion Forums {/*popular-discussion-forums*/}
+## 热门讨论论坛 {/*popular-discussion-forums*/}
 
-There are many online forums which are a great place for discussion about best practices and application architecture as well as the future of React. If you have an answerable code-level question, Stack Overflow is usually a better fit.
+有许多在线论坛，非常适合讨论最佳实践、应用架构以及 React 的未来。如果你有一个可以回答的代码级问题，Stack Overflow 通常更合适。
 
-Each community consists of many thousands of React users.
+每个社区都由数以千计的 React 用户组成。
 
-* [DEV's React community](https://dev.to/t/react)
-* [Hashnode's React community](https://hashnode.com/n/reactjs)
-* [Reactiflux online chat](https://discord.gg/reactiflux)
-* [Reddit's React community](https://www.reddit.com/r/reactjs/)
+* [DEV 的 React 社区](https://dev.to/t/react)
+* [Hashnode 的 React 社区](https://hashnode.com/n/reactjs)
+* [Reactiflux 在线聊天](https://discord.gg/reactiflux)
+* [Reddit 的 React 社区](https://www.reddit.com/r/reactjs/)
 
-## News {/*news*/}
+## 新闻 {/*news*/}
 
-For the latest news about React, [follow **@reactjs** on Twitter](https://twitter.com/reactjs), [**@react.dev** on Bluesky](https://bsky.app/profile/react.dev) and the [official React blog](/blog/) on this website.
+如需了解 React 的最新消息，请在 Twitter 上[关注 **@reactjs**](https://twitter.com/reactjs)，在 Bluesky 上[关注 **@react.dev**](https://bsky.app/profile/react.dev)，以及关注本网站上的[官方 React 博客](/blog/)。

@@ -1,11 +1,11 @@
 <Intro>
 
-In the minified production build of React, we avoid sending down full error messages in order to reduce the number of bytes sent over the wire.
+在 React 的压缩版生产构建中，我们会避免发送完整的错误消息，以减少通过网络传输的字节数。
 
 </Intro>
 
-We highly recommend using the development build locally when debugging your app since it tracks additional debug info and provides helpful warnings about potential problems in your apps, but if you encounter an exception while using the production build, this page will reassemble the original error message.
+我们强烈建议你在本地调试应用时使用开发版构建，因为它会跟踪额外的调试信息，并针对应用中的潜在问题提供有用的警告；但如果你在使用生产版构建时遇到异常，此页面将还原原始的错误消息。
 
-The full text of the error you just encountered is:
+你刚刚遇到的错误完整文本是：
 
 <ErrorDecoder />

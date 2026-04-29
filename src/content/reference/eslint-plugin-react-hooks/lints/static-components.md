@@ -4,30 +4,30 @@ title: static-components
 
 <Intro>
 
-Validates that components are static, not recreated every render. Components that are recreated dynamically can reset state and trigger excessive re-rendering.
+验证组件是静态的，而不是在每次渲染时都重新创建。动态重新创建的组件可能会重置状态并触发过多的重新渲染。
 
 </Intro>
 
-## Rule Details {/*rule-details*/}
+## 规则详情 {/*rule-details*/}
 
-Components defined inside other components are recreated on every render. React sees each as a brand new component type, unmounting the old one and mounting the new one, destroying all state and DOM nodes in the process.
+在其他组件内部定义的组件会在每次渲染时重新创建。React 会将它们视为全新的组件类型，卸载旧组件并挂载新组件，在此过程中销毁所有状态和 DOM 节点。
 
-### Invalid {/*invalid*/}
+### 无效 {/*invalid*/}
 
-Examples of incorrect code for this rule:
+此规则的错误代码示例：
 
 ```js
-// ❌ Component defined inside component
+// ❌ 在组件内部定义组件
 function Parent() {
-  const ChildComponent = () => { // New component every render!
+  const ChildComponent = () => { // 每次渲染都是新组件！
     const [count, setCount] = useState(0);
     return <button onClick={() => setCount(count + 1)}>{count}</button>;
   };
 
-  return <ChildComponent />; // State resets every render
+  return <ChildComponent />; // 状态会在每次渲染时重置
 }
 
-// ❌ Dynamic component creation
+// ❌ 动态创建组件
 function Parent({type}) {
   const Component = type === 'button'
     ? () => <button>Click</button>
@@ -37,39 +37,39 @@ function Parent({type}) {
 }
 ```
 
-### Valid {/*valid*/}
+### 有效 {/*valid*/}
 
-Examples of correct code for this rule:
+此规则的正确代码示例：
 
 ```js
-// ✅ Components at module level
+// ✅ 组件位于模块级别
 const ButtonComponent = () => <button>Click</button>;
 const TextComponent = () => <div>Text</div>;
 
 function Parent({type}) {
   const Component = type === 'button'
-    ? ButtonComponent  // Reference existing component
+    ? ButtonComponent  // 引用现有组件
     : TextComponent;
 
   return <Component />;
 }
 ```
 
-## Troubleshooting {/*troubleshooting*/}
+## 故障排查 {/*troubleshooting*/}
 
-### I need to render different components conditionally {/*conditional-components*/}
+### 我需要有条件地渲染不同的组件 {/*conditional-components*/}
 
-You might define components inside to access local state:
+你可能会在内部定义组件以访问本地状态：
 
 ```js {expectedErrors: {'react-compiler': [13]}}
-// ❌ Wrong: Inner component to access parent state
+// ❌ 错误：使用内部组件访问父组件状态
 function Parent() {
   const [theme, setTheme] = useState('light');
 
-  function ThemedButton() { // Recreated every render!
+  function ThemedButton() { // 每次渲染都会重新创建！
     return (
       <button className={theme}>
-        Click me
+        点击我
       </button>
     );
   }
@@ -78,14 +78,14 @@ function Parent() {
 }
 ```
 
-Pass data as props instead:
+改为将数据作为 props 传递：
 
 ```js
-// ✅ Better: Pass props to static component
+// ✅ 更好：将 props 传递给静态组件
 function ThemedButton({theme}) {
   return (
     <button className={theme}>
-      Click me
+      点击我
     </button>
   );
 }
@@ -98,6 +98,6 @@ function Parent() {
 
 <Note>
 
-If you find yourself wanting to define components inside other components to access local variables, that's a sign you should be passing props instead. This makes components more reusable and testable.
+如果你发现自己想在其他组件内部定义组件来访问本地变量，这表明你应该改为传递 props。这样可以让组件更易复用和测试。
 
 </Note>

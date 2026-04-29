@@ -5,36 +5,36 @@ version: rc
 
 <Intro>
 
-`eslint-plugin-react-hooks` provides ESLint rules to enforce the [Rules of React](/reference/rules).
+`eslint-plugin-react-hooks` 提供 ESLint 规则来强制执行 [React 规则](/reference/rules)。
 
 </Intro>
 
-This plugin helps you catch violations of React's rules at build time, ensuring your components and hooks follow React's rules for correctness and performance. The lints cover both fundamental React patterns (exhaustive-deps and rules-of-hooks) and issues flagged by React Compiler. React Compiler diagnostics are automatically surfaced by this ESLint plugin, and can be used even if your app hasn't adopted the compiler yet.
+这个插件帮助你在构建时捕获对 React 规则的违反，确保你的组件和 hooks 遵循 React 的正确性和性能规则。这些 lint 检查涵盖了基础的 React 模式（exhaustive-deps 和 rules-of-hooks）以及由 React Compiler 标记的问题。React Compiler 的诊断会通过这个 ESLint 插件自动显示，即使你的应用尚未采用 compiler，也可以使用。
 
 <Note>
-When the compiler reports a diagnostic, it means that the compiler was able to statically detect a pattern that is not supported or breaks the Rules of React. When it detects this, it **automatically** skips over those components and hooks, while keeping the rest of your app compiled. This ensures optimal coverage of safe optimizations that won't break your app.
+当 compiler 报告一条诊断时，这意味着 compiler 能够静态检测到一种不受支持或违反 React 规则的模式。检测到这种情况时，它会**自动**跳过这些组件和 hooks，同时保持你应用的其余部分继续编译。这确保了可安全优化内容的最佳覆盖率，而不会破坏你的应用。
 
-What this means for linting, is that you don’t need to fix all violations immediately. Address them at your own pace to gradually increase the number of optimized components.
+这对 lint 检查意味着，你不需要立即修复所有违反项。你可以按自己的节奏逐步处理它们，以渐进增加经过优化的组件数量。
 </Note>
 
-## Recommended Rules {/*recommended*/}
+## 推荐规则 {/*recommended*/}
 
-These rules are included in the `recommended` preset in `eslint-plugin-react-hooks`:
+这些规则包含在 `eslint-plugin-react-hooks` 的 `recommended` 预设中：
 
-* [`exhaustive-deps`](/reference/eslint-plugin-react-hooks/lints/exhaustive-deps) - Validates that dependency arrays for React hooks contain all necessary dependencies
-* [`rules-of-hooks`](/reference/eslint-plugin-react-hooks/lints/rules-of-hooks) - Validates that components and hooks follow the Rules of Hooks
-* [`component-hook-factories`](/reference/eslint-plugin-react-hooks/lints/component-hook-factories) - Validates higher order functions defining nested components or hooks
-* [`config`](/reference/eslint-plugin-react-hooks/lints/config) - Validates the compiler configuration options
-* [`error-boundaries`](/reference/eslint-plugin-react-hooks/lints/error-boundaries) - Validates usage of Error Boundaries instead of try/catch for child errors
-* [`gating`](/reference/eslint-plugin-react-hooks/lints/gating) - Validates configuration of gating mode
-* [`globals`](/reference/eslint-plugin-react-hooks/lints/globals) - Validates against assignment/mutation of globals during render
-* [`immutability`](/reference/eslint-plugin-react-hooks/lints/immutability) - Validates against mutating props, state, and other immutable values
-* [`incompatible-library`](/reference/eslint-plugin-react-hooks/lints/incompatible-library) - Validates against usage of libraries which are incompatible with memoization
-* [`preserve-manual-memoization`](/reference/eslint-plugin-react-hooks/lints/preserve-manual-memoization) - Validates that existing manual memoization is preserved by the compiler
-* [`purity`](/reference/eslint-plugin-react-hooks/lints/purity) - Validates that components/hooks are pure by checking known-impure functions
-* [`refs`](/reference/eslint-plugin-react-hooks/lints/refs) - Validates correct usage of refs, not reading/writing during render
-* [`set-state-in-effect`](/reference/eslint-plugin-react-hooks/lints/set-state-in-effect) - Validates against calling setState synchronously in an effect
-* [`set-state-in-render`](/reference/eslint-plugin-react-hooks/lints/set-state-in-render) - Validates against setting state during render
-* [`static-components`](/reference/eslint-plugin-react-hooks/lints/static-components) - Validates that components are static, not recreated every render
-* [`unsupported-syntax`](/reference/eslint-plugin-react-hooks/lints/unsupported-syntax) - Validates against syntax that React Compiler does not support
-* [`use-memo`](/reference/eslint-plugin-react-hooks/lints/use-memo) - Validates usage of the `useMemo` hook without a return value
+* [`exhaustive-deps`](/reference/eslint-plugin-react-hooks/lints/exhaustive-deps) - 验证 React hooks 的依赖数组是否包含所有必要的依赖项
+* [`rules-of-hooks`](/reference/eslint-plugin-react-hooks/lints/rules-of-hooks) - 验证组件和 hooks 是否遵循 Hooks 规则
+* [`component-hook-factories`](/reference/eslint-plugin-react-hooks/lints/component-hook-factories) - 验证定义嵌套组件或 hooks 的高阶函数
+* [`config`](/reference/eslint-plugin-react-hooks/lints/config) - 验证 compiler 配置选项
+* [`error-boundaries`](/reference/eslint-plugin-react-hooks/lints/error-boundaries) - 验证在子错误处理中使用 Error Boundaries，而不是 try/catch
+* [`gating`](/reference/eslint-plugin-react-hooks/lints/gating) - 验证 gating 模式的配置
+* [`globals`](/reference/eslint-plugin-react-hooks/lints/globals) - 验证在渲染期间对全局变量的赋值/修改
+* [`immutability`](/reference/eslint-plugin-react-hooks/lints/immutability) - 验证不要修改 props、state 和其他不可变值
+* [`incompatible-library`](/reference/eslint-plugin-react-hooks/lints/incompatible-library) - 验证不要使用与 memoization 不兼容的库
+* [`preserve-manual-memoization`](/reference/eslint-plugin-react-hooks/lints/preserve-manual-memoization) - 验证 compiler 保留现有的手动 memoization
+* [`purity`](/reference/eslint-plugin-react-hooks/lints/purity) - 通过检查已知的不纯函数来验证组件/hooks 是否是纯的
+* [`refs`](/reference/eslint-plugin-react-hooks/lints/refs) - 验证 refs 的正确使用，不要在渲染期间读取/写入
+* [`set-state-in-effect`](/reference/eslint-plugin-react-hooks/lints/set-state-in-effect) - 验证不要在 effect 中同步调用 setState
+* [`set-state-in-render`](/reference/eslint-plugin-react-hooks/lints/set-state-in-render) - 验证不要在渲染期间设置 state
+* [`static-components`](/reference/eslint-plugin-react-hooks/lints/static-components) - 验证组件是静态的，不会在每次渲染时重新创建
+* [`unsupported-syntax`](/reference/eslint-plugin-react-hooks/lints/unsupported-syntax) - 验证不要使用 React Compiler 不支持的语法
+* [`use-memo`](/reference/eslint-plugin-react-hooks/lints/use-memo) - 验证 `useMemo` hook 的使用是否没有返回值

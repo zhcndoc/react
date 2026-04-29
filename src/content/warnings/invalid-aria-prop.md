@@ -1,11 +1,11 @@
 ---
-title: Invalid ARIA Prop Warning
+title: 无效的 ARIA 属性警告
 ---
 
-This warning will fire if you attempt to render a DOM element with an `aria-*` prop that does not exist in the Web Accessibility Initiative (WAI) Accessible Rich Internet Application (ARIA) [specification](https://www.w3.org/TR/wai-aria-1.1/#states_and_properties).
+如果你尝试渲染一个带有 `aria-*` 属性的 DOM 元素，而该属性并不存在于 Web Accessibility Initiative（WAI）Accessible Rich Internet Application（ARIA）[规范](https://www.w3.org/TR/wai-aria-1.1/#states_and_properties)中，就会触发此警告。
 
-1. If you feel that you are using a valid prop, check the spelling carefully. `aria-labelledby` and `aria-activedescendant` are often misspelled.
+1. 如果你认为自己使用的是一个有效的属性，请仔细检查拼写。`aria-labelledby` 和 `aria-activedescendant` 经常被拼错。
 
-2. If you wrote `aria-role`, you may have meant `role`.
+2. 如果你写的是 `aria-role`，你可能想写的是 `role`。
 
-3. Otherwise, if you're on the latest version of React DOM and verified that you're using a valid property name listed in the ARIA specification, please [report a bug](https://github.com/facebook/react/issues/new/choose).
+3. 否则，如果你使用的是最新版本的 React DOM，并且已经确认你使用的是 ARIA 规范中列出的有效属性名，请[报告一个 bug](https://github.com/facebook/react/issues/new/choose)。

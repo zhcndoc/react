@@ -1,31 +1,31 @@
 ---
-title: Sharing State Between Components
+title: 组件之间共享状态
 ---
 
 <Intro>
 
-Sometimes, you want the state of two components to always change together. To do it, remove state from both of them, move it to their closest common parent, and then pass it down to them via props. This is known as *lifting state up,* and it's one of the most common things you will do writing React code.
+有时，你希望两个组件的状态总是一起变化。要做到这一点，把这两个组件中的状态移除，将它提升到它们最近的共同父组件中，然后通过 props 传递给它们。这被称为 *状态提升*，而且这是你在编写 React 代码时最常做的事情之一。
 
 </Intro>
 
 <YouWillLearn>
 
-- How to share state between components by lifting it up
-- What are controlled and uncontrolled components
+- 如何通过提升状态来在组件之间共享状态
+- 什么是受控组件和非受控组件
 
 </YouWillLearn>
 
-## Lifting state up by example {/*lifting-state-up-by-example*/}
+## 通过示例提升状态 {/*lifting-state-up-by-example*/}
 
-In this example, a parent `Accordion` component renders two separate `Panel`s:
+在这个示例中，父级 `Accordion` 组件渲染两个独立的 `Panel`：
 
 * `Accordion`
   - `Panel`
   - `Panel`
 
-Each `Panel` component has a boolean `isActive` state that determines whether its content is visible.
+每个 `Panel` 组件都有一个布尔类型的 `isActive` 状态，用来决定其内容是否可见。
 
-Press the Show button for both panels:
+点击两个面板的 Show 按钮：
 
 <Sandpack>
 
@@ -41,7 +41,7 @@ function Panel({ title, children }) {
         <p>{children}</p>
       ) : (
         <button onClick={() => setIsActive(true)}>
-          Show
+          显示
         </button>
       )}
     </section>
@@ -51,12 +51,12 @@ function Panel({ title, children }) {
 export default function Accordion() {
   return (
     <>
-      <h2>Almaty, Kazakhstan</h2>
-      <Panel title="About">
-        With a population of about 2 million, Almaty is Kazakhstan's largest city. From 1929 to 1997, it was its capital city.
+      <h2>阿拉木图，哈萨克斯坦</h2>
+      <Panel title="关于">
+        阿拉木图人口约 200 万，是哈萨克斯坦最大的城市。1929 年到 1997 年间，它曾是哈萨克斯坦的首都。
       </Panel>
-      <Panel title="Etymology">
-        The name comes from <span lang="kk-KZ">алма</span>, the Kazakh word for "apple" and is often translated as "full of apples". In fact, the region surrounding Almaty is thought to be the ancestral home of the apple, and the wild <i lang="la">Malus sieversii</i> is considered a likely candidate for the ancestor of the modern domestic apple.
+      <Panel title="词源">
+        这个名字来自 <span lang="kk-KZ">алма</span>，这是哈萨克语中“苹果”的意思，通常被翻译为“苹果之都”。实际上，阿拉木图周边地区被认为是苹果的祖先家园，而野生的 <i lang="la">Malus sieversii</i> 被认为很可能是现代栽培苹果的祖先。
       </Panel>
     </>
   );
@@ -73,59 +73,59 @@ h3, p { margin: 5px 0px; }
 
 </Sandpack>
 
-Notice how pressing one panel's button does not affect the other panel--they are independent.
+注意，点击一个面板的按钮不会影响另一个面板——它们是相互独立的。
 
 <DiagramGroup>
 
-<Diagram name="sharing_state_child" height={367} width={477} alt="Diagram showing a tree of three components, one parent labeled Accordion and two children labeled Panel. Both Panel components contain isActive with value false.">
+<Diagram name="sharing_state_child" height={367} width={477} alt="图示显示一棵包含三个组件的树，一个父组件标记为 Accordion，两个子组件标记为 Panel。两个 Panel 组件都包含 isActive，值为 false。">
 
-Initially, each `Panel`'s `isActive` state is `false`, so they both appear collapsed
+最初，每个 `Panel` 的 `isActive` 状态都是 `false`，所以它们看起来都是折叠的
 
 </Diagram>
 
-<Diagram name="sharing_state_child_clicked" height={367} width={480} alt="The same diagram as the previous, with the isActive of the first child Panel component highlighted indicating a click with the isActive value set to true. The second Panel component still contains value false." >
+<Diagram name="sharing_state_child_clicked" height={367} width={480} alt="与前一个相同的图示，第一子级 Panel 组件的 isActive 被高亮，表示点击并将 isActive 值设为 true。第二个 Panel 组件仍然包含值 false。">
 
-Clicking either `Panel`'s button will only update that `Panel`'s `isActive` state alone
+点击任意一个 `Panel` 的按钮只会单独更新那个 `Panel` 的 `isActive` 状态
 
 </Diagram>
 
 </DiagramGroup>
 
-**But now let's say you want to change it so that only one panel is expanded at any given time.** With that design, expanding the second panel should collapse the first one. How would you do that?
+**但现在假设你想把它改成任意时刻都只能展开一个面板。** 按照这种设计，展开第二个面板时应该折叠第一个面板。你会怎么做？
 
-To coordinate these two panels, you need to "lift their state up" to a parent component in three steps:
+要协调这两个面板，你需要通过三个步骤把它们的“状态提升”到父组件中：
 
-1. **Remove** state from the child components.
-2. **Pass** hardcoded data from the common parent.
-3. **Add** state to the common parent and pass it down together with the event handlers.
+1. **移除**子组件中的状态。
+2. 从共同父组件中**传递**硬编码数据。
+3. 向共同父组件**添加**状态，并连同事件处理函数一起向下传递。
 
-This will allow the `Accordion` component to coordinate both `Panel`s and only expand one at a time.
+这样 `Accordion` 组件就可以协调这两个 `Panel`，并且一次只展开一个。
 
-### Step 1: Remove state from the child components {/*step-1-remove-state-from-the-child-components*/}
+### 第 1 步：从子组件中移除状态 {/*step-1-remove-state-from-the-child-components*/}
 
-You will give control of the `Panel`'s `isActive` to its parent component. This means that the parent component will pass `isActive` to `Panel` as a prop instead. Start by **removing this line** from the `Panel` component:
+你将把 `Panel` 的 `isActive` 控制权交给它的父组件。这意味着父组件会改为把 `isActive` 作为 props 传给 `Panel`。首先，从 `Panel` 组件中**移除这一行**：
 
 ```js
 const [isActive, setIsActive] = useState(false);
 ```
 
-And instead, add `isActive` to the `Panel`'s list of props:
+然后，把 `isActive` 添加到 `Panel` 的 props 列表中：
 
 ```js
 function Panel({ title, children, isActive }) {
 ```
 
-Now the `Panel`'s parent component can *control* `isActive` by [passing it down as a prop.](/learn/passing-props-to-a-component) Conversely, the `Panel` component now has *no control* over the value of `isActive`--it's now up to the parent component!
+现在，`Panel` 的父组件可以通过[将其作为 prop 传下去](/learn/passing-props-to-a-component)来*控制* `isActive`。反过来说，`Panel` 组件现在对 `isActive` 的值*没有控制权*——这完全取决于父组件！
 
-### Step 2: Pass hardcoded data from the common parent {/*step-2-pass-hardcoded-data-from-the-common-parent*/}
+### 第 2 步：从共同父组件传递硬编码数据 {/*step-2-pass-hardcoded-data-from-the-common-parent*/}
 
-To lift state up, you must locate the closest common parent component of *both* of the child components that you want to coordinate:
+要提升状态，你必须找出你想协调的*两个*子组件的最近共同父组件：
 
-* `Accordion` *(closest common parent)*
+* `Accordion` *(最近共同父组件)*
   - `Panel`
   - `Panel`
 
-In this example, it's the `Accordion` component. Since it's above both panels and can control their props, it will become the "source of truth" for which panel is currently active. Make the `Accordion` component pass a hardcoded value of `isActive` (for example, `true`) to both panels:
+在这个例子里，它就是 `Accordion` 组件。由于它位于两个面板之上，并且可以控制它们的 props，所以它会成为当前哪个面板处于活动状态的“单一事实来源”。让 `Accordion` 组件向两个面板传递一个硬编码的 `isActive` 值（例如 `true`）：
 
 <Sandpack>
 
@@ -135,12 +135,12 @@ import { useState } from 'react';
 export default function Accordion() {
   return (
     <>
-      <h2>Almaty, Kazakhstan</h2>
-      <Panel title="About" isActive={true}>
-        With a population of about 2 million, Almaty is Kazakhstan's largest city. From 1929 to 1997, it was its capital city.
+      <h2>阿拉木图，哈萨克斯坦</h2>
+      <Panel title="关于" isActive={true}>
+        阿拉木图人口约 200 万，是哈萨克斯坦最大的城市。1929 年到 1997 年间，它曾是哈萨克斯坦的首都。
       </Panel>
-      <Panel title="Etymology" isActive={true}>
-        The name comes from <span lang="kk-KZ">алма</span>, the Kazakh word for "apple" and is often translated as "full of apples". In fact, the region surrounding Almaty is thought to be the ancestral home of the apple, and the wild <i lang="la">Malus sieversii</i> is considered a likely candidate for the ancestor of the modern domestic apple.
+      <Panel title="词源" isActive={true}>
+        这个名字来自 <span lang="kk-KZ">алма</span>，这是哈萨克语中“苹果”的意思，通常被翻译为“苹果之都”。实际上，阿拉木图周边地区被认为是苹果的祖先家园，而野生的 <i lang="la">Malus sieversii</i> 被认为很可能是现代栽培苹果的祖先。
       </Panel>
     </>
   );
@@ -154,7 +154,7 @@ function Panel({ title, children, isActive }) {
         <p>{children}</p>
       ) : (
         <button onClick={() => setIsActive(true)}>
-          Show
+          显示
         </button>
       )}
     </section>
@@ -172,21 +172,21 @@ h3, p { margin: 5px 0px; }
 
 </Sandpack>
 
-Try editing the hardcoded `isActive` values in the `Accordion` component and see the result on the screen.
+试着编辑 `Accordion` 组件中硬编码的 `isActive` 值，看看屏幕上的结果。
 
-### Step 3: Add state to the common parent {/*step-3-add-state-to-the-common-parent*/}
+### 第 3 步：向共同父组件添加状态 {/*step-3-add-state-to-the-common-parent*/}
 
-Lifting state up often changes the nature of what you're storing as state.
+提升状态通常会改变你把什么内容存储为状态的方式。
 
-In this case, only one panel should be active at a time. This means that the `Accordion` common parent component needs to keep track of *which* panel is the active one. Instead of a `boolean` value, it could use a number as the index of the active `Panel` for the state variable:
+在这个例子里，任意时刻都只能有一个面板处于活动状态。这意味着 `Accordion` 这个共同父组件需要跟踪*哪个*面板是活动的。与其使用布尔值，不如使用数字作为状态变量中活动 `Panel` 的索引：
 
 ```js
 const [activeIndex, setActiveIndex] = useState(0);
 ```
 
-When the `activeIndex` is `0`, the first panel is active, and when it's `1`, it's the second one.
+当 `activeIndex` 为 `0` 时，第一个面板处于活动状态；当它为 `1` 时，第二个面板处于活动状态。
 
-Clicking the "Show" button in either `Panel` needs to change the active index in `Accordion`. A `Panel` can't set the `activeIndex` state directly because it's defined inside the `Accordion`. The `Accordion` component needs to *explicitly allow* the `Panel` component to change its state by [passing an event handler down as a prop](/learn/responding-to-events#passing-event-handlers-as-props):
+点击任意一个 `Panel` 中的 "Show" 按钮都需要改变 `Accordion` 中的活动索引。`Panel` 不能直接设置 `activeIndex` 状态，因为它定义在 `Accordion` 内部。`Accordion` 组件需要通过[将事件处理函数作为 prop 传下去](/learn/responding-to-events#passing-event-handlers-as-props)来*明确允许* `Panel` 组件改变它的状态：
 
 ```js
 <>
@@ -205,7 +205,7 @@ Clicking the "Show" button in either `Panel` needs to change the active index in
 </>
 ```
 
-The `<button>` inside the `Panel` will now use the `onShow` prop as its click event handler:
+`Panel` 内部的 `<button>` 现在会使用 `onShow` prop 作为它的点击事件处理函数：
 
 <Sandpack>
 
@@ -216,20 +216,20 @@ export default function Accordion() {
   const [activeIndex, setActiveIndex] = useState(0);
   return (
     <>
-      <h2>Almaty, Kazakhstan</h2>
+      <h2>阿拉木图，哈萨克斯坦</h2>
       <Panel
-        title="About"
+        title="关于"
         isActive={activeIndex === 0}
         onShow={() => setActiveIndex(0)}
       >
-        With a population of about 2 million, Almaty is Kazakhstan's largest city. From 1929 to 1997, it was its capital city.
+        阿拉木图人口约 200 万，是哈萨克斯坦最大的城市。1929 年到 1997 年间，它曾是哈萨克斯坦的首都。
       </Panel>
       <Panel
-        title="Etymology"
+        title="词源"
         isActive={activeIndex === 1}
         onShow={() => setActiveIndex(1)}
       >
-        The name comes from <span lang="kk-KZ">алма</span>, the Kazakh word for "apple" and is often translated as "full of apples". In fact, the region surrounding Almaty is thought to be the ancestral home of the apple, and the wild <i lang="la">Malus sieversii</i> is considered a likely candidate for the ancestor of the modern domestic apple.
+        这个名字来自 <span lang="kk-KZ">алма</span>，这是哈萨克语中“苹果”的意思，通常被翻译为“苹果之都”。实际上，阿拉木图周边地区被认为是苹果的祖先家园，而野生的 <i lang="la">Malus sieversii</i> 被认为很可能是现代栽培苹果的祖先。
       </Panel>
     </>
   );
@@ -248,7 +248,7 @@ function Panel({
         <p>{children}</p>
       ) : (
         <button onClick={onShow}>
-          Show
+          显示
         </button>
       )}
     </section>
@@ -266,19 +266,19 @@ h3, p { margin: 5px 0px; }
 
 </Sandpack>
 
-This completes lifting state up! Moving state into the common parent component allowed you to coordinate the two panels. Using the active index instead of two "is shown" flags ensured that only one panel is active at a given time. And passing down the event handler to the child allowed the child to change the parent's state.
+这就完成了状态提升！将状态移到共同父组件中，使你能够协调这两个面板。使用活动索引而不是两个“是否显示”标志，确保任意时刻只有一个面板处于活动状态。把事件处理函数向下传递给子组件，则允许子组件改变父组件的状态。
 
 <DiagramGroup>
 
-<Diagram name="sharing_state_parent" height={385} width={487} alt="Diagram showing a tree of three components, one parent labeled Accordion and two children labeled Panel. Accordion contains an activeIndex value of zero which turns into isActive value of true passed to the first Panel, and isActive value of false passed to the second Panel." >
+<Diagram name="sharing_state_parent" height={385} width={487} alt="图示显示一棵包含三个组件的树，一个父组件标记为 Accordion，两个子组件标记为 Panel。Accordion 包含一个值为零的 activeIndex，它变为传递给第一个 Panel 的 isActive true 值，以及传递给第二个 Panel 的 isActive false 值。">
 
-Initially, `Accordion`'s `activeIndex` is `0`, so the first `Panel` receives `isActive = true`
+最初，`Accordion` 的 `activeIndex` 为 `0`，所以第一个 `Panel` 接收到 `isActive = true`
 
 </Diagram>
 
-<Diagram name="sharing_state_parent_clicked" height={385} width={521} alt="The same diagram as the previous, with the activeIndex value of the parent Accordion component highlighted indicating a click with the value changed to one. The flow to both of the children Panel components is also highlighted, and the isActive value passed to each child is set to the opposite: false for the first Panel and true for the second one." >
+<Diagram name="sharing_state_parent_clicked" height={385} width={521} alt="与前一个相同的图示，父组件 Accordion 的 activeIndex 值被高亮，表示点击并将值改为一。流向两个子级 Panel 组件的路径也被高亮，并且传递给每个子组件的 isActive 值设为相反：第一个 Panel 为 false，第二个为 true。">
 
-When `Accordion`'s `activeIndex` state changes to `1`, the second `Panel` receives `isActive = true` instead
+当 `Accordion` 的 `activeIndex` 状态变为 `1` 时，第二个 `Panel` 改为接收到 `isActive = true`
 
 </Diagram>
 
@@ -286,48 +286,48 @@ When `Accordion`'s `activeIndex` state changes to `1`, the second `Panel` receiv
 
 <DeepDive>
 
-#### Controlled and uncontrolled components {/*controlled-and-uncontrolled-components*/}
+#### 受控和非受控组件 {/*controlled-and-uncontrolled-components*/}
 
-It is common to call a component with some local state "uncontrolled". For example, the original `Panel` component with an `isActive` state variable is uncontrolled because its parent cannot influence whether the panel is active or not.
+通常会把带有某些局部状态的组件称为“非受控”组件。例如，最初那个带有 `isActive` 状态变量的 `Panel` 组件就是非受控的，因为它的父组件无法影响面板是否处于活动状态。
 
-In contrast, you might say a component is "controlled" when the important information in it is driven by props rather than its own local state. This lets the parent component fully specify its behavior. The final `Panel` component with the `isActive` prop is controlled by the `Accordion` component.
+相反，当组件中的关键信息由 props 而不是它自己的局部状态驱动时，你可以说它是“受控”的。这样父组件就可以完全指定它的行为。最终版本的 `Panel` 组件带有 `isActive` prop，它由 `Accordion` 组件控制。
 
-Uncontrolled components are easier to use within their parents because they require less configuration. But they're less flexible when you want to coordinate them together. Controlled components are maximally flexible, but they require the parent components to fully configure them with props.
+非受控组件在父组件中更容易使用，因为它们需要更少的配置。但当你想要把它们协调在一起时，它们的灵活性就较差。受控组件的灵活性最高，但它们要求父组件用 props 完整配置它们。
 
-In practice, "controlled" and "uncontrolled" aren't strict technical terms--each component usually has some mix of both local state and props. However, this is a useful way to talk about how components are designed and what capabilities they offer.
+在实践中，“受控”和“非受控”并不是严格的技术术语——每个组件通常都会同时包含一些局部状态和 props。不过，这是一种很有用的方式，用来讨论组件是如何设计的，以及它们提供了哪些能力。
 
-When writing a component, consider which information in it should be controlled (via props), and which information should be uncontrolled (via state). But you can always change your mind and refactor later.
+编写组件时，考虑其中哪些信息应该是受控的（通过 props），哪些信息应该是非受控的（通过 state）。但你总是可以之后改变主意并进行重构。
 
 </DeepDive>
 
-## A single source of truth for each state {/*a-single-source-of-truth-for-each-state*/}
+## 每个状态的单一事实来源 {/*a-single-source-of-truth-for-each-state*/}
 
-In a React application, many components will have their own state. Some state may "live" close to the leaf components (components at the bottom of the tree) like inputs. Other state may "live" closer to the top of the app. For example, even client-side routing libraries are usually implemented by storing the current route in the React state, and passing it down by props!
+在 React 应用中，许多组件都会有自己的状态。有些状态可能会“存在”于更接近叶子组件（树底部的组件）的地方，比如输入框。其他状态则可能“存在”于更接近应用顶部的地方。例如，即使是客户端路由库，通常也是通过把当前路由存储在 React 状态中，再通过 props 向下传递来实现的！
 
-**For each unique piece of state, you will choose the component that "owns" it.** This principle is also known as having a ["single source of truth".](https://en.wikipedia.org/wiki/Single_source_of_truth) It doesn't mean that all state lives in one place--but that for _each_ piece of state, there is a _specific_ component that holds that piece of information. Instead of duplicating shared state between components, *lift it up* to their common shared parent, and *pass it down* to the children that need it.
+**对于每一份独特的状态，你都需要选择一个“拥有”它的组件。** 这一原则也被称为拥有一个[“单一事实来源”。](https://en.wikipedia.org/wiki/Single_source_of_truth) 这并不意味着所有状态都要放在同一个地方——而是指对于_每一份_状态，都有一个_特定的_组件持有这份信息。不要在组件之间重复共享状态，而是把它*提升*到它们共同的父组件中，再通过 props *向下传递*给需要它的子组件。
 
-Your app will change as you work on it. It is common that you will move state down or back up while you're still figuring out where each piece of the state "lives". This is all part of the process!
+你的应用会随着开发而变化。在你还在弄清楚每一份状态“存在”在哪里时，把状态向下移动或向上移动是很常见的。这一切都是过程的一部分！
 
-To see what this feels like in practice with a few more components, read [Thinking in React.](/learn/thinking-in-react)
+想要通过更多组件来看看这在实践中是什么样子，请阅读[在 React 中思考。](/learn/thinking-in-react)
 
 <Recap>
 
-* When you want to coordinate two components, move their state to their common parent.
-* Then pass the information down through props from their common parent.
-* Finally, pass the event handlers down so that the children can change the parent's state.
-* It's useful to consider components as "controlled" (driven by props) or "uncontrolled" (driven by state).
+* 当你想要协调两个组件时，把它们的状态移动到它们的共同父组件中。
+* 然后通过 props 从共同父组件向下传递信息。
+* 最后，把事件处理函数也向下传递，这样子组件就可以改变父组件的状态。
+* 把组件视为“受控的”（由 props 驱动）或“非受控的”（由状态驱动）是很有用的。
 
 </Recap>
 
 <Challenges>
 
-#### Synced inputs {/*synced-inputs*/}
+#### 同步输入框 {/*synced-inputs*/}
 
-These two inputs are independent. Make them stay in sync: editing one input should update the other input with the same text, and vice versa.
+这两个输入框是彼此独立的。让它们保持同步：编辑其中一个输入框应当用相同的文本更新另一个输入框，反之亦然。
 
 <Hint>
 
-You'll need to lift their state up into the parent component.
+你需要把它们的状态提升到父组件中。
 
 </Hint>
 
@@ -374,7 +374,7 @@ label { display: block; }
 
 <Solution>
 
-Move the `text` state variable into the parent component along with the `handleChange` handler. Then pass them down as props to both of the `Input` components. This will keep them in sync.
+把 `text` 状态变量和 `handleChange` 处理函数一起移动到父组件中。然后把它们作为 props 传给两个 `Input` 组件。这样它们就会保持同步。
 
 <Sandpack>
 
@@ -427,17 +427,17 @@ label { display: block; }
 
 </Solution>
 
-#### Filtering a list {/*filtering-a-list*/}
+#### 过滤列表 {/*filtering-a-list*/}
 
-In this example, the `SearchBar` has its own `query` state that controls the text input. Its parent `FilterableList` component displays a `List` of items, but it doesn't take the search query into account.
+在这个示例中，`SearchBar` 有自己的 `query` 状态来控制文本输入框。它的父组件 `FilterableList` 显示一个项目 `List`，但并没有考虑搜索查询。
 
-Use the `filterItems(foods, query)` function to filter the list according to the search query. To test your changes, verify that typing "s" into the input filters down the list to "Sushi", "Shish kebab", and "Dim sum".
+使用 `filterItems(foods, query)` 函数根据搜索查询来过滤列表。要测试你的修改，请确认在输入框中输入 "s" 会把列表筛选为 "Sushi"、"Shish kebab" 和 "Dim sum"。
 
-Note that `filterItems` is already implemented and imported so you don't need to write it yourself!
+注意 `filterItems` 已经被实现并导入了，所以你不需要自己编写它！
 
 <Hint>
 
-You will want to remove the `query` state and the `handleChange` handler from the `SearchBar`, and move them to the `FilterableList`. Then pass them down to `SearchBar` as `query` and `onChange` props.
+你需要从 `SearchBar` 中移除 `query` 状态和 `handleChange` 处理函数，并把它们移动到 `FilterableList` 中。然后将它们作为 `query` 和 `onChange` props 传给 `SearchBar`。
 
 </Hint>
 
@@ -528,7 +528,7 @@ export const foods = [{
 
 <Solution>
 
-Lift the `query` state up into the `FilterableList` component. Call `filterItems(foods, query)` to get the filtered list and pass it down to the `List`. Now changing the query input is reflected in the list:
+把 `query` 状态提升到 `FilterableList` 组件中。调用 `filterItems(foods, query)` 获取过滤后的列表，并把它传给 `List`。现在修改查询输入框会反映到列表中：
 
 <Sandpack>
 

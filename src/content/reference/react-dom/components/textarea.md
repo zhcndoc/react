@@ -4,7 +4,7 @@ title: "<textarea>"
 
 <Intro>
 
-The [built-in browser `<textarea>` component](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea) lets you render a multiline text input.
+内置浏览器 `<textarea>` 组件的 [内置浏览器 `<textarea>` 组件](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea) 可让你渲染一个多行文本输入框。
 
 ```js
 <textarea />
@@ -16,72 +16,72 @@ The [built-in browser `<textarea>` component](https://developer.mozilla.org/en-U
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `<textarea>` {/*textarea*/}
 
-To display a text area, render the [built-in browser `<textarea>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea) component.
+要显示一个文本区域，请渲染 [内置浏览器 `<textarea>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea) 组件。
 
 ```js
 <textarea name="postContent" />
 ```
 
-[See more examples below.](#usage)
+[在下方查看更多示例。](#usage)
 
-#### Props {/*props*/}
+#### 属性 {/*props*/}
 
-`<textarea>` supports all [common element props.](/reference/react-dom/components/common#common-props)
+`<textarea>` 支持所有 [通用元素属性。](/reference/react-dom/components/common#common-props)
 
-You can [make a text area controlled](#controlling-a-text-area-with-a-state-variable) by passing a `value` prop:
+你可以通过传递 `value` 属性来 [将文本区域设为受控](#controlling-a-text-area-with-a-state-variable)：
 
-* `value`: A string. Controls the text inside the text area.
+* `value`: 一个字符串。控制文本区域中的文本。
 
-When you pass `value`, you must also pass an `onChange` handler that updates the passed value.
+当你传入 `value` 时，你还必须传入一个会更新所传值的 `onChange` 处理函数。
 
-If your `<textarea>` is uncontrolled, you may pass the `defaultValue` prop instead:
+如果你的 `<textarea>` 是非受控的，你可以改为传入 `defaultValue` 属性：
 
-* `defaultValue`: A string. Specifies [the initial value](#providing-an-initial-value-for-a-text-area) for a text area.
+* `defaultValue`: 一个字符串。为文本区域指定 [初始值](#providing-an-initial-value-for-a-text-area)。
 
-These `<textarea>` props are relevant both for uncontrolled and controlled text areas:
+以下 `<textarea>` 属性对非受控和受控文本区域都适用：
 
-* [`autoComplete`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#autocomplete): Either `'on'` or `'off'`. Specifies the autocomplete behavior.
-* [`autoFocus`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#autofocus): A boolean. If `true`, React will focus the element on mount.
-* `children`: `<textarea>` does not accept children. To set the initial value, use `defaultValue`.
-* [`cols`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#cols): A number. Specifies the default width in average character widths. Defaults to `20`.
-* [`disabled`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#disabled): A boolean. If `true`, the input will not be interactive and will appear dimmed.
-* [`form`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#form): A string. Specifies the `id` of the `<form>` this input belongs to. If omitted, it's the closest parent form.
-* [`maxLength`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#maxlength): A number. Specifies the maximum length of text.
-* [`minLength`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#minlength): A number. Specifies the minimum length of text.
-* [`name`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#name): A string. Specifies the name for this input that's [submitted with the form.](#reading-the-textarea-value-when-submitting-a-form)
-* `onChange`: An [`Event` handler](/reference/react-dom/components/common#event-handler) function. Required for [controlled text areas.](#controlling-a-text-area-with-a-state-variable) Fires immediately when the input's value is changed by the user (for example, it fires on every keystroke). Behaves like the browser [`input` event.](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/input_event)
-* `onChangeCapture`: A version of `onChange` that fires in the [capture phase.](/learn/responding-to-events#capture-phase-events)
-* [`onInput`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/input_event): An [`Event` handler](/reference/react-dom/components/common#event-handler) function. Fires immediately when the value is changed by the user. For historical reasons, in React it is idiomatic to use `onChange` instead which works similarly.
-* `onInputCapture`: A version of `onInput` that fires in the [capture phase.](/learn/responding-to-events#capture-phase-events)
-* [`onInvalid`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/invalid_event): An [`Event` handler](/reference/react-dom/components/common#event-handler) function. Fires if an input fails validation on form submit. Unlike the built-in `invalid` event, the React `onInvalid` event bubbles.
-* `onInvalidCapture`: A version of `onInvalid` that fires in the [capture phase.](/learn/responding-to-events#capture-phase-events)
-* [`onSelect`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/select_event): An [`Event` handler](/reference/react-dom/components/common#event-handler) function. Fires after the selection inside the `<textarea>` changes. React extends the `onSelect` event to also fire for empty selection and on edits (which may affect the selection).
-* `onSelectCapture`: A version of `onSelect` that fires in the [capture phase.](/learn/responding-to-events#capture-phase-events)
-* [`placeholder`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#placeholder): A string. Displayed in a dimmed color when the text area value is empty.
-* [`readOnly`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#readonly): A boolean. If `true`, the text area is not editable by the user.
-* [`required`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#required): A boolean. If `true`, the value must be provided for the form to submit.
-* [`rows`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#rows): A number. Specifies the default height in average character heights. Defaults to `2`.
-* [`wrap`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#wrap): Either `'hard'`, `'soft'`, or `'off'`. Specifies how the text should be wrapped when submitting a form.
+* [`autoComplete`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#autocomplete): `'on'` 或 `'off'`。指定自动完成行为。
+* [`autoFocus`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#autofocus): 一个布尔值。如果为 `true`，React 会在挂载时聚焦该元素。
+* `children`: `<textarea>` 不接受子元素。要设置初始值，请使用 `defaultValue`。
+* [`cols`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#cols): 一个数字。指定按平均字符宽度计算的默认宽度。默认值为 `20`。
+* [`disabled`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#disabled): 一个布尔值。如果为 `true`，输入框将不可交互，并且会显示为灰暗状态。
+* [`form`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#form): 一个字符串。指定此输入所属 `<form>` 的 `id`。如果省略，则为最近的父级 form。
+* [`maxLength`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#maxlength): 一个数字。指定文本的最大长度。
+* [`minLength`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#minlength): 一个数字。指定文本的最小长度。
+* [`name`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#name): 一个字符串。指定此输入的名称，该名称会随表单一起 [提交。](#reading-the-textarea-value-when-submitting-a-form)
+* `onChange`: 一个 [`Event` 处理函数](/reference/react-dom/components/common#event-handler) 函数。对于 [受控文本区域](#controlling-a-text-area-with-a-state-variable) 是必需的。当输入值被用户更改时会立即触发（例如，每次按键都会触发）。其行为类似于浏览器的 [`input` 事件。](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/input_event)
+* `onChangeCapture`: `onChange` 的一个版本，会在 [捕获阶段。](/learn/responding-to-events#capture-phase-events) 触发
+* [`onInput`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/input_event): 一个 [`Event` 处理函数](/reference/react-dom/components/common#event-handler) 函数。当值被用户更改时会立即触发。出于历史原因，在 React 中通常使用 `onChange` 代替，它的工作方式类似。
+* `onInputCapture`: `onInput` 的一个版本，会在 [捕获阶段。](/learn/responding-to-events#capture-phase-events) 触发
+* [`onInvalid`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/invalid_event): 一个 [`Event` 处理函数](/reference/react-dom/components/common#event-handler) 函数。当输入在表单提交时未通过验证就会触发。不同于内置的 `invalid` 事件，React 的 `onInvalid` 事件会冒泡。
+* `onInvalidCapture`: `onInvalid` 的一个版本，会在 [捕获阶段。](/learn/responding-to-events#capture-phase-events) 触发
+* [`onSelect`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLTextAreaElement/select_event): 一个 [`Event` 处理函数](/reference/react-dom/components/common#event-handler) 函数。当 `<textarea>` 内的选区发生变化后触发。React 扩展了 `onSelect` 事件，使其在空选择和编辑时也会触发（这可能会影响选区）。
+* `onSelectCapture`: `onSelect` 的一个版本，会在 [捕获阶段。](/learn/responding-to-events#capture-phase-events) 触发
+* [`placeholder`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#placeholder): 一个字符串。当文本区域的值为空时，以灰暗颜色显示。
+* [`readOnly`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#readonly): 一个布尔值。如果为 `true`，用户无法编辑文本区域。
+* [`required`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#required): 一个布尔值。如果为 `true`，则必须提供该值表单才能提交。
+* [`rows`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#rows): 一个数字。指定按平均字符高度计算的默认高度。默认值为 `2`。
+* [`wrap`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#wrap): `'hard'`、`'soft'` 或 `'off'`。指定提交表单时文本应如何换行。
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-- Passing children like `<textarea>something</textarea>` is not allowed. [Use `defaultValue` for initial content.](#providing-an-initial-value-for-a-text-area)
-- If a text area receives a string `value` prop, it will be [treated as controlled.](#controlling-a-text-area-with-a-state-variable)
-- A text area can't be both controlled and uncontrolled at the same time.
-- A text area cannot switch between being controlled or uncontrolled over its lifetime.
-- Every controlled text area needs an `onChange` event handler that synchronously updates its backing value.
+- 不允许传入类似 `<textarea>something</textarea>` 的子元素。[请使用 `defaultValue` 来设置初始内容。](#providing-an-initial-value-for-a-text-area)
+- 如果文本区域接收到一个字符串类型的 `value` 属性，它将被 [视为受控组件。](#controlling-a-text-area-with-a-state-variable)
+- 文本区域不能同时既受控又非受控。
+- 文本区域在其生命周期内不能在受控与非受控之间切换。
+- 每个受控文本区域都需要一个 `onChange` 事件处理函数，以同步更新其背后的值。
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Displaying a text area {/*displaying-a-text-area*/}
+### 显示一个文本区域 {/*displaying-a-text-area*/}
 
-Render `<textarea>` to display a text area. You can specify its default size with the [`rows`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#rows) and [`cols`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#cols) attributes, but by default the user will be able to resize it. To disable resizing, you can specify `resize: none` in the CSS.
+渲染 `<textarea>` 来显示一个文本区域。你可以使用 [`rows`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#rows) 和 [`cols`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea#cols) 属性来指定其默认大小，但默认情况下用户可以调整它的大小。要禁用调整大小，你可以在 CSS 中指定 `resize: none`。
 
 <Sandpack>
 
@@ -89,7 +89,7 @@ Render `<textarea>` to display a text area. You can specify its default size wit
 export default function NewPost() {
   return (
     <label>
-      Write your post:
+      写下你的帖子：
       <textarea name="postContent" rows={4} cols={40} />
     </label>
   );
@@ -107,11 +107,11 @@ label, textarea { display: block; }
 
 ---
 
-### Providing a label for a text area {/*providing-a-label-for-a-text-area*/}
+### 为文本区域提供标签 {/*providing-a-label-for-a-text-area*/}
 
-Typically, you will place every `<textarea>` inside a [`<label>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label) tag. This tells the browser that this label is associated with that text area. When the user clicks the label, the browser will focus the text area. It's also essential for accessibility: a screen reader will announce the label caption when the user focuses the text area.
+通常，你会将每个 `<textarea>` 放在 [`<label>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label) 标签内。这会告诉浏览器该标签与这个文本区域相关联。当用户点击标签时，浏览器会聚焦文本区域。这对可访问性也很重要：当用户聚焦文本区域时，屏幕阅读器会朗读该标签文本。
 
-If you can't nest `<textarea>` into a `<label>`, associate them by passing the same ID to `<textarea id>` and [`<label htmlFor>`.](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/htmlFor) To avoid conflicts between instances of one component, generate such an ID with [`useId`.](/reference/react/useId)
+如果你不能把 `<textarea>` 嵌套进 `<label>` 中，可以通过向 `<textarea id>` 和 [`<label htmlFor>`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/htmlFor) 传入相同的 ID 来关联它们。为避免同一个组件的多个实例之间发生冲突，可以使用 [`useId`](/reference/react/useId) 生成这样的 ID。
 
 <Sandpack>
 
@@ -123,7 +123,7 @@ export default function Form() {
   return (
     <>
       <label htmlFor={postTextAreaId}>
-        Write your post:
+        写下你的帖子：
       </label>
       <textarea
         id={postTextAreaId}
@@ -144,9 +144,9 @@ input { margin: 5px; }
 
 ---
 
-### Providing an initial value for a text area {/*providing-an-initial-value-for-a-text-area*/}
+### 提供文本区域的初始值 {/*providing-an-initial-value-for-a-text-area*/}
 
-You can optionally specify the initial value for the text area. Pass it as the `defaultValue` string.
+你可以选择性地指定文本区域的初始值。将其作为 `defaultValue` 字符串传入。
 
 <Sandpack>
 
@@ -154,10 +154,10 @@ You can optionally specify the initial value for the text area. Pass it as the `
 export default function EditPost() {
   return (
     <label>
-      Edit your post:
+      编辑你的帖子：
       <textarea
         name="postContent"
-        defaultValue="I really enjoyed biking yesterday!"
+        defaultValue="我昨天骑车真的很开心！"
         rows={4}
         cols={40}
       />
@@ -177,31 +177,31 @@ label, textarea { display: block; }
 
 <Pitfall>
 
-Unlike in HTML, passing initial text like `<textarea>Some content</textarea>` is not supported.
+不同于 HTML，不支持像 `<textarea>Some content</textarea>` 这样传入初始文本。
 
 </Pitfall>
 
 ---
 
-### Reading the text area value when submitting a form {/*reading-the-text-area-value-when-submitting-a-form*/}
+### 在提交表单时读取文本区域的值 {/*reading-the-text-area-value-when-submitting-a-form*/}
 
-Add a [`<form>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form) around your textarea with a [`<button type="submit">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button) inside. It will call your `<form onSubmit>` event handler. By default, the browser will send the form data to the current URL and refresh the page. You can override that behavior by calling `e.preventDefault()`. Read the form data with [`new FormData(e.target)`](https://developer.mozilla.org/en-US/docs/Web/API/FormData).
+在你的 textarea 外面包一层 [`<form>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form)，并在里面放一个 [`<button type="submit">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button)。它会调用你的 `<form onSubmit>` 事件处理函数。默认情况下，浏览器会将表单数据发送到当前 URL 并刷新页面。你可以通过调用 `e.preventDefault()` 来覆盖这一行为。使用 [`new FormData(e.target)`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) 读取表单数据。
 <Sandpack>
 
 ```js
 export default function EditPost() {
   function handleSubmit(e) {
-    // Prevent the browser from reloading the page
+    // 阻止浏览器重新加载页面
     e.preventDefault();
 
-    // Read the form data
+    // 读取表单数据
     const form = e.target;
     const formData = new FormData(form);
 
-    // You can pass formData as a fetch body directly:
+    // 你可以直接将 formData 作为 fetch 请求体：
     fetch('/some-api', { method: form.method, body: formData });
 
-    // Or you can work with it as a plain object:
+    // 或者你可以把它当作普通对象来处理：
     const formJson = Object.fromEntries(formData.entries());
     console.log(formJson);
   }
@@ -209,20 +209,20 @@ export default function EditPost() {
   return (
     <form method="post" onSubmit={handleSubmit}>
       <label>
-        Post title: <input name="postTitle" defaultValue="Biking" />
+        帖子标题： <input name="postTitle" defaultValue="骑车" />
       </label>
       <label>
-        Edit your post:
+        编辑你的帖子：
         <textarea
           name="postContent"
-          defaultValue="I really enjoyed biking yesterday!"
+          defaultValue="我昨天骑车真的很开心！"
           rows={4}
           cols={40}
         />
       </label>
       <hr />
-      <button type="reset">Reset edits</button>
-      <button type="submit">Save post</button>
+      <button type="reset">重置编辑</button>
+      <button type="submit">保存帖子</button>
     </form>
   );
 }
@@ -237,38 +237,38 @@ input { margin: 5px; }
 
 <Note>
 
-Give a `name` to your `<textarea>`, for example `<textarea name="postContent" />`. The `name` you specified will be used as a key in the form data, for example `{ postContent: "Your post" }`.
+给你的 `<textarea>` 加上一个 `name`，例如 `<textarea name="postContent" />`。你指定的 `name` 会作为表单数据中的键使用，例如 `{ postContent: "Your post" }`。
 
 </Note>
 
 <Pitfall>
 
-By default, *any* `<button>` inside a `<form>` will submit it. This can be surprising! If you have your own custom `Button` React component, consider returning [`<button type="button">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/button) instead of `<button>`. Then, to be explicit, use `<button type="submit">` for buttons that *are* supposed to submit the form.
+默认情况下，*任何* 位于 `<form>` 内的 `<button>` 都会提交表单。这可能会出人意料！如果你有自己的自定义 `Button` React 组件，考虑返回 [`<button type="button">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/button) 而不是 `<button>`。然后，为了明确起见，对那些*确实*应该提交表单的按钮使用 `<button type="submit">`。
 
 </Pitfall>
 
 ---
 
-### Controlling a text area with a state variable {/*controlling-a-text-area-with-a-state-variable*/}
+### 使用状态变量控制文本区域 {/*controlling-a-text-area-with-a-state-variable*/}
 
-A text area like `<textarea />` is *uncontrolled.* Even if you [pass an initial value](#providing-an-initial-value-for-a-text-area) like `<textarea defaultValue="Initial text" />`, your JSX only specifies the initial value, not the value right now.
+像 `<textarea />` 这样的文本区域是*非受控*的。即使你 [传入初始值](#providing-an-initial-value-for-a-text-area)，比如 `<textarea defaultValue="Initial text" />`，你的 JSX 也只是指定了初始值，而不是当前值。
 
-**To render a _controlled_ text area, pass the `value` prop to it.** React will force the text area to always have the `value` you passed. Typically, you will control a text area by declaring a [state variable:](/reference/react/useState)
+**要渲染一个 _受控_ 文本区域，请向它传入 `value` 属性。** React 会强制文本区域始终拥有你传入的 `value`。通常，你会通过声明一个 [状态变量：](/reference/react/useState) 来控制文本区域
 
 ```js {2,6,7}
 function NewPost() {
-  const [postContent, setPostContent] = useState(''); // Declare a state variable...
+  const [postContent, setPostContent] = useState(''); // 声明一个状态变量...
   // ...
   return (
     <textarea
-      value={postContent} // ...force the input's value to match the state variable...
-      onChange={e => setPostContent(e.target.value)} // ... and update the state variable on any edits!
+      value={postContent} // ...强制输入框的值与状态变量保持一致...
+      onChange={e => setPostContent(e.target.value)} // ...并在任何编辑时更新状态变量！
     />
   );
 }
 ```
 
-This is useful if you want to re-render some part of the UI in response to every keystroke.
+如果你想在每次按键时重新渲染 UI 的某一部分，这会很有用。
 
 <Sandpack>
 
@@ -281,7 +281,7 @@ export default function MarkdownEditor() {
   return (
     <>
       <label>
-        Enter some markdown:
+        输入一些 markdown：
         <textarea
           value={postContent}
           onChange={e => setPostContent(e.target.value)}
@@ -330,94 +330,94 @@ textarea { display: block; margin-top: 5px; margin-bottom: 10px; }
 
 <Pitfall>
 
-**If you pass `value` without `onChange`, it will be impossible to type into the text area.** When you control a text area by passing some `value` to it, you *force* it to always have the value you passed. So if you pass a state variable as a `value` but forget to update that state variable synchronously during the `onChange` event handler, React will revert the text area after every keystroke back to the `value` that you specified.
+**如果你传入 `value` 却不传 `onChange`，那么就无法在文本区域中输入内容。** 当你通过传递某个 `value` 来控制文本区域时，你会*强制*它始终拥有你传入的值。因此，如果你把一个状态变量作为 `value` 传入，却忘记在 `onChange` 事件处理函数期间同步更新该状态变量，React 就会在每次按键后把文本区域恢复回你指定的 `value`。
 
 </Pitfall>
 
 ---
 
-## Troubleshooting {/*troubleshooting*/}
+## 故障排查 {/*troubleshooting*/}
 
-### My text area doesn't update when I type into it {/*my-text-area-doesnt-update-when-i-type-into-it*/}
+### 我输入时文本区域没有更新 {/*my-text-area-doesnt-update-when-i-type-into-it*/}
 
-If you render a text area with `value` but no `onChange`, you will see an error in the console:
+如果你渲染了一个带有 `value` 但没有 `onChange` 的文本区域，你会在控制台中看到一个错误：
 
 ```js
-// 🔴 Bug: controlled text area with no onChange handler
+// 🔴 错误：没有 onChange 处理器的受控文本区域
 <textarea value={something} />
 ```
 
 <ConsoleBlock level="error">
 
-You provided a `value` prop to a form field without an `onChange` handler. This will render a read-only field. If the field should be mutable use `defaultValue`. Otherwise, set either `onChange` or `readOnly`.
+你为一个表单字段提供了 `value` 属性，但没有提供 `onChange` 处理器。这将渲染一个只读字段。如果该字段应该是可修改的，请使用 `defaultValue`。否则，请设置 `onChange` 或 `readOnly`。
 
 </ConsoleBlock>
 
-As the error message suggests, if you only wanted to [specify the *initial* value,](#providing-an-initial-value-for-a-text-area) pass `defaultValue` instead:
+正如错误信息所示，如果你只是想[指定*初始*值，](#providing-an-initial-value-for-a-text-area)请改为传递 `defaultValue`：
 
 ```js
-// ✅ Good: uncontrolled text area with an initial value
+// ✅ 好的：带有初始值的非受控文本区域
 <textarea defaultValue={something} />
 ```
 
-If you want [to control this text area with a state variable,](#controlling-a-text-area-with-a-state-variable) specify an `onChange` handler:
+如果你想[使用状态变量来控制这个文本区域，](#controlling-a-text-area-with-a-state-variable)请指定一个 `onChange` 处理器：
 
 ```js
-// ✅ Good: controlled text area with onChange
+// ✅ 好的：带有 onChange 的受控文本区域
 <textarea value={something} onChange={e => setSomething(e.target.value)} />
 ```
 
-If the value is intentionally read-only, add a `readOnly` prop to suppress the error:
+如果该值有意设置为只读，请添加 `readOnly` 属性以抑制该错误：
 
 ```js
-// ✅ Good: readonly controlled text area without on change
+// ✅ 好的：没有 onChange 的只读受控文本区域
 <textarea value={something} readOnly={true} />
 ```
 
 ---
 
-### My text area caret jumps to the beginning on every keystroke {/*my-text-area-caret-jumps-to-the-beginning-on-every-keystroke*/}
+### 我文本区域里的光标在每次按键时都会跳到开头 {/*my-text-area-caret-jumps-to-the-beginning-on-every-keystroke*/}
 
-If you [control a text area,](#controlling-a-text-area-with-a-state-variable) you must update its state variable to the text area's value from the DOM during `onChange`.
+如果你[控制一个文本区域，](#controlling-a-text-area-with-a-state-variable)你必须在 `onChange` 期间将其状态变量更新为来自 DOM 的文本区域值。
 
-You can't update it to something other than `e.target.value`:
+你不能把它更新为 `e.target.value` 之外的其他内容：
 
 ```js
 function handleChange(e) {
-  // 🔴 Bug: updating an input to something other than e.target.value
+  // 🔴 错误：将输入更新为 e.target.value 之外的内容
   setFirstName(e.target.value.toUpperCase());
 }
 ```
 
-You also can't update it asynchronously:
+你也不能异步更新它：
 
 ```js
 function handleChange(e) {
-  // 🔴 Bug: updating an input asynchronously
+  // 🔴 错误：异步更新输入
   setTimeout(() => {
     setFirstName(e.target.value);
   }, 100);
 }
 ```
 
-To fix your code, update it synchronously to `e.target.value`:
+要修复你的代码，请同步将其更新为 `e.target.value`：
 
 ```js
 function handleChange(e) {
-  // ✅ Updating a controlled input to e.target.value synchronously
+  // ✅ 将受控输入同步更新为 e.target.value
   setFirstName(e.target.value);
 }
 ```
 
-If this doesn't fix the problem, it's possible that the text area gets removed and re-added from the DOM on every keystroke. This can happen if you're accidentally [resetting state](/learn/preserving-and-resetting-state) on every re-render. For example, this can happen if the text area or one of its parents always receives a different `key` attribute, or if you nest component definitions (which is not allowed in React and causes the "inner" component to remount on every render).
+如果这不能解决问题，可能是文本区域在每次按键时都会从 DOM 中被移除并重新添加。如果你在每次重新渲染时不小心[重置了状态](/learn/preserving-and-resetting-state)，就可能发生这种情况。例如，如果文本区域或它的某个父级总是接收到不同的 `key` 属性，就会发生这种情况；或者如果你嵌套了组件定义（这是 React 不允许的，并且会导致“内部”组件在每次渲染时重新挂载）。
 
 ---
 
-### I'm getting an error: "A component is changing an uncontrolled input to be controlled" {/*im-getting-an-error-a-component-is-changing-an-uncontrolled-input-to-be-controlled*/}
+### 我遇到了一个错误：“组件正在将非受控输入变为受控输入” {/*im-getting-an-error-a-component-is-changing-an-uncontrolled-input-to-be-controlled*/}
 
 
-If you provide a `value` to the component, it must remain a string throughout its lifetime.
+如果你为组件提供了 `value`，那么它在整个生命周期中都必须保持为字符串。
 
-You cannot pass `value={undefined}` first and later pass `value="some string"` because React won't know whether you want the component to be uncontrolled or controlled. A controlled component should always receive a string `value`, not `null` or `undefined`.
+你不能先传入 `value={undefined}`，然后再传入 `value="some string"`，因为 React 不知道你是想让组件保持非受控还是受控。受控组件应该始终接收一个字符串类型的 `value`，而不是 `null` 或 `undefined`。
 
-If your `value` is coming from an API or a state variable, it might be initialized to `null` or `undefined`. In that case, either set it to an empty string (`''`) initially, or pass `value={someValue ?? ''}` to ensure `value` is a string.
+如果你的 `value` 来自 API 或状态变量，它可能一开始被初始化为 `null` 或 `undefined`。在这种情况下，请么最初将其设为空字符串（`''`），要么传入 `value={someValue ?? ''}` 以确保 `value` 是字符串。

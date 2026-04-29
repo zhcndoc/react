@@ -1,74 +1,74 @@
 ---
-title: Rendering Lists
+title: 渲染列表
 ---
 
 <Intro>
 
-You will often want to display multiple similar components from a collection of data. You can use the [JavaScript array methods](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array#) to manipulate an array of data. On this page, you'll use [`filter()`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/filter) and [`map()`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/map) with React to filter and transform your array of data into an array of components.
+你经常会想要从一组数据中显示多个相似的组件。你可以使用 [JavaScript 数组方法](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array#) 来操作一组数据。在本页中，你将结合 React 使用 [`filter()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter) 和 [`map()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) 来过滤并将你的数据数组转换为组件数组。
 
 </Intro>
 
 <YouWillLearn>
 
-* How to render components from an array using JavaScript's `map()`
-* How to render only specific components using JavaScript's `filter()`
-* When and why to use React keys
+* 如何使用 JavaScript 的 `map()` 从数组中渲染组件
+* 如何使用 JavaScript 的 `filter()` 只渲染特定组件
+* 何时以及为何使用 React keys
 
 </YouWillLearn>
 
-## Rendering data from arrays {/*rendering-data-from-arrays*/}
+## 从数组中渲染数据 {/*rendering-data-from-arrays*/}
 
-Say that you have a list of content.
+假设你有一组内容。
 
 ```js
 <ul>
-  <li>Creola Katherine Johnson: mathematician</li>
-  <li>Mario José Molina-Pasquel Henríquez: chemist</li>
-  <li>Mohammad Abdus Salam: physicist</li>
-  <li>Percy Lavon Julian: chemist</li>
-  <li>Subrahmanyan Chandrasekhar: astrophysicist</li>
+  <li>Creola Katherine Johnson：数学家</li>
+  <li>Mario José Molina-Pasquel Henríquez：化学家</li>
+  <li>Mohammad Abdus Salam：物理学家</li>
+  <li>Percy Lavon Julian：化学家</li>
+  <li>Subrahmanyan Chandrasekhar：天体物理学家</li>
 </ul>
 ```
 
-The only difference among those list items is their contents, their data. You will often need to show several instances of the same component using different data when building interfaces: from lists of comments to galleries of profile images. In these situations, you can store that data in JavaScript objects and arrays and use methods like [`map()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) and [`filter()`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/filter) to render lists of components from them.
+这些列表项之间唯一的区别是它们的内容，也就是它们的数据。在构建界面时，你经常需要使用不同的数据来显示同一个组件的多个实例：从评论列表到个人资料图片画廊。在这些情况下，你可以将这些数据存储在 JavaScript 对象和数组中，并使用像 [`map()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) 和 [`filter()`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array/filter) 这样的函数从中渲染组件列表。
 
-Here’s a short example of how to generate a list of items from an array:
+下面是一个简短示例，说明如何从数组生成项目列表：
 
-1. **Move** the data into an array:
+1. **把** 数据移动到数组中：
 
 ```js
 const people = [
-  'Creola Katherine Johnson: mathematician',
-  'Mario José Molina-Pasquel Henríquez: chemist',
-  'Mohammad Abdus Salam: physicist',
-  'Percy Lavon Julian: chemist',
-  'Subrahmanyan Chandrasekhar: astrophysicist'
+  'Creola Katherine Johnson：数学家',
+  'Mario José Molina-Pasquel Henríquez：化学家',
+  'Mohammad Abdus Salam：物理学家',
+  'Percy Lavon Julian：化学家',
+  'Subrahmanyan Chandrasekhar：天体物理学家'
 ];
 ```
 
-2. **Map** the `people` members into a new array of JSX nodes, `listItems`:
+2. 使用 `map()` 将 `people` 成员**映射**到一个新的 JSX 节点数组 `listItems`：
 
 ```js
 const listItems = people.map(person => <li>{person}</li>);
 ```
 
-3. **Return** `listItems` from your component wrapped in a `<ul>`:
+3. **从** 你的组件中**返回**用 `<ul>` 包裹的 `listItems`：
 
 ```js
 return <ul>{listItems}</ul>;
 ```
 
-Here is the result:
+结果如下：
 
 <Sandpack>
 
 ```js
 const people = [
-  'Creola Katherine Johnson: mathematician',
-  'Mario José Molina-Pasquel Henríquez: chemist',
-  'Mohammad Abdus Salam: physicist',
-  'Percy Lavon Julian: chemist',
-  'Subrahmanyan Chandrasekhar: astrophysicist'
+  'Creola Katherine Johnson：数学家',
+  'Mario José Molina-Pasquel Henríquez：化学家',
+  'Mohammad Abdus Salam：物理学家',
+  'Percy Lavon Julian：化学家',
+  'Subrahmanyan Chandrasekhar：天体物理学家'
 ];
 
 export default function List() {
@@ -85,19 +85,19 @@ li { margin-bottom: 10px; }
 
 </Sandpack>
 
-Notice the sandbox above displays a console error:
+请注意，上面的沙盒显示了一个控制台错误：
 
 <ConsoleBlock level="error">
 
-Warning: Each child in a list should have a unique "key" prop.
+警告：列表中的每个子项都应该有一个唯一的 "key" 属性。
 
 </ConsoleBlock>
 
-You'll learn how to fix this error later on this page. Before we get to that, let's add some structure to your data.
+你将在本页后面学习如何修复这个错误。在此之前，让我们先为你的数据添加一些结构。
 
-## Filtering arrays of items {/*filtering-arrays-of-items*/}
+## 过滤数组中的项目 {/*filtering-arrays-of-items*/}
 
-This data can be structured even more.
+这组数据可以组织得更加结构化。
 
 ```js
 const people = [{
@@ -123,11 +123,11 @@ const people = [{
 }];
 ```
 
-Let's say you want a way to only show people whose profession is `'chemist'`. You can use JavaScript's `filter()` method to return just those people. This method takes an array of items, passes them through a “test” (a function that returns `true` or `false`), and returns a new array of only those items that passed the test (returned `true`).
+假设你想只显示职业是 `'chemist'` 的人。你可以使用 JavaScript 的 `filter()` 方法只返回这些人。这个方法接收一个项目数组，让它们通过一个“测试”（一个返回 `true` 或 `false` 的函数），并返回一个只包含通过测试（返回 `true`）的项目的新数组。
 
-You only want the items where `profession` is `'chemist'`. The "test" function for this looks like `(person) => person.profession === 'chemist'`. Here's how to put it together:
+你只想要 `profession` 是 `'chemist'` 的项目。这个“测试”函数看起来像 `(person) => person.profession === 'chemist'`。下面是如何把它组合起来：
 
-1. **Create** a new array of just “chemist” people, `chemists`, by calling `filter()` on the `people` filtering by `person.profession === 'chemist'`:
+1. 通过在 `people` 上调用 `filter()`，按 `person.profession === 'chemist'` 过滤，**创建** 一个只包含“化学家”的新数组 `chemists`：
 
 ```js
 const chemists = people.filter(person =>
@@ -135,7 +135,7 @@ const chemists = people.filter(person =>
 );
 ```
 
-2. Now **map** over `chemists`:
+2. 现在对 `chemists` 进行 **map**：
 
 ```js {1,13}
 const listItems = chemists.map(person =>
@@ -153,7 +153,7 @@ const listItems = chemists.map(person =>
 );
 ```
 
-3. Lastly, **return** the `listItems` from your component:
+3. 最后，从你的组件中**返回** `listItems`：
 
 ```js
 return <ul>{listItems}</ul>;
@@ -246,37 +246,37 @@ img { width: 100px; height: 100px; border-radius: 50%; }
 
 <Pitfall>
 
-Arrow functions implicitly return the expression right after `=>`, so you didn't need a `return` statement:
+箭头函数会隐式返回 `=>` 后面的表达式，所以你不需要写 `return` 语句：
 
 ```js
 const listItems = chemists.map(person =>
-  <li>...</li> // Implicit return!
+  <li>...</li> // 隐式返回！
 );
 ```
 
-However, **you must write `return` explicitly if your `=>` is followed by a `{` curly brace!**
+然而，如果你的 `=>` 后面跟着一个 `{` 花括号，你**必须显式写出** `return`！
 
 ```js
-const listItems = chemists.map(person => { // Curly brace
+const listItems = chemists.map(person => { // 花括号
   return <li>...</li>;
 });
 ```
 
-Arrow functions containing `=> {` are said to have a ["block body".](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions#function_body) They let you write more than a single line of code, but you *have to* write a `return` statement yourself. If you forget it, nothing gets returned!
+包含 `=> {` 的箭头函数被称为具有 ["块体"](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions#function_body)。它们允许你编写不止一行代码，但你*必须*自己写 `return` 语句。要是忘了，什么都不会返回！
 
 </Pitfall>
 
-## Keeping list items in order with `key` {/*keeping-list-items-in-order-with-key*/}
+## 使用 `key` 保持列表项顺序 {/*keeping-list-items-in-order-with-key*/}
 
-Notice that all the sandboxes above show an error in the console:
+请注意，上面的所有沙盒在控制台中都显示了一个错误：
 
 <ConsoleBlock level="error">
 
-Warning: Each child in a list should have a unique "key" prop.
+警告：列表中的每个子项都应该有一个唯一的 "key" 属性。
 
 </ConsoleBlock>
 
-You need to give each array item a `key` -- a string or a number that uniquely identifies it among other items in that array:
+你需要给每个数组项一个 `key`——一个字符串或数字，用来在该数组的其他项中唯一标识它：
 
 ```js
 <li key={person.id}>...</li>
@@ -284,13 +284,13 @@ You need to give each array item a `key` -- a string or a number that uniquely i
 
 <Note>
 
-JSX elements directly inside a `map()` call always need keys!
+直接写在 `map()` 调用中的 JSX 元素总是需要 keys！
 
 </Note>
 
-Keys tell React which array item each component corresponds to, so that it can match them up later. This becomes important if your array items can move (e.g. due to sorting), get inserted, or get deleted. A well-chosen `key` helps React infer what exactly has happened, and make the correct updates to the DOM tree.
+keys 告诉 React 每个组件对应数组中的哪一项，这样它之后才能把它们匹配起来。如果你的数组项可能移动（例如由于排序）、被插入或被删除，这一点就很重要。一个选择良好的 `key` 能帮助 React 推断到底发生了什么，并对 DOM 树进行正确的更新。
 
-Rather than generating keys on the fly, you should include them in your data:
+与其动态生成 key，不如把它们包含在你的数据中：
 
 <Sandpack>
 
@@ -318,31 +318,31 @@ export default function List() {
 
 ```js src/data.js active
 export const people = [{
-  id: 0, // Used in JSX as a key
+  id: 0, // 在 JSX 中用作 key
   name: 'Creola Katherine Johnson',
   profession: 'mathematician',
   accomplishment: 'spaceflight calculations',
   imageId: 'MK3eW3A'
 }, {
-  id: 1, // Used in JSX as a key
+  id: 1, // 在 JSX 中用作 key
   name: 'Mario José Molina-Pasquel Henríquez',
   profession: 'chemist',
   accomplishment: 'discovery of Arctic ozone hole',
   imageId: 'mynHUSa'
 }, {
-  id: 2, // Used in JSX as a key
+  id: 2, // 在 JSX 中用作 key
   name: 'Mohammad Abdus Salam',
   profession: 'physicist',
   accomplishment: 'electromagnetism theory',
   imageId: 'bE7W1ji'
 }, {
-  id: 3, // Used in JSX as a key
+  id: 3, // 在 JSX 中用作 key
   name: 'Percy Lavon Julian',
   profession: 'chemist',
   accomplishment: 'pioneering cortisone drugs, steroids and birth control pills',
   imageId: 'IOjWm71'
 }, {
-  id: 4, // Used in JSX as a key
+  id: 4, // 在 JSX 中用作 key
   name: 'Subrahmanyan Chandrasekhar',
   profession: 'astrophysicist',
   accomplishment: 'white dwarf star mass calculations',
@@ -376,11 +376,11 @@ img { width: 100px; height: 100px; border-radius: 50%; }
 
 <DeepDive>
 
-#### Displaying several DOM nodes for each list item {/*displaying-several-dom-nodes-for-each-list-item*/}
+#### 为每个列表项显示多个 DOM 节点 {/*displaying-several-dom-nodes-for-each-list-item*/}
 
-What do you do when each item needs to render not one, but several DOM nodes?
+如果每个项目需要渲染的不只是一个，而是多个 DOM 节点，你该怎么办？
 
-The short [`<>...</>` Fragment](/reference/react/Fragment) syntax won't let you pass a key, so you need to either group them into a single `<div>`, or use the slightly longer and [more explicit `<Fragment>` syntax:](/reference/react/Fragment#rendering-a-list-of-fragments)
+简短的 [`<>...</>` Fragment](/reference/react/Fragment) 语法不允许你传递 key，所以你需要把它们组合到一个 `<div>` 中，或者使用稍长一些且[更明确的 `<Fragment>` 语法：](/reference/react/Fragment#rendering-a-list-of-fragments)
 
 ```js
 import { Fragment } from 'react';
@@ -395,46 +395,46 @@ const listItems = people.map(person =>
 );
 ```
 
-Fragments disappear from the DOM, so this will produce a flat list of `<h1>`, `<p>`, `<h1>`, `<p>`, and so on.
+Fragments 会从 DOM 中消失，因此这会生成一个由 `<h1>`、`<p>`、`<h1>`、`<p>` 等组成的扁平列表。
 
 </DeepDive>
 
-### Where to get your `key` {/*where-to-get-your-key*/}
+### key 从哪里来 {/*where-to-get-your-key*/}
 
-Different sources of data provide different sources of keys:
+不同的数据来源会提供不同来源的 keys：
 
-* **Data from a database:** If your data is coming from a database, you can use the database keys/IDs, which are unique by nature.
-* **Locally generated data:** If your data is generated and persisted locally (e.g. notes in a note-taking app), use an incrementing counter, [`crypto.randomUUID()`](https://developer.mozilla.org/en-US/docs/Web/API/Crypto/randomUUID) or a package like [`uuid`](https://www.npmjs.com/package/uuid) when creating items.
+* **来自数据库的数据：** 如果你的数据来自数据库，你可以使用数据库键/ID，它们本身就是唯一的。
+* **本地生成的数据：** 如果你的数据是在本地生成并持久化的（例如记事应用中的笔记），在创建项目时使用递增计数器、[`crypto.randomUUID()`](https://developer.mozilla.org/en-US/docs/Web/API/Crypto/randomUUID) 或像 [`uuid`](https://www.npmjs.com/package/uuid) 这样的包。
 
-### Rules of keys {/*rules-of-keys*/}
+### keys 的规则 {/*rules-of-keys*/}
 
-* **Keys must be unique among siblings.** However, it’s okay to use the same keys for JSX nodes in _different_ arrays.
-* **Keys must not change** or that defeats their purpose! Don't generate them while rendering.
+* **Keys 在同级元素之间必须唯一。** 但是，在_不同_数组中的 JSX 节点使用相同的 keys 是可以的。
+* **Keys 不能改变**，否则它们的作用就失效了！不要在渲染时生成它们。
 
-### Why does React need keys? {/*why-does-react-need-keys*/}
+### 为什么 React 需要 keys？ {/*why-does-react-need-keys*/}
 
-Imagine that files on your desktop didn't have names. Instead, you'd refer to them by their order -- the first file, the second file, and so on. You could get used to it, but once you delete a file, it would get confusing. The second file would become the first file, the third file would be the second file, and so on.
+想象一下，如果你桌面上的文件没有名称。取而代之的是，你只能按照它们的顺序来指代它们——第一个文件、第二个文件，依此类推。你可能会慢慢习惯，但一旦你删除了一个文件，事情就会变得混乱。第二个文件会变成第一个文件，第三个文件会变成第二个文件，依此类推。
 
-File names in a folder and JSX keys in an array serve a similar purpose. They let us uniquely identify an item between its siblings. A well-chosen key provides more information than the position within the array. Even if the _position_ changes due to reordering, the `key` lets React identify the item throughout its lifetime.
+文件夹中的文件名和数组中的 JSX keys 起着类似的作用。它们让我们能够在同级项之间唯一地识别某一项。一个选择良好的 key 提供的信息比数组中的位置更多。即使由于重新排序导致_位置_发生变化，`key` 也能让 React 在其整个生命周期中识别该项。
 
 <Pitfall>
 
-You might be tempted to use an item's index in the array as its key. In fact, that's what React will use if you don't specify a `key` at all. But the order in which you render items will change over time if an item is inserted, deleted, or if the array gets reordered. Index as a key often leads to subtle and confusing bugs.
+你可能会想把数组项的索引用作它的 key。事实上，如果你根本不指定 `key`，React 就会使用这个值。但是，如果某个项目被插入、删除，或者数组顺序被重新排列，你渲染项目的顺序就会随着时间而变化。把索引当作 key 往往会导致细微而令人困惑的 bug。
 
-Similarly, do not generate keys on the fly, e.g. with `key={Math.random()}`. This will cause keys to never match up between renders, leading to all your components and DOM being recreated every time. Not only is this slow, but it will also lose any user input inside the list items. Instead, use a stable ID based on the data.
+同样，不要动态生成 keys，例如 `key={Math.random()}`。这会导致每次渲染之间 keys 都无法匹配，从而使你的所有组件和 DOM 每次都被重新创建。这不仅很慢，还会丢失列表项中的任何用户输入。相反，请使用基于数据的稳定 ID。
 
-Note that your components won't receive `key` as a prop. It's only used as a hint by React itself. If your component needs an ID, you have to pass it as a separate prop: `<Profile key={id} userId={id} />`.
+注意，你的组件不会把 `key` 作为 prop 接收到。它只会被 React 自身当作提示使用。如果你的组件需要一个 ID，你必须将其作为单独的 prop 传递：`<Profile key={id} userId={id} />`。
 
 </Pitfall>
 
 <Recap>
 
-On this page you learned:
+在本页中你学到了：
 
-* How to move data out of components and into data structures like arrays and objects.
-* How to generate sets of similar components with JavaScript's `map()`.
-* How to create arrays of filtered items with JavaScript's `filter()`.
-* Why and how to set `key` on each component in a collection so React can keep track of each of them even if their position or data changes.
+* 如何将数据从组件中移出，并放入数组和对象之类的数据结构中。
+* 如何使用 JavaScript 的 `map()` 生成一组相似的组件。
+* 如何使用 JavaScript 的 `filter()` 创建过滤后的项目数组。
+* 为什么以及如何在集合中的每个组件上设置 `key`，这样即使它们的位置或数据发生变化，React 也能跟踪每个组件。
 
 </Recap>
 
@@ -442,11 +442,11 @@ On this page you learned:
 
 <Challenges>
 
-#### Splitting a list in two {/*splitting-a-list-in-two*/}
+#### 将一个列表拆成两个 {/*splitting-a-list-in-two*/}
 
-This example shows a list of all people.
+这个示例展示了一个包含所有人的列表。
 
-Change it to show two separate lists one after another: **Chemists** and **Everyone Else.** Like previously, you can determine whether a person is a chemist by checking if `person.profession === 'chemist'`.
+把它改成依次显示两个单独的列表：**化学家** 和 **其他所有人。** 和之前一样，你可以通过检查 `person.profession === 'chemist'` 来判断某人是否是化学家。
 
 <Sandpack>
 
@@ -537,7 +537,7 @@ img { width: 100px; height: 100px; border-radius: 50%; }
 
 <Solution>
 
-You could use `filter()` twice, creating two separate arrays, and then `map` over both of them:
+你可以使用两次 `filter()`，创建两个独立数组，然后分别对它们进行 `map`：
 
 <Sandpack>
 
@@ -650,9 +650,9 @@ img { width: 100px; height: 100px; border-radius: 50%; }
 
 </Sandpack>
 
-In this solution, the `map` calls are placed directly inline into the parent `<ul>` elements, but you could introduce variables for them if you find that more readable.
+在这个方案中，`map` 调用直接内联放在父 `<ul>` 元素中，不过如果你觉得更易读，也可以为它们引入变量。
 
-There is still a bit duplication between the rendered lists. You can go further and extract the repetitive parts into a `<ListSection>` component:
+渲染出的列表之间仍然有一些重复。你可以进一步把重复部分提取到一个 `<ListSection>` 组件中：
 
 <Sandpack>
 
@@ -764,9 +764,9 @@ img { width: 100px; height: 100px; border-radius: 50%; }
 
 </Sandpack>
 
-A very attentive reader might notice that with two `filter` calls, we check each person's profession twice. Checking a property is very fast, so in this example it's fine. If your logic was more expensive than that, you could replace the `filter` calls with a loop that manually constructs the arrays and checks each person once.
+细心的读者可能会注意到，使用两个 `filter` 调用时，我们会两次检查每个人的职业。检查一个属性非常快，所以在这个例子中没问题。如果你的逻辑比这更耗费性能，你可以用一个循环替换这些 `filter` 调用，手动构建数组并且只检查每个人一次。
 
-In fact, if `people` never change, you could move this code out of your component. From React's perspective, all that matters is that you give it an array of JSX nodes in the end. It doesn't care how you produce that array:
+事实上，如果 `people` 永远不会改变，你甚至可以把这段代码移出组件。从 React 的角度看，重要的只是你最终给它一个 JSX 节点数组。它并不关心你是如何生成这个数组的：
 
 <Sandpack>
 
@@ -884,13 +884,13 @@ img { width: 100px; height: 100px; border-radius: 50%; }
 
 </Solution>
 
-#### Nested lists in one component {/*nested-lists-in-one-component*/}
+#### 在一个组件中嵌套列表 {/*nested-lists-in-one-component*/}
 
-Make a list of recipes from this array! For each recipe in the array, display its name as an `<h2>` and list its ingredients in a `<ul>`.
+从这个数组中制作一个食谱列表！对于数组中的每个食谱，把它的名称显示为 `<h2>`，并把它的配料列表放在一个 `<ul>` 中。
 
 <Hint>
 
-This will require nesting two different `map` calls.
+这需要嵌套两个不同的 `map` 调用。
 
 </Hint>
 
@@ -928,7 +928,7 @@ export const recipes = [{
 
 <Solution>
 
-Here is one way you could go about it:
+下面是一种可行的做法：
 
 <Sandpack>
 
@@ -974,13 +974,13 @@ export const recipes = [{
 
 </Sandpack>
 
-Each of the `recipes` already includes an `id` field, so that's what the outer loop uses for its `key`. There is no ID you could use to loop over ingredients. However, it's reasonable to assume that the same ingredient won't be listed twice within the same recipe, so its name can serve as a `key`. Alternatively, you could change the data structure to add IDs, or use index as a `key` (with the caveat that you can't safely reorder ingredients).
+每个 `recipes` 都已经包含一个 `id` 字段，所以外层循环用它作为 `key`。而配料没有可用于循环的 ID。不过，可以合理地假设同一种配料不会在同一个食谱中重复出现，所以它的名称可以作为 `key`。另外，你也可以修改数据结构添加 ID，或者使用索引作为 `key`（但要注意，不能安全地重新排序配料）。
 
 </Solution>
 
-#### Extracting a list item component {/*extracting-a-list-item-component*/}
+#### 提取一个列表项组件 {/*extracting-a-list-item-component*/}
 
-This `RecipeList` component contains two nested `map` calls. To simplify it, extract a `Recipe` component from it which will accept `id`, `name`, and `ingredients` props. Where do you place the outer `key` and why?
+这个 `RecipeList` 组件包含两个嵌套的 `map` 调用。为了简化它，可以从中提取一个 `Recipe` 组件，它将接收 `id`、`name` 和 `ingredients` props。外层的 `key` 应该放在哪里，为什么？
 
 <Sandpack>
 
@@ -1028,7 +1028,7 @@ export const recipes = [{
 
 <Solution>
 
-You can copy-paste the JSX from the outer `map` into a new `Recipe` component and return that JSX. Then you can change `recipe.name` to `name`, `recipe.id` to `id`, and so on, and pass them as props to the `Recipe`:
+你可以把外层 `map` 的 JSX 复制粘贴到一个新的 `Recipe` 组件里，并返回那段 JSX。然后你可以把 `recipe.name` 改成 `name`，把 `recipe.id` 改成 `id`，等等，并将它们作为 props 传给 `Recipe`：
 
 <Sandpack>
 
@@ -1080,36 +1080,36 @@ export const recipes = [{
 
 </Sandpack>
 
-Here, `<Recipe {...recipe} key={recipe.id} />` is a syntax shortcut saying "pass all properties of the `recipe` object as props to the `Recipe` component". You could also write each prop explicitly: `<Recipe id={recipe.id} name={recipe.name} ingredients={recipe.ingredients} key={recipe.id} />`.
+这里，`<Recipe {...recipe} key={recipe.id} />` 是一种语法快捷写法，意思是“把 `recipe` 对象的所有属性都作为 props 传给 `Recipe` 组件”。你也可以显式写出每个 prop：`<Recipe id={recipe.id} name={recipe.name} ingredients={recipe.ingredients} key={recipe.id} />`。
 
-**Note that the `key` is specified on the `<Recipe>` itself rather than on the root `<div>` returned from `Recipe`.** This is because this `key` is needed directly within the context of the surrounding array. Previously, you had an array of `<div>`s so each of them needed a `key`, but now you have an array of `<Recipe>`s. In other words, when you extract a component, don't forget to leave the `key` outside the JSX you copy and paste.
+**请注意，`key` 是指定在 `<Recipe>` 本身上，而不是指定在从 `Recipe` 返回的根 `<div>` 上。** 这是因为这个 `key` 需要直接位于外层数组的上下文中。之前，你有一个 `<div>` 的数组，所以每个 `<div>` 都需要一个 `key`，但现在你有的是一个 `<Recipe>` 的数组。换句话说，当你提取组件时，不要忘记把 `key` 放在你复制和粘贴的 JSX 外面。
 
 </Solution>
 
-#### List with a separator {/*list-with-a-separator*/}
+#### 带分隔符的列表 {/*list-with-a-separator*/}
 
-This example renders a famous haiku by Tachibana Hokushi, with each line wrapped in a `<p>` tag. Your job is to insert an `<hr />` separator between each paragraph. Your resulting structure should look like this:
+这个示例渲染了松尾芭蕉的一首著名俳句，每一行都包在一个 `<p>` 标签中。你的任务是在每个段落之间插入一个 `<hr />` 分隔符。最终结构应该像这样：
 
 ```js
 <article>
-  <p>I write, erase, rewrite</p>
+  <p>我写下、擦掉、重写</p>
   <hr />
-  <p>Erase again, and then</p>
+  <p>再次擦掉，然后</p>
   <hr />
-  <p>A poppy blooms.</p>
+  <p>一朵罂粟花绽放。</p>
 </article>
 ```
 
-A haiku only contains three lines, but your solution should work with any number of lines. Note that `<hr />` elements only appear *between* the `<p>` elements, not in the beginning or the end!
+一首俳句只有三行，但你的解决方案应该适用于任意行数。注意，`<hr />` 元素只出现在 `<p>` 元素之间，不出现在开头或结尾！
 
 <Sandpack>
 
 ```js
 const poem = {
   lines: [
-    'I write, erase, rewrite',
-    'Erase again, and then',
-    'A poppy blooms.'
+    '我写下、擦掉、重写',
+    '再次擦掉，然后',
+    '一朵罂粟花绽放。'
   ]
 };
 
@@ -1143,33 +1143,33 @@ hr {
 
 </Sandpack>
 
-(This is a rare case where index as a key is acceptable because a poem's lines will never reorder.)
+（这是少数可以接受使用索引作为 key 的情况，因为诗句的行永远不会重新排序。）
 
 <Hint>
 
-You'll either need to convert `map` to a manual loop, or use a Fragment.
+你需要把 `map` 转换为手动循环，或者使用 Fragment。
 
 </Hint>
 
 <Solution>
 
-You can write a manual loop, inserting `<hr />` and `<p>...</p>` into the output array as you go:
+你可以写一个手动循环，边生成边把 `<hr />` 和 `<p>...</p>` 插入到输出数组中：
 
 <Sandpack>
 
 ```js
 const poem = {
   lines: [
-    'I write, erase, rewrite',
-    'Erase again, and then',
-    'A poppy blooms.'
+    '我写下、擦掉、重写',
+    '再次擦掉，然后',
+    '一朵罂粟花绽放。'
   ]
 };
 
 export default function Poem() {
   let output = [];
 
-  // Fill the output array
+  // 填充输出数组
   poem.lines.forEach((line, i) => {
     output.push(
       <hr key={i + '-separator'} />
@@ -1180,7 +1180,7 @@ export default function Poem() {
       </p>
     );
   });
-  // Remove the first <hr />
+  // 移除第一个 <hr />
   output.shift();
 
   return (
@@ -1208,9 +1208,9 @@ hr {
 
 </Sandpack>
 
-Using the original line index as a `key` doesn't work anymore because each separator and paragraph are now in the same array. However, you can give each of them a distinct key using a suffix, e.g. `key={i + '-text'}`.
+使用原始行索引作为 `key` 已经不再适用了，因为现在每个分隔符和段落都在同一个数组里。不过，你可以给它们分别加上不同的后缀来提供不同的 key，例如 `key={i + '-text'}`。
 
-Alternatively, you could render a collection of Fragments which contain `<hr />` and `<p>...</p>`. However, the `<>...</>` shorthand syntax doesn't support passing keys, so you'd have to write `<Fragment>` explicitly:
+另外，你也可以渲染一组包含 `<hr />` 和 `<p>...</p>` 的 Fragments。不过，`<>...</>` 缩写语法不支持传递 keys，所以你必须显式写 `<Fragment>`：
 
 <Sandpack>
 
@@ -1219,9 +1219,9 @@ import { Fragment } from 'react';
 
 const poem = {
   lines: [
-    'I write, erase, rewrite',
-    'Erase again, and then',
-    'A poppy blooms.'
+    '我写下、擦掉、重写',
+    '再次擦掉，然后',
+    '一朵罂粟花绽放。'
   ]
 };
 
@@ -1256,7 +1256,7 @@ hr {
 
 </Sandpack>
 
-Remember, Fragments (often written as `<> </>`) let you group JSX nodes without adding extra `<div>`s!
+记住，Fragments（通常写作 `<> </>`）可以让你在不添加额外 `<div>` 的情况下组合 JSX 节点！
 
 </Solution>
 

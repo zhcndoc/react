@@ -4,7 +4,7 @@ title: lazy
 
 <Intro>
 
-`lazy` lets you defer loading component's code until it is rendered for the first time.
+`lazy` 允许你延迟加载组件代码，直到它首次被渲染时才加载。
 
 ```js
 const SomeComponent = lazy(load)
@@ -16,11 +16,11 @@ const SomeComponent = lazy(load)
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `lazy(load)` {/*lazy*/}
 
-Call `lazy` outside your components to declare a lazy-loaded React component:
+在组件外部调用 `lazy` 来声明一个懒加载的 React 组件：
 
 ```js
 import { lazy } from 'react';
@@ -28,41 +28,41 @@ import { lazy } from 'react';
 const MarkdownPreview = lazy(() => import('./MarkdownPreview.js'));
 ```
 
-[See more examples below.](#usage)
+[查看更多示例。](#usage)
 
-#### Parameters {/*parameters*/}
+#### 参数 {/*parameters*/}
 
-* `load`: A function that returns a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) or another *thenable* (a Promise-like object with a `then` method). React will not call `load` until the first time you attempt to render the returned component. After React first calls `load`, it will wait for it to resolve, and then render the resolved value's `.default` as a React component. Both the returned Promise and the Promise's resolved value will be cached, so React will not call `load` more than once. If the Promise rejects, React will `throw` the rejection reason for the nearest Error Boundary to handle.
+* `load`：一个返回 [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) 或其他 *thenable*（一种带有 `then` 方法、类似 Promise 的对象）的函数。React 不会在你第一次尝试渲染返回的组件之前调用 `load`。在 React 首次调用 `load` 之后，它会等待其解析，然后将解析结果的 `.default` 作为 React 组件渲染。返回的 Promise 以及 Promise 的解析值都会被缓存，因此 React 不会多次调用 `load`。如果 Promise 被拒绝，React 会将拒绝原因 `throw` 出来，由最近的错误边界处理。
 
-#### Returns {/*returns*/}
+#### 返回值 {/*returns*/}
 
-`lazy` returns a React component you can render in your tree. While the code for the lazy component is still loading, attempting to render it will *suspend.* Use [`<Suspense>`](/reference/react/Suspense) to display a loading indicator while it's loading.
-
----
-
-### `load` function {/*load*/}
-
-#### Parameters {/*load-parameters*/}
-
-`load` receives no parameters.
-
-#### Returns {/*load-returns*/}
-
-You need to return a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) or some other *thenable* (a Promise-like object with a `then` method). It needs to eventually resolve to an object whose `.default` property is a valid React component type, such as a function, [`memo`](/reference/react/memo), or a [`forwardRef`](/reference/react/forwardRef) component.
+`lazy` 返回一个你可以在树中渲染的 React 组件。当懒加载组件的代码仍在加载时，尝试渲染它会 *suspend.* 使用 [`<Suspense>`](/reference/react/Suspense) 可以在加载期间显示加载指示器。
 
 ---
 
-## Usage {/*usage*/}
+### `load` 函数 {/*load*/}
 
-### Lazy-loading components with Suspense {/*suspense-for-code-splitting*/}
+#### 参数 {/*load-parameters*/}
 
-Usually, you import components with the static [`import`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) declaration:
+`load` 不接收任何参数。
+
+#### 返回值 {/*load-returns*/}
+
+你需要返回一个 [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) 或其他一些 *thenable*（一种带有 `then` 方法、类似 Promise 的对象）。它最终需要解析为一个对象，其 `.default` 属性是有效的 React 组件类型，例如函数、[`memo`](/reference/react/memo) 或 [`forwardRef`](/reference/react/forwardRef) 组件。
+
+---
+
+## 用法 {/*usage*/}
+
+### 使用 Suspense 懒加载组件 {/*suspense-for-code-splitting*/}
+
+通常，你会使用静态 [`import`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) 声明来导入组件：
 
 ```js
 import MarkdownPreview from './MarkdownPreview.js';
 ```
 
-To defer loading this component's code until it's rendered for the first time, replace this import with:
+要将该组件的代码延迟到首次渲染时才加载，请将这个导入替换为：
 
 ```js
 import { lazy } from 'react';
@@ -70,18 +70,18 @@ import { lazy } from 'react';
 const MarkdownPreview = lazy(() => import('./MarkdownPreview.js'));
 ```
 
-This code relies on [dynamic `import()`,](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import) which might require support from your bundler or framework. Using this pattern requires that the lazy component you're importing was exported as the `default` export.
+这段代码依赖于 [动态 `import()`,](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/import) 这可能需要你的打包工具或框架提供支持。使用这种模式要求你导入的懒加载组件是以 `default` 导出的形式导出的。
 
-Now that your component's code loads on demand, you also need to specify what should be displayed while it is loading. You can do this by wrapping the lazy component or any of its parents into a [`<Suspense>`](/reference/react/Suspense) boundary:
+现在组件的代码按需加载了，你还需要指定在加载期间应显示什么内容。你可以通过将懒加载组件或其任意父组件包裹进 [`<Suspense>`](/reference/react/Suspense) 边界来实现：
 
 ```js {1,4}
 <Suspense fallback={<Loading />}>
-  <h2>Preview</h2>
+  <h2>预览</h2>
   <MarkdownPreview />
 </Suspense>
 ```
 
-In this example, the code for `MarkdownPreview` won't be loaded until you attempt to render it. If `MarkdownPreview` hasn't loaded yet, `Loading` will be shown in its place. Try ticking the checkbox:
+在这个示例中，`MarkdownPreview` 的代码不会在你尝试渲染它之前加载。如果 `MarkdownPreview` 还未加载完成，将显示 `Loading` 作为替代。试着勾选复选框：
 
 <Sandpack>
 
@@ -99,12 +99,12 @@ export default function MarkdownEditor() {
       <textarea value={markdown} onChange={e => setMarkdown(e.target.value)} />
       <label>
         <input type="checkbox" checked={showPreview} onChange={e => setShowPreview(e.target.checked)} />
-        Show preview
+        显示预览
       </label>
       <hr />
       {showPreview && (
         <Suspense fallback={<Loading />}>
-          <h2>Preview</h2>
+          <h2>预览</h2>
           <MarkdownPreview markdown={markdown} />
         </Suspense>
       )}
@@ -112,7 +112,7 @@ export default function MarkdownEditor() {
   );
 }
 
-// Add a fixed delay so you can see the loading state
+// 添加一个固定延迟，这样你就可以看到加载状态
 function delayForDemo(promise) {
   return new Promise(resolve => {
     setTimeout(resolve, 2000);
@@ -122,7 +122,7 @@ function delayForDemo(promise) {
 
 ```js src/Loading.js
 export default function Loading() {
-  return <p><i>Loading...</i></p>;
+  return <p><i>加载中...</i></p>;
 }
 ```
 
@@ -175,34 +175,34 @@ body {
 
 </Sandpack>
 
-This demo loads with an artificial delay. The next time you untick and tick the checkbox, `Preview` will be cached, so there will be no loading state. To see the loading state again, click "Reset" on the sandbox.
+这个演示会带有一个人为延迟进行加载。下次你取消勾选再勾选复选框时，`Preview` 会被缓存，因此不会再出现加载状态。要再次看到加载状态，请在 sandbox 中点击“Reset”。
 
-[Learn more about managing loading states with Suspense.](/reference/react/Suspense)
+[了解更多关于使用 Suspense 管理加载状态的信息。](/reference/react/Suspense)
 
 ---
 
-## Troubleshooting {/*troubleshooting*/}
+## 故障排除 {/*troubleshooting*/}
 
-### My `lazy` component's state gets reset unexpectedly {/*my-lazy-components-state-gets-reset-unexpectedly*/}
+### 我的 `lazy` 组件状态会意外重置 {/*my-lazy-components-state-gets-reset-unexpectedly*/}
 
-Do not declare `lazy` components *inside* other components:
+不要在其他组件 *内部* 声明 `lazy` 组件：
 
 ```js {4-5}
 import { lazy } from 'react';
 
 function Editor() {
-  // 🔴 Bad: This will cause all state to be reset on re-renders
+  // 🔴 不好：这会导致在重新渲染时所有状态都被重置
   const MarkdownPreview = lazy(() => import('./MarkdownPreview.js'));
   // ...
 }
 ```
 
-Instead, always declare them at the top level of your module:
+相反，请始终在模块顶层声明它们：
 
 ```js {3-4}
 import { lazy } from 'react';
 
-// ✅ Good: Declare lazy components outside of your components
+// ✅ 好：在组件外部声明懒加载组件
 const MarkdownPreview = lazy(() => import('./MarkdownPreview.js'));
 
 function Editor() {

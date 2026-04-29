@@ -4,13 +4,13 @@ title: cacheSignal
 
 <RSC>
 
-`cacheSignal` is currently only used with [React Server Components](/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components).
+`cacheSignal` 目前仅与 [React Server Components](/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023#react-server-components) 一起使用。
 
 </RSC>
 
 <Intro>
 
-`cacheSignal` allows you to know when the `cache()` lifetime is over.
+`cacheSignal` 允许你知道 `cache()` 的生命周期何时结束。
 
 ```js
 const signal = cacheSignal();
@@ -22,11 +22,11 @@ const signal = cacheSignal();
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `cacheSignal` {/*cachesignal*/}
 
-Call `cacheSignal` to get an `AbortSignal`.
+调用 `cacheSignal` 以获取一个 `AbortSignal`。
 
 ```js {3,7}
 import {cacheSignal} from 'react';
@@ -35,32 +35,32 @@ async function Component() {
 }
 ```
 
-When React has finished rendering, the `AbortSignal` will be aborted. This allows you to cancel any in-flight work that is no longer needed.
-Rendering is considered finished when:
-- React has successfully completed rendering
-- the render was aborted
-- the render has failed
+当 React 完成渲染时，`AbortSignal` 将被中止。这使你能够取消任何不再需要的进行中工作。
+渲染被视为完成的时机包括：
+- React 已成功完成渲染
+- 渲染被中止
+- 渲染失败
 
-#### Parameters {/*parameters*/}
+#### 参数 {/*parameters*/}
 
-This function does not accept any parameters.
+此函数不接受任何参数。
 
-#### Returns {/*returns*/}
+#### 返回值 {/*returns*/}
 
-`cacheSignal` returns an `AbortSignal` if called during rendering. Otherwise `cacheSignal()` returns `null`.
+如果在渲染期间调用，`cacheSignal` 会返回一个 `AbortSignal`。否则，`cacheSignal()` 返回 `null`。
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-- `cacheSignal` is currently for use in [React Server Components](/reference/rsc/server-components) only. In Client Components, it will always return `null`. In the future it will also be used for Client Component when a client cache refreshes or invalidates. You should not assume it'll always be null on the client.
-- If called outside of rendering, `cacheSignal` will return `null` to make it clear that the current scope isn't cached forever.
+- `cacheSignal` 目前仅供 [React Server Components](/reference/rsc/server-components) 使用。在 Client Components 中，它始终返回 `null`。未来它也将用于 Client Component，当客户端缓存刷新或失效时。你不应假设它在客户端上始终为 null。
+- 如果在渲染之外调用，`cacheSignal` 将返回 `null`，以明确当前作用域并未被永久缓存。
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Cancel in-flight requests {/*cancel-in-flight-requests*/}
+### 取消进行中的请求 {/*cancel-in-flight-requests*/}
 
-Call <CodeStep step={1}>`cacheSignal`</CodeStep> to abort in-flight requests.
+调用 <CodeStep step={1}>`cacheSignal`</CodeStep> 来中止进行中的请求。
 
 ```js [[1, 4, "cacheSignal()"]]
 import {cache, cacheSignal} from 'react';
@@ -71,11 +71,11 @@ async function Component() {
 ```
 
 <Pitfall>
-You can't use `cacheSignal` to abort async work that was started outside of rendering e.g.
+你不能使用 `cacheSignal` 来中止在渲染之外开始的异步工作，例如：
 
 ```js
 import {cacheSignal} from 'react';
-// 🚩 Pitfall: The request will not actually be aborted if the rendering of `Component` is finished.
+// 🚩 误区：如果 `Component` 的渲染已经完成，请求实际上不会被中止。
 const response = fetch(url, { signal: cacheSignal() });
 async function Component() {
   await response;
@@ -83,9 +83,9 @@ async function Component() {
 ```
 </Pitfall>
 
-### Ignore errors after React has finished rendering {/*ignore-errors-after-react-has-finished-rendering*/}
+### 在 React 完成渲染后忽略错误 {/*ignore-errors-after-react-has-finished-rendering*/}
 
-If a function throws, it may be due to cancellation (e.g. <CodeStep step={1}>the Database connection</CodeStep> has been closed). You can use the <CodeStep step={2}>`aborted` property</CodeStep> to check if the error was due to cancellation or a real error. You may want to <CodeStep step={3}>ignore errors</CodeStep> that were due to cancellation.
+如果一个函数抛出错误，这可能是由于取消导致的（例如 <CodeStep step={1}>数据库连接</CodeStep> 已被关闭）。你可以使用 <CodeStep step={2}>`aborted` 属性</CodeStep> 来检查错误是由于取消还是实际错误。你可能希望<CodeStep step={3}>忽略</CodeStep>那些由取消引起的错误。
 
 ```js [[1, 2, "./database"], [2, 8, "cacheSignal()?.aborted"], [3, 12, "return null"]]
 import {cacheSignal} from "react";
@@ -96,7 +96,7 @@ async function getData(id) {
      return await queryDatabase(id);
   } catch (x) {
      if (!cacheSignal()?.aborted) {
-        // only log if it's a real error and not due to cancellation
+        // 仅在这是真实错误而非由取消引起时才记录
        logError(x);
      }
      return null;
@@ -106,7 +106,7 @@ async function getData(id) {
 async function Component({id}) {
   const data = await getData(id);
   if (data === null) {
-    return <div>No data available</div>;
+    return <div>没有可用数据</div>;
   }
   return <div>{data.name}</div>;
 }

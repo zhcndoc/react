@@ -1,25 +1,25 @@
 ---
-title: "Built-in React Components"
+title: "内置 React 组件"
 ---
 
 <Intro>
 
-React exposes a few built-in components that you can use in your JSX.
+React 暴露了一些内置组件，你可以在你的 JSX 中使用它们。
 
 </Intro>
 
 ---
 
-## Built-in components {/*built-in-components*/}
+## 内置组件 {/*built-in-components*/}
 
-* [`<Fragment>`](/reference/react/Fragment), alternatively written as `<>...</>`, lets you group multiple JSX nodes together.
-* [`<Profiler>`](/reference/react/Profiler) lets you measure rendering performance of a React tree programmatically.
-* [`<Suspense>`](/reference/react/Suspense) lets you display a fallback while the child components are loading.
-* [`<StrictMode>`](/reference/react/StrictMode) enables extra development-only checks that help you find bugs early.
-* [`<Activity>`](/reference/react/Activity) lets you hide and restore the UI and internal state of its children.
+* [`<Fragment>`](/reference/react/Fragment)，也可以写作 `<>...</>`，它让你可以把多个 JSX 节点组合在一起。
+* [`<Profiler>`](/reference/react/Profiler) 让你可以以编程方式衡量 React 树的渲染性能。
+* [`<Suspense>`](/reference/react/Suspense) 让你可以在子组件加载时显示回退内容。
+* [`<StrictMode>`](/reference/react/StrictMode) 启用仅用于开发环境的额外检查，帮助你尽早发现 bug。
+* [`<Activity>`](/reference/react/Activity) 让你可以隐藏和恢复其子元素的 UI 和内部状态。
 
 ---
 
-## Your own components {/*your-own-components*/}
+## 你自己的组件 {/*your-own-components*/}
 
-You can also [define your own components](/learn/your-first-component) as JavaScript functions.
+你也可以将 [你自己的组件](/learn/your-first-component) 定义为 JavaScript 函数。

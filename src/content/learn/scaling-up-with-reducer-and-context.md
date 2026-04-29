@@ -1,24 +1,24 @@
 ---
-title: Scaling Up with Reducer and Context
+title: 使用 Reducer 和 Context 扩展规模
 ---
 
 <Intro>
 
-Reducers let you consolidate a component's state update logic. Context lets you pass information deep down to other components. You can combine reducers and context together to manage state of a complex screen.
+Reducer 可以让你把组件的状态更新逻辑整合起来。Context 则允许你把信息深层传递给其他组件。你可以将 reducer 和 context 结合起来，管理复杂界面的状态。
 
 </Intro>
 
 <YouWillLearn>
 
-* How to combine a reducer with context
-* How to avoid passing state and dispatch through props
-* How to keep context and state logic in a separate file
+* 如何将 reducer 与 context 结合
+* 如何避免通过 props 传递 state 和 dispatch
+* 如何将 context 和状态逻辑放在单独的文件中
 
 </YouWillLearn>
 
-## Combining a reducer with context {/*combining-a-reducer-with-context*/}
+## 将 reducer 与 context 结合 {/*combining-a-reducer-with-context*/}
 
-In this example from [the introduction to reducers](/learn/extracting-state-logic-into-a-reducer), the state is managed by a reducer. The reducer function contains all of the state update logic and is declared at the bottom of this file:
+在这个来自 [reducer 介绍](/learn/extracting-state-logic-into-a-reducer) 的示例中，状态由 reducer 管理。reducer 函数包含了所有的状态更新逻辑，并声明在这个文件的底部：
 
 <Sandpack>
 
@@ -57,7 +57,7 @@ export default function TaskApp() {
 
   return (
     <>
-      <h1>Day off in Kyoto</h1>
+      <h1>京都的一天假期</h1>
       <AddTask
         onAddTask={handleAddTask}
       />
@@ -92,16 +92,16 @@ function tasksReducer(tasks, action) {
       return tasks.filter(t => t.id !== action.id);
     }
     default: {
-      throw Error('Unknown action: ' + action.type);
+      throw Error('未知的 action：' + action.type);
     }
   }
 }
 
 let nextId = 3;
 const initialTasks = [
-  { id: 0, text: 'Philosopher’s Path', done: true },
-  { id: 1, text: 'Visit the temple', done: false },
-  { id: 2, text: 'Drink matcha', done: false }
+  { id: 0, text: '哲学之道', done: true },
+  { id: 1, text: '参观寺庙', done: false },
+  { id: 2, text: '喝抹茶', done: false }
 ];
 ```
 
@@ -113,14 +113,14 @@ export default function AddTask({ onAddTask }) {
   return (
     <>
       <input
-        placeholder="Add task"
+        placeholder="添加任务"
         value={text}
         onChange={e => setText(e.target.value)}
       />
       <button onClick={() => {
         setText('');
         onAddTask(text);
-      }}>Add</button>
+      }}>添加</button>
     </>
   )
 }
@@ -164,7 +164,7 @@ function Task({ task, onChange, onDelete }) {
             });
           }} />
         <button onClick={() => setIsEditing(false)}>
-          Save
+          保存
         </button>
       </>
     );
@@ -173,7 +173,7 @@ function Task({ task, onChange, onDelete }) {
       <>
         {task.text}
         <button onClick={() => setIsEditing(true)}>
-          Edit
+          编辑
         </button>
       </>
     );
@@ -192,7 +192,7 @@ function Task({ task, onChange, onDelete }) {
       />
       {taskContent}
       <button onClick={() => onDelete(task.id)}>
-        Delete
+        删除
       </button>
     </label>
   );
@@ -207,9 +207,9 @@ ul, li { margin: 0; padding: 0; }
 
 </Sandpack>
 
-A reducer helps keep the event handlers short and concise. However, as your app grows, you might run into another difficulty. **Currently, the `tasks` state and the `dispatch` function are only available in the top-level `TaskApp` component.** To let other components read the list of tasks or change it, you have to explicitly [pass down](/learn/passing-props-to-a-component) the current state and the event handlers that change it as props.
+reducer 有助于让事件处理函数保持简短而精炼。不过，随着应用增长，你可能会遇到另一个困难。**目前，`tasks` 状态和 `dispatch` 函数只在顶层的 `TaskApp` 组件中可用。** 要让其他组件读取任务列表或修改它，你必须显式地把当前状态以及修改它的事件处理函数作为 props [向下传递](/learn/passing-props-to-a-component)。
 
-For example, `TaskApp` passes a list of tasks and the event handlers to `TaskList`:
+例如，`TaskApp` 把任务列表和事件处理函数传给 `TaskList`：
 
 ```js
 <TaskList
@@ -219,7 +219,7 @@ For example, `TaskApp` passes a list of tasks and the event handlers to `TaskLis
 />
 ```
 
-And `TaskList` passes the event handlers to `Task`:
+然后 `TaskList` 再把事件处理函数传给 `Task`：
 
 ```js
 <Task
@@ -229,30 +229,30 @@ And `TaskList` passes the event handlers to `Task`:
 />
 ```
 
-In a small example like this, this works well, but if you have tens or hundreds of components in the middle, passing down all state and functions can be quite frustrating!
+在这样的小例子中，这种方式效果很好，但如果中间有几十个甚至几百个组件，把所有状态和函数一路向下传递会非常令人沮丧！
 
-This is why, as an alternative to passing them through props, you might want to put both the `tasks` state and the `dispatch` function [into context.](/learn/passing-data-deeply-with-context) **This way, any component below `TaskApp` in the tree can read the tasks and dispatch actions without the repetitive "prop drilling".**
+这就是为什么，作为通过 props 传递它们的替代方案，你可能希望把 `tasks` 状态和 `dispatch` 函数都 [放入 context。](/learn/passing-data-deeply-with-context) **这样，树中位于 `TaskApp` 下方的任何组件都可以读取任务并分发 actions，而无需重复的“属性钻取”。**
 
-Here is how you can combine a reducer with context:
+下面是将 reducer 和 context 结合的方法：
 
-1. **Create** the context.
-2. **Put** state and dispatch into context.
-3. **Use** context anywhere in the tree.
+1. **创建** context。
+2. **把** state 和 dispatch 放入 context。
+3. **在**树中的任何位置使用 context。
 
-### Step 1: Create the context {/*step-1-create-the-context*/}
+### 第 1 步：创建 context {/*step-1-create-the-context*/}
 
-The `useReducer` Hook returns the current `tasks` and the `dispatch` function that lets you update them:
+`useReducer` Hook 会返回当前的 `tasks` 和用于更新它们的 `dispatch` 函数：
 
 ```js
 const [tasks, dispatch] = useReducer(tasksReducer, initialTasks);
 ```
 
-To pass them down the tree, you will [create](/learn/passing-data-deeply-with-context#step-2-use-the-context) two separate contexts:
+为了把它们传递到组件树中，你需要[创建](/learn/passing-data-deeply-with-context#step-2-use-the-context)两个独立的 context：
 
-- `TasksContext` provides the current list of tasks.
-- `TasksDispatchContext` provides the function that lets components dispatch actions.
+- `TasksContext` 提供当前的任务列表。
+- `TasksDispatchContext` 提供让组件分发 actions 的函数。
 
-Export them from a separate file so that you can later import them from other files:
+把它们从单独的文件中导出，这样之后就可以在其他文件中导入它们：
 
 <Sandpack>
 
@@ -291,7 +291,7 @@ export default function TaskApp() {
 
   return (
     <>
-      <h1>Day off in Kyoto</h1>
+      <h1>京都的一天假期</h1>
       <AddTask
         onAddTask={handleAddTask}
       />
@@ -326,16 +326,16 @@ function tasksReducer(tasks, action) {
       return tasks.filter(t => t.id !== action.id);
     }
     default: {
-      throw Error('Unknown action: ' + action.type);
+      throw Error('未知的 action：' + action.type);
     }
   }
 }
 
 let nextId = 3;
 const initialTasks = [
-  { id: 0, text: 'Philosopher’s Path', done: true },
-  { id: 1, text: 'Visit the temple', done: false },
-  { id: 2, text: 'Drink matcha', done: false }
+  { id: 0, text: '哲学之道', done: true },
+  { id: 1, text: '参观寺庙', done: false },
+  { id: 2, text: '喝抹茶', done: false }
 ];
 ```
 
@@ -354,14 +354,14 @@ export default function AddTask({ onAddTask }) {
   return (
     <>
       <input
-        placeholder="Add task"
+        placeholder="添加任务"
         value={text}
         onChange={e => setText(e.target.value)}
       />
       <button onClick={() => {
         setText('');
         onAddTask(text);
-      }}>Add</button>
+      }}>添加</button>
     </>
   )
 }
@@ -405,7 +405,7 @@ function Task({ task, onChange, onDelete }) {
             });
           }} />
         <button onClick={() => setIsEditing(false)}>
-          Save
+          保存
         </button>
       </>
     );
@@ -414,7 +414,7 @@ function Task({ task, onChange, onDelete }) {
       <>
         {task.text}
         <button onClick={() => setIsEditing(true)}>
-          Edit
+          编辑
         </button>
       </>
     );
@@ -433,7 +433,7 @@ function Task({ task, onChange, onDelete }) {
       />
       {taskContent}
       <button onClick={() => onDelete(task.id)}>
-        Delete
+        删除
       </button>
     </label>
   );
@@ -448,11 +448,11 @@ ul, li { margin: 0; padding: 0; }
 
 </Sandpack>
 
-Here, you're passing `null` as the default value to both contexts. The actual values will be provided by the `TaskApp` component.
+这里，你把 `null` 作为两个 context 的默认值传入。实际值将由 `TaskApp` 组件提供。
 
-### Step 2: Put state and dispatch into context {/*step-2-put-state-and-dispatch-into-context*/}
+### 第 2 步：把 state 和 dispatch 放入 context {/*step-2-put-state-and-dispatch-into-context*/}
 
-Now you can import both contexts in your `TaskApp` component. Take the `tasks` and `dispatch` returned by `useReducer()` and [provide them](/learn/passing-data-deeply-with-context#step-3-provide-the-context) to the entire tree below:
+现在你可以在 `TaskApp` 组件中导入这两个 context。拿到 `useReducer()` 返回的 `tasks` 和 `dispatch`，并把它们 [提供](/learn/passing-data-deeply-with-context#step-3-provide-the-context) 给其下方的整个树：
 
 ```js {4,7-8}
 import { TasksContext, TasksDispatchContext } from './TasksContext.js';
@@ -470,7 +470,7 @@ export default function TaskApp() {
 }
 ```
 
-For now, you pass the information both via props and in context:
+目前，你既通过 props 也通过 context 传递信息：
 
 <Sandpack>
 
@@ -511,7 +511,7 @@ export default function TaskApp() {
   return (
     <TasksContext value={tasks}>
       <TasksDispatchContext value={dispatch}>
-        <h1>Day off in Kyoto</h1>
+        <h1>京都的一天假期</h1>
         <AddTask
           onAddTask={handleAddTask}
         />
@@ -547,16 +547,16 @@ function tasksReducer(tasks, action) {
       return tasks.filter(t => t.id !== action.id);
     }
     default: {
-      throw Error('Unknown action: ' + action.type);
+      throw Error('未知的 action：' + action.type);
     }
   }
 }
 
 let nextId = 3;
 const initialTasks = [
-  { id: 0, text: 'Philosopher’s Path', done: true },
-  { id: 1, text: 'Visit the temple', done: false },
-  { id: 2, text: 'Drink matcha', done: false }
+  { id: 0, text: '哲学之道', done: true },
+  { id: 1, text: '参观寺庙', done: false },
+  { id: 2, text: '喝抹茶', done: false }
 ];
 ```
 
@@ -575,14 +575,14 @@ export default function AddTask({ onAddTask }) {
   return (
     <>
       <input
-        placeholder="Add task"
+        placeholder="添加任务"
         value={text}
         onChange={e => setText(e.target.value)}
       />
       <button onClick={() => {
         setText('');
         onAddTask(text);
-      }}>Add</button>
+      }}>添加</button>
     </>
   )
 }
@@ -626,7 +626,7 @@ function Task({ task, onChange, onDelete }) {
             });
           }} />
         <button onClick={() => setIsEditing(false)}>
-          Save
+          保存
         </button>
       </>
     );
@@ -635,7 +635,7 @@ function Task({ task, onChange, onDelete }) {
       <>
         {task.text}
         <button onClick={() => setIsEditing(true)}>
-          Edit
+          编辑
         </button>
       </>
     );
@@ -654,7 +654,7 @@ function Task({ task, onChange, onDelete }) {
       />
       {taskContent}
       <button onClick={() => onDelete(task.id)}>
-        Delete
+        删除
       </button>
     </label>
   );
@@ -669,23 +669,23 @@ ul, li { margin: 0; padding: 0; }
 
 </Sandpack>
 
-In the next step, you will remove prop passing.
+下一步，你将移除 props 传递。
 
-### Step 3: Use context anywhere in the tree {/*step-3-use-context-anywhere-in-the-tree*/}
+### 第 3 步：在树中的任何位置使用 context {/*step-3-use-context-anywhere-in-the-tree*/}
 
-Now you don't need to pass the list of tasks or the event handlers down the tree:
+现在你不需要再把任务列表或事件处理函数一路向下传递了：
 
 ```js {4-5}
 <TasksContext value={tasks}>
   <TasksDispatchContext value={dispatch}>
-    <h1>Day off in Kyoto</h1>
+    <h1>京都的一天假期</h1>
     <AddTask />
     <TaskList />
   </TasksDispatchContext>
 </TasksContext>
 ```
 
-Instead, any component that needs the task list can read it from the `TasksContext`:
+相反，任何需要任务列表的组件都可以从 `TasksContext` 中读取它：
 
 ```js {2}
 export default function TaskList() {
@@ -693,7 +693,7 @@ export default function TaskList() {
   // ...
 ```
 
-To update the task list, any component can read the `dispatch` function from context and call it:
+要更新任务列表，任何组件都可以从 context 中读取 `dispatch` 函数并调用它：
 
 ```js {3,9-13}
 export default function AddTask() {
@@ -709,11 +709,11 @@ export default function AddTask() {
         id: nextId++,
         text: text,
       });
-    }}>Add</button>
+    }}>添加</button>
     // ...
 ```
 
-**The `TaskApp` component does not pass any event handlers down, and the `TaskList` does not pass any event handlers to the `Task` component either.** Each component reads the context that it needs:
+**`TaskApp` 组件不再向下传递任何事件处理函数，`TaskList` 也不再向 `Task` 组件传递任何事件处理函数。** 每个组件都会读取它所需要的 context：
 
 <Sandpack>
 
@@ -732,7 +732,7 @@ export default function TaskApp() {
   return (
     <TasksContext value={tasks}>
       <TasksDispatchContext value={dispatch}>
-        <h1>Day off in Kyoto</h1>
+        <h1>京都的一天假期</h1>
         <AddTask />
         <TaskList />
       </TasksDispatchContext>
@@ -762,15 +762,15 @@ function tasksReducer(tasks, action) {
       return tasks.filter(t => t.id !== action.id);
     }
     default: {
-      throw Error('Unknown action: ' + action.type);
+      throw Error('未知的 action：' + action.type);
     }
   }
 }
 
 const initialTasks = [
-  { id: 0, text: 'Philosopher’s Path', done: true },
-  { id: 1, text: 'Visit the temple', done: false },
-  { id: 2, text: 'Drink matcha', done: false }
+  { id: 0, text: '哲学之道', done: true },
+  { id: 1, text: '参观寺庙', done: false },
+  { id: 2, text: '喝抹茶', done: false }
 ];
 ```
 
@@ -791,7 +791,7 @@ export default function AddTask() {
   return (
     <>
       <input
-        placeholder="Add task"
+        placeholder="添加任务"
         value={text}
         onChange={e => setText(e.target.value)}
       />
@@ -802,7 +802,7 @@ export default function AddTask() {
           id: nextId++,
           text: text,
         });
-      }}>Add</button>
+      }}>添加</button>
     </>
   );
 }
@@ -846,7 +846,7 @@ function Task({ task }) {
             });
           }} />
         <button onClick={() => setIsEditing(false)}>
-          Save
+          保存
         </button>
       </>
     );
@@ -855,7 +855,7 @@ function Task({ task }) {
       <>
         {task.text}
         <button onClick={() => setIsEditing(true)}>
-          Edit
+          编辑
         </button>
       </>
     );
@@ -882,7 +882,7 @@ function Task({ task }) {
           id: task.id
         });
       }}>
-        Delete
+        删除
       </button>
     </label>
   );
@@ -897,11 +897,11 @@ ul, li { margin: 0; padding: 0; }
 
 </Sandpack>
 
-**The state still "lives" in the top-level `TaskApp` component, managed with `useReducer`.** But its `tasks` and `dispatch` are now available to every component below in the tree by importing and using these contexts.
+**状态仍然“存在于”顶层的 `TaskApp` 组件中，并由 `useReducer` 管理。** 但它的 `tasks` 和 `dispatch` 现在可以通过导入并使用这些 context，被树中下方的每个组件访问。
 
-## Moving all wiring into a single file {/*moving-all-wiring-into-a-single-file*/}
+## 将所有连接逻辑移动到单个文件中 {/*moving-all-wiring-into-a-single-file*/}
 
-You don't have to do this, but you could further declutter the components by moving both reducer and context into a single file. Currently, `TasksContext.js` contains only two context declarations:
+你不必这样做，但你可以通过把 reducer 和 context 都移动到一个文件里，进一步让组件更简洁。目前，`TasksContext.js` 里只有两个 context 声明：
 
 ```js
 import { createContext } from 'react';
@@ -910,11 +910,11 @@ export const TasksContext = createContext(null);
 export const TasksDispatchContext = createContext(null);
 ```
 
-This file is about to get crowded! You'll move the reducer into that same file. Then you'll declare a new `TasksProvider` component in the same file. This component will tie all the pieces together:
+这个文件马上就要变得拥挤了！你会把 reducer 也移到同一个文件中。然后你会在同一个文件里声明一个新的 `TasksProvider` 组件。这个组件会把所有部分串联起来：
 
-1. It will manage the state with a reducer.
-2. It will provide both contexts to components below.
-3. It will [take `children` as a prop](/learn/passing-props-to-a-component#passing-jsx-as-children) so you can pass JSX to it.
+1. 它会使用 reducer 管理状态。
+2. 它会把这两个 context 提供给下方的组件。
+3. 它会将 [children 作为 prop 传入](/learn/passing-props-to-a-component#passing-jsx-as-children)，这样你就可以向它传递 JSX。
 
 ```js
 export function TasksProvider({ children }) {
@@ -930,7 +930,7 @@ export function TasksProvider({ children }) {
 }
 ```
 
-**This removes all the complexity and wiring from your `TaskApp` component:**
+**这会从你的 `TaskApp` 组件中移除所有复杂性和连接逻辑：**
 
 <Sandpack>
 
@@ -993,15 +993,15 @@ function tasksReducer(tasks, action) {
       return tasks.filter(t => t.id !== action.id);
     }
     default: {
-      throw Error('Unknown action: ' + action.type);
+      throw Error('未知的操作：' + action.type);
     }
   }
 }
 
 const initialTasks = [
-  { id: 0, text: 'Philosopher’s Path', done: true },
-  { id: 1, text: 'Visit the temple', done: false },
-  { id: 2, text: 'Drink matcha', done: false }
+  { id: 0, text: '哲学家之路', done: true },
+  { id: 1, text: '参观寺庙', done: false },
+  { id: 2, text: '喝抹茶', done: false }
 ];
 ```
 
@@ -1015,7 +1015,7 @@ export default function AddTask() {
   return (
     <>
       <input
-        placeholder="Add task"
+        placeholder="添加任务"
         value={text}
         onChange={e => setText(e.target.value)}
       />
@@ -1026,7 +1026,7 @@ export default function AddTask() {
           id: nextId++,
           text: text,
         });
-      }}>Add</button>
+      }}>添加</button>
     </>
   );
 }
@@ -1070,7 +1070,7 @@ function Task({ task }) {
             });
           }} />
         <button onClick={() => setIsEditing(false)}>
-          Save
+          保存
         </button>
       </>
     );
@@ -1079,7 +1079,7 @@ function Task({ task }) {
       <>
         {task.text}
         <button onClick={() => setIsEditing(true)}>
-          Edit
+          编辑
         </button>
       </>
     );
@@ -1106,7 +1106,7 @@ function Task({ task }) {
           id: task.id
         });
       }}>
-        Delete
+        删除
       </button>
     </label>
   );
@@ -1121,7 +1121,7 @@ ul, li { margin: 0; padding: 0; }
 
 </Sandpack>
 
-You can also export functions that _use_ the context from `TasksContext.js`:
+你也可以导出从 `TasksContext.js` 中 _使用_ context 的函数：
 
 ```js
 export function useTasks() {
@@ -1133,14 +1133,14 @@ export function useTasksDispatch() {
 }
 ```
 
-When a component needs to read context, it can do it through these functions:
+当某个组件需要读取 context 时，它可以通过这些函数来完成：
 
 ```js
 const tasks = useTasks();
 const dispatch = useTasksDispatch();
 ```
 
-This doesn't change the behavior in any way, but it lets you later split these contexts further or add some logic to these functions. **Now all of the context and reducer wiring is in `TasksContext.js`. This keeps the components clean and uncluttered, focused on what they display rather than where they get the data:**
+这不会改变任何行为，但它让你以后可以进一步拆分这些 context，或者在这些函数中添加一些逻辑。**现在所有的 context 和 reducer 连接逻辑都在 `TasksContext.js` 中。这让组件保持干净、简洁，并专注于它们展示什么，而不是它们从哪里获取数据：**
 
 <Sandpack>
 
@@ -1212,15 +1212,15 @@ function tasksReducer(tasks, action) {
       return tasks.filter(t => t.id !== action.id);
     }
     default: {
-      throw Error('Unknown action: ' + action.type);
+      throw Error('未知的操作：' + action.type);
     }
   }
 }
 
 const initialTasks = [
-  { id: 0, text: 'Philosopher’s Path', done: true },
-  { id: 1, text: 'Visit the temple', done: false },
-  { id: 2, text: 'Drink matcha', done: false }
+  { id: 0, text: '哲学家之路', done: true },
+  { id: 1, text: '参观寺庙', done: false },
+  { id: 2, text: '喝抹茶', done: false }
 ];
 ```
 
@@ -1234,7 +1234,7 @@ export default function AddTask() {
   return (
     <>
       <input
-        placeholder="Add task"
+        placeholder="添加任务"
         value={text}
         onChange={e => setText(e.target.value)}
       />
@@ -1245,7 +1245,7 @@ export default function AddTask() {
           id: nextId++,
           text: text,
         });
-      }}>Add</button>
+      }}>添加</button>
     </>
   );
 }
@@ -1289,7 +1289,7 @@ function Task({ task }) {
             });
           }} />
         <button onClick={() => setIsEditing(false)}>
-          Save
+          保存
         </button>
       </>
     );
@@ -1298,7 +1298,7 @@ function Task({ task }) {
       <>
         {task.text}
         <button onClick={() => setIsEditing(true)}>
-          Edit
+          编辑
         </button>
       </>
     );
@@ -1325,7 +1325,7 @@ function Task({ task }) {
           id: task.id
         });
       }}>
-        Delete
+        删除
       </button>
     </label>
   );
@@ -1340,26 +1340,26 @@ ul, li { margin: 0; padding: 0; }
 
 </Sandpack>
 
-You can think of `TasksProvider` as a part of the screen that knows how to deal with tasks, `useTasks` as a way to read them, and `useTasksDispatch` as a way to update them from any component below in the tree.
+你可以把 `TasksProvider` 看作是屏幕中负责处理任务的部分，把 `useTasks` 看作读取任务的方式，把 `useTasksDispatch` 看作从树中任何下方组件更新任务的方式。
 
 <Note>
 
-Functions like `useTasks` and `useTasksDispatch` are called *[Custom Hooks.](/learn/reusing-logic-with-custom-hooks)* Your function is considered a custom Hook if its name starts with `use`. This lets you use other Hooks, like `useContext`, inside it.
+像 `useTasks` 和 `useTasksDispatch` 这样的函数被称为 *[自定义 Hook。](/learn/reusing-logic-with-custom-hooks)* 如果你的函数名以 `use` 开头，它就会被认为是自定义 Hook。这使你可以在其中使用其他 Hook，例如 `useContext`。
 
 </Note>
 
-As your app grows, you may have many context-reducer pairs like this. This is a powerful way to scale your app and [lift state up](/learn/sharing-state-between-components) without too much work whenever you want to access the data deep in the tree.
+随着应用不断增长，你可能会有很多像这样的 context-reducer 对。这是一个强大的方式，可以在几乎不费力的情况下扩展你的应用，并在你想要访问树深处的数据时 [提升状态](/learn/sharing-state-between-components)。
 
 <Recap>
 
-- You can combine reducer with context to let any component read and update state above it.
-- To provide state and the dispatch function to components below:
-  1. Create two contexts (for state and for dispatch functions).
-  2. Provide both contexts from the component that uses the reducer.
-  3. Use either context from components that need to read them.
-- You can further declutter the components by moving all wiring into one file.
-  - You can export a component like `TasksProvider` that provides context.
-  - You can also export custom Hooks like `useTasks` and `useTasksDispatch` to read it.
-- You can have many context-reducer pairs like this in your app.
+- 你可以将 reducer 与 context 结合起来，让任何组件都能读取和更新它上方的状态。
+- 要将状态和 dispatch 函数提供给下方组件：
+  1. 创建两个 context（分别用于状态和 dispatch 函数）。
+  2. 从使用 reducer 的组件中提供这两个 context。
+  3. 在需要读取它们的组件中使用任一 context。
+- 你可以通过把所有连接逻辑移动到一个文件中，进一步让组件更简洁。
+  - 你可以导出像 `TasksProvider` 这样的组件来提供 context。
+  - 你也可以导出像 `useTasks` 和 `useTasksDispatch` 这样的自定义 Hook 来读取它。
+- 你的应用中可以有很多像这样的 context-reducer 对。
 
 </Recap>

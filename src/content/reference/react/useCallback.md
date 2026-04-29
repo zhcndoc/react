@@ -4,7 +4,7 @@ title: useCallback
 
 <Intro>
 
-`useCallback` is a React Hook that lets you cache a function definition between re-renders.
+`useCallback` 是一个 React Hook，它允许你在多次重新渲染之间缓存函数定义。
 
 ```js
 const cachedFn = useCallback(fn, dependencies)
@@ -14,7 +14,7 @@ const cachedFn = useCallback(fn, dependencies)
 
 <Note>
 
-[React Compiler](/learn/react-compiler) automatically memoizes values and functions, reducing the need for manual `useCallback` calls. You can use the compiler to handle memoization automatically.
+[React Compiler](/learn/react-compiler) 会自动对值和函数进行记忆化，从而减少手动调用 `useCallback` 的需要。你可以使用编译器自动处理记忆化。
 
 </Note>
 
@@ -22,11 +22,11 @@ const cachedFn = useCallback(fn, dependencies)
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `useCallback(fn, dependencies)` {/*usecallback*/}
 
-Call `useCallback` at the top level of your component to cache a function definition between re-renders:
+在组件顶层调用 `useCallback`，以便在多次重新渲染之间缓存函数定义：
 
 ```js {4,9}
 import { useCallback } from 'react';
@@ -40,34 +40,34 @@ export default function ProductPage({ productId, referrer, theme }) {
   }, [productId, referrer]);
 ```
 
-[See more examples below.](#usage)
+[查看更多示例。](#usage)
 
-#### Parameters {/*parameters*/}
+#### 参数 {/*parameters*/}
 
-* `fn`: The function value that you want to cache. It can take any arguments and return any values. React will return (not call!) your function back to you during the initial render. On next renders, React will give you the same function again if the `dependencies` have not changed since the last render. Otherwise, it will give you the function that you have passed during the current render, and store it in case it can be reused later. React will not call your function. The function is returned to you so you can decide when and whether to call it.
+* `fn`：你希望缓存的函数值。它可以接受任意参数并返回任意值。React 会在初始渲染时把你的函数返回给你（不是调用！）。在后续渲染中，如果 `dependencies` 自上次渲染以来没有变化，React 会再次给你同一个函数。否则，它会给你当前渲染中传入的函数，并将其存储起来，以便之后可以复用。React 不会调用你的函数。之所以把函数返回给你，是为了让你决定何时以及是否调用它。
 
-* `dependencies`: The list of all reactive values referenced inside of the `fn` code. Reactive values include props, state, and all the variables and functions declared directly inside your component body. If your linter is [configured for React](/learn/editor-setup#linting), it will verify that every reactive value is correctly specified as a dependency. The list of dependencies must have a constant number of items and be written inline like `[dep1, dep2, dep3]`. React will compare each dependency with its previous value using the [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is) comparison algorithm.
+* `dependencies`：`fn` 代码中引用的所有响应式值列表。响应式值包括 props、state，以及直接在组件函数体内声明的所有变量和函数。如果你的 linter 已[为 React 配置](/learn/editor-setup#linting)，它会验证每个响应式值都被正确指定为依赖项。依赖项列表必须具有固定数量的项目，并以内联形式编写，例如 `[dep1, dep2, dep3]`。React 会使用 [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is) 比较算法，将每个依赖项与其之前的值进行比较。
 
-#### Returns {/*returns*/}
+#### 返回值 {/*returns*/}
 
-On the initial render, `useCallback` returns the `fn` function you have passed.
+在初始渲染时，`useCallback` 返回你传入的 `fn` 函数。
 
-During subsequent renders, it will either return an already stored `fn` function from the last render (if the dependencies haven't changed), or return the `fn` function you have passed during this render.
+在后续渲染中，它要么返回上一次渲染中已存储的 `fn` 函数（如果依赖项没有变化），要么返回你在本次渲染中传入的 `fn` 函数。
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-* `useCallback` is a Hook, so you can only call it **at the top level of your component** or your own Hooks. You can't call it inside loops or conditions. If you need that, extract a new component and move the state into it.
-* React **will not throw away the cached function unless there is a specific reason to do that.** For example, in development, React throws away the cache when you edit the file of your component. Both in development and in production, React will throw away the cache if your component suspends during the initial mount. In the future, React may add more features that take advantage of throwing away the cache--for example, if React adds built-in support for virtualized lists in the future, it would make sense to throw away the cache for items that scroll out of the virtualized table viewport. This should match your expectations if you rely on `useCallback` as a performance optimization. Otherwise, a [state variable](/reference/react/useState#im-trying-to-set-state-to-a-function-but-it-gets-called-instead) or a [ref](/reference/react/useRef#avoiding-recreating-the-ref-contents) may be more appropriate.
+* `useCallback` 是一个 Hook，因此你只能在**组件顶层**或你自己的 Hooks 中调用它。你不能在循环或条件语句中调用它。如果你需要那样做，请提取一个新组件并把 state 移到其中。
+* React **不会丢弃已缓存的函数，除非有特定原因这样做。** 例如，在开发环境中，当你编辑组件文件时，React 会丢弃缓存。在开发和生产环境中，如果你的组件在初始挂载时挂起，React 会丢弃缓存。将来，React 可能会增加更多会利用丢弃缓存的特性——例如，如果 React 未来为虚拟化列表提供内置支持，那么对于滚出虚拟化表格视口的项目，丢弃缓存将是合理的。如果你将 `useCallback` 作为性能优化手段，这应当符合你的预期。否则，使用 [state 变量](/reference/react/useState#im-trying-to-set-state-to-a-function-but-it-gets-called-instead) 或 [ref](/reference/react/useRef#avoiding-recreating-the-ref-contents) 可能更合适。
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Skipping re-rendering of components {/*skipping-re-rendering-of-components*/}
+### 跳过组件重新渲染 {/*skipping-re-rendering-of-components*/}
 
-When you optimize rendering performance, you will sometimes need to cache the functions that you pass to child components. Let's first look at the syntax for how to do this, and then see in which cases it's useful.
+当你优化渲染性能时，有时需要缓存传递给子组件的函数。我们先看一下如何实现的语法，然后再看看它在哪些情况下有用。
 
-To cache a function between re-renders of your component, wrap its definition into the `useCallback` Hook:
+要在组件多次重新渲染之间缓存函数，请将其定义包裹到 `useCallback` Hook 中：
 
 ```js [[3, 4, "handleSubmit"], [2, 9, "[productId, referrer]"]]
 import { useCallback } from 'react';
@@ -82,20 +82,20 @@ function ProductPage({ productId, referrer, theme }) {
   // ...
 ```
 
-You need to pass two things to `useCallback`:
+你需要向 `useCallback` 传入两样东西：
 
-1. A function definition that you want to cache between re-renders.
-2. A <CodeStep step={2}>list of dependencies</CodeStep> including every value within your component that's used inside your function.
+1. 你想要在多次重新渲染之间缓存的函数定义。
+2. 一个 <CodeStep step={2}>依赖项列表</CodeStep>，其中包含你组件中在函数内使用到的每个值。
 
-On the initial render, the <CodeStep step={3}>returned function</CodeStep> you'll get from `useCallback` will be the function you passed.
+在初始渲染时，你从 `useCallback` 得到的 <CodeStep step={3}>返回函数</CodeStep> 会是你传入的那个函数。
 
-On the following renders, React will compare the <CodeStep step={2}>dependencies</CodeStep> with the dependencies you passed during the previous render. If none of the dependencies have changed (compared with [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is)), `useCallback` will return the same function as before. Otherwise, `useCallback` will return the function you passed on *this* render.
+在后续渲染中，React 会将 <CodeStep step={2}>依赖项</CodeStep> 与你在上一次渲染中传入的依赖项进行比较。如果没有任何依赖项发生变化（与 [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is) 比较），`useCallback` 会返回与之前相同的函数。否则，`useCallback` 会返回你在*本次*渲染中传入的函数。
 
-In other words, `useCallback` caches a function between re-renders until its dependencies change.
+换句话说，`useCallback` 会在多次重新渲染之间缓存一个函数，直到它的依赖项发生变化。
 
-**Let's walk through an example to see when this is useful.**
+**让我们通过一个例子来看看它何时有用。**
 
-Say you're passing a `handleSubmit` function down from the `ProductPage` to the `ShippingForm` component:
+假设你把 `handleSubmit` 函数从 `ProductPage` 传给了 `ShippingForm` 组件：
 
 ```js {5}
 function ProductPage({ productId, referrer, theme }) {
@@ -107,9 +107,9 @@ function ProductPage({ productId, referrer, theme }) {
   );
 ```
 
-You've noticed that toggling the `theme` prop freezes the app for a moment, but if you remove `<ShippingForm />` from your JSX, it feels fast. This tells you that it's worth trying to optimize the `ShippingForm` component.
+你注意到切换 `theme` prop 时应用会卡顿一下，但如果你从 JSX 中移除 `<ShippingForm />`，它就会感觉很快。这说明值得尝试优化 `ShippingForm` 组件。
 
-**By default, when a component re-renders, React re-renders all of its children recursively.** This is why, when `ProductPage` re-renders with a different `theme`, the `ShippingForm` component *also* re-renders. This is fine for components that don't require much calculation to re-render. But if you verified a re-render is slow, you can tell `ShippingForm` to skip re-rendering when its props are the same as on last render by wrapping it in [`memo`:](/reference/react/memo)
+**默认情况下，当某个组件重新渲染时，React 会递归地重新渲染它的所有子组件。** 这就是为什么当 `ProductPage` 因为不同的 `theme` 而重新渲染时，`ShippingForm` 组件也会重新渲染。对于不需要太多计算就能重新渲染的组件来说，这没问题。但如果你确认某次重新渲染很慢，就可以通过将 `ShippingForm` 包裹在 [`memo`](/reference/react/memo) 中，让它在 props 与上次渲染相同时跳过重新渲染：
 
 ```js {3,5}
 import { memo } from 'react';
@@ -119,11 +119,11 @@ const ShippingForm = memo(function ShippingForm({ onSubmit }) {
 });
 ```
 
-**With this change, `ShippingForm` will skip re-rendering if all of its props are the *same* as on the last render.** This is when caching a function becomes important! Let's say you defined `handleSubmit` without `useCallback`:
+**有了这个改动，如果 `ShippingForm` 的所有 props 与上一次渲染时*相同*，它就会跳过重新渲染。** 这时缓存函数就变得重要了！假设你没有使用 `useCallback` 来定义 `handleSubmit`：
 
 ```js {2,3,8,12-13}
 function ProductPage({ productId, referrer, theme }) {
-  // Every time the theme changes, this will be a different function...
+  // 每次 theme 变化时，这都会是一个不同的函数...
   function handleSubmit(orderDetails) {
     post('/product/' + productId + '/buy', {
       referrer,
@@ -133,47 +133,47 @@ function ProductPage({ productId, referrer, theme }) {
 
   return (
     <div className={theme}>
-      {/* ... so ShippingForm's props will never be the same, and it will re-render every time */}
+      {/* ...所以 ShippingForm 的 props 将永远不会相同，它会在每次都重新渲染 */}
       <ShippingForm onSubmit={handleSubmit} />
     </div>
   );
 }
 ```
 
-**In JavaScript, a `function () {}` or `() => {}` always creates a _different_ function,** similar to how the `{}` object literal always creates a new object. Normally, this wouldn't be a problem, but it means that `ShippingForm` props will never be the same, and your [`memo`](/reference/react/memo) optimization won't work. This is where `useCallback` comes in handy:
+**在 JavaScript 中，`function () {}` 或 `() => {}` 总是会创建一个_不同的_函数，** 这与 `{}` 对象字面量总是会创建一个新对象类似。通常这不会有问题，但这意味着 `ShippingForm` 的 props 永远不会相同，而你的 [`memo`](/reference/react/memo) 优化也就无法生效。这就是 `useCallback` 派上用场的地方：
 
 ```js {2,3,8,12-13}
 function ProductPage({ productId, referrer, theme }) {
-  // Tell React to cache your function between re-renders...
+  // 告诉 React 在多次重新渲染之间缓存你的函数...
   const handleSubmit = useCallback((orderDetails) => {
     post('/product/' + productId + '/buy', {
       referrer,
       orderDetails,
     });
-  }, [productId, referrer]); // ...so as long as these dependencies don't change...
+  }, [productId, referrer]); // ...只要这些依赖项没有变化...
 
   return (
     <div className={theme}>
-      {/* ...ShippingForm will receive the same props and can skip re-rendering */}
+      {/* ...ShippingForm 将收到相同的 props，并且可以跳过重新渲染 */}
       <ShippingForm onSubmit={handleSubmit} />
     </div>
   );
 }
 ```
 
-**By wrapping `handleSubmit` in `useCallback`, you ensure that it's the *same* function between the re-renders** (until dependencies change). You don't *have to* wrap a function in `useCallback` unless you do it for some specific reason. In this example, the reason is that you pass it to a component wrapped in [`memo`,](/reference/react/memo) and this lets it skip re-rendering. There are other reasons you might need `useCallback` which are described further on this page.
+**通过将 `handleSubmit` 包裹在 `useCallback` 中，你可以确保它在多次重新渲染之间保持*相同*的函数**（直到依赖项变化）。你并不*必须*把函数包裹在 `useCallback` 中，除非你有某些特定原因。在这个例子中，原因是你把它传给了一个包裹在 [`memo`](/reference/react/memo) 中的组件，这样它就可以跳过重新渲染。你可能还会因为其他原因需要 `useCallback`，本页后面会继续介绍。
 
 <Note>
 
-**You should only rely on `useCallback` as a performance optimization.** If your code doesn't work without it, find the underlying problem and fix it first. Then you may add `useCallback` back.
+**你应该只把 `useCallback` 作为一种性能优化手段来依赖。** 如果你的代码在没有它的情况下不能正常工作，请先找出根本问题并修复它。然后你可以再把 `useCallback` 加回来。
 
 </Note>
 
 <DeepDive>
 
-#### How is useCallback related to useMemo? {/*how-is-usecallback-related-to-usememo*/}
+#### useCallback 和 useMemo 有什么关系？ {/*how-is-usecallback-related-to-usememo*/}
 
-You will often see [`useMemo`](/reference/react/useMemo) alongside `useCallback`. They are both useful when you're trying to optimize a child component. They let you [memoize](https://en.wikipedia.org/wiki/Memoization) (or, in other words, cache) something you're passing down:
+你经常会看到 [`useMemo`](/reference/react/useMemo) 和 `useCallback` 一起使用。当你试图优化子组件时，它们都很有用。它们可以让你对传下去的内容进行[记忆化](https://en.wikipedia.org/wiki/Memoization)（换句话说，就是缓存）：
 
 ```js {6-8,10-15,19}
 import { useMemo, useCallback } from 'react';
@@ -181,11 +181,11 @@ import { useMemo, useCallback } from 'react';
 function ProductPage({ productId, referrer }) {
   const product = useData('/product/' + productId);
 
-  const requirements = useMemo(() => { // Calls your function and caches its result
+  const requirements = useMemo(() => { // 调用你的函数并缓存其结果
     return computeRequirements(product);
   }, [product]);
 
-  const handleSubmit = useCallback((orderDetails) => { // Caches your function itself
+  const handleSubmit = useCallback((orderDetails) => { // 缓存函数本身
     post('/product/' + productId + '/buy', {
       referrer,
       orderDetails,
@@ -200,60 +200,60 @@ function ProductPage({ productId, referrer }) {
 }
 ```
 
-The difference is in *what* they're letting you cache:
+区别在于它们允许你缓存的*内容*不同：
 
-* **[`useMemo`](/reference/react/useMemo) caches the *result* of calling your function.** In this example, it caches the result of calling `computeRequirements(product)` so that it doesn't change unless `product` has changed. This lets you pass the `requirements` object down without unnecessarily re-rendering `ShippingForm`. When necessary, React will call the function you've passed during rendering to calculate the result.
-* **`useCallback` caches *the function itself.*** Unlike `useMemo`, it does not call the function you provide. Instead, it caches the function you provided so that `handleSubmit` *itself* doesn't change unless `productId` or `referrer` has changed. This lets you pass the `handleSubmit` function down without unnecessarily re-rendering `ShippingForm`. Your code won't run until the user submits the form.
+* **[`useMemo`](/reference/react/useMemo) 缓存的是调用你的函数的*结果*。** 在这个例子中，它缓存的是调用 `computeRequirements(product)` 的结果，这样除非 `product` 发生变化，否则结果就不会改变。这样你就可以把 `requirements` 对象传下去，而不会不必要地重新渲染 `ShippingForm`。在必要时，React 会在渲染过程中调用你传入的函数来计算结果。
+* **`useCallback` 缓存的是*函数本身*。** 与 `useMemo` 不同，它不会调用你提供的函数。相反，它会缓存你提供的函数，这样 `handleSubmit` *本身*就不会变化，除非 `productId` 或 `referrer` 发生变化。这样你就可以把 `handleSubmit` 函数传下去，而不会不必要地重新渲染 `ShippingForm`。你的代码要等到用户提交表单时才会运行。
 
-If you're already familiar with [`useMemo`,](/reference/react/useMemo) you might find it helpful to think of `useCallback` as this:
+如果你已经熟悉 [`useMemo`](/reference/react/useMemo)，可以把 `useCallback` 理解为：
 
 ```js {expectedErrors: {'react-compiler': [3]}}
-// Simplified implementation (inside React)
+// 简化实现（在 React 内部）
 function useCallback(fn, dependencies) {
   return useMemo(() => fn, dependencies);
 }
 ```
 
-[Read more about the difference between `useMemo` and `useCallback`.](/reference/react/useMemo#memoizing-a-function)
+[阅读更多关于 `useMemo` 和 `useCallback` 之间区别的内容。](/reference/react/useMemo#memoizing-a-function)
 
 </DeepDive>
 
 <DeepDive>
 
-#### Should you add useCallback everywhere? {/*should-you-add-usecallback-everywhere*/}
+#### 要在所有地方都加上 useCallback 吗？ {/*should-you-add-usecallback-everywhere*/}
 
-If your app is like this site, and most interactions are coarse (like replacing a page or an entire section), memoization is usually unnecessary. On the other hand, if your app is more like a drawing editor, and most interactions are granular (like moving shapes), then you might find memoization very helpful.
+如果你的应用像这个网站一样，大多数交互都比较粗粒度（比如替换整页或整个区域），那么记忆化通常是不必要的。另一方面，如果你的应用更像绘图编辑器，而且大多数交互都很细粒度（比如移动形状），那么你可能会发现记忆化非常有帮助。
 
-Caching a function with `useCallback` is only valuable in a few cases:
+使用 `useCallback` 缓存函数只有在少数情况下才有价值：
 
-- You pass it as a prop to a component wrapped in [`memo`.](/reference/react/memo) You want to skip re-rendering if the value hasn't changed. Memoization lets your component re-render only if dependencies changed.
-- The function you're passing is later used as a dependency of some Hook. For example, another function wrapped in `useCallback` depends on it, or you depend on this function from [`useEffect.`](/reference/react/useEffect)
+- 你把它作为 prop 传给一个包裹在 [`memo`](/reference/react/memo) 中的组件。你希望在值未变化时跳过重新渲染。记忆化可以让你的组件只在依赖项变化时重新渲染。
+- 你传递的函数之后会被用作某个 Hook 的依赖项。例如，另一个用 `useCallback` 包裹的函数依赖于它，或者你在 [`useEffect`](/reference/react/useEffect) 中依赖这个函数。
 
-There is no benefit to wrapping a function in `useCallback` in other cases. There is no significant harm to doing that either, so some teams choose to not think about individual cases, and memoize as much as possible. The downside is that code becomes less readable. Also, not all memoization is effective: a single value that's "always new" is enough to break memoization for an entire component.
+在其他情况下，把函数包裹在 `useCallback` 中没有任何收益。这样做也没有明显的坏处，所以有些团队选择不去考虑单个场景，而是尽可能地进行记忆化。缺点是代码可读性会变差。此外，并非所有记忆化都有效：只要有一个“总是新的”值，就足以破坏整个组件的记忆化。
 
-Note that `useCallback` does not prevent *creating* the function. You're always creating a function (and that's fine!), but React ignores it and gives you back a cached function if nothing changed.
+请注意，`useCallback` 并不会阻止函数的*创建*。你始终都会创建一个函数（这没问题！），但如果没有任何变化，React 会忽略它并返回给你一个缓存的函数。
 
-**In practice, you can make a lot of memoization unnecessary by following a few principles:**
+**在实践中，你可以通过遵循一些原则来让很多记忆化变得不必要：**
 
-1. When a component visually wraps other components, let it [accept JSX as children.](/learn/passing-props-to-a-component#passing-jsx-as-children) Then, if the wrapper component updates its own state, React knows that its children don't need to re-render.
-2. Prefer local state and don't [lift state up](/learn/sharing-state-between-components) any further than necessary. Don't keep transient state like forms and whether an item is hovered at the top of your tree or in a global state library.
-3. Keep your [rendering logic pure.](/learn/keeping-components-pure) If re-rendering a component causes a problem or produces some noticeable visual artifact, it's a bug in your component! Fix the bug instead of adding memoization.
-4. Avoid [unnecessary Effects that update state.](/learn/you-might-not-need-an-effect) Most performance problems in React apps are caused by chains of updates originating from Effects that cause your components to render over and over.
-5. Try to [remove unnecessary dependencies from your Effects.](/learn/removing-effect-dependencies) For example, instead of memoization, it's often simpler to move some object or a function inside an Effect or outside the component.
+1. 当某个组件在视觉上包裹其他组件时，让它[接受 JSX 作为 children。](/learn/passing-props-to-a-component#passing-jsx-as-children) 这样，如果包裹组件更新了自己的 state，React 就知道它的子组件不需要重新渲染。
+2. 优先使用局部 state，不要比必要的程度更进一步地[提升 state。](/learn/sharing-state-between-components) 不要把表单、某项是否被悬停等短暂状态放在组件树顶层或全局状态库中。
+3. 保持你的[渲染逻辑纯净。](/learn/keeping-components-pure) 如果重新渲染某个组件会造成问题或产生明显的视觉异常，那说明你的组件有 bug！请修复 bug，而不是添加记忆化。
+4. 避免[不必要的会更新 state 的 Effects。](/learn/you-might-not-need-an-effect) React 应用中大多数性能问题都来自 Effects 触发的更新链，它们会导致组件一遍又一遍地渲染。
+5. 尝试[移除 Effects 中不必要的依赖项。](/learn/removing-effect-dependencies) 例如，与其做记忆化，不如把某些对象或函数移到 Effect 内部，或者移到组件外部，通常更简单。
 
-If a specific interaction still feels laggy, [use the React Developer Tools profiler](https://legacy.reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html) to see which components benefit the most from memoization, and add memoization where needed. These principles make your components easier to debug and understand, so it's good to follow them in any case. In long term, we're researching [doing memoization automatically](https://www.youtube.com/watch?v=lGEMwh32soc) to solve this once and for all.
+如果某个具体交互仍然感觉卡顿，可以[使用 React Developer Tools 的 profiler](https://legacy.reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html) 看看哪些组件最能从记忆化中受益，并在需要的地方添加记忆化。这些原则会让你的组件更容易调试和理解，所以无论如何都值得遵循。从长远来看，我们正在研究[自动进行记忆化](https://www.youtube.com/watch?v=lGEMwh32soc)来一劳永逸地解决这个问题。
 
 </DeepDive>
 
-<Recipes titleText="The difference between useCallback and declaring a function directly" titleId="examples-rerendering">
+<Recipes titleText="useCallback 与直接声明函数的区别" titleId="examples-rerendering">
 
-#### Skipping re-rendering with `useCallback` and `memo` {/*skipping-re-rendering-with-usecallback-and-memo*/}
+#### 使用 `useCallback` 和 `memo` 跳过重新渲染 {/*skipping-re-rendering-with-usecallback-and-memo*/}
 
-In this example, the `ShippingForm` component is **artificially slowed down** so that you can see what happens when a React component you're rendering is genuinely slow. Try incrementing the counter and toggling the theme.
+在这个例子中，`ShippingForm` 组件被**人为地放慢了速度**，这样你就可以看到当你渲染的 React 组件确实很慢时会发生什么。试着增加计数器并切换主题。
 
-Incrementing the counter feels slow because it forces the slowed down `ShippingForm` to re-render. That's expected because the counter has changed, and so you need to reflect the user's new choice on the screen.
+增加计数器会感觉很慢，因为它迫使被放慢的 `ShippingForm` 重新渲染。这是预期中的，因为计数器已经变化了，所以你需要把用户的新选择反映到屏幕上。
 
-Next, try toggling the theme. **Thanks to `useCallback` together with [`memo`](/reference/react/memo), it’s fast despite the artificial slowdown!** `ShippingForm` skipped re-rendering because the `handleSubmit` function has not changed. The `handleSubmit` function has not changed because both `productId` and `referrer` (your `useCallback` dependencies) haven't changed since last render.
+接着，试着切换主题。**多亏了 `useCallback` 和 [`memo`](/reference/react/memo) 一起使用，即使有人工减速，它仍然很快！** `ShippingForm` 跳过了重新渲染，因为 `handleSubmit` 函数没有变化。`handleSubmit` 函数没有变化，是因为 `productId` 和 `referrer`（你的 `useCallback` 依赖项）自上次渲染以来都没有变化。
 
 <Sandpack>
 
@@ -271,7 +271,7 @@ export default function App() {
           checked={isDark}
           onChange={e => setIsDark(e.target.checked)}
         />
-        Dark mode
+        深色模式
       </label>
       <hr />
       <ProductPage
@@ -304,7 +304,7 @@ export default function ProductPage({ productId, referrer, theme }) {
 }
 
 function post(url, data) {
-  // Imagine this sends a request...
+  // 想象一下这会发送一个请求...
   console.log('POST /' + url);
   console.log(data);
 }
@@ -316,10 +316,10 @@ import { memo, useState } from 'react';
 const ShippingForm = memo(function ShippingForm({ onSubmit }) {
   const [count, setCount] = useState(1);
 
-  console.log('[ARTIFICIALLY SLOW] Rendering <ShippingForm />');
+  console.log('[人为减速] Rendering <ShippingForm />');
   let startTime = performance.now();
   while (performance.now() - startTime < 500) {
-    // Do nothing for 500 ms to emulate extremely slow code
+    // 什么也不做 500 毫秒，以模拟极慢的代码
   }
 
   function handleSubmit(e) {
@@ -334,26 +334,26 @@ const ShippingForm = memo(function ShippingForm({ onSubmit }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <p><b>Note: <code>ShippingForm</code> is artificially slowed down!</b></p>
+      <p><b>注意：<code>ShippingForm</code> 被人为放慢了！</b></p>
       <label>
-        Number of items:
+        商品数量：
         <button type="button" onClick={() => setCount(count - 1)}>–</button>
         {count}
         <button type="button" onClick={() => setCount(count + 1)}>+</button>
       </label>
       <label>
-        Street:
+        街道：
         <input name="street" />
       </label>
       <label>
-        City:
+        城市：
         <input name="city" />
       </label>
       <label>
-        Postal code:
+        邮政编码：
         <input name="zipCode" />
       </label>
-      <button type="submit">Submit</button>
+      <button type="submit">提交</button>
     </form>
   );
 });
@@ -389,11 +389,11 @@ button[type="button"] {
 
 <Solution />
 
-#### Always re-rendering a component {/*always-re-rendering-a-component*/}
+#### 组件总是重新渲染 {/*always-re-rendering-a-component*/}
 
-In this example, the `ShippingForm` implementation is also **artificially slowed down** so that you can see what happens when some React component you're rendering is genuinely slow. Try incrementing the counter and toggling the theme.
+在这个例子中，`ShippingForm` 的实现同样被**人为地放慢了速度**，这样你就可以看到当某个你正在渲染的 React 组件确实很慢时会发生什么。试着增加计数器并切换主题。
 
-Unlike in the previous example, toggling the theme is also slow now! This is because **there is no `useCallback` call in this version,** so `handleSubmit` is always a new function, and the slowed down `ShippingForm` component can't skip re-rendering.
+与上一个例子不同，现在切换主题也很慢！这是因为**这个版本里没有 `useCallback` 调用，** 所以 `handleSubmit` 总是一个新函数，而被放慢的 `ShippingForm` 组件无法跳过重新渲染。
 
 <Sandpack>
 
@@ -411,7 +411,7 @@ export default function App() {
           checked={isDark}
           onChange={e => setIsDark(e.target.checked)}
         />
-        Dark mode
+        深色模式
       </label>
       <hr />
       <ProductPage
@@ -443,7 +443,7 @@ export default function ProductPage({ productId, referrer, theme }) {
 }
 
 function post(url, data) {
-  // Imagine this sends a request...
+  // 想象一下这会发送一个请求...
   console.log('POST /' + url);
   console.log(data);
 }
@@ -455,10 +455,10 @@ import { memo, useState } from 'react';
 const ShippingForm = memo(function ShippingForm({ onSubmit }) {
   const [count, setCount] = useState(1);
 
-  console.log('[ARTIFICIALLY SLOW] Rendering <ShippingForm />');
+  console.log('[人为减速] Rendering <ShippingForm />');
   let startTime = performance.now();
   while (performance.now() - startTime < 500) {
-    // Do nothing for 500 ms to emulate extremely slow code
+    // 什么也不做 500 毫秒，以模拟极慢的代码
   }
 
   function handleSubmit(e) {
@@ -473,26 +473,26 @@ const ShippingForm = memo(function ShippingForm({ onSubmit }) {
 
   return (
     <form onSubmit={handleSubmit}>
-      <p><b>Note: <code>ShippingForm</code> is artificially slowed down!</b></p>
+      <p><b>注意：<code>ShippingForm</code> 被人为放慢了！</b></p>
       <label>
-        Number of items:
+        商品数量：
         <button type="button" onClick={() => setCount(count - 1)}>–</button>
         {count}
         <button type="button" onClick={() => setCount(count + 1)}>+</button>
       </label>
       <label>
-        Street:
+        街道：
         <input name="street" />
       </label>
       <label>
-        City:
+        城市：
         <input name="city" />
       </label>
       <label>
-        Postal code:
+        邮政编码：
         <input name="zipCode" />
       </label>
-      <button type="submit">Submit</button>
+      <button type="submit">提交</button>
     </form>
   );
 });
@@ -527,7 +527,7 @@ button[type="button"] {
 </Sandpack>
 
 
-However, here is the same code **with the artificial slowdown removed.** Does the lack of `useCallback` feel noticeable or not?
+不过，下面是同样的代码，**但去掉了人为减速。** 缺少 `useCallback` 会不会让你感觉明显不同？
 
 <Sandpack>
 
@@ -545,7 +545,7 @@ export default function App() {
           checked={isDark}
           onChange={e => setIsDark(e.target.checked)}
         />
-        Dark mode
+        深色模式
       </label>
       <hr />
       <ProductPage
@@ -577,7 +577,7 @@ export default function ProductPage({ productId, referrer, theme }) {
 }
 
 function post(url, data) {
-  // Imagine this sends a request...
+  // 想象一下这会发送一个请求...
   console.log('POST /' + url);
   console.log(data);
 }
@@ -604,24 +604,24 @@ const ShippingForm = memo(function ShippingForm({ onSubmit }) {
   return (
     <form onSubmit={handleSubmit}>
       <label>
-        Number of items:
+        商品数量：
         <button type="button" onClick={() => setCount(count - 1)}>–</button>
         {count}
         <button type="button" onClick={() => setCount(count + 1)}>+</button>
       </label>
       <label>
-        Street:
+        街道：
         <input name="street" />
       </label>
       <label>
-        City:
+        城市：
         <input name="city" />
       </label>
       <label>
-        Postal code:
+        邮政编码：
         <input name="zipCode" />
       </label>
-      <button type="submit">Submit</button>
+      <button type="submit">提交</button>
     </form>
   );
 });
@@ -656,9 +656,9 @@ button[type="button"] {
 </Sandpack>
 
 
-Quite often, code without memoization works fine. If your interactions are fast enough, you don't need memoization.
+很多时候，不使用记忆化的代码也能正常工作。如果你的交互足够快，就不需要记忆化。
 
-Keep in mind that you need to run React in production mode, disable [React Developer Tools](/learn/react-developer-tools), and use devices similar to the ones your app's users have in order to get a realistic sense of what's actually slowing down your app.
+请记住，你需要在生产模式下运行 React，禁用 [React Developer Tools](/learn/react-developer-tools)，并使用与你的应用用户相似的设备，才能真实地感受到到底是什么在让应用变慢。
 
 <Solution />
 
@@ -666,11 +666,11 @@ Keep in mind that you need to run React in production mode, disable [React Devel
 
 ---
 
-### Updating state from a memoized callback {/*updating-state-from-a-memoized-callback*/}
+### 使用 memoized callback 更新 state {/*updating-state-from-a-memoized-callback*/}
 
-Sometimes, you might need to update state based on previous state from a memoized callback.
+有时，你可能需要在一个记忆化的回调中基于之前的 state 来更新 state。
 
-This `handleAddTodo` function specifies `todos` as a dependency because it computes the next todos from it:
+这个 `handleAddTodo` 函数把 `todos` 指定为依赖项，因为它会根据它计算下一个 todos：
 
 ```js {6,7}
 function TodoList() {
@@ -683,7 +683,7 @@ function TodoList() {
   // ...
 ```
 
-You'll usually want memoized functions to have as few dependencies as possible. When you read some state only to calculate the next state, you can remove that dependency by passing an [updater function](/reference/react/useState#updating-state-based-on-the-previous-state) instead:
+通常你会希望记忆化函数拥有尽可能少的依赖项。当你只是在读取某个 state 来计算下一个 state 时，可以通过改为传入一个[更新函数](/reference/react/useState#updating-state-based-on-the-previous-state)来移除该依赖项：
 
 ```js {6,7}
 function TodoList() {
@@ -692,17 +692,17 @@ function TodoList() {
   const handleAddTodo = useCallback((text) => {
     const newTodo = { id: nextId++, text };
     setTodos(todos => [...todos, newTodo]);
-  }, []); // ✅ No need for the todos dependency
+  }, []); // ✅ 不再需要 todos 依赖项
   // ...
 ```
 
-Here, instead of making `todos` a dependency and reading it inside, you pass an instruction about *how* to update the state (`todos => [...todos, newTodo]`) to React. [Read more about updater functions.](/reference/react/useState#updating-state-based-on-the-previous-state)
+这里你不是把 `todos` 作为依赖项并在内部读取它，而是向 React 传递一个关于*如何*更新 state 的指令（`todos => [...todos, newTodo]`）。[阅读更多关于更新函数的内容。](/reference/react/useState#updating-state-based-on-the-previous-state)
 
 ---
 
-### Preventing an Effect from firing too often {/*preventing-an-effect-from-firing-too-often*/}
+### 防止 Effect 过于频繁地触发 {/*preventing-an-effect-from-firing-too-often*/}
 
-Sometimes, you might want to call a function from inside an [Effect:](/learn/synchronizing-with-effects)
+有时，你可能想在 [Effect](/learn/synchronizing-with-effects) 中调用一个函数：
 
 ```js {4-9,12}
 function ChatRoom({ roomId }) {
@@ -722,7 +722,7 @@ function ChatRoom({ roomId }) {
     // ...
 ```
 
-This creates a problem. [Every reactive value must be declared as a dependency of your Effect.](/learn/lifecycle-of-reactive-effects#react-verifies-that-you-specified-every-reactive-value-as-a-dependency) However, if you declare `createOptions` as a dependency, it will cause your Effect to constantly reconnect to the chat room:
+这会带来一个问题。[每个响应式值都必须声明为你 Effect 的依赖项。](/learn/lifecycle-of-reactive-effects#react-verifies-that-you-specified-every-reactive-value-as-a-dependency) 但是，如果你把 `createOptions` 声明为依赖项，它会导致你的 Effect 不断重新连接到聊天室：
 
 
 ```js {6}
@@ -731,11 +731,11 @@ This creates a problem. [Every reactive value must be declared as a dependency o
     const connection = createConnection(options);
     connection.connect();
     return () => connection.disconnect();
-  }, [createOptions]); // 🔴 Problem: This dependency changes on every render
+  }, [createOptions]); // 🔴 问题：这个依赖项会在每次渲染时变化
   // ...
 ```
 
-To solve this, you can wrap the function you need to call from an Effect into `useCallback`:
+要解决这个问题，你可以把需要在 Effect 中调用的函数包裹进 `useCallback`：
 
 ```js {4-9,16}
 function ChatRoom({ roomId }) {
@@ -746,25 +746,25 @@ function ChatRoom({ roomId }) {
       serverUrl: 'https://localhost:1234',
       roomId: roomId
     };
-  }, [roomId]); // ✅ Only changes when roomId changes
+  }, [roomId]); // ✅ 只有 roomId 变化时才会变化
 
   useEffect(() => {
     const options = createOptions();
     const connection = createConnection(options);
     connection.connect();
     return () => connection.disconnect();
-  }, [createOptions]); // ✅ Only changes when createOptions changes
+  }, [createOptions]); // ✅ 只有 createOptions 变化时才会变化
   // ...
 ```
 
-This ensures that the `createOptions` function is the same between re-renders if the `roomId` is the same. **However, it's even better to remove the need for a function dependency.** Move your function *inside* the Effect:
+这可以确保如果 `roomId` 相同，`createOptions` 函数在多次重新渲染之间保持相同。**不过，更好的做法是直接移除对函数依赖项的需要。** 把你的函数移到 Effect *内部*：
 
 ```js {5-10,16}
 function ChatRoom({ roomId }) {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    function createOptions() { // ✅ No need for useCallback or function dependencies!
+    function createOptions() { // ✅ 不需要 useCallback 或函数依赖项！
       return {
         serverUrl: 'https://localhost:1234',
         roomId: roomId
@@ -775,17 +775,17 @@ function ChatRoom({ roomId }) {
     const connection = createConnection(options);
     connection.connect();
     return () => connection.disconnect();
-  }, [roomId]); // ✅ Only changes when roomId changes
+  }, [roomId]); // ✅ 只有 roomId 变化时才会变化
   // ...
 ```
 
-Now your code is simpler and doesn't need `useCallback`. [Learn more about removing Effect dependencies.](/learn/removing-effect-dependencies#move-dynamic-objects-and-functions-inside-your-effect)
+现在你的代码更简单了，也不需要 `useCallback`。[了解更多关于移除 Effect 依赖项的内容。](/learn/removing-effect-dependencies#move-dynamic-objects-and-functions-inside-your-effect)
 
 ---
 
-### Optimizing a custom Hook {/*optimizing-a-custom-hook*/}
+### 优化自定义 Hook {/*optimizing-a-custom-hook*/}
 
-If you're writing a [custom Hook,](/learn/reusing-logic-with-custom-hooks) it's recommended to wrap any functions that it returns into `useCallback`:
+如果你正在编写一个[自定义 Hook](/learn/reusing-logic-with-custom-hooks)，建议把它返回的任何函数都包裹在 `useCallback` 中：
 
 ```js {4-6,8-10}
 function useRouter() {
@@ -806,30 +806,17 @@ function useRouter() {
 }
 ```
 
-This ensures that the consumers of your Hook can optimize their own code when needed.
+这可以确保你的 Hook 的使用者在需要时能够优化他们自己的代码。
 
 ---
 
-## Troubleshooting {/*troubleshooting*/}
+## 故障排查 {/*troubleshooting*/}
 
-### Every time my component renders, `useCallback` returns a different function {/*every-time-my-component-renders-usecallback-returns-a-different-function*/}
+### 每次我的组件渲染时，`useCallback` 都会返回不同的函数 {/*every-time-my-component-renders-usecallback-returns-a-different-function*/}
 
-Make sure you've specified the dependency array as a second argument!
+确保你已经将依赖数组作为第二个参数传入！
 
-If you forget the dependency array, `useCallback` will return a new function every time:
-
-```js {7}
-function ProductPage({ productId, referrer }) {
-  const handleSubmit = useCallback((orderDetails) => {
-    post('/product/' + productId + '/buy', {
-      referrer,
-      orderDetails,
-    });
-  }); // 🔴 Returns a new function every time: no dependency array
-  // ...
-```
-
-This is the corrected version passing the dependency array as a second argument:
+如果你忘记传入依赖数组，`useCallback` 每次都会返回一个新函数：
 
 ```js {7}
 function ProductPage({ productId, referrer }) {
@@ -838,11 +825,24 @@ function ProductPage({ productId, referrer }) {
       referrer,
       orderDetails,
     });
-  }, [productId, referrer]); // ✅ Does not return a new function unnecessarily
+  }); // 🔴 每次都会返回一个新函数：没有依赖数组
   // ...
 ```
 
-If this doesn't help, then the problem is that at least one of your dependencies is different from the previous render. You can debug this problem by manually logging your dependencies to the console:
+这是修正后的版本，第二个参数传入了依赖数组：
+
+```js {7}
+function ProductPage({ productId, referrer }) {
+  const handleSubmit = useCallback((orderDetails) => {
+    post('/product/' + productId + '/buy', {
+      referrer,
+      orderDetails,
+    });
+  }, [productId, referrer]); // ✅ 不会不必要地返回新函数
+  // ...
+```
+
+如果这样还不行，那么问题在于你的至少一个依赖项与上一次渲染时不同。你可以通过手动将依赖项记录到控制台来调试这个问题：
 
 ```js {5}
   const handleSubmit = useCallback((orderDetails) => {
@@ -852,28 +852,28 @@ If this doesn't help, then the problem is that at least one of your dependencies
   console.log([productId, referrer]);
 ```
 
-You can then right-click on the arrays from different re-renders in the console and select "Store as a global variable" for both of them. Assuming the first one got saved as `temp1` and the second one got saved as `temp2`, you can then use the browser console to check whether each dependency in both arrays is the same:
+然后，你可以在控制台中右键点击不同重新渲染时输出的数组，并选择“Store as a global variable”，把它们都保存下来。假设第一个被保存为 `temp1`，第二个被保存为 `temp2`，那么你就可以使用浏览器控制台检查这两个数组中的每个依赖项是否相同：
 
 ```js
-Object.is(temp1[0], temp2[0]); // Is the first dependency the same between the arrays?
-Object.is(temp1[1], temp2[1]); // Is the second dependency the same between the arrays?
-Object.is(temp1[2], temp2[2]); // ... and so on for every dependency ...
+Object.is(temp1[0], temp2[0]); // 第一个依赖项在两个数组中是否相同？
+Object.is(temp1[1], temp2[1]); // 第二个依赖项在两个数组中是否相同？
+Object.is(temp1[2], temp2[2]); // ... 以此类推，检查每个依赖项 ...
 ```
 
-When you find which dependency is breaking memoization, either find a way to remove it, or [memoize it as well.](/reference/react/useMemo#memoizing-a-dependency-of-another-hook)
+当你找到是哪个依赖项破坏了记忆化时，要么想办法移除它，要么也[将它进行记忆化。](/reference/react/useMemo#memoizing-a-dependency-of-another-hook)
 
 ---
 
-### I need to call `useCallback` for each list item in a loop, but it's not allowed {/*i-need-to-call-usememo-for-each-list-item-in-a-loop-but-its-not-allowed*/}
+### 我需要在循环中为每个列表项调用 `useCallback`，但这是不允许的 {/*i-need-to-call-usememo-for-each-list-item-in-a-loop-but-its-not-allowed*/}
 
-Suppose the `Chart` component is wrapped in [`memo`](/reference/react/memo). You want to skip re-rendering every `Chart` in the list when the `ReportList` component re-renders. However, you can't call `useCallback` in a loop:
+假设 `Chart` 组件被 [`memo`](/reference/react/memo) 包裹。你希望在 `ReportList` 组件重新渲染时，跳过列表中每个 `Chart` 的重新渲染。然而，你不能在循环中调用 `useCallback`：
 
 ```js {expectedErrors: {'react-compiler': [6]}} {5-14}
 function ReportList({ items }) {
   return (
     <article>
       {items.map(item => {
-        // 🔴 You can't call useCallback in a loop like this:
+        // 🔴 你不能像这样在循环中调用 useCallback：
         const handleClick = useCallback(() => {
           sendReport(item)
         }, [item]);
@@ -889,7 +889,7 @@ function ReportList({ items }) {
 }
 ```
 
-Instead, extract a component for an individual item, and put `useCallback` there:
+相反，请为单个项提取一个组件，并在那里放置 `useCallback`：
 
 ```js {5,12-21}
 function ReportList({ items }) {
@@ -903,7 +903,7 @@ function ReportList({ items }) {
 }
 
 function Report({ item }) {
-  // ✅ Call useCallback at the top level:
+  // ✅ 在顶层调用 useCallback：
   const handleClick = useCallback(() => {
     sendReport(item)
   }, [item]);
@@ -916,7 +916,7 @@ function Report({ item }) {
 }
 ```
 
-Alternatively, you could remove `useCallback` in the last snippet and instead wrap `Report` itself in [`memo`.](/reference/react/memo) If the `item` prop does not change, `Report` will skip re-rendering, so `Chart` will skip re-rendering too:
+或者，你可以移除上一个示例中的 `useCallback`，改为将 `Report` 本身包裹在 [`memo`](/reference/react/memo) 中。如果 `item` 属性不变，`Report` 就会跳过重新渲染，因此 `Chart` 也会跳过重新渲染：
 
 ```js {5,6-8,15}
 function ReportList({ items }) {

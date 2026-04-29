@@ -1,40 +1,40 @@
 ---
-title: "React DOM Components"
+title: "React DOM 组件"
 ---
 
 <Intro>
 
-React supports all of the browser built-in [HTML](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) and [SVG](https://developer.mozilla.org/en-US/docs/Web/SVG/Element) components.
+React 支持所有浏览器内置的 [HTML](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) 和 [SVG](https://developer.mozilla.org/en-US/docs/Web/SVG/Element) 组件。
 
 </Intro>
 
 ---
 
-## Common components {/*common-components*/}
+## 常见组件 {/*common-components*/}
 
-All of the built-in browser components support some props and events.
+所有内置的浏览器组件都支持一些 props 和事件。
 
-* [Common components (e.g. `<div>`)](/reference/react-dom/components/common)
+* [常见组件（例如 `<div>`）](/reference/react-dom/components/common)
 
-This includes React-specific props like `ref` and `dangerouslySetInnerHTML`.
+这包括像 `ref` 和 `dangerouslySetInnerHTML` 这样的 React 特有 props。
 
 ---
 
-## Form components {/*form-components*/}
+## 表单组件 {/*form-components*/}
 
-These built-in browser components accept user input:
+这些内置的浏览器组件接受用户输入：
 
 * [`<input>`](/reference/react-dom/components/input)
 * [`<select>`](/reference/react-dom/components/select)
 * [`<textarea>`](/reference/react-dom/components/textarea)
 
-They are special in React because passing the `value` prop to them makes them *[controlled.](/reference/react-dom/components/input#controlling-an-input-with-a-state-variable)*
+它们在 React 中是特殊的，因为向它们传递 `value` prop 会使它们变为 *[受控。](/reference/react-dom/components/input#controlling-an-input-with-a-state-variable)*
 
 ---
 
-## Resource and Metadata Components {/*resource-and-metadata-components*/}
+## 资源和元数据组件 {/*resource-and-metadata-components*/}
 
-These built-in browser components let you load external resources or annotate the document with metadata:
+这些内置的浏览器组件让你可以加载外部资源，或用元数据标注文档：
 
 * [`<link>`](/reference/react-dom/components/link)
 * [`<meta>`](/reference/react-dom/components/meta)
@@ -42,13 +42,13 @@ These built-in browser components let you load external resources or annotate th
 * [`<style>`](/reference/react-dom/components/style)
 * [`<title>`](/reference/react-dom/components/title)
 
-They are special in React because React can render them into the document head, suspend while resources are loading, and enact other behaviors that are described on the reference page for each specific component.
+它们在 React 中是特殊的，因为 React 可以将它们渲染到 document head 中，在资源加载时挂起，并执行各组件参考页中描述的其他行为。
 
 ---
 
-## All HTML components {/*all-html-components*/}
+## 所有 HTML 组件 {/*all-html-components*/}
 
-React supports all built-in browser HTML components. This includes:
+React 支持所有内置的浏览器 HTML 组件。这包括：
 
 * [`<aside>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/aside)
 * [`<audio>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio)
@@ -154,39 +154,39 @@ React supports all built-in browser HTML components. This includes:
 
 <Note>
 
-Similar to the [DOM standard,](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model) React uses a `camelCase` convention for prop names. For example, you'll write `tabIndex` instead of `tabindex`. You can convert existing HTML to JSX with an [online converter.](https://transform.tools/html-to-jsx)
+类似于 [DOM 标准，](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model)React 对 prop 名称使用 `camelCase` 约定。例如，你会写 `tabIndex` 而不是 `tabindex`。你可以使用 [在线转换器。](https://transform.tools/html-to-jsx)将现有 HTML 转换为 JSX。
 
 </Note>
 
 ---
 
-### Custom HTML elements {/*custom-html-elements*/}
+### 自定义 HTML 元素 {/*custom-html-elements*/}
 
-If you render a tag with a dash, like `<my-element>`, React will assume you want to render a [custom HTML element.](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)
+如果你渲染一个带有连字符的标签，比如 `<my-element>`，React 会假定你想渲染一个 [自定义 HTML 元素。](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)
 
-If you render a built-in browser HTML element with an [`is`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/is) attribute, it will also be treated as a custom element.
+如果你渲染一个带有 [`is`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/is) 属性的内置浏览器 HTML 元素，它也会被视为自定义元素。
 
-#### Setting values on custom elements {/*attributes-vs-properties*/}
+#### 在自定义元素上设置值 {/*attributes-vs-properties*/}
 
-Custom elements have two methods of passing data into them:
+自定义元素有两种向其传递数据的方法：
 
-1) Attributes: Which are displayed in markup and can only be set to string values
-2) Properties: Which are not displayed in markup and can be set to arbitrary JavaScript values
+1) 属性：会显示在标记中，并且只能设置为字符串值
+2) 属性（properties）：不会显示在标记中，并且可以设置为任意 JavaScript 值
 
-By default, React will pass values bound in JSX as attributes:
+默认情况下，React 会将 JSX 中绑定的值作为属性传递：
 
 ```jsx
 <my-element value="Hello, world!"></my-element>
 ```
 
-Non-string JavaScript values passed to custom elements will be serialized by default:
+传递给自定义元素的非字符串 JavaScript 值默认会被序列化：
 
 ```jsx
-// Will be passed as `"1,2,3"` as the output of `[1,2,3].toString()`
+// 将作为 `"1,2,3"` 传递，等同于 `[1,2,3].toString()` 的输出
 <my-element value={[1,2,3]}></my-element>
 ```
 
-React will, however, recognize an custom element's property as one that it may pass arbitrary values to if the property name shows up on the class during construction:
+不过，如果某个自定义元素的属性名在构造期间出现在类上，React 就会将其识别为可以向其传递任意值的属性：
 
 <Sandpack>
 
@@ -205,8 +205,8 @@ root.render(<App />);
 export class MyElement extends HTMLElement {
   constructor() {
     super();
-    // The value here will be overwritten by React
-    // when initialized as an element
+    // 此处的值将被 React 覆盖
+    // 当其作为元素初始化时
     this.value = undefined;
   }
 
@@ -224,9 +224,9 @@ export function App() {
 
 </Sandpack>
 
-#### Listening for events on custom elements {/*custom-element-events*/}
+#### 监听自定义元素上的事件 {/*custom-element-events*/}
 
-A common pattern when using custom elements is that they may dispatch [`CustomEvent`s](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent) rather than accept a function to call when an event occur. You can listen for these events using an `on` prefix when binding to the event via JSX.
+使用自定义元素时，一个常见模式是它们可能会派发 [`CustomEvent`s](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent)，而不是接受一个在事件发生时调用的函数。你可以在通过 JSX 绑定事件时使用 `on` 前缀来监听这些事件。
 
 <Sandpack>
 
@@ -260,7 +260,7 @@ export class MyElement extends HTMLElement {
 
   connectedCallback() {
     this.el = document.createElement('button');
-    this.el.innerText = 'Say hi';
+    this.el.innerText = '问好';
     this.el.addEventListener('click', this.emitEvent);
     this.appendChild(this.el);
   }
@@ -285,21 +285,21 @@ export function App() {
 
 <Note>
 
-Events are case-sensitive and support dashes (`-`). Preserve the casing of the event and include all dashes when listening for custom element's events:
+事件区分大小写，并支持连字符（`-`）。监听自定义元素的事件时，请保持事件名称的大小写，并包含所有连字符：
 
 ```jsx
-// Listens for `say-hi` events
+// 监听 `say-hi` 事件
 <my-element onsay-hi={console.log}></my-element>
-// Listens for `sayHi` events
+// 监听 `sayHi` 事件
 <my-element onsayHi={console.log}></my-element>
 ```
 
 </Note>
 ---
 
-## All SVG components {/*all-svg-components*/}
+## 所有 SVG 组件 {/*all-svg-components*/}
 
-React supports all built-in browser SVG components. This includes:
+React 支持所有内置的浏览器 SVG 组件。这包括：
 
 * [`<a>`](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/a)
 * [`<animate>`](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate)
@@ -370,20 +370,20 @@ React supports all built-in browser SVG components. This includes:
 
 <Note>
 
-Similar to the [DOM standard,](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model) React uses a `camelCase` convention for prop names. For example, you'll write `tabIndex` instead of `tabindex`. You can convert existing SVG to JSX with an [online converter.](https://transform.tools/)
+与 [DOM 标准](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model) 类似，React 对属性名使用 `camelCase` 约定。例如，你会写 `tabIndex` 而不是 `tabindex`。你可以使用[在线转换器](https://transform.tools/)将现有的 SVG 转换为 JSX。
 
-Namespaced attributes also have to be written without the colon:
+带命名空间的属性也必须去掉冒号来书写：
 
-* `xlink:actuate` becomes `xlinkActuate`.
-* `xlink:arcrole` becomes `xlinkArcrole`.
-* `xlink:href` becomes `xlinkHref`.
-* `xlink:role` becomes `xlinkRole`.
-* `xlink:show` becomes `xlinkShow`.
-* `xlink:title` becomes `xlinkTitle`.
-* `xlink:type` becomes `xlinkType`.
-* `xml:base` becomes `xmlBase`.
-* `xml:lang` becomes `xmlLang`.
-* `xml:space` becomes `xmlSpace`.
-* `xmlns:xlink` becomes `xmlnsXlink`.
+* `xlink:actuate` 变为 `xlinkActuate`。
+* `xlink:arcrole` 变为 `xlinkArcrole`。
+* `xlink:href` 变为 `xlinkHref`。
+* `xlink:role` 变为 `xlinkRole`。
+* `xlink:show` 变为 `xlinkShow`。
+* `xlink:title` 变为 `xlinkTitle`。
+* `xlink:type` 变为 `xlinkType`。
+* `xml:base` 变为 `xmlBase`。
+* `xml:lang` 变为 `xmlLang`。
+* `xml:space` 变为 `xmlSpace`。
+* `xmlns:xlink` 变为 `xmlnsXlink`。
 
 </Note>

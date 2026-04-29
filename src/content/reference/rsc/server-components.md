@@ -4,36 +4,37 @@ title: Server Components
 
 <Intro>
 
-Server Components are a new type of Component that renders ahead of time, before bundling, in an environment separate from your client app or SSR server.
+Server Components 是一种新的组件类型，它会在打包之前提前渲染，并且运行在与你的客户端应用或 SSR 服务器分离的环境中。
 
 </Intro>
 
-This separate environment is the "server" in React Server Components. Server Components can run once at build time on your CI server, or they can be run for each request using a web server.
+这个独立的环境就是 React Server Components 中的“服务器”。Server Components 可以在 CI 服务器上于构建时运行一次，也可以使用 Web 服务器在每个请求时运行。
 
 <InlineToc />
 
 <Note>
 
-#### How do I build support for Server Components? {/*how-do-i-build-support-for-server-components*/}
+#### 如何为 Server Components 构建支持？ {/*how-do-i-build-support-for-server-components*/}
 
-While React Server Components in React 19 are stable and will not break between minor versions, the underlying APIs used to implement a React Server Components bundler or framework do not follow semver and may break between minors in React 19.x.
+虽然 React 19 中的 React Server Components 已经稳定，并且不会在小版本之间发生破坏性变更，但用于实现 React Server Components 打包器或框架的底层 API 不遵循 semver，可能会在 React 19.x 的小版本之间发生变化。
 
-To support React Server Components as a bundler or framework, we recommend pinning to a specific React version, or using the Canary release. We will continue working with bundlers and frameworks to stabilize the APIs used to implement React Server Components in the future.
+为了在打包器或框架中支持 React Server Components，我们建议锁定到特定的 React 版本，或者使用 Canary 版本。我们将继续与打包器和框架合作，未来让用于实现 React Server Components 的 API 稳定下来。
 
 </Note>
 
-### Server Components without a Server {/*server-components-without-a-server*/}
-Server components can run at build time to read from the filesystem or fetch static content, so a web server is not required. For example, you may want to read static data from a content management system.
+### 没有服务器的 Server Components {/*server-components-without-a-server*/}
+Server components 可以在构建时运行，从文件系统读取内容或获取静态内容，因此并不需要 Web 服务器。例如，你可能希望从内容管理系统中读取静态数据。
 
-Without Server Components, it's common to fetch static data on the client with an Effect:
+如果没有 Server Components，通常会在客户端通过 Effect 获取静态数据：
+
 ```js
 // bundle.js
-import marked from 'marked'; // 35.9K (11.2K gzipped)
-import sanitizeHtml from 'sanitize-html'; // 206K (63.3K gzipped)
+import marked from 'marked'; // 35.9K（11.2K gzipped）
+import sanitizeHtml from 'sanitize-html'; // 206K（63.3K gzipped）
 
 function Page({page}) {
   const [content, setContent] = useState('');
-  // NOTE: loads *after* first page render.
+  // 注意：在第一次页面渲染之后才加载。
   useEffect(() => {
     fetch(`/api/content/${page}`).then((data) => {
       setContent(data.content);
@@ -52,33 +53,33 @@ app.get(`/api/content/:page`, async (req, res) => {
 });
 ```
 
-This pattern means users need to download and parse an additional 75K (gzipped) of libraries, and wait for a second request to fetch the data after the page loads, just to render static content that will not change for the lifetime of the page.
+这种模式意味着用户需要额外下载并解析 75K（gzipped）的库，并且在页面加载后还要等待第二次请求来获取数据，仅仅是为了渲染生命周期内不会变化的静态内容。
 
-With Server Components, you can render these components once at build time:
+使用 Server Components，你可以在构建时一次性渲染这些组件：
 
 ```js
-import marked from 'marked'; // Not included in bundle
-import sanitizeHtml from 'sanitize-html'; // Not included in bundle
+import marked from 'marked'; // 不包含在 bundle 中
+import sanitizeHtml from 'sanitize-html'; // 不包含在 bundle 中
 
 async function Page({page}) {
-  // NOTE: loads *during* render, when the app is built.
+  // 注意：在应用构建时于渲染期间加载。
   const content = await file.readFile(`${page}.md`);
 
   return <div>{sanitizeHtml(marked(content))}</div>;
 }
 ```
 
-The rendered output can then be server-side rendered (SSR) to HTML and uploaded to a CDN. When the app loads, the client will not see the original `Page` component, or the expensive libraries for rendering the markdown. The client will only see the rendered output:
+然后，渲染结果可以被服务端渲染（SSR）为 HTML，并上传到 CDN。当应用加载时，客户端不会看到原始的 `Page` 组件，也不会看到用于渲染 markdown 的昂贵库。客户端只会看到渲染后的输出：
 
 ```js
-<div><!-- html for markdown --></div>
+<div><!-- markdown 的 HTML --></div>
 ```
 
-This means the content is visible during first page load, and the bundle does not include the expensive libraries needed to render the static content.
+这意味着内容会在首次页面加载时就可见，而且 bundle 中不包含渲染静态内容所需的昂贵库。
 
 <Note>
 
-You may notice that the Server Component above is an async function:
+你可能注意到上面的 Server Component 是一个 async 函数：
 
 ```js
 async function Page({page}) {
@@ -86,22 +87,22 @@ async function Page({page}) {
 }
 ```
 
-Async Components are a new feature of Server Components that allow you to `await` in render.
+Async Components 是 Server Components 的一项新特性，它允许你在 render 中使用 `await`。
 
-See [Async components with Server Components](#async-components-with-server-components) below.
+请参见下方的 [Server Components 中的异步组件](#async-components-with-server-components)。
 
 </Note>
 
-### Server Components with a Server {/*server-components-with-a-server*/}
-Server Components can also run on a web server during a request for a page, letting you access your data layer without having to build an API. They are rendered before your application is bundled, and can pass data and JSX as props to Client Components.
+### 带有服务器的 Server Components {/*server-components-with-a-server*/}
+Server Components 也可以在请求页面时运行在 Web 服务器上，让你无需构建 API 就能访问数据层。它们会在你的应用被打包之前渲染，并且可以将数据和 JSX 作为 props 传递给 Client Components。
 
-Without Server Components, it's common to fetch dynamic data on the client in an Effect:
+如果没有 Server Components，通常会在客户端通过 Effect 获取动态数据：
 
 ```js
 // bundle.js
 function Note({id}) {
   const [note, setNote] = useState('');
-  // NOTE: loads *after* first render.
+  // 注意：在第一次渲染之后才加载。
   useEffect(() => {
     fetch(`/api/notes/${id}`).then(data => {
       setNote(data.note);
@@ -118,15 +119,15 @@ function Note({id}) {
 
 function Author({id}) {
   const [author, setAuthor] = useState('');
-  // NOTE: loads *after* Note renders.
-  // Causing an expensive client-server waterfall.
+  // 注意：在 Note 渲染之后才加载。
+  // 这会导致昂贵的客户端到服务器瀑布请求。
   useEffect(() => {
     fetch(`/api/authors/${id}`).then(data => {
       setAuthor(data.author);
     });
   }, [id]);
 
-  return <span>By: {author.name}</span>;
+  return <span>作者：{author.name}</span>;
 }
 ```
 ```js
@@ -144,13 +145,13 @@ app.get(`/api/authors/:id`, async (req, res) => {
 });
 ```
 
-With Server Components, you can read the data and render it in the component:
+使用 Server Components，你可以在组件中读取数据并进行渲染：
 
 ```js
 import db from './database';
 
 async function Note({id}) {
-  // NOTE: loads *during* render.
+  // 注意：在渲染期间加载。
   const note = await db.notes.get(id);
   return (
     <div>
@@ -161,40 +162,40 @@ async function Note({id}) {
 }
 
 async function Author({id}) {
-  // NOTE: loads *after* Note,
-  // but is fast if data is co-located.
+  // 注意：在 Note 之后加载，
+  // 但如果数据是同地存放的，则会很快。
   const author = await db.authors.get(id);
-  return <span>By: {author.name}</span>;
+  return <span>作者：{author.name}</span>;
 }
 ```
 
-The bundler then combines the data, rendered Server Components and dynamic Client Components into a bundle. Optionally, that bundle can then be server-side rendered (SSR) to create the initial HTML for the page. When the page loads, the browser does not see the original `Note` and `Author` components; only the rendered output is sent to the client:
+然后，打包器会将数据、渲染后的 Server Components 以及动态 Client Components 合并到一个 bundle 中。可选地，这个 bundle 还可以再进行服务端渲染（SSR），为页面生成初始 HTML。当页面加载时，浏览器不会看到原始的 `Note` 和 `Author` 组件；只有渲染后的输出会发送给客户端：
 
 ```js
 <div>
-  <span>By: The React Team</span>
-  <p>React 19 is...</p>
+  <span>作者：React 团队</span>
+  <p>React 19 是...</p>
 </div>
 ```
 
-Server Components can be made dynamic by re-fetching them from a server, where they can access the data and render again. This new application architecture combines the simple “request/response” mental model of server-centric Multi-Page Apps with the seamless interactivity of client-centric Single-Page Apps, giving you the best of both worlds.
+Server Components 可以通过从服务器重新获取它们来变为动态化，在服务器上它们可以再次访问数据并重新渲染。这个新的应用架构将服务端中心的多页应用简单的“请求/响应”心智模型，与客户端中心的单页应用无缝交互性结合在一起，为你提供两全其美的体验。
 
-### Adding interactivity to Server Components {/*adding-interactivity-to-server-components*/}
+### 为 Server Components 添加交互性 {/*adding-interactivity-to-server-components*/}
 
-Server Components are not sent to the browser, so they cannot use interactive APIs like `useState`. To add interactivity to Server Components, you can compose them with Client Component using the `"use client"` directive.
+Server Components 不会发送到浏览器，因此它们不能使用 `useState` 之类的交互式 API。要为 Server Components 添加交互性，你可以使用 `"use client"` 指令将它们与 Client Component 组合起来。
 
 <Note>
 
-#### There is no directive for Server Components. {/*there-is-no-directive-for-server-components*/}
+#### 没有用于 Server Components 的指令。 {/*there-is-no-directive-for-server-components*/}
 
-A common misunderstanding is that Server Components are denoted by `"use server"`, but there is no directive for Server Components. The `"use server"` directive is used for Server Functions.
+一种常见的误解是 Server Components 由 `"use server"` 标记，但实际上并没有用于 Server Components 的指令。`"use server"` 指令是用于 Server Functions 的。
 
-For more info, see the docs for [Directives](/reference/rsc/directives).
+更多信息请参见 [Directives](/reference/rsc/directives) 文档。
 
 </Note>
 
 
-In the following example, the `Notes` Server Component imports an `Expandable` Client Component that uses state to toggle its `expanded` state:
+在下面的示例中，`Notes` 这个 Server Component 导入了一个 `Expandable` Client Component，它使用 state 来切换其 `expanded` 状态：
 ```js
 // Server Component
 import Expandable from './Expandable';
@@ -223,7 +224,7 @@ export default function Expandable({children}) {
       <button
         onClick={() => setExpanded(!expanded)}
       >
-        Toggle
+        切换
       </button>
       {expanded && children}
     </div>
@@ -231,46 +232,46 @@ export default function Expandable({children}) {
 }
 ```
 
-This works by first rendering `Notes` as a Server Component, and then instructing the bundler to create a bundle for the Client Component `Expandable`. In the browser, the Client Components will see output of the Server Components passed as props:
+其工作方式是先将 `Notes` 作为 Server Component 渲染，然后指示打包器为 Client Component `Expandable` 创建一个 bundle。在浏览器中，Client Components 会接收到作为 props 传入的 Server Components 输出：
 
 ```js
 <head>
-  <!-- the bundle for Client Components -->
+  <!-- Client Components 的 bundle -->
   <script src="bundle.js" />
 </head>
 <body>
   <div>
     <Expandable key={1}>
-      <p>this is the first note</p>
+      <p>这是第一条笔记</p>
     </Expandable>
     <Expandable key={2}>
-      <p>this is the second note</p>
+      <p>这是第二条笔记</p>
     </Expandable>
     <!--...-->
   </div>
 </body>
 ```
 
-### Async components with Server Components {/*async-components-with-server-components*/}
+### 使用 Server Components 的异步组件 {/*async-components-with-server-components*/}
 
-Server Components introduce a new way to write Components using async/await. When you `await` in an async component, React will suspend and wait for the promise to resolve before resuming rendering. This works across server/client boundaries with streaming support for Suspense.
+Server Components 引入了一种使用 async/await 编写组件的新方式。当你在异步组件中 `await` 时，React 会挂起并等待 promise 解析后再继续渲染。借助 Suspense 的流式支持，这种方式可以跨越 server/client 边界工作。
 
-You can even create a promise on the server, and await it on the client:
+你甚至可以在服务端创建一个 promise，然后在客户端 await 它：
 
 ```js
 // Server Component
 import db from './database';
 
 async function Page({id}) {
-  // Will suspend the Server Component.
+  // 将会挂起 Server Component。
   const note = await db.notes.get(id);
 
-  // NOTE: not awaited, will start here and await on the client.
+  // 注意：没有 await，会从这里开始，并在客户端 await。
   const commentsPromise = db.comments.get(note.id);
   return (
     <div>
       {note}
-      <Suspense fallback={<p>Loading Comments...</p>}>
+      <Suspense fallback={<p>正在加载评论...</p>}>
         <Comments commentsPromise={commentsPromise} />
       </Suspense>
     </div>
@@ -284,13 +285,13 @@ async function Page({id}) {
 import {use} from 'react';
 
 function Comments({commentsPromise}) {
-  // NOTE: this will resume the promise from the server.
-  // It will suspend until the data is available.
+  // 注意：这会恢复来自服务器的 promise。
+  // 它会一直挂起，直到数据可用。
   const comments = use(commentsPromise);
   return comments.map(comment => <p>{comment}</p>);
 }
 ```
 
-The `note` content is important data for the page to render, so we `await` it on the server. The comments are below the fold and lower-priority, so we start the promise on the server, and wait for it on the client with the `use` API. This will Suspend on the client, without blocking the `note` content from rendering.
+`note` 内容是页面渲染所需的重要数据，所以我们在服务端 `await` 它。评论位于首屏下方，优先级更低，所以我们在服务端启动这个 promise，然后在客户端使用 `use` API 等待它。这会在客户端触发 Suspense，而不会阻塞 `note` 内容的渲染。
 
-Since async components are not supported on the client, we await the promise with `use`.
+由于客户端不支持异步组件，我们使用 `use` 来 await 这个 promise。

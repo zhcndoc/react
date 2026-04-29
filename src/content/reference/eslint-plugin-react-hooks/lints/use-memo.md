@@ -4,36 +4,36 @@ title: use-memo
 
 <Intro>
 
-Validates that the `useMemo` hook is used with a return value. See [`useMemo` docs](/reference/react/useMemo) for more information.
+验证 `useMemo` Hook 是否带有返回值。更多信息请参见 [`useMemo` 文档](/reference/react/useMemo)。
 
 </Intro>
 
-## Rule Details {/*rule-details*/}
+## 规则详情 {/*rule-details*/}
 
-`useMemo` is for computing and caching expensive values, not for side effects. Without a return value, `useMemo` returns `undefined`, which defeats its purpose and likely indicates you're using the wrong hook.
+`useMemo` 用于计算并缓存昂贵的值，而不是用于副作用。没有返回值时，`useMemo` 会返回 `undefined`，这就失去了它的用途，而且很可能说明你使用了错误的 Hook。
 
-### Invalid {/*invalid*/}
+### 无效 {/*invalid*/}
 
-Examples of incorrect code for this rule:
+此规则的错误代码示例如下：
 
 ```js {expectedErrors: {'react-compiler': [3]}}
-// ❌ No return value
+// ❌ 没有返回值
 function Component({ data }) {
   const processed = useMemo(() => {
     data.forEach(item => console.log(item));
-    // Missing return!
+    // 缺少 return！
   }, [data]);
 
-  return <div>{processed}</div>; // Always undefined
+  return <div>{processed}</div>; // 始终为 undefined
 }
 ```
 
-### Valid {/*valid*/}
+### 有效 {/*valid*/}
 
-Examples of correct code for this rule:
+此规则的正确代码示例如下：
 
 ```js
-// ✅ Returns computed value
+// ✅ 返回计算出的值
 function Component({ data }) {
   const processed = useMemo(() => {
     return data.map(item => item * 2);
@@ -43,52 +43,52 @@ function Component({ data }) {
 }
 ```
 
-## Troubleshooting {/*troubleshooting*/}
+## 故障排查 {/*troubleshooting*/}
 
-### I need to run side effects when dependencies change {/*side-effects*/}
+### 当依赖项变化时，我需要运行副作用 {/*side-effects*/}
 
-You might try to use `useMemo` for side effects:
+你可能会尝试使用 `useMemo` 来处理副作用：
 
 {/* TODO(@poteto) fix compiler validation to check for unassigned useMemos */}
 ```js {expectedErrors: {'react-compiler': [4]}}
-// ❌ Wrong: Side effects in useMemo
+// ❌ 错误：useMemo 中的副作用
 function Component({user}) {
-  // No return value, just side effect
+  // 没有返回值，只是副作用
   useMemo(() => {
     analytics.track('UserViewed', {userId: user.id});
   }, [user.id]);
 
-  // Not assigned to a variable
+  // 没有赋值给变量
   useMemo(() => {
     return analytics.track('UserViewed', {userId: user.id});
   }, [user.id]);
 }
 ```
 
-If the side effect needs to happen in response to user interaction, it's best to colocate the side effect with the event:
+如果副作用需要在用户交互时发生，最好把副作用与事件放在一起：
 
 ```js
-// ✅ Good: Side effects in event handlers
+// ✅ 好：在事件处理函数中处理副作用
 function Component({user}) {
   const handleClick = () => {
     analytics.track('ButtonClicked', {userId: user.id});
-    // Other click logic...
+    // 其他点击逻辑...
   };
 
-  return <button onClick={handleClick}>Click me</button>;
+  return <button onClick={handleClick}>点击我</button>;
 }
 ```
 
-If the side effect sychronizes React state with some external state (or vice versa), use `useEffect`:
+如果副作用是在将 React 状态与某些外部状态同步（或反之），请使用 `useEffect`：
 
 ```js
-// ✅ Good: Synchronization in useEffect
+// ✅ 好：在 useEffect 中进行同步
 function Component({theme}) {
   useEffect(() => {
     localStorage.setItem('preferredTheme', theme);
     document.body.className = theme;
   }, [theme]);
 
-  return <div>Current theme: {theme}</div>;
+  return <div>当前主题：{theme}</div>;
 }
 ```

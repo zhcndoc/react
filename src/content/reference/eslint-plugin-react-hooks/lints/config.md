@@ -4,44 +4,44 @@ title: config
 
 <Intro>
 
-Validates the compiler [configuration options](/reference/react-compiler/configuration).
+验证编译器 [configuration options](/reference/react-compiler/configuration)。
 
 </Intro>
 
-## Rule Details {/*rule-details*/}
+## 规则详情 {/*rule-details*/}
 
-React Compiler accepts various [configuration options](/reference/react-compiler/configuration)  to control its behavior. This rule validates that your configuration uses correct option names and value types, preventing silent failures from typos or incorrect settings.
+React Compiler 接受各种 [configuration options](/reference/react-compiler/configuration) 来控制其行为。此规则会验证你的配置是否使用了正确的选项名称和值类型，以防止因拼写错误或设置不正确而导致的静默失败。
 
-### Invalid {/*invalid*/}
+### 无效 {/*invalid*/}
 
-Examples of incorrect code for this rule:
+此规则的错误代码示例：
 
 ```js
-// ❌ Unknown option name
+// ❌ 未知的选项名称
 module.exports = {
   plugins: [
     ['babel-plugin-react-compiler', {
-      compileMode: 'all' // Typo: should be compilationMode
+      compileMode: 'all' // 拼写错误：应为 compilationMode
     }]
   ]
 };
 
-// ❌ Invalid option value
+// ❌ 无效的选项值
 module.exports = {
   plugins: [
     ['babel-plugin-react-compiler', {
-      compilationMode: 'everything' // Invalid: use 'all' or 'infer'
+      compilationMode: 'everything' // 无效：请使用 'all' 或 'infer'
     }]
   ]
 };
 ```
 
-### Valid {/*valid*/}
+### 有效 {/*valid*/}
 
-Examples of correct code for this rule:
+此规则的正确代码示例：
 
 ```js
-// ✅ Valid compiler configuration
+// ✅ 有效的编译器配置
 module.exports = {
   plugins: [
     ['babel-plugin-react-compiler', {
@@ -52,38 +52,38 @@ module.exports = {
 };
 ```
 
-## Troubleshooting {/*troubleshooting*/}
+## 故障排除 {/*troubleshooting*/}
 
-### Configuration not working as expected {/*config-not-working*/}
+### 配置未按预期工作 {/*config-not-working*/}
 
-Your compiler configuration might have typos or incorrect values:
+你的编译器配置可能存在拼写错误或错误的值：
 
 ```js
-// ❌ Wrong: Common configuration mistakes
+// ❌ 错误：常见的配置错误
 module.exports = {
   plugins: [
     ['babel-plugin-react-compiler', {
-      // Typo in option name
+      // 选项名称拼写错误
       compilationMod: 'all',
-      // Wrong value type
+      // 值类型错误
       panicThreshold: true,
-      // Unknown option
+      // 未知选项
       optimizationLevel: 'max'
     }]
   ]
 };
 ```
 
-Check the [configuration documentation](/reference/react-compiler/configuration) for valid options:
+查看 [configuration documentation](/reference/react-compiler/configuration) 以了解有效选项：
 
 ```js
-// ✅ Better: Valid configuration
+// ✅ 更好：有效的配置
 module.exports = {
   plugins: [
     ['babel-plugin-react-compiler', {
-      compilationMode: 'all', // or 'infer'
-      panicThreshold: 'none', // or 'critical_errors', 'all_errors'
-      // Only use documented options
+      compilationMode: 'all', // 或 'infer'
+      panicThreshold: 'none', // 或 'critical_errors', 'all_errors'
+      // 仅使用文档中记录的选项
     }]
   ]
 };

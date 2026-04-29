@@ -1,16 +1,16 @@
 ---
-title: Children
+title: 子元素
 ---
 
 <Pitfall>
 
-Using `Children` is uncommon and can lead to fragile code. [See common alternatives.](#alternatives)
+使用 `Children` 并不常见，而且可能导致代码脆弱。[查看常见替代方案。](#alternatives)
 
 </Pitfall>
 
 <Intro>
 
-`Children` lets you manipulate and transform the JSX you received as the [`children` prop.](/learn/passing-props-to-a-component#passing-jsx-as-children)
+`Children` 让你可以操作并转换作为 [`children` 属性](/learn/passing-props-to-a-component#passing-jsx-as-children) 接收到的 JSX。
 
 ```js
 const mappedChildren = Children.map(children, child =>
@@ -27,11 +27,11 @@ const mappedChildren = Children.map(children, child =>
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `Children.count(children)` {/*children-count*/}
 
-Call `Children.count(children)` to count the number of children in the `children` data structure.
+调用 `Children.count(children)` 来统计 `children` 数据结构中的子元素数量。
 
 ```js src/RowList.js active
 import { Children } from 'react';
@@ -39,32 +39,32 @@ import { Children } from 'react';
 function RowList({ children }) {
   return (
     <>
-      <h1>Total rows: {Children.count(children)}</h1>
+      <h1>总行数：{Children.count(children)}</h1>
       ...
     </>
   );
 }
 ```
 
-[See more examples below.](#counting-children)
+[查看更多示例。](#counting-children)
 
-#### Parameters {/*children-count-parameters*/}
+#### 参数 {/*children-count-parameters*/}
 
-* `children`: The value of the [`children` prop](/learn/passing-props-to-a-component#passing-jsx-as-children) received by your component.
+* `children`：你的组件接收到的 [`children` 属性](/learn/passing-props-to-a-component#passing-jsx-as-children) 的值。
 
-#### Returns {/*children-count-returns*/}
+#### 返回值 {/*children-count-returns*/}
 
-The number of nodes inside these `children`.
+这些 `children` 中的节点数量。
 
-#### Caveats {/*children-count-caveats*/}
+#### 注意事项 {/*children-count-caveats*/}
 
-- Empty nodes (`null`, `undefined`, and Booleans), strings, numbers, and [React elements](/reference/react/createElement) count as individual nodes. Arrays don't count as individual nodes, but their children do. **The traversal does not go deeper than React elements:** they don't get rendered, and their children aren't traversed. [Fragments](/reference/react/Fragment) don't get traversed.
+- 空节点（`null`、`undefined` 和布尔值）、字符串、数字以及 [React 元素](/reference/react/createElement) 都算作单独的节点。数组不算作单独的节点，但它们的子节点会计算在内。**遍历不会深入到 React 元素内部：** 它们不会被渲染，也不会继续遍历它们的子节点。[Fragment](/reference/react/Fragment) 不会被遍历。
 
 ---
 
 ### `Children.forEach(children, fn, thisArg?)` {/*children-foreach*/}
 
-Call `Children.forEach(children, fn, thisArg?)` to run some code for each child in the `children` data structure.
+调用 `Children.forEach(children, fn, thisArg?)` 来对 `children` 数据结构中的每个子元素执行一些代码。
 
 ```js src/RowList.js active
 import { Children } from 'react';
@@ -78,27 +78,27 @@ function SeparatorList({ children }) {
   // ...
 ```
 
-[See more examples below.](#running-some-code-for-each-child)
+[查看更多示例。](#running-some-code-for-each-child)
 
-#### Parameters {/*children-foreach-parameters*/}
+#### 参数 {/*children-foreach-parameters*/}
 
-* `children`: The value of the [`children` prop](/learn/passing-props-to-a-component#passing-jsx-as-children) received by your component.
-* `fn`: The function you want to run for each child, similar to the [array `forEach` method](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach) callback. It will be called with the child as the first argument and its index as the second argument. The index starts at `0` and increments on each call.
-* **optional** `thisArg`: The [`this` value](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this) with which the `fn` function should be called. If omitted, it's `undefined`.
+* `children`：你的组件接收到的 [`children` 属性](/learn/passing-props-to-a-component#passing-jsx-as-children) 的值。
+* `fn`：你希望对每个子元素执行的函数，类似于 [数组 `forEach` 方法](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach) 的回调。它会以子元素作为第一个参数、索引作为第二个参数被调用。索引从 `0` 开始，并在每次调用时递增。你需要从这个函数返回一个 React 节点。它可以是空节点（`null`、`undefined` 或布尔值）、字符串、数字、React 元素，或者其他 React 节点组成的数组。
+* **可选** `thisArg`：调用 `fn` 函数时所使用的 [`this` 值](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this)。如果省略，则为 `undefined`。
 
-#### Returns {/*children-foreach-returns*/}
+#### 返回值 {/*children-foreach-returns*/}
 
-`Children.forEach` returns `undefined`.
+`Children.forEach` 返回 `undefined`。
 
-#### Caveats {/*children-foreach-caveats*/}
+#### 注意事项 {/*children-foreach-caveats*/}
 
-- Empty nodes (`null`, `undefined`, and Booleans), strings, numbers, and [React elements](/reference/react/createElement) count as individual nodes. Arrays don't count as individual nodes, but their children do. **The traversal does not go deeper than React elements:** they don't get rendered, and their children aren't traversed. [Fragments](/reference/react/Fragment) don't get traversed.
+- 空节点（`null`、`undefined` 和布尔值）、字符串、数字以及 [React 元素](/reference/react/createElement) 都算作单独的节点。数组不算作单独的节点，但它们的子节点会计算在内。**遍历不会深入到 React 元素内部：** 它们不会被渲染，也不会继续遍历它们的子节点。[Fragment](/reference/react/Fragment) 不会被遍历。
 
 ---
 
 ### `Children.map(children, fn, thisArg?)` {/*children-map*/}
 
-Call `Children.map(children, fn, thisArg?)` to map or transform each child in the `children` data structure.
+调用 `Children.map(children, fn, thisArg?)` 来映射或转换 `children` 数据结构中的每个子元素。
 
 ```js src/RowList.js active
 import { Children } from 'react';
@@ -116,32 +116,32 @@ function RowList({ children }) {
 }
 ```
 
-[See more examples below.](#transforming-children)
+[查看更多示例。](#transforming-children)
 
-#### Parameters {/*children-map-parameters*/}
+#### 参数 {/*children-map-parameters*/}
 
-* `children`: The value of the [`children` prop](/learn/passing-props-to-a-component#passing-jsx-as-children) received by your component.
-* `fn`: The mapping function, similar to the [array `map` method](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) callback. It will be called with the child as the first argument and its index as the second argument. The index starts at `0` and increments on each call. You need to return a React node from this function. This may be an empty node (`null`, `undefined`, or a Boolean), a string, a number, a React element, or an array of other React nodes.
-* **optional** `thisArg`: The [`this` value](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this) with which the `fn` function should be called. If omitted, it's `undefined`.
+* `children`：你的组件接收到的 [`children` 属性](/learn/passing-props-to-a-component#passing-jsx-as-children) 的值。
+* `fn`：映射函数，类似于 [数组 `map` 方法](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) 的回调。它会以子元素作为第一个参数、索引作为第二个参数被调用。索引从 `0` 开始，并在每次调用时递增。你需要从这个函数返回一个 React 节点。它可以是空节点（`null`、`undefined` 或布尔值）、字符串、数字、React 元素，或者其他 React 节点组成的数组。
+* **可选** `thisArg`：调用 `fn` 函数时所使用的 [`this` 值](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this)。如果省略，则为 `undefined`。
 
-#### Returns {/*children-map-returns*/}
+#### 返回值 {/*children-map-returns*/}
 
-If `children` is `null` or `undefined`, returns the same value.
+如果 `children` 是 `null` 或 `undefined`，则返回相同的值。
 
-Otherwise, returns a flat array consisting of the nodes you've returned from the `fn` function. The returned array will contain all nodes you returned except for `null` and `undefined`.
+否则，返回一个由你从 `fn` 函数中返回的节点组成的扁平数组。返回的数组将包含你返回的所有节点，但 `null` 和 `undefined` 除外。
 
-#### Caveats {/*children-map-caveats*/}
+#### 注意事项 {/*children-map-caveats*/}
 
-- Empty nodes (`null`, `undefined`, and Booleans), strings, numbers, and [React elements](/reference/react/createElement) count as individual nodes. Arrays don't count as individual nodes, but their children do. **The traversal does not go deeper than React elements:** they don't get rendered, and their children aren't traversed. [Fragments](/reference/react/Fragment) don't get traversed.
+- 空节点（`null`、`undefined` 和布尔值）、字符串、数字以及 [React 元素](/reference/react/createElement) 都算作单独的节点。数组不算作单独的节点，但它们的子节点会计算在内。**遍历不会深入到 React 元素内部：** 它们不会被渲染，也不会继续遍历它们的子节点。[Fragment](/reference/react/Fragment) 不会被遍历。
 
-- If you return an element or an array of elements with keys from `fn`, **the returned elements' keys will be automatically combined with the key of the corresponding original item from `children`.** When you return multiple elements from `fn` in an array, their keys only need to be unique locally amongst each other.
+- 如果你从 `fn` 返回一个带有 key 的元素，或者返回一个带有 key 的元素数组，**返回元素的 key 会自动与 `children` 中对应原始项的 key 组合。** 当你在数组中从 `fn` 返回多个元素时，它们的 key 只需要在彼此之间局部唯一即可。
 
 ---
 
 ### `Children.only(children)` {/*children-only*/}
 
 
-Call `Children.only(children)` to assert that `children` represent a single React element.
+调用 `Children.only(children)` 来断言 `children` 表示一个单独的 React 元素。
 
 ```js
 function Box({ children }) {
@@ -149,25 +149,25 @@ function Box({ children }) {
   // ...
 ```
 
-#### Parameters {/*children-only-parameters*/}
+#### 参数 {/*children-only-parameters*/}
 
-* `children`: The value of the [`children` prop](/learn/passing-props-to-a-component#passing-jsx-as-children) received by your component.
+* `children`：你的组件接收到的 [`children` 属性](/learn/passing-props-to-a-component#passing-jsx-as-children) 的值。
 
-#### Returns {/*children-only-returns*/}
+#### 返回值 {/*children-only-returns*/}
 
-If `children` [is a valid element,](/reference/react/isValidElement) returns that element.
+如果 `children` [是一个有效元素，](/reference/react/isValidElement) 则返回该元素。
 
-Otherwise, throws an error.
+否则，抛出错误。
 
-#### Caveats {/*children-only-caveats*/}
+#### 注意事项 {/*children-only-caveats*/}
 
-- This method always **throws if you pass an array (such as the return value of `Children.map`) as `children`.** In other words, it enforces that `children` is a single React element, not that it's an array with a single element.
+- 如果你将数组（例如 `Children.map` 的返回值）作为 `children` 传入，该方法总会**抛出错误。** 换句话说，它要求 `children` 是单个 React 元素，而不是包含单个元素的数组。
 
 ---
 
 ### `Children.toArray(children)` {/*children-toarray*/}
 
-Call `Children.toArray(children)` to create an array out of the `children` data structure.
+调用 `Children.toArray(children)` 来从 `children` 数据结构创建一个数组。
 
 ```js src/ReversedList.js active
 import { Children } from 'react';
@@ -178,25 +178,25 @@ export default function ReversedList({ children }) {
   // ...
 ```
 
-#### Parameters {/*children-toarray-parameters*/}
+#### 参数 {/*children-toarray-parameters*/}
 
-* `children`: The value of the [`children` prop](/learn/passing-props-to-a-component#passing-jsx-as-children) received by your component.
+* `children`：你的组件接收到的 [`children` 属性](/learn/passing-props-to-a-component#passing-jsx-as-children) 的值。
 
-#### Returns {/*children-toarray-returns*/}
+#### 返回值 {/*children-toarray-returns*/}
 
-Returns a flat array of elements in `children`.
+返回 `children` 中元素组成的扁平数组。
 
-#### Caveats {/*children-toarray-caveats*/}
+#### 注意事项 {/*children-toarray-caveats*/}
 
-- Empty nodes (`null`, `undefined`, and Booleans) will be omitted in the returned array. **The returned elements' keys will be calculated from the original elements' keys and their level of nesting and position.** This ensures that flattening the array does not introduce changes in behavior.
+- 空节点（`null`、`undefined` 和布尔值）会在返回的数组中被省略。**返回元素的 key 将根据原始元素的 key、其嵌套层级和位置计算得出。** 这可确保扁平化数组不会引入行为变化。
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Transforming children {/*transforming-children*/}
+### 转换子元素 {/*transforming-children*/}
 
-To transform the children JSX that your component [receives as the `children` prop,](/learn/passing-props-to-a-component#passing-jsx-as-children) call `Children.map`:
+要转换你的组件[作为 `children` 属性接收到的子元素 JSX，](/learn/passing-props-to-a-component#passing-jsx-as-children)请调用 `Children.map`：
 
 ```js {6,10}
 import { Children } from 'react';
@@ -214,33 +214,33 @@ function RowList({ children }) {
 }
 ```
 
-In the example above, the `RowList` wraps every child it receives into a `<div className="Row">` container. For example, let's say the parent component passes three `<p>` tags as the `children` prop to `RowList`:
+在上面的示例中，`RowList` 会把它接收到的每个子元素都包裹到一个 `<div className="Row">` 容器中。例如，假设父组件将三个 `<p>` 标签作为 `children` 属性传给 `RowList`：
 
 ```js
 <RowList>
-  <p>This is the first item.</p>
-  <p>This is the second item.</p>
-  <p>This is the third item.</p>
+  <p>这是第一项。</p>
+  <p>这是第二项。</p>
+  <p>这是第三项。</p>
 </RowList>
 ```
 
-Then, with the `RowList` implementation above, the final rendered result will look like this:
+那么，使用上面的 `RowList` 实现后，最终渲染结果将如下所示：
 
 ```js
 <div className="RowList">
   <div className="Row">
-    <p>This is the first item.</p>
+    <p>这是第一项。</p>
   </div>
   <div className="Row">
-    <p>This is the second item.</p>
+    <p>这是第二项。</p>
   </div>
   <div className="Row">
-    <p>This is the third item.</p>
+    <p>这是第三项。</p>
   </div>
 </div>
 ```
 
-`Children.map` is similar to [to transforming arrays with `map()`.](/learn/rendering-lists) The difference is that the `children` data structure is considered *opaque.* This means that even if it's sometimes an array, you should not assume it's an array or any other particular data type. This is why you should use `Children.map` if you need to transform it.
+`Children.map` 类似于[使用 `map()` 转换数组。](/learn/rendering-lists) 区别在于 `children` 数据结构被视为*不透明的*。这意味着即使它有时是一个数组，你也不应假设它一定是数组或其他任何特定数据类型。因此，如果你需要转换它，就应该使用 `Children.map`。
 
 <Sandpack>
 
@@ -250,9 +250,9 @@ import RowList from './RowList.js';
 export default function App() {
   return (
     <RowList>
-      <p>This is the first item.</p>
-      <p>This is the second item.</p>
-      <p>This is the third item.</p>
+      <p>这是第一项。</p>
+      <p>这是第二项。</p>
+      <p>这是第三项。</p>
     </RowList>
   );
 }
@@ -293,24 +293,24 @@ export default function RowList({ children }) {
 
 <DeepDive>
 
-#### Why is the children prop not always an array? {/*why-is-the-children-prop-not-always-an-array*/}
+#### 为什么 `children` 属性不总是数组？ {/*why-is-the-children-prop-not-always-an-array*/}
 
-In React, the `children` prop is considered an *opaque* data structure. This means that you shouldn't rely on how it is structured. To transform, filter, or count children, you should use the `Children` methods.
+在 React 中，`children` 属性被视为一种*不透明*的数据结构。这意味着你不应该依赖它的结构。要转换、筛选或统计子元素，你应该使用 `Children` 方法。
 
-In practice, the `children` data structure is often represented as an array internally. However, if there is only a single child, then React won't create an extra array since this would lead to unnecessary memory overhead. As long as you use the `Children` methods instead of directly introspecting the `children` prop, your code will not break even if React changes how the data structure is actually implemented.
+在实践中，`children` 数据结构在内部通常会表示为数组。然而，如果只有一个子元素，React 就不会创建额外的数组，因为这会带来不必要的内存开销。只要你使用 `Children` 方法，而不是直接检查 `children` 属性，即使 React 更改了该数据结构的实际实现方式，你的代码也不会出错。
 
-Even when `children` is an array, `Children.map` has useful special behavior. For example, `Children.map` combines the [keys](/learn/rendering-lists#keeping-list-items-in-order-with-key) on the returned elements with the keys on the `children` you've passed to it. This ensures the original JSX children don't "lose" keys even if they get wrapped like in the example above.
+即使 `children` 是数组，`Children.map` 也有有用的特殊行为。例如，`Children.map` 会将返回元素上的 [key](/learn/rendering-lists#keeping-list-items-in-order-with-key) 与你传给它的 `children` 上的 key 组合起来。这样可以确保原始 JSX 子元素即使像上面的示例那样被包裹起来，也不会“丢失” key。
 
 </DeepDive>
 
 <Pitfall>
 
-The `children` data structure **does not include rendered output** of the components you pass as JSX. In the example below, the `children` received by the `RowList` only contains two items rather than three:
+`children` 数据结构**不包含**你作为 JSX 传入的组件的渲染输出。在下面的示例中，`RowList` 接收到的 `children` 只包含两个条目，而不是三个：
 
-1. `<p>This is the first item.</p>`
+1. `<p>这是第一项。</p>`
 2. `<MoreRows />`
 
-This is why only two row wrappers are generated in this example:
+这就是为什么这个示例只生成了两个行包装器：
 
 <Sandpack>
 
@@ -320,7 +320,7 @@ import RowList from './RowList.js';
 export default function App() {
   return (
     <RowList>
-      <p>This is the first item.</p>
+      <p>这是第一项。</p>
       <MoreRows />
     </RowList>
   );
@@ -329,8 +329,8 @@ export default function App() {
 function MoreRows() {
   return (
     <>
-      <p>This is the second item.</p>
-      <p>This is the third item.</p>
+      <p>这是第二项。</p>
+      <p>这是第三项。</p>
     </>
   );
 }
@@ -369,15 +369,15 @@ export default function RowList({ children }) {
 
 </Sandpack>
 
-**There is no way to get the rendered output of an inner component** like `<MoreRows />` when manipulating `children`. This is why [it's usually better to use one of the alternative solutions.](#alternatives)
+在操作 `children` 时，**无法获取像 `<MoreRows />` 这样的内部组件的渲染输出。** 这就是为什么[通常最好使用其他替代方案。](#alternatives)
 
 </Pitfall>
 
 ---
 
-### Running some code for each child {/*running-some-code-for-each-child*/}
+### 为每个子元素运行一些代码 {/*running-some-code-for-each-child*/}
 
-Call `Children.forEach` to iterate over each child in the `children` data structure. It does not return any value and is similar to the [array `forEach` method.](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach) You can use it to run custom logic like constructing your own array.
+调用 `Children.forEach` 来遍历 `children` 数据结构中的每个子元素。它不返回任何值，类似于 [数组 `forEach` 方法。](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach) 你可以用它来执行自定义逻辑，比如构建你自己的数组。
 
 <Sandpack>
 
@@ -387,9 +387,9 @@ import SeparatorList from './SeparatorList.js';
 export default function App() {
   return (
     <SeparatorList>
-      <p>This is the first item.</p>
-      <p>This is the second item.</p>
-      <p>This is the third item.</p>
+      <p>这是第一项。</p>
+      <p>这是第二项。</p>
+      <p>这是第三项。</p>
     </SeparatorList>
   );
 }
@@ -404,7 +404,7 @@ export default function SeparatorList({ children }) {
     result.push(child);
     result.push(<hr key={index} />);
   });
-  result.pop(); // Remove the last separator
+  result.pop(); // 移除最后一个分隔符
   return result;
 }
 ```
@@ -413,15 +413,15 @@ export default function SeparatorList({ children }) {
 
 <Pitfall>
 
-As mentioned earlier, there is no way to get the rendered output of an inner component when manipulating `children`. This is why [it's usually better to use one of the alternative solutions.](#alternatives)
+如前所述，在操作 `children` 时，无法获取内部组件的渲染输出。这就是为什么[通常最好使用其他替代方案。](#alternatives)
 
 </Pitfall>
 
 ---
 
-### Counting children {/*counting-children*/}
+### 统计子元素数量 {/*counting-children*/}
 
-Call `Children.count(children)` to calculate the number of children.
+调用 `Children.count(children)` 来计算子元素数量。
 
 <Sandpack>
 
@@ -431,9 +431,9 @@ import RowList from './RowList.js';
 export default function App() {
   return (
     <RowList>
-      <p>This is the first item.</p>
-      <p>This is the second item.</p>
-      <p>This is the third item.</p>
+      <p>这是第一项。</p>
+      <p>这是第二项。</p>
+      <p>这是第三项。</p>
     </RowList>
   );
 }
@@ -446,7 +446,7 @@ export default function RowList({ children }) {
   return (
     <div className="RowList">
       <h1 className="RowListHeader">
-        Total rows: {Children.count(children)}
+        总行数：{Children.count(children)}
       </h1>
       {Children.map(children, child =>
         <div className="Row">
@@ -484,15 +484,15 @@ export default function RowList({ children }) {
 
 <Pitfall>
 
-As mentioned earlier, there is no way to get the rendered output of an inner component when manipulating `children`. This is why [it's usually better to use one of the alternative solutions.](#alternatives)
+如前所述，在操作 `children` 时，无法获取内部组件的渲染输出。这就是为什么[通常最好使用其他替代方案。](#alternatives)
 
 </Pitfall>
 
 ---
 
-### Converting children to an array {/*converting-children-to-an-array*/}
+### 将子元素转换为数组 {/*converting-children-to-an-array*/}
 
-Call `Children.toArray(children)` to turn the `children` data structure into a regular JavaScript array. This lets you manipulate the array with built-in array methods like [`filter`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter), [`sort`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort), or [`reverse`.](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse)
+调用 `Children.toArray(children)` 将 `children` 数据结构转换为普通的 JavaScript 数组。这样你就可以使用内置数组方法来操作该数组，例如 [`filter`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter)、[`sort`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort) 或 [`reverse`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse)。
 
 <Sandpack>
 
@@ -502,9 +502,9 @@ import ReversedList from './ReversedList.js';
 export default function App() {
   return (
     <ReversedList>
-      <p>This is the first item.</p>
-      <p>This is the second item.</p>
-      <p>This is the third item.</p>
+      <p>这是第一项。</p>
+      <p>这是第二项。</p>
+      <p>这是第三项。</p>
     </ReversedList>
   );
 }
@@ -524,31 +524,31 @@ export default function ReversedList({ children }) {
 
 <Pitfall>
 
-As mentioned earlier, there is no way to get the rendered output of an inner component when manipulating `children`. This is why [it's usually better to use one of the alternative solutions.](#alternatives)
+如前所述，在操作 `children` 时，无法获取内部组件的渲染输出。这就是为什么[通常最好使用其他替代方案。](#alternatives)
 
 </Pitfall>
 
 ---
 
-## Alternatives {/*alternatives*/}
+## 替代方案 {/*alternatives*/}
 
 <Note>
 
-This section describes alternatives to the `Children` API (with capital `C`) that's imported like this:
+本节介绍 `Children` API（大写 `C`）的替代方案，它是这样导入的：
 
 ```js
 import { Children } from 'react';
 ```
 
-Don't confuse it with [using the `children` prop](/learn/passing-props-to-a-component#passing-jsx-as-children) (lowercase `c`), which is good and encouraged.
+不要把它和 [使用 `children` prop](/learn/passing-props-to-a-component#passing-jsx-as-children)（小写 `c`）混淆，后者是很好的做法，并且值得推荐。
 
 </Note>
 
-### Exposing multiple components {/*exposing-multiple-components*/}
+### 暴露多个组件 {/*exposing-multiple-components*/}
 
-Manipulating children with the `Children` methods often leads to fragile code. When you pass children to a component in JSX, you don't usually expect the component to manipulate or transform the individual children.
+使用 `Children` 方法来操作 children 往往会导致代码脆弱。当你在 JSX 中把 children 传给某个组件时，你通常不会期望这个组件去操作或转换单个 child。
 
-When you can, try to avoid using the `Children` methods. For example, if you want every child of `RowList` to be wrapped in `<div className="Row">`, export a `Row` component, and manually wrap every row into it like this:
+在可能的情况下，尽量避免使用 `Children` 方法。例如，如果你希望 `RowList` 的每个 child 都被包裹在 `<div className="Row">` 中，那么可以导出一个 `Row` 组件，并像这样手动把每一行包裹进去：
 
 <Sandpack>
 
@@ -559,13 +559,13 @@ export default function App() {
   return (
     <RowList>
       <Row>
-        <p>This is the first item.</p>
+        <p>这是第一项。</p>
       </Row>
       <Row>
-        <p>This is the second item.</p>
+        <p>这是第二项。</p>
       </Row>
       <Row>
-        <p>This is the third item.</p>
+        <p>这是第三项。</p>
       </Row>
     </RowList>
   );
@@ -607,7 +607,7 @@ export function Row({ children }) {
 
 </Sandpack>
 
-Unlike using `Children.map`, this approach does not wrap every child automatically. **However, this approach has a significant benefit compared to the [earlier example with `Children.map`](#transforming-children) because it works even if you keep extracting more components.** For example, it still works if you extract your own `MoreRows` component:
+与使用 `Children.map` 不同，这种方法不会自动包裹每个 child。**不过，与前面使用 `Children.map` 的示例相比，这种方法有一个显著优势：即使你继续提取更多组件，它也能正常工作。**例如，即使你提取出自己的 `MoreRows` 组件，它仍然可以工作：
 
 <Sandpack>
 
@@ -618,7 +618,7 @@ export default function App() {
   return (
     <RowList>
       <Row>
-        <p>This is the first item.</p>
+        <p>这是第一项。</p>
       </Row>
       <MoreRows />
     </RowList>
@@ -629,10 +629,10 @@ function MoreRows() {
   return (
     <>
       <Row>
-        <p>This is the second item.</p>
+        <p>这是第二项。</p>
       </Row>
       <Row>
-        <p>This is the third item.</p>
+        <p>这是第三项。</p>
       </Row>
     </>
   );
@@ -674,13 +674,13 @@ export function Row({ children }) {
 
 </Sandpack>
 
-This wouldn't work with `Children.map` because it would "see" `<MoreRows />` as a single child (and a single row).
+这在 `Children.map` 下不会生效，因为它会把 `<MoreRows />` 看作一个单独的 child（以及一个单独的行）。
 
 ---
 
-### Accepting an array of objects as a prop {/*accepting-an-array-of-objects-as-a-prop*/}
+### 接收对象数组作为 prop {/*accepting-an-array-of-objects-as-a-prop*/}
 
-You can also explicitly pass an array as a prop. For example, this `RowList` accepts a `rows` array as a prop:
+你也可以显式地将数组作为 prop 传入。例如，这个 `RowList` 接收一个 `rows` 数组作为 prop：
 
 <Sandpack>
 
@@ -690,9 +690,9 @@ import { RowList, Row } from './RowList.js';
 export default function App() {
   return (
     <RowList rows={[
-      { id: 'first', content: <p>This is the first item.</p> },
-      { id: 'second', content: <p>This is the second item.</p> },
-      { id: 'third', content: <p>This is the third item.</p> }
+      { id: 'first', content: <p>这是第一项。</p> },
+      { id: 'second', content: <p>这是第二项。</p> },
+      { id: 'third', content: <p>这是第三项。</p> }
     ]} />
   );
 }
@@ -729,9 +729,9 @@ export function RowList({ rows }) {
 
 </Sandpack>
 
-Since `rows` is a regular JavaScript array, the `RowList` component can use built-in array methods like [`map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) on it.
+由于 `rows` 是普通的 JavaScript 数组，`RowList` 组件可以在它上面使用内置的数组方法，比如 [`map`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map)。
 
-This pattern is especially useful when you want to be able to pass more information as structured data together with children. In the below example, the `TabSwitcher` component receives an array of objects as the `tabs` prop:
+当你希望能将更多信息作为结构化数据与 children 一起传递时，这种模式尤其有用。在下面的示例中，`TabSwitcher` 组件接收一个对象数组作为 `tabs` prop：
 
 <Sandpack>
 
@@ -743,18 +743,18 @@ export default function App() {
     <TabSwitcher tabs={[
       {
         id: 'first',
-        header: 'First',
-        content: <p>This is the first item.</p>
+        header: '第一项',
+        content: <p>这是第一项。</p>
       },
       {
         id: 'second',
-        header: 'Second',
-        content: <p>This is the second item.</p>
+        header: '第二项',
+        content: <p>这是第二项。</p>
       },
       {
         id: 'third',
-        header: 'Third',
-        content: <p>This is the third item.</p>
+        header: '第三项',
+        content: <p>这是第三项。</p>
       }
     ]} />
   );
@@ -789,13 +789,13 @@ export default function TabSwitcher({ tabs }) {
 
 </Sandpack>
 
-Unlike passing the children as JSX, this approach lets you associate some extra data like `header` with each item. Because you are working with the `tabs` directly, and it is an array, you do not need the `Children` methods.
+与把 children 作为 JSX 传递不同，这种方法可以让你把像 `header` 这样的额外数据与每一项关联起来。因为你直接在使用 `tabs`，而且它是一个数组，所以你不需要 `Children` 方法。
 
 ---
 
-### Calling a render prop to customize rendering {/*calling-a-render-prop-to-customize-rendering*/}
+### 调用 render prop 来自定义渲染 {/*calling-a-render-prop-to-customize-rendering*/}
 
-Instead of producing JSX for every single item, you can also pass a function that returns JSX, and call that function when necessary. In this example, the `App` component passes a `renderContent` function to the `TabSwitcher` component. The `TabSwitcher` component calls `renderContent` only for the selected tab:
+你也可以不为每个单独的 item 生成 JSX，而是传入一个返回 JSX 的函数，并在需要时调用该函数。在这个示例中，`App` 组件向 `TabSwitcher` 组件传递了一个 `renderContent` 函数。`TabSwitcher` 组件只会为被选中的 tab 调用 `renderContent`：
 
 <Sandpack>
 
@@ -810,7 +810,7 @@ export default function App() {
         return tabId[0].toUpperCase() + tabId.slice(1);
       }}
       renderContent={tabId => {
-        return <p>This is the {tabId} item.</p>;
+        return <p>这是 {tabId} 项。</p>;
       }}
     />
   );
@@ -844,9 +844,9 @@ export default function TabSwitcher({ tabIds, getHeader, renderContent }) {
 
 </Sandpack>
 
-A prop like `renderContent` is called a *render prop* because it is a prop that specifies how to render a piece of the user interface. However, there is nothing special about it: it is a regular prop which happens to be a function.
+像 `renderContent` 这样的 prop 被称为 *render prop*，因为它是一个指定如何渲染某部分用户界面的 prop。不过，它并没有什么特殊之处：它只是一个碰巧是函数的普通 prop。
 
-Render props are functions, so you can pass information to them. For example, this `RowList` component passes the `id` and the `index` of each row to the `renderRow` render prop, which uses `index` to highlight even rows:
+Render prop 是函数，所以你可以向它传递信息。例如，这个 `RowList` 组件会把每一行的 `id` 和 `index` 传给 `renderRow` render prop，而 `renderRow` 使用 `index` 来高亮偶数行：
 
 <Sandpack>
 
@@ -860,7 +860,7 @@ export default function App() {
       renderRow={(id, index) => {
         return (
           <Row isHighlighted={index % 2 === 0}>
-            <p>This is the {id} item.</p>
+            <p>这是 {id} 项。</p>
           </Row>
         );
       }}
@@ -876,7 +876,7 @@ export function RowList({ rowIds, renderRow }) {
   return (
     <div className="RowList">
       <h1 className="RowListHeader">
-        Total rows: {rowIds.length}
+        总行数：{rowIds.length}
       </h1>
       {rowIds.map((rowId, index) =>
         <Fragment key={rowId}>
@@ -927,23 +927,23 @@ export function Row({ children, isHighlighted }) {
 
 </Sandpack>
 
-This is another example of how parent and child components can cooperate without manipulating the children.
+这又是一个父组件和子组件可以在不操作 children 的情况下协作的例子。
 
 ---
 
-## Troubleshooting {/*troubleshooting*/}
+## 故障排除 {/*troubleshooting*/}
 
-### I pass a custom component, but the `Children` methods don't show its render result {/*i-pass-a-custom-component-but-the-children-methods-dont-show-its-render-result*/}
+### 我传入了一个自定义组件，但 `Children` 方法没有显示它的渲染结果 {/*i-pass-a-custom-component-but-the-children-methods-dont-show-its-render-result*/}
 
-Suppose you pass two children to `RowList` like this:
+假设你像这样向 `RowList` 传递了两个 children：
 
 ```js
 <RowList>
-  <p>First item</p>
+  <p>第一项</p>
   <MoreRows />
 </RowList>
 ```
 
-If you do `Children.count(children)` inside `RowList`, you will get `2`. Even if `MoreRows` renders 10 different items, or if it returns `null`, `Children.count(children)` will still be `2`. From the `RowList`'s perspective, it only "sees" the JSX it has received. It does not "see" the internals of the `MoreRows` component.
+如果你在 `RowList` 内部执行 `Children.count(children)`，你会得到 `2`。即使 `MoreRows` 渲染了 10 个不同的项，或者它返回 `null`，`Children.count(children)` 仍然会是 `2`。从 `RowList` 的角度来看，它只会“看到”自己接收到的 JSX。它不会“看到” `MoreRows` 组件内部的实现。
 
-The limitation makes it hard to extract a component. This is why [alternatives](#alternatives) are preferred to using `Children`.
+这个限制会让提取组件变得困难。这就是为什么相比使用 `Children`，更推荐采用这些[替代方案](#alternatives)。

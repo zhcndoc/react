@@ -4,7 +4,7 @@ title: useFormStatus
 
 <Intro>
 
-`useFormStatus` is a Hook that gives you status information of the last form submission.
+`useFormStatus` 是一个 Hook，它会为你提供上一次表单提交的状态信息。
 
 ```js
 const { pending, data, method, action } = useFormStatus();
@@ -16,11 +16,11 @@ const { pending, data, method, action } = useFormStatus();
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `useFormStatus()` {/*use-form-status*/}
 
-The `useFormStatus` Hook provides status information of the last form submission.
+`useFormStatus` Hook 提供上一次表单提交的状态信息。
 
 ```js {5},[[1, 6, "status.pending"]]
 import { useFormStatus } from "react-dom";
@@ -40,42 +40,42 @@ export default function App() {
 }
 ```
 
-To get status information, the `Submit` component must be rendered within a `<form>`. The Hook returns information like the <CodeStep step={1}>`pending`</CodeStep> property which tells you if the form is actively submitting.
+要获取状态信息，`Submit` 组件必须在 `<form>` 内部渲染。该 Hook 会返回诸如 <CodeStep step={1}>`pending`</CodeStep> 属性之类的信息，它会告诉你表单是否正在提交中。
 
-In the above example, `Submit` uses this information to disable `<button>` presses while the form is submitting.
+在上面的示例中，`Submit` 使用这些信息在表单提交时禁用 `<button>` 点击。
 
-[See more examples below.](#usage)
+[查看更多示例。](#usage)
 
-#### Parameters {/*parameters*/}
+#### 参数 {/*parameters*/}
 
-`useFormStatus` does not take any parameters.
+`useFormStatus` 不接受任何参数。
 
-#### Returns {/*returns*/}
+#### 返回值 {/*returns*/}
 
-A `status` object with the following properties:
+一个包含以下属性的 `status` 对象：
 
-* `pending`: A boolean. If `true`, this means the parent `<form>` is pending submission. Otherwise, `false`.
+* `pending`：布尔值。如果为 `true`，表示父级 `<form>` 正在等待提交。否则为 `false`。
 
-* `data`: An object implementing the [`FormData interface`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) that contains the data the parent `<form>` is submitting. If there is no active submission or no parent `<form>`, it will be `null`.
+* `data`：一个实现了 [`FormData interface`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) 的对象，包含父级 `<form>` 正在提交的数据。如果没有正在进行的提交或没有父级 `<form>`，它将为 `null`。
 
-* `method`: A string value of either `'get'` or `'post'`. This represents whether the parent `<form>` is submitting with either a `GET` or `POST` [HTTP method](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods). By default, a `<form>` will use the `GET` method and can be specified by the [`method`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#method) property.
+* `method`：字符串值，取值为 `'get'` 或 `'post'`。表示父级 `<form>` 是通过 `GET` 还是 `POST` [HTTP method](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods) 提交。默认情况下，`<form>` 将使用 `GET` 方法，并且可以通过 [`method`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#method) 属性指定。
 
 [//]: # (Link to `<form>` documentation. "Read more on the `action` prop on `<form>`.")
-* `action`: A reference to the function passed to the `action` prop on the parent `<form>`. If there is no parent `<form>`, the property is `null`. If there is a URI value provided to the `action` prop, or no `action` prop specified, `status.action` will be `null`.
+* `action`：传递给父级 `<form>` 的 `action` 属性的函数引用。如果没有父级 `<form>`，该属性为 `null`。如果 `action` 属性提供的是 URI 值，或者未指定 `action` 属性，则 `status.action` 将为 `null`。
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-* The `useFormStatus` Hook must be called from a component that is rendered inside a `<form>`.
-* `useFormStatus` will only return status information for a parent `<form>`. It will not return status information for any `<form>` rendered in that same component or children components.
+* `useFormStatus` Hook 必须在一个渲染于 `<form>` 内部的组件中调用。
+* `useFormStatus` 只会返回父级 `<form>` 的状态信息。它不会返回在同一组件或子组件中渲染的任何 `<form>` 的状态信息。
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Display a pending state during form submission {/*display-a-pending-state-during-form-submission*/}
-To display a pending state while a form is submitting, you can call the `useFormStatus` Hook in a component rendered in a `<form>` and read the `pending` property returned.
+### 在表单提交期间显示待处理状态 {/*display-a-pending-state-during-form-submission*/}
+要在表单提交时显示待处理状态，你可以在一个渲染于 `<form>` 内的组件中调用 `useFormStatus` Hook，并读取返回的 `pending` 属性。
 
-Here, we use the `pending` property to indicate the form is submitting.
+这里，我们使用 `pending` 属性来指示表单正在提交。
 
 <Sandpack>
 
@@ -87,7 +87,7 @@ function Submit() {
   const { pending } = useFormStatus();
   return (
     <button type="submit" disabled={pending}>
-      {pending ? "Submitting..." : "Submit"}
+      {pending ? "提交中..." : "提交"}
     </button>
   );
 }
@@ -114,30 +114,30 @@ export async function submitForm(query) {
 
 <Pitfall>
 
-##### `useFormStatus` will not return status information for a `<form>` rendered in the same component. {/*useformstatus-will-not-return-status-information-for-a-form-rendered-in-the-same-component*/}
+##### `useFormStatus` 不会返回在同一组件中渲染的 `<form>` 的状态信息。 {/*useformstatus-will-not-return-status-information-for-a-form-rendered-in-the-same-component*/}
 
-The `useFormStatus` Hook only returns status information for a parent `<form>` and not for any `<form>` rendered in the same component calling the Hook, or child components.
+`useFormStatus` Hook 只会返回父级 `<form>` 的状态信息，而不会返回在调用该 Hook 的同一组件中渲染的任何 `<form>`，也不会返回子组件中的 `<form>`。
 
 ```js
 function Form() {
-  // 🚩 `pending` will never be true
-  // useFormStatus does not track the form rendered in this component
+  // 🚩 `pending` 永远不会为 true
+  // useFormStatus 不会跟踪在此组件中渲染的表单
   const { pending } = useFormStatus();
   return <form action={submit}></form>;
 }
 ```
 
-Instead call `useFormStatus` from inside a component that is located inside `<form>`.
+相反，请从位于 `<form>` 内部的组件中调用 `useFormStatus`。
 
 ```js
 function Submit() {
-  // ✅ `pending` will be derived from the form that wraps the Submit component
+  // ✅ `pending` 将由包裹 Submit 组件的表单派生
   const { pending } = useFormStatus();
   return <button disabled={pending}>...</button>;
 }
 
 function Form() {
-  // This is the <form> `useFormStatus` tracks
+  // 这就是 `useFormStatus` 跟踪的 <form>
   return (
     <form action={submit}>
       <Submit />
@@ -148,11 +148,11 @@ function Form() {
 
 </Pitfall>
 
-### Read the form data being submitted {/*read-form-data-being-submitted*/}
+### 读取正在提交的表单数据 {/*read-form-data-being-submitted*/}
 
-You can use the `data` property of the status information returned from `useFormStatus` to display what data is being submitted by the user.
+你可以使用从 `useFormStatus` 返回的状态信息中的 `data` 属性来显示用户正在提交的数据。
 
-Here, we have a form where users can request a username. We can use `useFormStatus` to display a temporary status message confirming what username they have requested.
+这里，我们有一个表单，用户可以请求用户名。我们可以使用 `useFormStatus` 来显示一条临时状态消息，确认他们请求了哪个用户名。
 
 <Sandpack>
 
@@ -165,13 +165,13 @@ export default function UsernameForm() {
 
   return (
     <div>
-      <h3>Request a Username: </h3>
+      <h3>请求一个用户名：</h3>
       <input type="text" name="username" disabled={pending}/>
       <button type="submit" disabled={pending}>
-        Submit
+        提交
       </button>
       <br />
-      <p>{data ? `Requesting ${data?.get("username")}...`: ''}</p>
+      <p>{data ? `正在请求 ${data?.get("username")}...`: ''}</p>
     </div>
   );
 }
@@ -219,12 +219,12 @@ button {
 
 ---
 
-## Troubleshooting {/*troubleshooting*/}
+## 故障排查 {/*troubleshooting*/}
 
-### `status.pending` is never `true` {/*pending-is-never-true*/}
+### `status.pending` 永远不是 `true` {/*pending-is-never-true*/}
 
-`useFormStatus` will only return status information for a parent `<form>`.
+`useFormStatus` 只会返回父级 `<form>` 的状态信息。
 
-If the component that calls `useFormStatus` is not nested in a `<form>`, `status.pending` will always return `false`. Verify `useFormStatus` is called in a component that is a child of a `<form>` element.
+如果调用 `useFormStatus` 的组件没有嵌套在 `<form>` 中，`status.pending` 将始终返回 `false`。请确认 `useFormStatus` 是在作为 `<form>` 元素子元素的组件中调用的。
 
-`useFormStatus` will not track the status of a `<form>` rendered in the same component. See [Pitfall](#useformstatus-will-not-return-status-information-for-a-form-rendered-in-the-same-component) for more details.
+`useFormStatus` 不会跟踪在同一组件中渲染的 `<form>` 的状态。更多细节请参见 [注意事项](#useformstatus-will-not-return-status-information-for-a-form-rendered-in-the-same-component)。

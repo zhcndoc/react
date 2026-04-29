@@ -1,31 +1,31 @@
 ---
-title: 'Tutorial: Tic-Tac-Toe'
+title: '教程：井字棋'
 ---
 
 <Intro>
 
-You will build a small tic-tac-toe game during this tutorial. This tutorial does not assume any existing React knowledge. The techniques you'll learn in the tutorial are fundamental to building any React app, and fully understanding it will give you a deep understanding of React.
+在本教程中，你将构建一个小型井字棋游戏。本教程不假设你已有任何 React 知识。你将在教程中学到的这些技术是构建任何 React 应用的基础，完全理解它们将让你对 React 有深入的认识。
 
 </Intro>
 
 <Note>
 
-This tutorial is designed for people who prefer to **learn by doing** and want to quickly try making something tangible. If you prefer learning each concept step by step, start with [Describing the UI.](/learn/describing-the-ui)
+本教程面向那些喜欢**边做边学**并希望快速尝试制作一些有实际成果的人。如果你更喜欢一步一步学习每个概念，请从[描述 UI。](/learn/describing-the-ui)开始。
 
 </Note>
 
-The tutorial is divided into several sections:
+本教程分为几个部分：
 
-- [Setup for the tutorial](#setup-for-the-tutorial) will give you **a starting point** to follow the tutorial.
-- [Overview](#overview) will teach you **the fundamentals** of React: components, props, and state.
-- [Completing the game](#completing-the-game) will teach you **the most common techniques** in React development.
-- [Adding time travel](#adding-time-travel) will give you **a deeper insight** into the unique strengths of React.
+- [教程设置](#setup-for-the-tutorial)将为你提供**一个起点**，以便跟随教程进行。
+- [概览](#overview)将教你 React 的**基础知识**：组件、props 和 state。
+- [完成游戏](#completing-the-game)将教你 React 开发中**最常见的技术**。
+- [添加时间旅行](#adding-time-travel)将让你对 React 独特的优势有**更深入的理解**。
 
-### What are you building? {/*what-are-you-building*/}
+### 你在构建什么？ {/*what-are-you-building*/}
 
-In this tutorial, you'll build an interactive tic-tac-toe game with React.
+在本教程中，你将使用 React 构建一个交互式井字棋游戏。
 
-You can see what it will look like when you're finished here:
+你可以在这里看到完成后的样子：
 
 <Sandpack>
 
@@ -57,9 +57,9 @@ function Board({ xIsNext, squares, onPlay }) {
   const winner = calculateWinner(squares);
   let status;
   if (winner) {
-    status = 'Winner: ' + winner;
+    status = '获胜者：' + winner;
   } else {
-    status = 'Next player: ' + (xIsNext ? 'X' : 'O');
+    status = '下一位玩家：' + (xIsNext ? 'X' : 'O');
   }
 
   return (
@@ -103,9 +103,9 @@ export default function Game() {
   const moves = history.map((squares, move) => {
     let description;
     if (move > 0) {
-      description = 'Go to move #' + move;
+      description = '前往第 #' + move + ' 步';
     } else {
-      description = 'Go to game start';
+      description = '回到游戏开始';
     }
     return (
       <li key={move}>
@@ -194,15 +194,15 @@ body {
 
 </Sandpack>
 
-If the code doesn't make sense to you yet, or if you are unfamiliar with the code's syntax, don't worry! The goal of this tutorial is to help you understand React and its syntax.
+如果你现在还不理解这些代码，或者不熟悉这些代码的语法，也不用担心！本教程的目标是帮助你理解 React 及其语法。
 
-We recommend that you check out the tic-tac-toe game above before continuing with the tutorial. One of the features that you'll notice is that there is a numbered list to the right of the game's board. This list gives you a history of all of the moves that have occurred in the game, and it is updated as the game progresses.
+我们建议你在继续教程之前先看看上面的井字棋游戏。你会注意到的一个功能是，棋盘右侧有一个编号列表。这个列表会显示游戏中发生过的所有移动历史，并且会随着游戏进程更新。
 
-Once you've played around with the finished tic-tac-toe game, keep scrolling. You'll start with a simpler template in this tutorial. Our next step is to set you up so that you can start building the game.
+在你玩过这个完成版的井字棋游戏之后，继续往下滚动。在本教程中，你将从一个更简单的模板开始。我们的下一步是先为你做好准备，这样你就可以开始构建这个游戏了。
 
-## Setup for the tutorial {/*setup-for-the-tutorial*/}
+## 教程设置 {/*setup-for-the-tutorial*/}
 
-In the live code editor below, click **Fork** in the top-right corner to open the editor in a new tab using the website CodeSandbox. CodeSandbox lets you write code in your browser and preview how your users will see the app you've created. The new tab should display an empty square and the starter code for this tutorial.
+在下面的在线代码编辑器中，点击右上角的 **Fork**，使用 CodeSandbox 网站在新标签页中打开编辑器。CodeSandbox 允许你在浏览器中编写代码，并预览用户将如何看到你创建的应用。新标签页中应该会显示一个空白方块以及本教程的起始代码。
 
 <Sandpack>
 
@@ -261,33 +261,33 @@ body {
 
 <Note>
 
-You can also follow this tutorial using your local development environment. To do this, you need to:
+你也可以使用本地开发环境来跟随本教程。为此，你需要：
 
-1. Install [Node.js](https://nodejs.org/en/)
-1. In the CodeSandbox tab you opened earlier, press the top-left corner button to open the menu, and then choose **Download Sandbox** in that menu to download an archive of the files locally
-1. Unzip the archive, then open a terminal and `cd` to the directory you unzipped
-1. Install the dependencies with `npm install`
-1. Run `npm start` to start a local server and follow the prompts to view the code running in a browser
+1. 安装 [Node.js](https://nodejs.org/en/)
+1. 在你之前打开的 CodeSandbox 标签页中，点击左上角按钮打开菜单，然后在菜单中选择 **Download Sandbox**，将文件压缩包下载到本地
+1. 解压该压缩包，然后打开终端并 `cd` 到你解压后的目录
+1. 使用 `npm install` 安装依赖
+1. 运行 `npm start` 启动本地服务器，并按照提示在浏览器中查看运行中的代码
 
-If you get stuck, don't let this stop you! Follow along online instead and try a local setup again later.
+如果你卡住了，也不要因此停下来！你可以先在线跟着做，之后再尝试本地环境。
 
 </Note>
 
-## Overview {/*overview*/}
+## 概览 {/*overview*/}
 
-Now that you're set up, let's get an overview of React!
+现在你已经准备好了，让我们来了解一下 React 的概览！
 
-### Inspecting the starter code {/*inspecting-the-starter-code*/}
+### 检查起始代码 {/*inspecting-the-starter-code*/}
 
-In CodeSandbox you'll see three main sections:
+在 CodeSandbox 中，你会看到三个主要区域：
 
 ![CodeSandbox with starter code](../images/tutorial/react-starter-code-codesandbox.png)
 
-1. The _Files_ section with a list of files like `App.js`, `index.js`, `styles.css` in `src` folder and a folder called `public`
-1. The _code editor_ where you'll see the source code of your selected file
-1. The _browser_ section where you'll see how the code you've written will be displayed
+1. _Files_ 区域，里面有一个文件列表，例如 `src` 文件夹中的 `App.js`、`index.js`、`styles.css`，以及一个名为 `public` 的文件夹
+1. _code editor_，你会在这里看到所选文件的源代码
+1. _browser_ 区域，你会在这里看到你编写的代码将如何显示
 
-The `App.js` file should be selected in the _Files_ section. The contents of that file in the _code editor_ should be:
+`App.js` 文件应该已经在 _Files_ 区域中被选中。_code editor_ 中该文件的内容应该是：
 
 ```jsx
 export default function Square() {
@@ -295,15 +295,15 @@ export default function Square() {
 }
 ```
 
-The _browser_ section should be displaying a square with an X in it like this:
+_browser_ 区域应该显示一个方块，里面有一个 X，如下所示：
 
 ![x-filled square](../images/tutorial/x-filled-square.png)
 
-Now let's have a look at the files in the starter code.
+现在让我们看看起始代码中的文件。
 
 #### `App.js` {/*appjs*/}
 
-The code in `App.js` creates a _component_. In React, a component is a piece of reusable code that represents a part of a user interface. Components are used to render, manage, and update the UI elements in your application. Let's look at the component line by line to see what's going on:
+`App.js` 中的代码创建了一个 _组件_。在 React 中，组件是一段可复用的代码，用来表示用户界面的一部分。组件用于渲染、管理和更新应用中的 UI 元素。让我们逐行看看这个组件，了解它在做什么：
 
 ```js {1}
 export default function Square() {
@@ -311,7 +311,7 @@ export default function Square() {
 }
 ```
 
-The first line defines a function called `Square`. The `export` JavaScript keyword makes this function accessible outside of this file. The `default` keyword tells other files using your code that it's the main function in your file.
+第一行定义了一个名为 `Square` 的函数。`export` 这个 JavaScript 关键字使这个函数可以在本文件之外被访问。`default` 关键字告诉其他使用你代码的文件，这是你文件中的主函数。
 
 ```js {2}
 export default function Square() {
@@ -319,15 +319,15 @@ export default function Square() {
 }
 ```
 
-The second line returns a button. The `return` JavaScript keyword means whatever comes after is returned as a value to the caller of the function. `<button>` is a *JSX element*. A JSX element is a combination of JavaScript code and HTML tags that describes what you'd like to display. `className="square"` is a button property or *prop* that tells CSS how to style the button. `X` is the text displayed inside of the button and `</button>` closes the JSX element to indicate that any following content shouldn't be placed inside the button.
+第二行返回一个按钮。`return` 这个 JavaScript 关键字表示，后面的内容会作为函数调用者接收到的值返回。`<button>` 是一个 *JSX 元素*。JSX 元素是 JavaScript 代码和 HTML 标签的组合，用于描述你想显示的内容。`className="square"` 是按钮的属性，或称 *prop*，它告诉 CSS 如何设置按钮样式。`X` 是显示在按钮内部的文本，而 `</button>` 则关闭了 JSX 元素，表示后续内容不应放在按钮内部。
 
 #### `styles.css` {/*stylescss*/}
 
-Click on the file labeled `styles.css` in the _Files_ section of CodeSandbox. This file defines the styles for your React app. The first two _CSS selectors_ (`*` and `body`) define the style of large parts of your app while the `.square` selector defines the style of any component where the `className` property is set to `square`. In your code, that would match the button from your Square component in the `App.js` file.
+点击 CodeSandbox 的 _Files_ 区域中名为 `styles.css` 的文件。这个文件定义了你的 React 应用的样式。前两个 _CSS 选择器_（`*` 和 `body`）定义了应用大部分区域的样式，而 `.square` 选择器定义了任何将 `className` 属性设为 `square` 的组件的样式。在你的代码中，这对应于 `App.js` 文件中 Square 组件里的按钮。
 
 #### `index.js` {/*indexjs*/}
 
-Click on the file labeled `index.js` in the _Files_ section of CodeSandbox. You won't be editing this file during the tutorial but it is the bridge between the component you created in the `App.js` file and the web browser.
+点击 CodeSandbox 的 _Files_ 区域中名为 `index.js` 的文件。在本教程中你不会编辑这个文件，但它是你在 `App.js` 文件中创建的组件与网页浏览器之间的桥梁。
 
 ```jsx
 import { StrictMode } from 'react';
@@ -337,20 +337,20 @@ import './styles.css';
 import App from './App';
 ```
 
-Lines 1-5 bring all the necessary pieces together:
+第 1-5 行把所有必要部分组合到一起：
 
 * React
-* React's library to talk to web browsers (React DOM)
-* the styles for your components
-* the component you created in `App.js`.
+* 用于让 React 与网页浏览器通信的库（React DOM）
+* 你的组件样式
+* 你在 `App.js` 中创建的组件。
 
-The remainder of the file brings all the pieces together and injects the final product into `index.html` in the `public` folder.
+文件剩余部分会将所有内容整合起来，并把最终产品注入到 `public` 文件夹中的 `index.html`。
 
-### Building the board {/*building-the-board*/}
+### 构建棋盘 {/*building-the-board*/}
 
-Let's get back to `App.js`. This is where you'll spend the rest of the tutorial.
+让我们回到 `App.js`。接下来整个教程的大部分时间你都会在这里度过。
 
-Currently the board is only a single square, but you need nine! If you just try and copy paste your square to make two squares like this:
+目前棋盘只有一个方块，但你需要九个！如果你只是试着复制粘贴这个方块来做出两个方块，例如这样：
 
 ```js {2}
 export default function Square() {
@@ -358,15 +358,15 @@ export default function Square() {
 }
 ```
 
-You'll get this error:
+你会得到这个错误：
 
 <ConsoleBlock level="error">
 
-/src/App.js: Adjacent JSX elements must be wrapped in an enclosing tag. Did you want a JSX Fragment `<>...</>`?
+/src/App.js: 相邻的 JSX 元素必须包裹在一个封闭标签中。你是否想使用 JSX Fragment `<>...</>`？
 
 </ConsoleBlock>
 
-React components need to return a single JSX element and not multiple adjacent JSX elements like two buttons. To fix this you can use *Fragments* (`<>` and `</>`) to wrap multiple adjacent JSX elements like this:
+React 组件需要返回单个 JSX 元素，而不是像两个按钮这样多个相邻的 JSX 元素。为了解决这个问题，你可以使用 *Fragments*（`<>` 和 `</>`）将多个相邻的 JSX 元素包裹起来，例如这样：
 
 ```js {3-6}
 export default function Square() {
@@ -379,17 +379,17 @@ export default function Square() {
 }
 ```
 
-Now you should see:
+现在你应该会看到：
 
 ![two x-filled squares](../images/tutorial/two-x-filled-squares.png)
 
-Great! Now you just need to copy-paste a few times to add nine squares and...
+很好！现在你只需要再复制粘贴几次，添加九个方块，然后……
 
 ![nine x-filled squares in a line](../images/tutorial/nine-x-filled-squares.png)
 
-Oh no! The squares are all in a single line, not in a grid like you need for our board. To fix this you'll need to group your squares into rows with `div`s and add some CSS classes. While you're at it, you'll give each square a number to make sure you know where each square is displayed.
+哎呀！这些方块都在一条直线上，而不是你需要的棋盘网格。要解决这个问题，你需要使用 `div` 将方块分组为多行，并添加一些 CSS 类。在这个过程中，你还会给每个方块一个编号，以确保你知道每个方块显示在哪里。
 
-In the `App.js` file, update the `Square` component to look like this:
+在 `App.js` 文件中，把 `Square` 组件更新成这样：
 
 ```js {3-19}
 export default function Square() {
@@ -415,11 +415,11 @@ export default function Square() {
 }
 ```
 
-The CSS defined in `styles.css` styles the divs with the `className` of `board-row`. Now that you've grouped your components into rows with the styled `div`s you have your tic-tac-toe board:
+`styles.css` 中定义的 CSS 会对带有 `board-row` 这个 `className` 的 `div` 进行样式设置。现在你已经使用带样式的 `div` 将组件分组为多行，你就拥有了井字棋棋盘：
 
 ![tic-tac-toe board filled with numbers 1 through 9](../images/tutorial/number-filled-board.png)
 
-But you now have a problem. Your component named `Square`, really isn't a square anymore. Let's fix that by changing the name to `Board`:
+但现在你遇到了一个问题。你命名为 `Square` 的组件，其实已经不再是一个方块了。让我们把它改名为 `Board`：
 
 ```js {1}
 export default function Board() {
@@ -427,7 +427,7 @@ export default function Board() {
 }
 ```
 
-At this point your code should look something like this:
+此时你的代码应该类似这样：
 
 <Sandpack>
 
@@ -504,15 +504,15 @@ body {
 
 <Note>
 
-Psssst... That's a lot to type! It's okay to copy and paste code from this page. However, if you're up for a little challenge, we recommend only copying code that you've manually typed at least once yourself.
+嘘……这要输入的内容很多！从这个页面复制粘贴代码是没问题的。不过，如果你愿意接受一点挑战，我们建议你只复制那些你已经手动输入过至少一次的代码。
 
 </Note>
 
-### Passing data through props {/*passing-data-through-props*/}
+### 通过 props 传递数据 {/*passing-data-through-props*/}
 
-Next, you'll want to change the value of a square from empty to "X" when the user clicks on the square. With how you've built the board so far you would need to copy-paste the code that updates the square nine times (once for each square you have)! Instead of copy-pasting, React's component architecture allows you to create a reusable component to avoid messy, duplicated code.
+接下来，当用户点击方块时，你要把一个方块的值从空白改成 "X"。按照你目前构建棋盘的方式，你需要把更新方块的代码复制粘贴九次（每个方块一次）！与其复制粘贴，React 的组件架构允许你创建可复用组件，从而避免杂乱且重复的代码。
 
-First, you are going to copy the line defining your first square (`<button className="square">1</button>`) from your `Board` component into a new `Square` component:
+首先，你要把定义第一个方块的那一行（`<button className="square">1</button>`）从 `Board` 组件中复制到一个新的 `Square` 组件里：
 
 ```js {1-3}
 function Square() {
@@ -524,7 +524,7 @@ export default function Board() {
 }
 ```
 
-Then you'll update the Board component to render that `Square` component using JSX syntax:
+然后你将更新 Board 组件，使用 JSX 语法来渲染这个 `Square` 组件：
 
 ```js {5-19}
 // ...
@@ -551,15 +551,15 @@ export default function Board() {
 }
 ```
 
-Note how unlike the browser `div`s, your own components `Board` and `Square` must start with a capital letter.
+请注意，与浏览器中的 `div` 不同，你自己的组件 `Board` 和 `Square` 必须以大写字母开头。
 
-Let's take a look:
+让我们看看效果：
 
 ![one-filled board](../images/tutorial/board-filled-with-ones.png)
 
-Oh no! You lost the numbered squares you had before. Now each square says "1". To fix this, you will use *props* to pass the value each square should have from the parent component (`Board`) to its child (`Square`).
+哎呀！你丢失了之前的编号方块。现在每个方块都显示 "1"。要修复这个问题，你将使用 *props*，把每个方块应该具有的值从父组件（`Board`）传递给子组件（`Square`）。
 
-Update the `Square` component to read the `value` prop that you'll pass from the `Board`:
+更新 `Square` 组件，让它读取从 `Board` 传入的 `value` prop：
 
 ```js {1}
 function Square({ value }) {
@@ -567,9 +567,9 @@ function Square({ value }) {
 }
 ```
 
-`function Square({ value })` indicates the Square component can be passed a prop called `value`.
+`function Square({ value })` 表示 Square 组件可以接收一个名为 `value` 的 prop。
 
-Now you want to display that `value` instead of `1` inside every square. Try doing it like this:
+现在你要在每个方块中显示这个 `value`，而不是 `1`。试着这样做：
 
 ```js {2}
 function Square({ value }) {
@@ -577,11 +577,11 @@ function Square({ value }) {
 }
 ```
 
-Oops, this is not what you wanted:
+糟糕，这不是你想要的效果：
 
 ![value-filled board](../images/tutorial/board-filled-with-value.png)
 
-You wanted to render the JavaScript variable called `value` from your component, not the word "value". To "escape into JavaScript" from JSX, you need curly braces. Add curly braces around `value` in JSX like so:
+你想渲染的是组件中的 JavaScript 变量 `value`，而不是单词 "value"。要从 JSX “进入 JavaScript”，你需要使用花括号。在 JSX 中像这样把 `value` 放在花括号里：
 
 ```js {2}
 function Square({ value }) {
@@ -589,11 +589,11 @@ function Square({ value }) {
 }
 ```
 
-For now, you should see an empty board:
+现在，你应该会看到一个空棋盘：
 
 ![empty board](../images/tutorial/empty-board.png)
 
-This is because the `Board` component hasn't passed the `value` prop to each `Square` component it renders yet. To fix it you'll add the `value` prop to each `Square` component rendered by the `Board` component:
+这是因为 `Board` 组件还没有把 `value` prop 传给它渲染的每个 `Square` 组件。为了解决这个问题，你需要给 `Board` 组件渲染的每个 `Square` 组件添加 `value` prop：
 
 ```js {5-7,10-12,15-17}
 export default function Board() {
@@ -619,11 +619,11 @@ export default function Board() {
 }
 ```
 
-Now you should see a grid of numbers again:
+现在你应该又能看到一个数字网格了：
 
 ![tic-tac-toe board filled with numbers 1 through 9](../images/tutorial/number-filled-board.png)
 
-Your updated code should look like this:
+你更新后的代码应该如下所示：
 
 <Sandpack>
 
@@ -702,9 +702,9 @@ body {
 
 </Sandpack>
 
-### Making an interactive component {/*making-an-interactive-component*/}
+### 让组件具有交互性 {/*making-an-interactive-component*/}
 
-Let's fill the `Square` component with an `X` when you click it. Declare a function called `handleClick` inside of the `Square`. Then, add `onClick` to the props of the button JSX element returned from the `Square`:
+让我们在点击 `Square` 组件时把它填充为一个 `X`。在 `Square` 内部声明一个名为 `handleClick` 的函数。然后，把 `onClick` 添加到 `Square` 返回的按钮 JSX 元素的 props 中：
 
 ```js {2-4,9}
 function Square({ value }) {
@@ -714,7 +714,7 @@ function Square({ value }) {
 
   return (
     <button
-      className="square"
+      classNameName="square"
       onClick={handleClick}
     >
       {value}
@@ -723,19 +723,19 @@ function Square({ value }) {
 }
 ```
 
-If you click on a square now, you should see a log saying `"clicked!"` in the _Console_ tab at the bottom of the _Browser_ section in CodeSandbox. Clicking the square more than once will log `"clicked!"` again. Repeated console logs with the same message will not create more lines in the console. Instead, you will see an incrementing counter next to your first `"clicked!"` log.
+如果你现在点击一个方块，你应该会在 CodeSandbox 的 _Browser_ 区域底部的 _Console_ 标签页中看到一条日志，显示 `"clicked!"`。多次点击方块会再次记录 `"clicked!"`。相同消息的重复控制台日志不会在控制台中创建更多行，而是会在第一条 `"clicked!"` 日志旁边显示一个递增计数器。
 
 <Note>
 
-If you are following this tutorial using your local development environment, you need to open your browser's Console. For example, if you use the Chrome browser, you can view the Console with the keyboard shortcut **Shift + Ctrl + J** (on Windows/Linux) or **Option + ⌘ + J** (on macOS).
+如果你正在使用本地开发环境跟随本教程，你需要打开浏览器的控制台。例如，如果你使用 Chrome 浏览器，可以使用键盘快捷键 **Shift + Ctrl + J**（Windows/Linux）或 **Option + ⌘ + J**（macOS）打开控制台。
 
 </Note>
 
-As a next step, you want the Square component to "remember" that it got clicked, and fill it with an "X" mark. To "remember" things, components use *state*.
+下一步，你希望 Square 组件“记住”它被点击过，并将其填充为一个 "X" 标记。为了“记住”一些东西，组件会使用 *state*。
 
-React provides a special function called `useState` that you can call from your component to let it "remember" things. Let's store the current value of the `Square` in state, and change it when the `Square` is clicked.
+React 提供了一个名为 `useState` 的特殊函数，你可以在组件中调用它来让组件“记住”一些东西。让我们把 `Square` 的当前值存储到 state 中，并在点击 `Square` 时改变它。
 
-Import `useState` at the top of the file. Remove the `value` prop from the `Square` component. Instead, add a new line at the start of the `Square` that calls `useState`. Have it return a state variable called `value`:
+在文件顶部导入 `useState`。从 `Square` 组件中移除 `value` prop。取而代之的是，在 `Square` 开头新增一行来调用 `useState`。让它返回一个名为 `value` 的 state 变量：
 
 ```js {1,3,4}
 import { useState } from 'react';
@@ -747,9 +747,9 @@ function Square() {
     //...
 ```
 
-`value` stores the value and `setValue` is a function that can be used to change the value. The `null` passed to `useState` is used as the initial value for this state variable, so `value` here starts off equal to `null`.
+`value` 存储值，而 `setValue` 是一个可用于修改该值的函数。传给 `useState` 的 `null` 用作这个 state 变量的初始值，因此这里的 `value` 一开始等于 `null`。
 
-Since the `Square` component no longer accepts props anymore, you'll remove the `value` prop from all nine of the Square components created by the Board component:
+由于 `Square` 组件不再接收 props，你需要从 Board 组件创建的全部九个 Square 组件中移除 `value` prop：
 
 ```js {6-8,11-13,16-18}
 // ...
@@ -776,7 +776,7 @@ export default function Board() {
 }
 ```
 
-Now you'll change `Square` to display an "X" when clicked. Replace the `console.log("clicked!");` event handler with `setValue('X');`. Now your `Square` component looks like this:
+现在你要让 `Square` 在被点击时显示一个 "X"。把 `console.log("clicked!");` 事件处理函数替换为 `setValue('X');`。现在你的 `Square` 组件看起来像这样：
 
 ```js {5}
 function Square() {
@@ -797,13 +797,13 @@ function Square() {
 }
 ```
 
-By calling this `set` function from an `onClick` handler, you're telling React to re-render that `Square` whenever its `<button>` is clicked. After the update, the `Square`'s `value` will be `'X'`, so you'll see the "X" on the game board. Click on any Square, and "X" should show up:
+通过在 `onClick` 处理函数中调用这个 `set` 函数，你是在告诉 React：每当这个 `<button>` 被点击时，就重新渲染那个 `Square`。更新之后，`Square` 的 `value` 将会是 `'X'`，所以你会在游戏棋盘上看到 "X"。点击任意一个方块，"X" 应该就会出现：
 
 ![adding xes to board](../images/tutorial/tictac-adding-x-s.gif)
 
-Each Square has its own state: the `value` stored in each Square is completely independent of the others. When you call a `set` function in a component, React automatically updates the child components inside too.
+每个 Square 都有自己的 state：每个 Square 中存储的 `value` 与其他 Square 完全独立。当你在组件中调用 `set` 函数时，React 会自动更新其中的子组件。
 
-After you've made the above changes, your code will look like this:
+完成上述更改后，你的代码会如下所示：
 
 <Sandpack>
 
@@ -897,37 +897,37 @@ body {
 
 </Sandpack>
 
-### React Developer Tools {/*react-developer-tools*/}
+### React 开发者工具 {/*react-developer-tools*/}
 
-React DevTools let you check the props and the state of your React components. You can find the React DevTools tab at the bottom of the _browser_ section in CodeSandbox:
+React DevTools 可以让你查看 React 组件的 props 和 state。你可以在 CodeSandbox 的 _browser_ 区域底部找到 React DevTools 标签页：
 
 ![React DevTools in CodeSandbox](../images/tutorial/codesandbox-devtools.png)
 
-To inspect a particular component on the screen, use the button in the top left corner of React DevTools:
+要检查屏幕上的某个特定组件，请使用 React DevTools 左上角的按钮：
 
 ![Selecting components on the page with React DevTools](../images/tutorial/devtools-select.gif)
 
 <Note>
 
-For local development, React DevTools is available as a [Chrome](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en), [Firefox](https://addons.mozilla.org/en-US/firefox/addon/react-devtools/), and [Edge](https://microsoftedge.microsoft.com/addons/detail/react-developer-tools/gpphkfbcpidddadnkolkpfckpihlkkil) browser extension. Install it, and the *Components* tab will appear in your browser Developer Tools for sites using React.
+对于本地开发，React DevTools 作为浏览器扩展可用于 [Chrome](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en)、[Firefox](https://addons.mozilla.org/en-US/firefox/addon/react-devtools/) 和 [Edge](https://microsoftedge.microsoft.com/addons/detail/react-developer-tools/gpphkfbcpidddadnkolkpfckpihlkkil)。安装后，使用 React 的网站上，你的浏览器开发者工具中会出现 *Components* 标签页。
 
 </Note>
 
-## Completing the game {/*completing-the-game*/}
+## 完成游戏 {/*completing-the-game*/}
 
-By this point, you have all the basic building blocks for your tic-tac-toe game. To have a complete game, you now need to alternate placing "X"s and "O"s on the board, and you need a way to determine a winner.
+到目前为止，你已经拥有了井字棋游戏所需的所有基本构件。要让游戏完整运行，你现在需要轮流在棋盘上放置 "X" 和 "O"，并且需要一种判断胜者的方法。
 
-### Lifting state up {/*lifting-state-up*/}
+### 提升状态 {/*lifting-state-up*/}
 
-Currently, each `Square` component maintains a part of the game's state. To check for a winner in a tic-tac-toe game, the `Board` would need to somehow know the state of each of the 9 `Square` components.
+目前，每个 `Square` 组件都维护着游戏状态的一部分。要在井字棋游戏中检查胜者，`Board` 需要以某种方式知道 9 个 `Square` 组件中每一个的状态。
 
-How would you approach that? At first, you might guess that the `Board` needs to "ask" each `Square` for that `Square`'s state. Although this approach is technically possible in React, we discourage it because the code becomes difficult to understand, susceptible to bugs, and hard to refactor. Instead, the best approach is to store the game's state in the parent `Board` component instead of in each `Square`. The `Board` component can tell each `Square` what to display by passing a prop, like you did when you passed a number to each Square.
+你会如何处理这个问题呢？一开始，你可能会猜测 `Board` 需要向每个 `Square` “询问”该 `Square` 的状态。虽然这种方法在 React 中技术上是可行的，但我们不建议这样做，因为代码会变得难以理解、容易出错，并且难以重构。相反，最佳做法是将游戏状态存储在父级 `Board` 组件中，而不是分别存储在每个 `Square` 中。`Board` 组件可以像你之前向每个 `Square` 传递数字那样，通过传递 prop 来告诉每个 `Square` 显示什么内容。
 
-**To collect data from multiple children, or to have two child components communicate with each other, declare the shared state in their parent component instead. The parent component can pass that state back down to the children via props. This keeps the child components in sync with each other and with their parent.**
+**要从多个子组件收集数据，或者让两个子组件相互通信，请改为在它们的父组件中声明共享状态。父组件可以通过 props 将该状态再传递给子组件。这样可以让子组件彼此之间以及与父组件保持同步。**
 
-Lifting state into a parent component is common when React components are refactored.
+当 React 组件被重构时，将状态提升到父组件中是很常见的做法。
 
-Let's take this opportunity to try it out. Edit the `Board` component so that it declares a state variable named `squares` that defaults to an array of 9 nulls corresponding to the 9 squares:
+让我们借此机会试一试。编辑 `Board` 组件，使其声明一个名为 `squares` 的状态变量，默认值为一个包含 9 个 `null` 的数组，对应 9 个格子：
 
 ```js {3}
 // ...
@@ -939,13 +939,13 @@ export default function Board() {
 }
 ```
 
-`Array(9).fill(null)` creates an array with nine elements and sets each of them to `null`. The `useState()` call around it declares a `squares` state variable that's initially set to that array. Each entry in the array corresponds to the value of a square. When you fill the board in later, the `squares` array will look like this:
+`Array(9).fill(null)` 会创建一个包含 9 个元素的数组，并将每个元素都设为 `null`。外层的 `useState()` 调用会声明一个 `squares` 状态变量，初始值就是这个数组。数组中的每一项对应一个格子的值。等你之后填充棋盘时，`squares` 数组会像这样：
 
 ```jsx
 ['O', null, 'X', 'X', 'X', 'O', 'O', null, null]
 ```
 
-Now your `Board` component needs to pass the `value` prop down to each `Square` that it renders:
+现在你的 `Board` 组件需要将 `value` prop 传递给它渲染的每个 `Square`：
 
 ```js {6-8,11-13,16-18}
 export default function Board() {
@@ -972,7 +972,7 @@ export default function Board() {
 }
 ```
 
-Next, you'll edit the `Square` component to receive the `value` prop from the Board component. This will require removing the Square component's own stateful tracking of `value` and the button's `onClick` prop:
+接下来，你需要编辑 `Square` 组件，使其接收来自 Board 组件的 `value` prop。这将需要移除 `Square` 组件自身对 `value` 的状态跟踪以及按钮的 `onClick` prop：
 
 ```js {1,2}
 function Square({value}) {
@@ -980,11 +980,11 @@ function Square({value}) {
 }
 ```
 
-At this point you should see an empty tic-tac-toe board:
+此时你应该会看到一个空的井字棋棋盘：
 
-![empty board](../images/tutorial/empty-board.png)
+![空棋盘](../images/tutorial/empty-board.png)
 
-And your code should look like this:
+你的代码应如下所示：
 
 <Sandpack>
 
@@ -1066,11 +1066,11 @@ body {
 
 </Sandpack>
 
-Each Square will now receive a `value` prop that will either be `'X'`, `'O'`, or `null` for empty squares.
+现在每个 `Square` 都会接收到一个 `value` prop，它要么是 `'X'`、`'O'`，要么在空格子时为 `null`。
 
-Next, you need to change what happens when a `Square` is clicked. The `Board` component now maintains which squares are filled. You'll need to create a way for the `Square` to update the `Board`'s state. Since state is private to a component that defines it, you cannot update the `Board`'s state directly from `Square`.
+接下来，你需要改变点击 `Square` 时发生的事情。现在 `Board` 组件负责维护哪些格子已被填充。你需要创建一种方式，让 `Square` 能够更新 `Board` 的状态。由于状态是组件私有的，定义状态的组件才能访问它，因此你不能直接从 `Square` 更新 `Board` 的状态。
 
-Instead, you'll pass down a function from the `Board` component to the `Square` component, and you'll have `Square` call that function when a square is clicked. You'll start with the function that the `Square` component will call when it is clicked. You'll call that function `onSquareClick`:
+相反，你要从 `Board` 组件向 `Square` 组件传递一个函数，并让 `Square` 在被点击时调用这个函数。你将从 `Square` 组件在被点击时要调用的函数开始。你会把这个函数命名为 `onSquareClick`：
 
 ```js {3}
 function Square({ value }) {
@@ -1082,7 +1082,7 @@ function Square({ value }) {
 }
 ```
 
-Next, you'll add the `onSquareClick` function to the `Square` component's props:
+接下来，你要把 `onSquareClick` 函数加入 `Square` 组件的 props 中：
 
 ```js {1}
 function Square({ value, onSquareClick }) {
@@ -1094,7 +1094,7 @@ function Square({ value, onSquareClick }) {
 }
 ```
 
-Now you'll connect the `onSquareClick` prop to a function in the `Board` component that you'll name `handleClick`. To connect `onSquareClick` to `handleClick` you'll pass a function to the `onSquareClick` prop of the first `Square` component:
+现在你要将 `onSquareClick` prop 连接到 `Board` 组件中的一个函数上，我们把它命名为 `handleClick`。为了将 `onSquareClick` 连接到 `handleClick`，你会把一个函数传给第一个 `Square` 组件的 `onSquareClick` prop：
 
 ```js {7}
 export default function Board() {
@@ -1109,7 +1109,7 @@ export default function Board() {
 }
 ```
 
-Lastly, you will define the `handleClick` function inside the Board component to update the `squares` array holding your board's state:
+最后，你要在 Board 组件内部定义 `handleClick` 函数，以更新保存棋盘状态的 `squares` 数组：
 
 ```js {4-8}
 export default function Board() {
@@ -1127,17 +1127,17 @@ export default function Board() {
 }
 ```
 
-The `handleClick` function creates a copy of the `squares` array (`nextSquares`) with the JavaScript `slice()` Array method. Then, `handleClick` updates the `nextSquares` array to add `X` to the first (`[0]` index) square.
+`handleClick` 函数使用 JavaScript 数组方法 `slice()` 创建了 `squares` 数组的副本（`nextSquares`）。然后，`handleClick` 更新 `nextSquares` 数组，把第一个（`[0]` 索引）格子设为 `X`。
 
-Calling the `setSquares` function lets React know the state of the component has changed. This will trigger a re-render of the components that use the `squares` state (`Board`) as well as its child components (the `Square` components that make up the board).
+调用 `setSquares` 函数会让 React 知道组件状态已经发生变化。这会触发使用 `squares` 状态的组件（`Board`）以及它的子组件（构成棋盘的那些 `Square` 组件）重新渲染。
 
 <Note>
 
-JavaScript supports [closures](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures) which means an inner function (e.g. `handleClick`) has access to variables and functions defined in an outer function (e.g. `Board`). The `handleClick` function can read the `squares` state and call the `setSquares` method because they are both defined inside of the `Board` function.
+JavaScript 支持 [闭包](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Closures)，这意味着内部函数（例如 `handleClick`）可以访问在外部函数（例如 `Board`）中定义的变量和函数。`handleClick` 函数能够读取 `squares` 状态并调用 `setSquares` 方法，因为它们都定义在 `Board` 函数内部。
 
 </Note>
 
-Now you can add X's to the board...  but only to the upper left square. Your `handleClick` function is hardcoded to update the index for the upper left square (`0`). Let's update `handleClick` to be able to update any square. Add an argument `i` to the `handleClick` function that takes the index of the square to update:
+现在你可以把 X 放到棋盘上了……不过只能放在左上角。你的 `handleClick` 函数是硬编码成只更新左上角格子（`0`）的。让我们把 `handleClick` 改造成可以更新任意格子。为 `handleClick` 函数添加一个参数 `i`，表示要更新的格子的索引：
 
 ```js {4,6}
 export default function Board() {
@@ -1155,27 +1155,27 @@ export default function Board() {
 }
 ```
 
-Next, you will need to pass that `i` to `handleClick`. You could try to set the `onSquareClick` prop of square to be `handleClick(0)` directly in the JSX like this, but it won't work:
+接下来，你需要把这个 `i` 传给 `handleClick`。你可以尝试在 JSX 中直接把某个格子的 `onSquareClick` prop 写成 `handleClick(0)`，像这样，但它不会工作：
 
 ```jsx
 <Square value={squares[0]} onSquareClick={handleClick(0)} />
 ```
 
-Here is why this doesn't work. The `handleClick(0)` call will be a part of rendering the board component. Because `handleClick(0)` alters the state of the board component by calling `setSquares`, your entire board component will be re-rendered again. But this runs `handleClick(0)` again, leading to an infinite loop:
+原因如下。`handleClick(0)` 调用会成为渲染棋盘组件的一部分。由于 `handleClick(0)` 会通过调用 `setSquares` 改变棋盘组件的状态，你的整个棋盘组件会再次重新渲染。但这又会再次执行 `handleClick(0)`，从而导致死循环：
 
 <ConsoleBlock level="error">
 
-Too many re-renders. React limits the number of renders to prevent an infinite loop.
+重新渲染次数过多。React 限制渲染次数以防止无限循环。
 
 </ConsoleBlock>
 
-Why didn't this problem happen earlier?
+为什么前面没有出现这个问题？
 
-When you were passing `onSquareClick={handleClick}`, you were passing the `handleClick` function down as a prop. You were not calling it! But now you are *calling* that function right away--notice the parentheses in `handleClick(0)`--and that's why it runs too early. You don't *want* to call `handleClick` until the user clicks!
+当你传入 `onSquareClick={handleClick}` 时，你传递的是 `handleClick` 函数本身作为 prop。你并没有调用它！但现在你是在立刻*调用*这个函数——注意 `handleClick(0)` 中的括号——这就是它过早执行的原因。你*不想*在用户点击之前调用 `handleClick`！
 
-You could fix this by creating a function like `handleFirstSquareClick` that calls `handleClick(0)`, a function like `handleSecondSquareClick` that calls `handleClick(1)`, and so on. You would pass (rather than call) these functions down as props like `onSquareClick={handleFirstSquareClick}`. This would solve the infinite loop.
+你可以通过创建一个像 `handleFirstSquareClick` 这样的函数来修复这个问题，这个函数会调用 `handleClick(0)`；再创建一个像 `handleSecondSquareClick` 这样的函数来调用 `handleClick(1)`，以此类推。然后你会把这些函数传递（而不是直接调用）给 props，例如 `onSquareClick={handleFirstSquareClick}`。这样可以解决无限循环的问题。
 
-However, defining nine different functions and giving each of them a name is too verbose. Instead, let's do this:
+不过，定义 9 个不同的函数并为每个函数命名实在太冗长了。相反，我们这样做：
 
 ```js {6}
 export default function Board() {
@@ -1189,9 +1189,9 @@ export default function Board() {
 }
 ```
 
-Notice the new `() =>` syntax. Here, `() => handleClick(0)` is an *arrow function,* which is a shorter way to define functions. When the square is clicked, the code after the `=>` "arrow" will run, calling `handleClick(0)`.
+注意新的 `() =>` 语法。这里的 `() => handleClick(0)` 是一个*箭头函数*，它是定义函数的一种更简洁的方式。当方格被点击时，`=>` “箭头”后面的代码会执行，也就是调用 `handleClick(0)`。
 
-Now you need to update the other eight squares to call `handleClick` from the arrow functions you pass. Make sure that the argument for each call of the `handleClick` corresponds to the index of the correct square:
+现在你需要更新另外 8 个格子，让它们通过你传入的箭头函数来调用 `handleClick`。确保每次调用 `handleClick` 时传入的参数都对应正确格子的索引：
 
 ```js {6-8,11-13,16-18}
 export default function Board() {
@@ -1218,13 +1218,13 @@ export default function Board() {
 };
 ```
 
-Now you can again add X's to any square on the board by clicking on them:
+现在你再次可以通过点击任意格子来放置 X 了：
 
-![filling the board with X](../images/tutorial/tictac-adding-x-s.gif)
+![用 X 填充棋盘](../images/tutorial/tictac-adding-x-s.gif)
 
-But this time all the state management is handled by the `Board` component!
+不过这一次，所有状态管理都由 `Board` 组件处理！
 
-This is what your code should look like:
+你的代码应如下所示：
 
 <Sandpack>
 
@@ -1317,53 +1317,53 @@ body {
 
 </Sandpack>
 
-Now that your state handling is in the `Board` component, the parent `Board` component passes props to the child `Square` components so that they can be displayed correctly. When clicking on a `Square`, the child `Square` component now asks the parent `Board` component to update the state of the board. When the `Board`'s state changes, both the `Board` component and every child `Square` re-renders automatically. Keeping the state of all squares in the `Board` component will allow it to determine the winner in the future.
+现在状态处理已经位于 `Board` 组件中，父级 `Board` 组件会把 props 传递给子级 `Square` 组件，从而使它们能够正确显示。当点击某个 `Square` 时，子级 `Square` 组件现在会请求父级 `Board` 组件更新棋盘状态。当 `Board` 的状态发生变化时，`Board` 组件和每一个子级 `Square` 都会自动重新渲染。将所有格子的状态保存在 `Board` 组件中，未来就能让它判断胜者。
 
-Let's recap what happens when a user clicks the top left square on your board to add an `X` to it:
+让我们回顾一下，当用户点击棋盘左上角格子并向其中添加一个 `X` 时会发生什么：
 
-1. Clicking on the upper left square runs the function that the `button` received as its `onClick` prop from the `Square`. The `Square` component received that function as its `onSquareClick` prop from the `Board`. The `Board` component defined that function directly in the JSX. It calls `handleClick` with an argument of `0`.
-1. `handleClick` uses the argument (`0`) to update the first element of the `squares` array from `null` to `X`.
-1. The `squares` state of the `Board` component was updated, so the `Board` and all of its children re-render. This causes the `value` prop of the `Square` component with index `0` to change from `null` to `X`.
+1. 点击左上角格子会运行 `button` 从 `Square` 接收到的 `onClick` prop 所对应的函数。`Square` 组件从 `Board` 收到了这个函数，作为它的 `onSquareClick` prop。`Board` 组件直接在 JSX 中定义了这个函数。它会以 `0` 作为参数调用 `handleClick`。
+1. `handleClick` 使用这个参数（`0`）将 `squares` 数组中的第一个元素从 `null` 更新为 `X`。
+1. `Board` 组件的 `squares` 状态已更新，因此 `Board` 及其所有子组件都会重新渲染。这会使索引为 `0` 的 `Square` 组件的 `value` prop 从 `null` 变为 `X`。
 
-In the end the user sees that the upper left square has changed from empty to having an `X` after clicking it.
+最终，用户会看到左上角的格子在点击后从空白变成了 `X`。
 
 <Note>
 
-The DOM `<button>` element's `onClick` attribute has a special meaning to React because it is a built-in component. For custom components like Square, the naming is up to you. You could give any name to the `Square`'s `onSquareClick` prop or `Board`'s `handleClick` function, and the code would work the same. In React, it's conventional to use `onSomething` names for props which represent events and `handleSomething` for the function definitions which handle those events.
+DOM `<button>` 元素的 `onClick` 属性对 React 有特殊含义，因为它是内置组件。对于像 `Square` 这样的自定义组件，命名方式由你决定。你可以为 `Square` 的 `onSquareClick` prop 或 `Board` 的 `handleClick` 函数起任何名字，代码都会以相同方式工作。在 React 中，通常会用 `onSomething` 来命名表示事件的 props，用 `handleSomething` 来命名处理这些事件的函数定义。
 
 </Note>
 
-### Why immutability is important {/*why-immutability-is-important*/}
+### 为什么不可变性很重要 {/*why-immutability-is-important*/}
 
-Note how in `handleClick`, you call `.slice()` to create a copy of the `squares` array instead of modifying the existing array. To explain why, we need to discuss immutability and why immutability is important to learn.
+注意在 `handleClick` 中，你调用了 `.slice()` 来创建 `squares` 数组的副本，而不是直接修改现有数组。为了说明原因，我们需要讨论不可变性，以及为什么学习不可变性很重要。
 
-There are generally two approaches to changing data. The first approach is to _mutate_ the data by directly changing the data's values. The second approach is to replace the data with a new copy which has the desired changes. Here is what it would look like if you mutated the `squares` array:
+一般来说，改变数据有两种方法。第一种方法是通过直接改变数据的值来_修改_数据。第二种方法是用一个具有所需更改的新副本替换原始数据。如果你修改 `squares` 数组，效果会像这样：
 
 ```jsx
 const squares = [null, null, null, null, null, null, null, null, null];
 squares[0] = 'X';
-// Now `squares` is ["X", null, null, null, null, null, null, null, null];
+// 现在 `squares` 是 ["X", null, null, null, null, null, null, null, null];
 ```
 
-And here is what it would look like if you changed data without mutating the `squares` array:
+如果你在不修改 `squares` 数组的情况下更改数据，则会像这样：
 
 ```jsx
 const squares = [null, null, null, null, null, null, null, null, null];
 const nextSquares = ['X', null, null, null, null, null, null, null, null];
-// Now `squares` is unchanged, but `nextSquares` first element is 'X' rather than `null`
+// 现在 `squares` 保持不变，但 `nextSquares` 的第一个元素是 'X'，而不是 `null`
 ```
 
-The result is the same but by not mutating (changing the underlying data) directly, you gain several benefits.
+结果是一样的，但如果不直接修改（改变底层数据），你会获得几个好处。
 
-Immutability makes complex features much easier to implement. Later in this tutorial, you will implement a "time travel" feature that lets you review the game's history and "jump back" to past moves. This functionality isn't specific to games--an ability to undo and redo certain actions is a common requirement for apps. Avoiding direct data mutation lets you keep previous versions of the data intact, and reuse them later.
+不可变性能让复杂功能更容易实现。在本教程后面，你会实现一个“时间旅行”功能，让你查看游戏历史并“跳回”之前的步骤。这个功能并不只是游戏才需要——能够撤销和重做某些操作，是很多应用的常见需求。避免直接修改数据可以让你保留数据的先前版本，并在以后重复使用它们。
 
-There is also another benefit of immutability. By default, all child components re-render automatically when the state of a parent component changes. This includes even the child components that weren't affected by the change. Although re-rendering is not by itself noticeable to the user (you shouldn't actively try to avoid it!), you might want to skip re-rendering a part of the tree that clearly wasn't affected by it for performance reasons. Immutability makes it very cheap for components to compare whether their data has changed or not. You can learn more about how React chooses when to re-render a component in [the `memo` API reference](/reference/react/memo).
+不可变性还有另一个好处。默认情况下，当父组件状态发生变化时，所有子组件都会自动重新渲染，即使是那些没有受到变化影响的子组件也是如此。虽然重新渲染本身对用户通常并不明显（你不应该刻意去避免它！），但出于性能原因，你可能希望跳过树中明显未受影响的某一部分重新渲染。不可变性使组件能够非常便宜地比较其数据是否发生了变化。你可以在 [memo API 参考](/reference/react/memo) 中了解更多关于 React 如何选择何时重新渲染组件的信息。
 
-### Taking turns {/*taking-turns*/}
+### 轮流落子 {/*taking-turns*/}
 
-It's now time to fix a major defect in this tic-tac-toe game: the "O"s cannot be marked on the board.
+现在是时候修复这个井字棋游戏中的一个重大缺陷了：无法在棋盘上标记 "O"。
 
-You'll set the first move to be "X" by default. Let's keep track of this by adding another piece of state to the Board component:
+你会默认让第一步是 "X"。让我们通过向 Board 组件添加另一条状态来记录这一点：
 
 ```js {2}
 function Board() {
@@ -1374,7 +1374,7 @@ function Board() {
 }
 ```
 
-Each time a player moves, `xIsNext` (a boolean) will be flipped to determine which player goes next and the game's state will be saved. You'll update the `Board`'s `handleClick` function to flip the value of `xIsNext`:
+每次玩家落子时，`xIsNext`（一个布尔值）都会翻转，以决定下一位玩家是谁，同时游戏状态也会被保存。你将更新 `Board` 的 `handleClick` 函数来翻转 `xIsNext` 的值：
 
 ```js {7,8,9,10,11,13}
 export default function Board() {
@@ -1398,15 +1398,15 @@ export default function Board() {
 }
 ```
 
-Now, as you click on different squares, they will alternate between `X` and `O`, as they should!
+现在，当你点击不同的格子时，它们会按照预期交替显示 `X` 和 `O`！
 
-But wait, there's a problem. Try clicking on the same square multiple times:
+不过等等，还有一个问题。试着多次点击同一个格子：
 
-![O overwriting an X](../images/tutorial/o-replaces-x.gif)
+![O 覆盖了 X](../images/tutorial/o-replaces-x.gif)
 
-The `X` is overwritten by an `O`! While this would add a very interesting twist to the game, we're going to stick to the original rules for now.
+`X` 被 `O` 覆盖了！虽然这会给游戏带来一个非常有趣的变化，但我们暂时还是保持原始规则。
 
-When you mark a square with an `X` or an `O` you aren't first checking to see if the square already has an `X` or `O` value. You can fix this by *returning early*. You'll check to see if the square already has an `X` or an `O`. If the square is already filled, you will `return` in the `handleClick` function early--before it tries to update the board state.
+当你用 `X` 或 `O` 标记一个格子时，你并没有先检查该格子是否已经有 `X` 或 `O` 值。你可以通过*提前返回*来修复这个问题。你会先检查该格子是否已经有 `X` 或 `O`。如果该格子已经被填满，你就会在 `handleClick` 函数中提前 `return`——在它尝试更新棋盘状态之前。
 
 ```js {2,3,4}
 function handleClick(i) {
@@ -1418,7 +1418,7 @@ function handleClick(i) {
 }
 ```
 
-Now you can only add `X`'s or `O`'s to empty squares! Here is what your code should look like at this point:
+现在你只能在空格子里添加 `X` 或 `O` 了！以下是此时你的代码应有的样子：
 
 <Sandpack>
 
@@ -1520,9 +1520,9 @@ body {
 
 </Sandpack>
 
-### Declaring a winner {/*declaring-a-winner*/}
+### 宣布胜者 {/*declaring-a-winner*/}
 
-Now that the players can take turns, you'll want to show when the game is won and there are no more turns to make. To do this you'll add a helper function called `calculateWinner` that takes an array of 9 squares, checks for a winner and returns `'X'`, `'O'`, or `null` as appropriate. Don't worry too much about the `calculateWinner` function; it's not specific to React:
+既然玩家可以轮流下棋了，你就需要在游戏获胜、且不再有可落子的位置时显示结果。为此，你会添加一个名为 `calculateWinner` 的辅助函数，它接收一个由 9 个格子组成的数组，检查是否有胜者，并在适当时返回 `'X'`、`'O'` 或 `null`。不用太担心 `calculateWinner` 函数本身；它并不是 React 特有的：
 
 ```js src/App.js
 export default function Board() {
@@ -1552,11 +1552,11 @@ function calculateWinner(squares) {
 
 <Note>
 
-It does not matter whether you define `calculateWinner` before or after the `Board`. Let's put it at the end so that you don't have to scroll past it every time you edit your components.
+`calculateWinner` 定义在 `Board` 前面还是后面都无所谓。我们把它放在末尾，这样你每次编辑组件时就不必总是滚动越过它。
 
 </Note>
 
-You will call `calculateWinner(squares)` in the `Board` component's `handleClick` function to check if a player has won. You can perform this check at the same time you check if a user has clicked a square that already has an `X` or an `O`. We'd like to return early in both cases:
+你会在 `Board` 组件的 `handleClick` 函数中调用 `calculateWinner(squares)` 来检查是否已有玩家获胜。你可以在检查用户是否点击了一个已经有 `X` 或 `O` 的格子时，同时进行这个检查。我们希望在这两种情况下都提前返回：
 
 ```js {2}
 function handleClick(i) {
@@ -1568,7 +1568,7 @@ function handleClick(i) {
 }
 ```
 
-To let the players know when the game is over, you can display text such as "Winner: X" or "Winner: O". To do that you'll add a `status` section to the `Board` component. The status will display the winner if the game is over and if the game is ongoing you'll display which player's turn is next:
+为了让玩家知道游戏结束了，你可以显示诸如 “Winner: X” 或 “Winner: O” 这样的文本。为此，你将在 `Board` 组件中添加一个 `status` 区域。如果游戏结束，它将显示胜者；如果游戏仍在进行中，则显示下一位玩家是谁：
 
 ```js {3-9,13}
 export default function Board() {
@@ -1590,7 +1590,7 @@ export default function Board() {
 }
 ```
 
-Congratulations! You now have a working tic-tac-toe game. And you've just learned the basics of React too. So _you_ are the real winner here. Here is what the code should look like:
+恭喜！你现在已经有了一个可运行的井字棋游戏。你也刚刚学到了 React 的基础知识。所以真正的赢家是你。以下是代码应有的样子：
 
 <Sandpack>
 
@@ -1721,37 +1721,37 @@ body {
 
 </Sandpack>
 
-## Adding time travel {/*adding-time-travel*/}
+## 添加时间旅行 {/*adding-time-travel*/}
 
-As a final exercise, let's make it possible to "go back in time" to the previous moves in the game.
+作为最后一个练习，让我们实现能够“回到过去”，查看游戏之前的落子过程。
 
-### Storing a history of moves {/*storing-a-history-of-moves*/}
+### 存储落子历史 {/*storing-a-history-of-moves*/}
 
-If you mutated the `squares` array, implementing time travel would be very difficult.
+如果你修改了 `squares` 数组，那么实现时间旅行将会非常困难。
 
-However, you used `slice()` to create a new copy of the `squares` array after every move, and treated it as immutable. This will allow you to store every past version of the `squares` array, and navigate between the turns that have already happened.
+不过，你在每一步之后都使用了 `slice()` 来创建 `squares` 数组的新副本，并将其视为不可变数据。这将允许你存储 `squares` 数组每个过去版本，并在已经发生过的回合之间来回切换。
 
-You'll store the past `squares` arrays in another array called `history`, which you'll store as a new state variable. The `history` array represents all board states, from the first to the last move, and has a shape like this:
+你将把过去的 `squares` 数组存储在另一个名为 `history` 的数组中，并将其作为新的状态变量来保存。`history` 数组表示从第一步到最后一步的所有棋盘状态，其结构如下：
 
 ```jsx
 [
-  // Before first move
+  // 第一步之前
   [null, null, null, null, null, null, null, null, null],
-  // After first move
+  // 第一步之后
   [null, null, null, null, 'X', null, null, null, null],
-  // After second move
+  // 第二步之后
   [null, null, null, null, 'X', null, null, null, 'O'],
   // ...
 ]
 ```
 
-### Lifting state up, again {/*lifting-state-up-again*/}
+### 再次提升状态 {/*lifting-state-up-again*/}
 
-You will now write a new top-level component called `Game` to display a list of past moves. That's where you will place the `history` state that contains the entire game history.
+你现在将编写一个新的顶层组件，名为 `Game`，用于显示过去落子的列表。你会把包含整个游戏历史的 `history` 状态放在这里。
 
-Placing the `history` state into the `Game` component will let you remove the `squares` state from its child `Board` component. Just like you "lifted state up" from the `Square` component into the `Board` component, you will now lift it up from the `Board` into the top-level `Game` component. This gives the `Game` component full control over the `Board`'s data and lets it instruct the `Board` to render previous turns from the `history`.
+将 `history` 状态放到 `Game` 组件中后，你就可以从它的子组件 `Board` 中移除 `squares` 状态。就像你之前把状态从 `Square` 组件“提升”到 `Board` 组件一样，现在你要把它从 `Board` 再提升到顶层 `Game` 组件。这让 `Game` 组件可以完全控制 `Board` 的数据，并让它指示 `Board` 根据 `history` 渲染之前的回合。
 
-First, add a `Game` component with `export default`. Have it render the `Board` component and some markup:
+首先，添加一个带有 `export default` 的 `Game` 组件。让它渲染 `Board` 组件和一些标记：
 
 ```js {1,5-16}
 function Board() {
@@ -1772,9 +1772,9 @@ export default function Game() {
 }
 ```
 
-Note that you are removing the `export default` keywords before the `function Board() {` declaration and adding them before the `function Game() {` declaration. This tells your `index.js` file to use the `Game` component as the top-level component instead of your `Board` component. The additional `div`s returned by the `Game` component are making room for the game information you'll add to the board later.
+注意，你正在把 `function Board() {` 声明前面的 `export default` 关键字移除，并把它加到 `function Game() {` 声明前面。这会告诉你的 `index.js` 文件使用 `Game` 组件作为顶层组件，而不是 `Board` 组件。`Game` 组件返回的额外 `div` 是为之后你将添加到棋盘的游戏信息留出的空间。
 
-Add some state to the `Game` component to track which player is next and the history of moves:
+向 `Game` 组件添加一些状态，用来记录下一位玩家是谁，以及落子历史：
 
 ```js {2-3}
 export default function Game() {
@@ -1783,9 +1783,9 @@ export default function Game() {
   // ...
 ```
 
-Notice how `[Array(9).fill(null)]` is an array with a single item, which itself is an array of 9 `null`s.
+注意 `[Array(9).fill(null)]` 是一个只包含单个项的数组，而这个项本身又是一个包含 9 个 `null` 的数组。
 
-To render the squares for the current move, you'll want to read the last squares array from the `history`. You don't need `useState` for this--you already have enough information to calculate it during rendering:
+为了渲染当前回合的棋盘格，你需要从 `history` 中读取最后一个 `squares` 数组。这里不需要 `useState`——你已经拥有足够的信息，可以在渲染时计算出来：
 
 ```js {4}
 export default function Game() {
@@ -1795,7 +1795,7 @@ export default function Game() {
   // ...
 ```
 
-Next, create a `handlePlay` function inside the `Game` component that will be called by the `Board` component to update the game. Pass `xIsNext`, `currentSquares` and `handlePlay` as props to the `Board` component:
+接下来，在 `Game` 组件内部创建一个 `handlePlay` 函数，它将由 `Board` 组件调用来更新游戏。将 `xIsNext`、`currentSquares` 和 `handlePlay` 作为 props 传给 `Board` 组件：
 
 ```js {6-8,13}
 export default function Game() {
@@ -1816,7 +1816,7 @@ export default function Game() {
 }
 ```
 
-Let's make the `Board` component fully controlled by the props it receives. Change the `Board` component to take three props: `xIsNext`, `squares`, and a new `onPlay` function that `Board` can call with the updated squares array when a player makes a move. Next, remove the first two lines of the `Board` function that call `useState`:
+让 `Board` 组件完全由它接收到的 props 控制。将 `Board` 组件改为接收三个 props：`xIsNext`、`squares`，以及一个新的 `onPlay` 函数；当玩家落子时，`Board` 可以用更新后的 `squares` 数组调用这个函数。接着，移除 `Board` 函数中调用 `useState` 的前两行：
 
 ```js {1}
 function Board({ xIsNext, squares, onPlay }) {
@@ -1827,7 +1827,7 @@ function Board({ xIsNext, squares, onPlay }) {
 }
 ```
 
-Now replace the `setSquares` and `setXIsNext` calls in `handleClick` in the `Board` component with a single call to your new `onPlay` function so the `Game` component can update the `Board` when the user clicks a square:
+现在，把 `Board` 组件中 `handleClick` 里的 `setSquares` 和 `setXIsNext` 调用替换为一次对新 `onPlay` 函数的调用，这样当用户点击某个方格时，`Game` 组件就能更新 `Board`：
 
 ```js {12}
 function Board({ xIsNext, squares, onPlay }) {
@@ -1847,11 +1847,11 @@ function Board({ xIsNext, squares, onPlay }) {
 }
 ```
 
-The `Board` component is fully controlled by the props passed to it by the `Game` component. You need to implement the `handlePlay` function in the `Game` component to get the game working again.
+`Board` 组件现在完全由 `Game` 组件传入的 props 控制。你需要在 `Game` 组件中实现 `handlePlay` 函数，让游戏重新工作起来。
 
-What should `handlePlay` do when called? Remember that Board used to call `setSquares` with an updated array; now it passes the updated `squares` array to `onPlay`.
+那么 `handlePlay` 被调用时应该做什么？记住，之前 `Board` 会用更新后的数组调用 `setSquares`；现在它把更新后的 `squares` 数组传给 `onPlay`。
 
-The `handlePlay` function needs to update `Game`'s state to trigger a re-render, but you don't have a `setSquares` function that you can call any more--you're now using the `history` state variable to store this information. You'll want to update `history` by appending the updated `squares` array as a new history entry. You also want to toggle `xIsNext`, just as Board used to do:
+`handlePlay` 函数需要更新 `Game` 的状态以触发重新渲染，但你已经没有可以调用的 `setSquares` 函数了——现在你使用的是 `history` 状态变量来存储这些信息。你需要通过把更新后的 `squares` 数组作为一个新的历史条目追加到 `history` 中来更新它。你还需要像 `Board` 以前那样切换 `xIsNext`：
 
 ```js {4-5}
 export default function Game() {
@@ -1864,11 +1864,11 @@ export default function Game() {
 }
 ```
 
-Here, `[...history, nextSquares]` creates a new array that contains all the items in `history`, followed by `nextSquares`. (You can read the `...history` [*spread syntax*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax) as "enumerate all the items in `history`".)
+这里，`[...history, nextSquares]` 创建了一个新数组，其中包含 `history` 中的所有项，后面再跟上 `nextSquares`。（你可以把 `...history` [*展开语法*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax) 理解为“枚举 `history` 中的所有项”。）
 
-For example, if `history` is `[[null,null,null], ["X",null,null]]` and `nextSquares` is `["X",null,"O"]`, then the new `[...history, nextSquares]` array will be `[[null,null,null], ["X",null,null], ["X",null,"O"]]`.
+例如，如果 `history` 是 `[[null,null,null], ["X",null,null]]`，而 `nextSquares` 是 `["X",null,"O"]`，那么新的 `[...history, nextSquares]` 数组将是 `[[null,null,null], ["X",null,null], ["X",null,"O"]]`。
 
-At this point, you've moved the state to live in the `Game` component, and the UI should be fully working, just as it was before the refactor. Here is what the code should look like at this point:
+到这里，你已经把状态移动到 `Game` 组件中，UI 应该能够完全正常工作，就像重构之前一样。下面是此时代码应有的样子：
 
 <Sandpack>
 
@@ -2017,19 +2017,19 @@ body {
 
 </Sandpack>
 
-### Showing the past moves {/*showing-the-past-moves*/}
+### 显示过去的落子 {/*showing-the-past-moves*/}
 
-Since you are recording the tic-tac-toe game's history, you can now display a list of past moves to the player.
+既然你已经记录了井字棋游戏的历史，现在你可以向玩家显示过去落子的列表了。
 
-React elements like `<button>` are regular JavaScript objects; you can pass them around in your application. To render multiple items in React, you can use an array of React elements.
+像 `<button>` 这样的 React 元素本质上就是普通的 JavaScript 对象；你可以在应用中传递它们。要在 React 中渲染多个项目，你可以使用一个 React 元素数组。
 
-You already have an array of `history` moves in state, so now you need to transform it to an array of React elements. In JavaScript, to transform one array into another, you can use the [array `map` method:](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map)
+你已经在状态中有一个 `history` 落子数组了，现在你需要把它转换成一个 React 元素数组。在 JavaScript 中，要把一个数组转换成另一个数组，你可以使用 [数组 `map` 方法：](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map)
 
 ```jsx
 [1, 2, 3].map((x) => x * 2) // [2, 4, 6]
 ```
 
-You'll use `map` to transform your `history` of moves into React elements representing buttons on the screen, and display a list of buttons to "jump" to past moves. Let's `map` over the `history` in the Game component:
+你将使用 `map` 把你的落子 `history` 转换为表示屏幕上按钮的 React 元素，并显示一个按钮列表，用来“跳转”到过去的落子。让我们在 Game 组件中对 `history` 使用 `map`：
 
 ```js {11-13,15-27,35}
 export default function Game() {
@@ -2073,13 +2073,13 @@ export default function Game() {
 }
 ```
 
-You can see what your code should look like below. Note that you should see an error in the developer tools console that says:
+你可以在下面看到你的代码应是什么样子。注意，你应该会在开发者工具控制台中看到一个错误：
 
 <ConsoleBlock level="warning">
-Warning: Each child in an array or iterator should have a unique "key" prop. Check the render method of &#96;Game&#96;.
+警告：数组或迭代器中的每个子元素都应该有一个唯一的 "key" prop。请检查 `Game` 的 render 方法。
 </ConsoleBlock>
 
-You'll fix this error in the next section.
+你会在下一节修复这个错误。
 
 <Sandpack>
 
@@ -2247,24 +2247,24 @@ body {
 
 </Sandpack>
 
-As you iterate through the `history` array inside the function you passed to `map`, the `squares` argument goes through each element of `history`, and the `move` argument goes through each array index: `0`, `1`, `2`, …. (In most cases, you'd need the actual array elements, but to render a list of moves you will only need indexes.)
+在你迭代传给 `map` 的函数里的 `history` 数组时，`squares` 参数会依次遍历 `history` 的每个元素，而 `move` 参数会遍历每个数组索引：`0`、`1`、`2`，……（在大多数情况下，你需要的是实际数组元素，但要渲染一个落子列表时，你只需要索引。）
 
-For each move in the tic-tac-toe game's history, you create a list item `<li>` which contains a button `<button>`. The button has an `onClick` handler which calls a function called `jumpTo` (that you haven't implemented yet).
+对于井字棋游戏历史中的每一步，你都会创建一个列表项 `<li>`，其中包含一个按钮 `<button>`。按钮带有一个 `onClick` 处理函数，它会调用一个名为 `jumpTo` 的函数（你还没有实现它）。
 
-For now, you should see a list of the moves that occurred in the game and an error in the developer tools console. Let's discuss what the "key" error means.
+现在，你应该会看到游戏中发生过的落子列表，以及开发者工具控制台中的一个错误。下面来讨论一下这个 “key” 错误是什么意思。
 
-### Picking a key {/*picking-a-key*/}
+### 选择 key {/*picking-a-key*/}
 
-When you render a list, React stores some information about each rendered list item. When you update a list, React needs to determine what has changed. You could have added, removed, re-arranged, or updated the list's items.
+当你渲染一个列表时，React 会保存每个已渲染列表项的一些信息。当你更新一个列表时，React 需要确定发生了什么变化。你可能添加、删除、重新排列或更新了列表中的项目。
 
-Imagine transitioning from
+想象一下从
 
 ```html
 <li>Alexa: 7 tasks left</li>
 <li>Ben: 5 tasks left</li>
 ```
 
-to
+变成
 
 ```html
 <li>Ben: 9 tasks left</li>
@@ -2272,7 +2272,7 @@ to
 <li>Alexa: 5 tasks left</li>
 ```
 
-In addition to the updated counts, a human reading this would probably say that you swapped Alexa and Ben's ordering and inserted Claudia between Alexa and Ben. However, React is a computer program and does not know what you intended, so you need to specify a _key_ property for each list item to differentiate each list item from its siblings. If your data was from a database, Alexa, Ben, and Claudia's database IDs could be used as keys.
+除了更新后的数量，一个人读到这里大概会认为你交换了 Alexa 和 Ben 的顺序，并在 Alexa 和 Ben 之间插入了 Claudia。然而，React 是一个计算机程序，它不知道你的意图，所以你需要为每个列表项指定一个 _key_ 属性，以便区分它和其他兄弟项。如果你的数据来自数据库，那么 Alexa、Ben 和 Claudia 的数据库 ID 可以作为 key。
 
 ```js {1}
 <li key={user.id}>
@@ -2280,23 +2280,23 @@ In addition to the updated counts, a human reading this would probably say that 
 </li>
 ```
 
-When a list is re-rendered, React takes each list item's key and searches the previous list's items for a matching key. If the current list has a key that didn't exist before, React creates a component. If the current list is missing a key that existed in the previous list, React destroys the previous component. If two keys match, the corresponding component is moved.
+当一个列表重新渲染时，React 会取出每个列表项的 key，并在之前的列表项中查找匹配的 key。如果当前列表中的某个 key 之前不存在，React 就会创建一个组件。如果当前列表缺少一个之前存在的 key，React 就会销毁之前的组件。如果两个 key 匹配，对应的组件就会被移动。
 
-Keys tell React about the identity of each component, which allows React to maintain state between re-renders. If a component's key changes, the component will be destroyed and re-created with a new state.
+key 告诉 React 每个组件的身份，这使 React 能够在重新渲染之间保持状态。如果一个组件的 key 改变了，组件将被销毁并使用新的状态重新创建。
 
-`key` is a special and reserved property in React. When an element is created, React extracts the `key` property and stores the key directly on the returned element. Even though `key` may look like it is passed as props, React automatically uses `key` to decide which components to update. There's no way for a component to ask what `key` its parent specified.
+`key` 是 React 中一个特殊且保留的属性。当元素被创建时，React 会提取 `key` 属性并将 key 直接存储在返回的元素上。虽然 `key` 看起来像是作为 props 传入的，但 React 会自动使用 `key` 来决定更新哪些组件。组件没有办法知道其父组件指定了什么 `key`。
 
-**It's strongly recommended that you assign proper keys whenever you build dynamic lists.** If you don't have an appropriate key, you may want to consider restructuring your data so that you do.
+**强烈建议你在构建动态列表时始终分配合适的 key。** 如果你没有合适的 key，可能需要考虑重构你的数据结构，使其适合这样做。
 
-If no key is specified, React will report an error and use the array index as a key by default. Using the array index as a key is problematic when trying to re-order a list's items or inserting/removing list items. Explicitly passing `key={i}` silences the error but has the same problems as array indices and is not recommended in most cases.
+如果没有指定 key，React 会报错，并默认使用数组索引作为 key。使用数组索引作为 key 在重新排序列表项或插入/删除列表项时会有问题。显式传入 `key={i}` 可以消除错误，但它和数组索引有同样的问题，在大多数情况下并不推荐。
 
-Keys do not need to be globally unique; they only need to be unique between components and their siblings.
+key 不需要全局唯一；它们只需要在组件及其兄弟组件之间唯一即可。
 
-### Implementing time travel {/*implementing-time-travel*/}
+### 实现时间旅行 {/*implementing-time-travel*/}
 
-In the tic-tac-toe game's history, each past move has a unique ID associated with it: it's the sequential number of the move. Moves will never be re-ordered, deleted, or inserted in the middle, so it's safe to use the move index as a key.
+在井字棋游戏的历史中，每一次过去的落子都有一个唯一的 ID 与之关联：也就是该落子的顺序编号。落子永远不会被重新排序、删除或插入到中间，因此把落子索引用作 key 是安全的。
 
-In the `Game` function, you can add the key as `<li key={move}>`, and if you reload the rendered game, React's "key" error should disappear:
+在 `Game` 函数中，你可以把 key 添加为 `<li key={move}>`，如果你重新加载渲染后的游戏，React 的 “key” 错误应该就会消失：
 
 ```js {4}
 const moves = history.map((squares, move) => {
@@ -2476,7 +2476,7 @@ body {
 
 </Sandpack>
 
-Before you can implement `jumpTo`, you need the `Game` component to keep track of which step the user is currently viewing. To do this, define a new state variable called `currentMove`, defaulting to `0`:
+在实现 `jumpTo` 之前，你需要让 `Game` 组件跟踪用户当前正在查看哪一步。为此，定义一个新的状态变量 `currentMove`，默认值为 `0`：
 
 ```js {4}
 export default function Game() {
@@ -2488,7 +2488,7 @@ export default function Game() {
 }
 ```
 
-Next, update the `jumpTo` function inside `Game` to update that `currentMove`. You'll also set `xIsNext` to `true` if the number that you're changing `currentMove` to is even.
+接下来，更新 `Game` 内部的 `jumpTo` 函数来更新这个 `currentMove`。如果你要把 `currentMove` 改成的数字是偶数，你还需要把 `xIsNext` 设为 `true`。
 
 ```js {4-5}
 export default function Game() {
@@ -2501,10 +2501,10 @@ export default function Game() {
 }
 ```
 
-You will now make two changes to the `Game`'s `handlePlay` function which is called when you click on a square.
+现在你将对 `Game` 的 `handlePlay` 函数做两个修改，它会在你点击某个方格时被调用。
 
-- If you "go back in time" and then make a new move from that point, you only want to keep the history up to that point. Instead of adding `nextSquares` after all items (`...` spread syntax) in `history`, you'll add it after all items in `history.slice(0, currentMove + 1)` so that you're only keeping that portion of the old history.
-- Each time a move is made, you need to update `currentMove` to point to the latest history entry.
+- 如果你“回到过去”之后又从那个时点下了一步棋，你只想保留那个时点之前的历史。因此，你不会把 `nextSquares` 加到 `history` 里所有项（`...` 展开语法）之后，而是把它加到 `history.slice(0, currentMove + 1)` 的所有项之后，这样你只会保留旧历史的那一部分。
+- 每次走一步棋，你都需要把 `currentMove` 更新到最新的历史条目。
 
 ```js {2-4}
 function handlePlay(nextSquares) {
@@ -2515,7 +2515,7 @@ function handlePlay(nextSquares) {
 }
 ```
 
-Finally, you will modify the `Game` component to render the currently selected move, instead of always rendering the final move:
+最后，你将修改 `Game` 组件，不再总是渲染最终落子，而是渲染当前选中的那一步：
 
 ```js {5}
 export default function Game() {
@@ -2528,7 +2528,7 @@ export default function Game() {
 }
 ```
 
-If you click on any step in the game's history, the tic-tac-toe board should immediately update to show what the board looked like after that step occurred.
+如果你点击游戏历史中的任一步，井字棋棋盘应该会立即更新，显示那一步之后棋盘的样子。
 
 <Sandpack>
 
@@ -2699,11 +2699,11 @@ body {
 
 </Sandpack>
 
-### Final cleanup {/*final-cleanup*/}
+### 最后整理 {/*final-cleanup*/}
 
-If you look at the code very closely, you may notice that `xIsNext === true` when `currentMove` is even and `xIsNext === false` when `currentMove` is odd. In other words, if you know the value of `currentMove`, then you can always figure out what `xIsNext` should be.
+如果你仔细查看代码，你可能会注意到：当 `currentMove` 为偶数时，`xIsNext === true`，当 `currentMove` 为奇数时，`xIsNext === false`。换句话说，如果你知道 `currentMove` 的值，就总能推断出 `xIsNext` 应该是什么。
 
-There's no reason for you to store both of these in state. In fact, always try to avoid redundant state. Simplifying what you store in state reduces bugs and makes your code easier to understand. Change `Game` so that it doesn't store `xIsNext` as a separate state variable and instead figures it out based on the `currentMove`:
+你没有理由把这两个都存进状态里。事实上，你应该尽量避免冗余状态。简化你存入状态中的内容可以减少 bug，并让代码更容易理解。把 `Game` 改成不再把 `xIsNext` 作为单独的状态变量存储，而是根据 `currentMove` 来计算它：
 
 ```js {4,11,15}
 export default function Game() {
@@ -2725,20 +2725,20 @@ export default function Game() {
 }
 ```
 
-You no longer need the `xIsNext` state declaration or the calls to `setXIsNext`. Now, there's no chance for `xIsNext` to get out of sync with `currentMove`, even if you make a mistake while coding the components.
+你不再需要 `xIsNext` 的状态声明，也不再需要调用 `setXIsNext`。现在，`xIsNext` 再也不会和 `currentMove` 不同步了，即使你在编写组件时犯了错也是如此。
 
-### Wrapping up {/*wrapping-up*/}
+### 总结 {/*wrapping-up*/}
 
-Congratulations! You've created a tic-tac-toe game that:
+恭喜你！你已经创建了一个井字棋游戏，它：
 
-- Lets you play tic-tac-toe,
-- Indicates when a player has won the game,
-- Stores a game's history as a game progresses,
-- Allows players to review a game's history and see previous versions of a game's board.
+- 允许你玩井字棋，
+- 在某位玩家获胜时进行提示，
+- 在游戏进行过程中保存游戏历史，
+- 允许玩家回顾游戏历史并查看棋盘的先前版本。
 
-Nice work! We hope you now feel like you have a decent grasp of how React works.
+干得漂亮！我们希望你现在已经对 React 的工作方式有了不错的理解。
 
-Check out the final result here:
+在这里查看最终结果：
 
 <Sandpack>
 
@@ -2907,12 +2907,12 @@ body {
 
 </Sandpack>
 
-If you have extra time or want to practice your new React skills, here are some ideas for improvements that you could make to the tic-tac-toe game, listed in order of increasing difficulty:
+如果你有额外时间，或者想练习新的 React 技能，下面是一些你可以对井字棋游戏做的改进想法，按难度递增排列：
 
-1. For the current move only, show "You are at move #..." instead of a button.
-1. Rewrite `Board` to use two loops to make the squares instead of hardcoding them.
-1. Add a toggle button that lets you sort the moves in either ascending or descending order.
-1. When someone wins, highlight the three squares that caused the win (and when no one wins, display a message about the result being a draw).
-1. Display the location for each move in the format (row, col) in the move history list.
+1. 仅对当前步骤显示“你正在第 # 步...”而不是按钮。
+1. 重写 `Board`，使用两个循环来生成方格，而不是手动硬编码。
+1. 添加一个切换按钮，让落子列表可以按升序或降序排序。
+1. 当有人获胜时，突出显示导致胜利的三个方格（当没人获胜时，显示平局结果的消息）。
+1. 在落子历史列表中，以（行，列）的格式显示每一步的位置。
 
-Throughout this tutorial, you've touched on React concepts including elements, components, props, and state. Now that you've seen how these concepts work when building a game, check out [Thinking in React](/learn/thinking-in-react) to see how the same React concepts work when building an app's UI.
+在整个教程中，你接触了 React 的一些概念，包括元素、组件、props 和 state。现在你已经看到这些概念在构建一个游戏时是如何工作的，可以继续查看 [用 React 思考](/learn/thinking-in-react)，了解这些 React 概念在构建应用 UI 时是如何运作的。

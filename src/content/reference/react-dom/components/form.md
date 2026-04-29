@@ -4,12 +4,12 @@ title: "<form>"
 
 <Intro>
 
-The [built-in browser `<form>` component](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form) lets you create interactive controls for submitting information.
+内置的浏览器 `<form>` 组件（[built-in browser `<form>` component](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form)）可让你创建交互式控件，用于提交信息。
 
 ```js
 <form action={search}>
     <input name="query" />
-    <button type="submit">Search</button>
+    <button type="submit">搜索</button>
 </form>
 ```
 
@@ -19,38 +19,38 @@ The [built-in browser `<form>` component](https://developer.mozilla.org/en-US/do
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `<form>` {/*form*/}
 
-To create interactive controls for submitting information, render the [built-in browser `<form>` component](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form).
+要创建用于提交信息的交互式控件，请渲染内置的浏览器 `<form>` 组件（[built-in browser `<form>` component](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form)）。
 
 ```js
 <form action={search}>
     <input name="query" />
-    <button type="submit">Search</button>
+    <button type="submit">搜索</button>
 </form>
 ```
 
-[See more examples below.](#usage)
+[查看更多示例。](#usage)
 
-#### Props {/*props*/}
+#### 属性 {/*props*/}
 
-`<form>` supports all [common element props.](/reference/react-dom/components/common#common-props)
+`<form>` 支持所有[通用元素属性。](/reference/react-dom/components/common#common-props)
 
-[`action`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#action): a URL or function. When a URL is passed to `action` the form will behave like the HTML form component. When a function is passed to `action` the function will handle the form submission in a Transition following [the Action prop pattern](/reference/react/useTransition#exposing-action-props-from-components). The function passed to `action` may be async and will be called with a single argument containing the [form data](https://developer.mozilla.org/en-US/docs/Web/API/FormData) of the submitted form. The `action` prop can be overridden by a `formAction` attribute on a `<button>`, `<input type="submit">`, or `<input type="image">` component.
+[`action`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#action)：一个 URL 或函数。当将 URL 传递给 `action` 时，表单将表现得像 HTML 表单组件一样。当将函数传递给 `action` 时，该函数将在一个 Transition 中处理表单提交，遵循[Action 属性模式](/reference/react/useTransition#exposing-action-props-from-components)。传递给 `action` 的函数可以是异步的，并且会以单个参数被调用，该参数包含已提交表单的[表单数据](https://developer.mozilla.org/en-US/docs/Web/API/FormData)。`action` 属性可以被 `<button>`、`<input type="submit">` 或 `<input type="image">` 组件上的 `formAction` 属性覆盖。
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-* When a function is passed to `action` or `formAction` the HTTP method will be POST regardless of value of the `method` prop.
+* 当函数被传递给 `action` 或 `formAction` 时，无论 `method` 属性的值是什么，HTTP 方法都将是 POST。
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Handle form submission on the client {/*handle-form-submission-on-the-client*/}
+### 在客户端处理表单提交 {/*handle-form-submission-on-the-client*/}
 
-Pass a function to the `action` prop of form to run the function when the form is submitted. [`formData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) will be passed to the function as an argument so you can access the data submitted by the form. This differs from the conventional [HTML action](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#action), which only accepts URLs. After the `action` function succeeds, all uncontrolled field elements in the form are reset.
+向 form 的 `action` 属性传递一个函数，以便在表单提交时运行该函数。[`formData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) 会作为参数传递给该函数，因此你可以访问表单提交的数据。这与传统的 [HTML action](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#action) 不同，后者只接受 URL。在 `action` 函数成功执行后，表单中所有非受控字段元素都会被重置。
 
 <Sandpack>
 
@@ -58,12 +58,12 @@ Pass a function to the `action` prop of form to run the function when the form i
 export default function Search() {
   function search(formData) {
     const query = formData.get("query");
-    alert(`You searched for '${query}'`);
+    alert(`你搜索了 '${query}'`);
   }
   return (
     <form action={search}>
       <input name="query" />
-      <button type="submit">Search</button>
+      <button type="submit">搜索</button>
     </form>
   );
 }
@@ -71,13 +71,13 @@ export default function Search() {
 
 </Sandpack>
 
-### Handle form submission with a Server Function {/*handle-form-submission-with-a-server-function*/}
+### 使用 Server Function 处理表单提交 {/*handle-form-submission-with-a-server-function*/}
 
-Render a `<form>` with an input and submit button. Pass a Server Function (a function marked with [`'use server'`](/reference/rsc/use-server)) to the `action` prop of form to run the function when the form is submitted.
+渲染一个带有输入框和提交按钮的 `<form>`。将一个 Server Function（一个标记了[`'use server'`](/reference/rsc/use-server) 的函数）传递给 form 的 `action` 属性，以便在表单提交时运行该函数。
 
-Passing a Server Function to `<form action>` allow users to submit forms without JavaScript enabled or before the code has loaded. This is beneficial to users who have a slow connection, device, or have JavaScript disabled and is similar to the way forms work when a URL is passed to the `action` prop.
+将 Server Function 传递给 `<form action>`，可以让用户在未启用 JavaScript 或代码尚未加载之前提交表单。这对网络连接慢、设备性能较弱或禁用 JavaScript 的用户很有帮助，其工作方式类似于将 URL 传递给 `action` 属性时的表单行为。
 
-You can use hidden form fields to provide data to the `<form>`'s action. The Server Function will be called with the hidden form field data as an instance of [`FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData).
+你可以使用隐藏表单字段向 `<form>` 的 action 提供数据。Server Function 将以隐藏表单字段数据作为 [`FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) 的实例被调用。
 
 ```jsx
 import { updateCart } from './lib.js';
@@ -91,14 +91,14 @@ function AddToCart({productId}) {
   return (
     <form action={addToCart}>
         <input type="hidden" name="productId" value={productId} />
-        <button type="submit">Add to Cart</button>
+        <button type="submit">添加到购物车</button>
     </form>
 
   );
 }
 ```
 
-In lieu of using hidden form fields to provide data to the `<form>`'s action, you can call the <CodeStep step={1}>`bind`</CodeStep> method to supply it with extra arguments. This will bind a new argument (<CodeStep step={2}>`productId`</CodeStep>) to the function in addition to the <CodeStep step={3}>`formData`</CodeStep> that is passed as an argument to the function.
+如果不使用隐藏表单字段向 `<form>` 的 action 提供数据，你也可以调用 <CodeStep step={1}>`bind`</CodeStep> 方法来为其提供额外参数。这会将一个新参数（<CodeStep step={2}>`productId`</CodeStep>）绑定到函数上，除此之外还有作为参数传递给函数的 <CodeStep step={3}>`formData`</CodeStep>。
 
 ```jsx [[1, 8, "bind"], [2,8, "productId"], [2,4, "productId"], [3,4, "formData"]]
 import { updateCart } from './lib.js';
@@ -111,18 +111,18 @@ function AddToCart({productId}) {
   const addProductToCart = addToCart.bind(null, productId);
   return (
     <form action={addProductToCart}>
-      <button type="submit">Add to Cart</button>
+      <button type="submit">添加到购物车</button>
     </form>
   );
 }
 ```
 
-When `<form>` is rendered by a [Server Component](/reference/rsc/use-client), and a [Server Function](/reference/rsc/server-functions) is passed to the `<form>`'s `action` prop, the form is [progressively enhanced](https://developer.mozilla.org/en-US/docs/Glossary/Progressive_Enhancement).
+当 `<form>` 由[Server Component](/reference/rsc/use-client) 渲染，并且有一个[Server Function](/reference/rsc/server-functions) 被传递给 `<form>` 的 `action` 属性时，该表单会进行[渐进增强](https://developer.mozilla.org/en-US/docs/Glossary/Progressive_Enhancement)。
 
-### Display a pending state during form submission {/*display-a-pending-state-during-form-submission*/}
-To display a pending state when a form is being submitted, you can call the `useFormStatus` Hook in a component rendered in a `<form>` and read the `pending` property returned.
+### 在表单提交期间显示待处理状态 {/*display-a-pending-state-during-form-submission*/}
+要在表单提交时显示待处理状态，你可以在 `<form>` 中渲染的组件里调用 `useFormStatus` Hook，并读取返回的 `pending` 属性。
 
-Here, we use the `pending` property to indicate the form is submitting.
+这里，我们使用 `pending` 属性来表示表单正在提交。
 
 <Sandpack>
 
@@ -134,7 +134,7 @@ function Submit() {
   const { pending } = useFormStatus();
   return (
     <button type="submit" disabled={pending}>
-      {pending ? "Submitting..." : "Submit"}
+      {pending ? "提交中..." : "提交"}
     </button>
   );
 }
@@ -160,12 +160,12 @@ export async function submitForm(query) {
 
 </Sandpack>
 
-To learn more about the `useFormStatus` Hook see the [reference documentation](/reference/react-dom/hooks/useFormStatus).
+要了解更多关于 `useFormStatus` Hook 的内容，请参见[参考文档](/reference/react-dom/hooks/useFormStatus)。
 
-### Optimistically updating form data {/*optimistically-updating-form-data*/}
-The `useOptimistic` Hook provides a way to optimistically update the user interface before a background operation, like a network request, completes. In the context of forms, this technique helps to make apps feel more responsive. When a user submits a form, instead of waiting for the server's response to reflect the changes, the interface is immediately updated with the expected outcome.
+### 乐观更新表单数据 {/*optimistically-updating-form-data*/}
+`useOptimistic` Hook 提供了一种在后台操作（如网络请求）完成之前，乐观更新用户界面的方式。在表单场景中，这种技术有助于让应用感觉更响应迅速。当用户提交表单时，界面会立即根据预期结果进行更新，而不是等待服务器响应后再反映变化。
 
-For example, when a user types a message into the form and hits the "Send" button, the `useOptimistic` Hook allows the message to immediately appear in the list with a "Sending..." label, even before the message is actually sent to a server. This "optimistic" approach gives the impression of speed and responsiveness. The form then attempts to truly send the message in the background. Once the server confirms the message has been received, the "Sending..." label is removed.
+例如，当用户在表单中输入消息并点击“发送”按钮时，`useOptimistic` Hook 允许该消息立即出现在列表中，并带有“发送中...”标签，甚至在消息真正发送到服务器之前也是如此。这种“乐观”做法会给人一种速度快、响应快的印象。随后表单会在后台尝试真正发送该消息。一旦服务器确认消息已接收，“发送中...”标签就会被移除。
 
 <Sandpack>
 
@@ -197,12 +197,12 @@ function Thread({ messages, sendMessage }) {
       {optimisticMessages.map((message, index) => (
         <div key={index}>
           {message.text}
-          {!!message.sending && <small> (Sending...)</small>}
+          {!!message.sending && <small>（发送中...）</small>}
         </div>
       ))}
       <form action={formAction} ref={formRef}>
-        <input type="text" name="message" placeholder="Hello!" />
-        <button type="submit">Send</button>
+        <input type="text" name="message" placeholder="你好！" />
+        <button type="submit">发送</button>
       </form>
     </>
   );
@@ -210,7 +210,7 @@ function Thread({ messages, sendMessage }) {
 
 export default function App() {
   const [messages, setMessages] = useState([
-    { text: "Hello there!", sending: false, key: 1 }
+    { text: "你好呀！", sending: false, key: 1 }
   ]);
   async function sendMessage(formData) {
     const sentMessage = await deliverMessage(formData.get("message"));
@@ -232,9 +232,9 @@ export async function deliverMessage(message) {
 [//]: # 'Uncomment the next line, and delete this line after the `useOptimistic` reference documentation page is published'
 [//]: # 'To learn more about the `useOptimistic` Hook see the [reference documentation](/reference/react/useOptimistic).'
 
-### Handling form submission errors {/*handling-form-submission-errors*/}
+### 处理表单提交错误 {/*handling-form-submission-errors*/}
 
-In some cases the function called by a `<form>`'s `action` prop throws an error. You can handle these errors by wrapping `<form>` in an Error Boundary. If the function called by a `<form>`'s `action` prop throws an error, the fallback for the error boundary will be displayed.
+在某些情况下，由 `<form>` 的 `action` 属性调用的函数会抛出错误。你可以通过将 `<form>` 包裹在 Error Boundary 中来处理这些错误。如果由 `<form>` 的 `action` 属性调用的函数抛出错误，则会显示错误边界的回退内容。
 
 <Sandpack>
 
@@ -243,15 +243,15 @@ import { ErrorBoundary } from "react-error-boundary";
 
 export default function Search() {
   function search() {
-    throw new Error("search error");
+    throw new Error("搜索错误");
   }
   return (
     <ErrorBoundary
-      fallback={<p>There was an error while submitting the form</p>}
+      fallback={<p>提交表单时出错了</p>}
     >
       <form action={search}>
         <input name="query" />
-        <button type="submit">Search</button>
+        <button type="submit">搜索</button>
       </form>
     </ErrorBoundary>
   );
@@ -274,15 +274,15 @@ export default function Search() {
 
 </Sandpack>
 
-### Display a form submission error without JavaScript {/*display-a-form-submission-error-without-javascript*/}
+### 在没有 JavaScript 的情况下显示表单提交错误 {/*display-a-form-submission-error-without-javascript*/}
 
-Displaying a form submission error message before the JavaScript bundle loads for progressive enhancement requires that:
+在渐进增强中，要在 JavaScript 包加载之前显示表单提交错误消息，需要满足以下条件：
 
-1. `<form>` be rendered by a [Client Component](/reference/rsc/use-client)
-1. the function passed to the `<form>`'s `action` prop be a [Server Function](/reference/rsc/server-functions)
-1. the `useActionState` Hook be used to display the error message
+1. `<form>` 由 [Client Component](/reference/rsc/use-client) 渲染
+1. 传递给 `<form>` 的 `action` 属性的函数是一个 [Server Function](/reference/rsc/server-functions)
+1. 使用 `useActionState` Hook 来显示错误消息
 
-`useActionState` takes two parameters: a [Server Function](/reference/rsc/server-functions) and an initial state. `useActionState` returns two values, a state variable and an action. The action returned by `useActionState` should be passed to the `action` prop of the form. The state variable returned by `useActionState` can be used to display an error message. The value returned by the Server Function passed to `useActionState` will be used to update the state variable.
+`useActionState` 接受两个参数：一个 [Server Function](/reference/rsc/server-functions) 和一个初始状态。`useActionState` 返回两个值：一个状态变量和一个 action。`useActionState` 返回的 action 应传递给表单的 `action` 属性。`useActionState` 返回的状态变量可用于显示错误消息。传递给 `useActionState` 的 Server Function 的返回值将用于更新该状态变量。
 
 <Sandpack>
 
@@ -296,7 +296,7 @@ export default function Page() {
     const email = formData.get("email");
     try {
       await signUpNewUser(email);
-      alert(`Added "${email}"`);
+      alert(`已添加 "${email}"`);
     } catch (err) {
       return err.toString();
     }
@@ -304,12 +304,12 @@ export default function Page() {
   const [message, signupAction] = useActionState(signup, null);
   return (
     <>
-      <h1>Signup for my newsletter</h1>
-      <p>Signup with the same email twice to see an error</p>
+      <h1>注册我的新闻邮件</h1>
+      <p>使用同一个邮箱注册两次即可看到错误</p>
       <form action={signupAction} id="signup-form">
-        <label htmlFor="email">Email: </label>
+        <label htmlFor="email">邮箱： </label>
         <input name="email" id="email" placeholder="react@example.com" />
-        <button>Sign up</button>
+        <button>注册</button>
         {!!message && <p>{message}</p>}
       </form>
     </>
@@ -322,7 +322,7 @@ let emails = [];
 
 export async function signUpNewUser(newEmail) {
   if (emails.includes(newEmail)) {
-    throw new Error("This email address has already been added");
+    throw new Error("此电子邮件地址已被添加");
   }
   emails.push(newEmail);
 }
@@ -330,13 +330,13 @@ export async function signUpNewUser(newEmail) {
 
 </Sandpack>
 
-Learn more about updating state from a form action with the [`useActionState`](/reference/react/useActionState) docs
+了解更多关于从表单 action 更新状态的信息，请参阅 [`useActionState`](/reference/react/useActionState) 文档
 
-### Handling multiple submission types {/*handling-multiple-submission-types*/}
+### 处理多种提交类型 {/*handling-multiple-submission-types*/}
 
-Forms can be designed to handle multiple submission actions based on the button pressed by the user. Each button inside a form can be associated with a distinct action or behavior by setting the `formAction` prop.
+可以将表单设计为根据用户按下的按钮来处理多种提交操作。表单中的每个按钮都可以通过设置 `formAction` 属性来关联不同的 action 或行为。
 
-When a user taps a specific button, the form is submitted, and a corresponding action, defined by that button's attributes and action, is executed. For instance, a form might submit an article for review by default but have a separate button with `formAction` set to save the article as a draft.
+当用户点击某个特定按钮时，表单会被提交，并执行该按钮属性和 action 所定义的相应操作。例如，表单可能默认提交一篇文章供审核，但有一个单独的按钮将 `formAction` 设置为把文章保存为草稿。
 
 <Sandpack>
 
@@ -345,20 +345,20 @@ export default function Search() {
   function publish(formData) {
     const content = formData.get("content");
     const button = formData.get("button");
-    alert(`'${content}' was published with the '${button}' button`);
+    alert(`'${content}' 已使用 '${button}' 按钮发布`);
   }
 
   function save(formData) {
     const content = formData.get("content");
-    alert(`Your draft of '${content}' has been saved!`);
+    alert(`你的 '${content}' 草稿已保存！`);
   }
 
   return (
     <form action={publish}>
       <textarea name="content" rows={4} cols={40} />
       <br />
-      <button type="submit" name="button" value="submit">Publish</button>
-      <button formAction={save}>Save draft</button>
+      <button type="submit" name="button" value="submit">发布</button>
+      <button formAction={save}>保存草稿</button>
     </form>
   );
 }

@@ -1,25 +1,25 @@
 ---
-title: JavaScript in JSX with Curly Braces
+title: 在 JSX 中使用花括号的 JavaScript
 ---
 
 <Intro>
 
-JSX lets you write HTML-like markup inside a JavaScript file, keeping rendering logic and content in the same place. Sometimes you will want to add a little JavaScript logic or reference a dynamic property inside that markup. In this situation, you can use curly braces in your JSX to open a window to JavaScript.
+JSX 让你可以在 JavaScript 文件中编写类似 HTML 的标记，把渲染逻辑和内容放在同一个地方。有时你会想在这些标记中加入一点 JavaScript 逻辑，或者引用一个动态属性。在这种情况下，你可以在 JSX 中使用花括号，为 JavaScript 打开一扇窗。
 
 </Intro>
 
 <YouWillLearn>
 
-* How to pass strings with quotes
-* How to reference a JavaScript variable inside JSX with curly braces
-* How to call a JavaScript function inside JSX with curly braces
-* How to use a JavaScript object inside JSX with curly braces
+* 如何使用引号传递字符串
+* 如何在 JSX 中使用花括号引用 JavaScript 变量
+* 如何在 JSX 中使用花括号调用 JavaScript 函数
+* 如何在 JSX 中使用花括号使用 JavaScript 对象
 
 </YouWillLearn>
 
-## Passing strings with quotes {/*passing-strings-with-quotes*/}
+## 使用引号传递字符串 {/*passing-strings-with-quotes*/}
 
-When you want to pass a string attribute to JSX, you put it in single or double quotes:
+当你想向 JSX 传递字符串属性时，可以把它放在单引号或双引号中：
 
 <Sandpack>
 
@@ -41,9 +41,9 @@ export default function Avatar() {
 
 </Sandpack>
 
-Here, `"https://react.dev/images/docs/scientists/7vQD0fPs.jpg"` and `"Gregorio Y. Zara"` are being passed as strings.
+这里，`"https://react.dev/images/docs/scientists/7vQD0fPs.jpg"` 和 `"Gregorio Y. Zara"` 都是以字符串形式传递的。
 
-But what if you want to dynamically specify the `src` or `alt` text? You could **use a value from JavaScript by replacing `"` and `"` with `{` and `}`**:
+但如果你想动态指定 `src` 或 `alt` 文本呢？你可以**通过将 `"` 和 `"` 替换为 `{` 和 `}`，来使用 JavaScript 中的值**：
 
 <Sandpack>
 
@@ -67,11 +67,11 @@ export default function Avatar() {
 
 </Sandpack>
 
-Notice the difference between `className="avatar"`, which specifies an `"avatar"` CSS class name that makes the image round, and `src={avatar}` that reads the value of the JavaScript variable called `avatar`. That's because curly braces let you work with JavaScript right there in your markup!
+注意 `className="avatar"` 和 `src={avatar}` 之间的区别：前者指定了一个 `"avatar"` 的 CSS 类名，让图片变成圆形；后者则读取了名为 `avatar` 的 JavaScript 变量的值。这是因为花括号让你可以直接在标记中使用 JavaScript！
 
-## Using curly braces: A window into the JavaScript world {/*using-curly-braces-a-window-into-the-javascript-world*/}
+## 使用花括号：通往 JavaScript 世界的一扇窗 {/*using-curly-braces-a-window-into-the-javascript-world*/}
 
-JSX is a special way of writing JavaScript. That means it’s possible to use JavaScript inside it—with curly braces `{ }`. The example below first declares a name for the scientist, `name`, then embeds it with curly braces inside the `<h1>`:
+JSX 是一种特殊的 JavaScript 编写方式。这意味着你可以在其中使用 JavaScript——通过花括号 `{ }`。下面的示例先声明科学家的名字 `name`，然后将它通过花括号嵌入 `<h1>` 中：
 
 <Sandpack>
 
@@ -86,9 +86,9 @@ export default function TodoList() {
 
 </Sandpack>
 
-Try changing the `name`'s value from `'Gregorio Y. Zara'` to `'Hedy Lamarr'`. See how the list title changes?
+试着把 `name` 的值从 `'Gregorio Y. Zara'` 改为 `'Hedy Lamarr'`。看看列表标题是如何变化的？
 
-Any JavaScript expression will work between curly braces, including function calls like `formatDate()`:
+任何 JavaScript 表达式都可以放在花括号之间，包括像 `formatDate()` 这样的函数调用：
 
 <Sandpack>
 
@@ -111,18 +111,18 @@ export default function TodoList() {
 
 </Sandpack>
 
-### Where to use curly braces {/*where-to-use-curly-braces*/}
+### 在哪里使用花括号 {/*where-to-use-curly-braces*/}
 
-You can only use curly braces in two ways inside JSX:
+在 JSX 中，花括号只能以两种方式使用：
 
-1. **As text** directly inside a JSX tag: `<h1>{name}'s To Do List</h1>` works, but `<{tag}>Gregorio Y. Zara's To Do List</{tag}>`  will not.
-2. **As attributes** immediately following the `=` sign: `src={avatar}` will read the `avatar` variable, but `src="{avatar}"` will pass the string `"{avatar}"`.
+1. **作为文本** 直接写在 JSX 标签内部：`<h1>{name}'s To Do List</h1>` 可以，但 `<{tag}>Gregorio Y. Zara's To Do List</{tag}>` 不行。
+2. **作为属性** 紧跟在 `=` 符号之后：`src={avatar}` 会读取 `avatar` 变量，但 `src="{avatar}"` 传递的只是字符串 `"{avatar}"`。
 
-## Using "double curlies": CSS and other objects in JSX {/*using-double-curlies-css-and-other-objects-in-jsx*/}
+## 使用“双花括号”：JSX 中的 CSS 和其他对象 {/*using-double-curlies-css-and-other-objects-in-jsx*/}
 
-In addition to strings, numbers, and other JavaScript expressions, you can even pass objects in JSX. Objects are also denoted with curly braces, like `{ name: "Hedy Lamarr", inventions: 5 }`. Therefore, to pass a JS object in JSX, you must wrap the object in another pair of curly braces: `person={{ name: "Hedy Lamarr", inventions: 5 }}`.
+除了字符串、数字和其他 JavaScript 表达式之外，你甚至还可以在 JSX 中传递对象。对象也用花括号表示，例如 `{ name: "Hedy Lamarr", inventions: 5 }`。因此，要在 JSX 中传递一个 JS 对象，你必须再包上一层花括号：`person={{ name: "Hedy Lamarr", inventions: 5 }}`。
 
-You may see this with inline CSS styles in JSX. React does not require you to use inline styles (CSS classes work great for most cases). But when you need an inline style, you pass an object to the `style` attribute:
+你可能会在 JSX 的行内 CSS 样式中见到这种写法。React 并不要求你使用行内样式（对大多数情况来说，CSS 类就很好用）。但当你需要行内样式时，可以向 `style` 属性传递一个对象：
 
 <Sandpack>
 
@@ -148,9 +148,9 @@ ul { padding: 20px 20px 20px 40px; margin: 0; }
 
 </Sandpack>
 
-Try changing the values of `backgroundColor` and `color`.
+试着改变 `backgroundColor` 和 `color` 的值。
 
-You can really see the JavaScript object inside the curly braces when you write it like this:
+当你像这样写时，就能清楚地看到花括号中的 JavaScript 对象：
 
 ```js {2-5}
 <ul style={
@@ -161,17 +161,17 @@ You can really see the JavaScript object inside the curly braces when you write 
 }>
 ```
 
-The next time you see `{{` and `}}` in JSX, know that it's nothing more than an object inside the JSX curlies!
+下次在 JSX 中看到 `{{` 和 `}}` 时，要知道这不过是 JSX 花括号里包着的一个对象而已！
 
 <Pitfall>
 
-Inline `style` properties are written in camelCase. For example, HTML `<ul style="background-color: black">` would be written as `<ul style={{ backgroundColor: 'black' }}>`  in your component.
+行内 `style` 属性使用驼峰命名法编写。例如，HTML 中的 `<ul style="background-color: black">` 在你的组件里应写成 `<ul style={{ backgroundColor: 'black' }}>`。
 
 </Pitfall>
 
-## More fun with JavaScript objects and curly braces {/*more-fun-with-javascript-objects-and-curly-braces*/}
+## 用 JavaScript 对象和花括号玩出更多花样 {/*more-fun-with-javascript-objects-and-curly-braces*/}
 
-You can move several expressions into one object, and reference them in your JSX inside curly braces:
+你可以把多个表达式放进一个对象中，然后在 JSX 的花括号里引用它们：
 
 <Sandpack>
 
@@ -211,7 +211,7 @@ body > div > div { padding: 20px; }
 
 </Sandpack>
 
-In this example, the `person` JavaScript object contains a `name` string and a `theme` object:
+在这个示例中，`person` JavaScript 对象包含一个 `name` 字符串和一个 `theme` 对象：
 
 ```js
 const person = {
@@ -223,31 +223,31 @@ const person = {
 };
 ```
 
-The component can use these values from `person` like so:
+组件可以像这样使用 `person` 中的这些值：
 
 ```js
 <div style={person.theme}>
   <h1>{person.name}'s Todos</h1>
 ```
 
-JSX is very minimal as a templating language because it lets you organize data and logic using JavaScript.
+作为模板语言，JSX 非常精简，因为它让你可以使用 JavaScript 来组织数据和逻辑。
 
 <Recap>
 
-Now you know almost everything about JSX:
+现在你已经知道了几乎所有关于 JSX 的内容：
 
-* JSX attributes inside quotes are passed as strings.
-* Curly braces let you bring JavaScript logic and variables into your markup.
-* They work inside the JSX tag content or immediately after `=` in attributes.
-* `{{` and `}}` is not special syntax: it's a JavaScript object tucked inside JSX curly braces.
+* 引号中的 JSX 属性会作为字符串传递。
+* 花括号让你可以把 JavaScript 逻辑和变量带入标记中。
+* 它们可以用于 JSX 标签内容中，或者属性中紧跟在 `=` 后面。
+* `{{` 和 `}}` 并不是特殊语法：它只是一个放在 JSX 花括号里的 JavaScript 对象。
 
 </Recap>
 
 <Challenges>
 
-#### Fix the mistake {/*fix-the-mistake*/}
+#### 修复错误 {/*fix-the-mistake*/}
 
-This code crashes with an error saying `Objects are not valid as a React child`:
+这段代码会报错，错误信息是 `Objects are not valid as a React child`：
 
 <Sandpack>
 
@@ -287,15 +287,15 @@ body > div > div { padding: 20px; }
 
 </Sandpack>
 
-Can you find the problem?
+你能找出问题吗？
 
-<Hint>Look for what's inside the curly braces. Are we putting the right thing there?</Hint>
+<Hint>看看花括号里是什么。我们放进去的是正确的东西吗？</Hint>
 
 <Solution>
 
-This is happening because this example renders *an object itself* into the markup rather than a string: `<h1>{person}'s Todos</h1>` is trying to render the entire `person` object! Including raw objects as text content throws an error because React doesn't know how you want to display them.
+之所以会这样，是因为这个示例把*对象本身*渲染到了标记中，而不是字符串：`<h1>{person}'s Todos</h1>` 试图渲染整个 `person` 对象！把原始对象作为文本内容会引发错误，因为 React 不知道你希望如何显示它们。
 
-To fix it, replace `<h1>{person}'s Todos</h1>` with `<h1>{person.name}'s Todos</h1>`:
+要修复它，把 `<h1>{person}'s Todos</h1>` 改成 `<h1>{person.name}'s Todos</h1>`：
 
 <Sandpack>
 
@@ -337,9 +337,9 @@ body > div > div { padding: 20px; }
 
 </Solution>
 
-#### Extract information into an object {/*extract-information-into-an-object*/}
+#### 将信息提取到对象中 {/*extract-information-into-an-object*/}
 
-Extract the image URL into the `person` object.
+把图片 URL 提取到 `person` 对象中。
 
 <Sandpack>
 
@@ -381,7 +381,7 @@ body > div > div { padding: 20px; }
 
 <Solution>
 
-Move the image URL into a property called `person.imageUrl` and read it from the `<img>` tag using the curlies:
+把图片 URL 移到名为 `person.imageUrl` 的属性中，然后在 `<img>` 标签里使用花括号读取它：
 
 <Sandpack>
 
@@ -424,13 +424,13 @@ body > div > div { padding: 20px; }
 
 </Solution>
 
-#### Write an expression inside JSX curly braces {/*write-an-expression-inside-jsx-curly-braces*/}
+#### 在 JSX 花括号中写表达式 {/*write-an-expression-inside-jsx-curly-braces*/}
 
-In the object below, the full image URL is split into four parts: base URL, `imageId`, `imageSize`, and file extension.
+在下面的对象中，完整的图片 URL 被拆分成四部分：基础 URL、`imageId`、`imageSize` 和文件扩展名。
 
-We want the image URL to combine these attributes together: base URL (always `'https://react.dev/images/docs/scientists/'`), `imageId` (`'7vQD0fP'`), `imageSize` (`'s'`), and file extension (always `'.jpg'`). However, something is wrong with how the `<img>` tag specifies its `src`.
+我们希望图片 URL 将这些属性组合起来：基础 URL（始终是 `'https://react.dev/images/docs/scientists/'`）、`imageId`（`'7vQD0fP'`）、`imageSize`（`'s'`）以及文件扩展名（始终是 `'.jpg'`）。不过，`<img>` 标签指定其 `src` 的方式有问题。
 
-Can you fix it?
+你能修复它吗？
 
 <Sandpack>
 
@@ -474,15 +474,15 @@ body > div > div { padding: 20px; }
 
 </Sandpack>
 
-To check that your fix worked, try changing the value of `imageSize` to `'b'`. The image should resize after your edit.
+为了检查你的修复是否有效，试着把 `imageSize` 的值改成 `'b'`。修改后图片应该会重新调整大小。
 
 <Solution>
 
-You can write it as `src={baseUrl + person.imageId + person.imageSize + '.jpg'}`.
+你可以把它写成 `src={baseUrl + person.imageId + person.imageSize + '.jpg'}`。
 
-1. `{` opens the JavaScript expression
-2. `baseUrl + person.imageId + person.imageSize + '.jpg'` produces the correct URL string
-3. `}` closes the JavaScript expression
+1. `{` 打开 JavaScript 表达式
+2. `baseUrl + person.imageId + person.imageSize + '.jpg'` 生成正确的 URL 字符串
+3. `}` 关闭 JavaScript 表达式
 
 <Sandpack>
 
@@ -525,7 +525,7 @@ body > div > div { padding: 20px; }
 
 </Sandpack>
 
-You can also move this expression into a separate function like `getImageUrl` below:
+你也可以把这个表达式移到一个单独的函数中，比如下面的 `getImageUrl`：
 
 <Sandpack>
 
@@ -580,7 +580,7 @@ body > div > div { padding: 20px; }
 
 </Sandpack>
 
-Variables and functions can help you keep the markup simple!
+变量和函数可以帮助你保持标记简洁！
 
 </Solution>
 

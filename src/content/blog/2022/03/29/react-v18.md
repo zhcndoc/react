@@ -1,157 +1,157 @@
 ---
 title: "React v18.0"
-author: The React Team
+author: React 团队
 date: 2022/03/08
-description: React 18 is now available on npm! In our last post, we shared step-by-step instructions for upgrading your app to React 18. In this post, we'll give an overview of what's new in React 18, and what it means for the future.
+description: React 18 现已可在 npm 上获取！在上一篇文章中，我们分享了将你的应用升级到 React 18 的逐步说明。在这篇文章中，我们将概述 React 18 的新特性，以及这对未来意味着什么。
 ---
 
-March 29, 2022 by [The React Team](/community/team)
+2022 年 3 月 29 日，来自 [React 团队](/community/team)
 
 ---
 
 <Intro>
 
-React 18 is now available on npm! In our last post, we shared step-by-step instructions for [upgrading your app to React 18](/blog/2022/03/08/react-18-upgrade-guide). In this post, we'll give an overview of what's new in React 18, and what it means for the future.
+React 18 现已可在 npm 上获取！在上一篇文章中，我们分享了将你的应用升级到 [React 18](/blog/2022/03/08/react-18-upgrade-guide) 的逐步说明。在这篇文章中，我们将概述 React 18 的新特性，以及这对未来意味着什么。
 
 </Intro>
 
 ---
 
-Our latest major version includes out-of-the-box improvements like automatic batching, new APIs like startTransition, and streaming server-side rendering with support for Suspense.
+我们的最新主要版本包含了开箱即用的改进，例如自动批处理、新的 API（如 startTransition），以及支持 Suspense 的流式服务端渲染。
 
-Many of the features in React 18 are built on top of our new concurrent renderer, a behind-the-scenes change that unlocks powerful new capabilities. Concurrent React is opt-in — it's only enabled when you use a concurrent feature — but we think it will have a big impact on the way people build applications.
+React 18 中的许多特性都建立在我们新的并发渲染器之上，这是一个幕后变更，解锁了强大的新能力。并发 React 需要显式启用——只有在你使用并发特性时才会开启——但我们认为它会对人们构建应用的方式产生很大影响。
 
-We've spent years researching and developing support for concurrency in React, and we've taken extra care to provide a gradual adoption path for existing users. Last summer, [we formed the React 18 Working Group](/blog/2021/06/08/the-plan-for-react-18) to gather feedback from experts in the community and ensure a smooth upgrade experience for the entire React ecosystem.
+我们已经花了数年时间研究并开发 React 中对并发的支持，并且非常谨慎地为现有用户提供了渐进式采用路径。去年夏天， [我们组建了 React 18 工作组](/blog/2021/06/08/the-plan-for-react-18)，以收集社区专家的反馈，并确保整个 React 生态系统都能顺利升级。
 
-In case you missed it, we shared a lot of this vision at React Conf 2021:
+如果你错过了，我们在 React Conf 2021 上分享了这一愿景的很多内容：
 
-* In [the keynote](https://www.youtube.com/watch?v=FZ0cG47msEk&list=PLNG_1j3cPCaZZ7etkzWA7JfdmKWT0pMsa), we explain how React 18 fits into our mission to make it easy for developers to build great user experiences
-* [Shruti Kapoor](https://twitter.com/shrutikapoor08) [demonstrated how to use the new features in React 18](https://www.youtube.com/watch?v=ytudH8je5ko&list=PLNG_1j3cPCaZZ7etkzWA7JfdmKWT0pMsa&index=2)
-* [Shaundai Person](https://twitter.com/shaundai) gave us an overview of [streaming server rendering with Suspense](https://www.youtube.com/watch?v=pj5N-Khihgc&list=PLNG_1j3cPCaZZ7etkzWA7JfdmKWT0pMsa&index=3)
+* 在 [主题演讲](https://www.youtube.com/watch?v=FZ0cG47msEk&list=PLNG_1j3cPCaZZ7etkzWA7JfdmKWT0pMsa) 中，我们解释了 React 18 如何契合我们的使命：让开发者更容易构建出色的用户体验
+* [Shruti Kapoor](https://twitter.com/shrutikapoor08) [演示了如何使用 React 18 中的新特性](https://www.youtube.com/watch?v=ytudH8je5ko&list=PLNG_1j3cPCaZZ7etkzWA7JfdmKWT0pMsa&index=2)
+* [Shaundai Person](https://twitter.com/shaundai) 为我们概述了 [使用 Suspense 的流式服务端渲染](https://www.youtube.com/watch?v=pj5N-Khihgc&list=PLNG_1j3cPCaZZ7etkzWA7JfdmKWT0pMsa&index=3)
 
-Below is a full overview of what to expect in this release, starting with Concurrent Rendering.
+下面是本次发布的完整概览，从并发渲染开始。
 
 <Note>
 
-For React Native users, React 18 will ship in React Native with the New React Native Architecture. For more information, see the [React Conf keynote here](https://www.youtube.com/watch?v=FZ0cG47msEk&t=1530s).
+对于 React Native 用户，React 18 将随新的 React Native 架构一同在 React Native 中发布。更多信息请参见 [这里的 React Conf 主题演讲](https://www.youtube.com/watch?v=FZ0cG47msEk&t=1530s)。
 
 </Note>
 
-## What is Concurrent React? {/*what-is-concurrent-react*/}
+## 什么是并发 React？ {/*what-is-concurrent-react*/}
 
-The most important addition in React 18 is something we hope you never have to think about: concurrency. We think this is largely true for application developers, though the story may be a bit more complicated for library maintainers.
+React 18 最重要的新增内容，是我们希望你永远不必去思考的东西：并发。我们认为这对应用开发者来说基本如此，不过对于库维护者而言，情况可能会稍微复杂一些。
 
-Concurrency is not a feature, per se. It's a new behind-the-scenes mechanism that enables React to prepare multiple versions of your UI at the same time. You can think of concurrency as an implementation detail — it's valuable because of the features that it unlocks. React uses sophisticated techniques in its internal implementation, like priority queues and multiple buffering. But you won't see those concepts anywhere in our public APIs.
+并发本身并不是一个特性。它是一种新的幕后机制，使 React 能够同时准备 UI 的多个版本。你可以把并发看作一种实现细节——它之所以有价值，是因为它解锁了新的特性。React 在内部实现中使用了复杂的技术，比如优先级队列和多重缓冲。但你不会在我们的公共 API 中看到这些概念。
 
-When we design APIs, we try to hide implementation details from developers. As a React developer, you focus on *what* you want the user experience to look like, and React handles *how* to deliver that experience. So we don’t expect React developers to know how concurrency works under the hood.
+当我们设计 API 时，我们会尽量向开发者隐藏实现细节。作为 React 开发者，你关注的是你希望用户体验看起来怎样，而 React 负责处理如何交付这种体验。所以我们并不期望 React 开发者知道并发在底层是如何工作的。
 
-However, Concurrent React is more important than a typical implementation detail — it's a foundational update to React's core rendering model. So while it's not super important to know how concurrency works, it may be worth knowing what it is at a high level.
+不过，并发 React 比普通的实现细节更重要——它是对 React 核心渲染模型的基础性更新。因此，虽然了解并发如何工作并不是特别重要，但从高层次上理解它是什么可能还是值得的。
 
-A key property of Concurrent React is that rendering is interruptible. When you first upgrade to React 18, before adding any concurrent features, updates are rendered the same as in previous versions of React — in a single, uninterrupted, synchronous transaction. With synchronous rendering, once an update starts rendering, nothing can interrupt it until the user can see the result on screen.
+并发 React 的一个关键特性是渲染是可中断的。当你刚升级到 React 18 时，在添加任何并发特性之前，更新的渲染方式与之前版本的 React 相同——在一个单一、不中断、同步的事务中完成。使用同步渲染时，一旦某个更新开始渲染，就没有任何东西能打断它，直到用户能在屏幕上看到结果为止。
 
-In a concurrent render, this is not always the case. React may start rendering an update, pause in the middle, then continue later. It may even abandon an in-progress render altogether. React guarantees that the UI will appear consistent even if a render is interrupted. To do this, it waits to perform DOM mutations until the end, once the entire tree has been evaluated. With this capability, React can prepare new screens in the background without blocking the main thread. This means the UI can respond immediately to user input even if it’s in the middle of a large rendering task, creating a fluid user experience.
+而在并发渲染中，情况并不总是如此。React 可能开始渲染一个更新，在中途暂停，然后稍后继续。它甚至可能直接放弃一个正在进行的渲染。React 保证即使渲染被中断，UI 也会保持一致。为此，它会等到最后再执行 DOM 变更，等整个树都评估完成之后再进行。借助这一能力，React 可以在后台准备新界面，而不会阻塞主线程。这意味着即使 UI 正在处理一个大型渲染任务，也能立即响应用户输入，从而创建流畅的用户体验。
 
-Another example is reusable state. Concurrent React can remove sections of the UI from the screen, then add them back later while reusing the previous state. For example, when a user tabs away from a screen and back, React should be able to restore the previous screen in the same state it was in before. In an upcoming minor, we're planning to add a new component called `<Offscreen>` that implements this pattern. Similarly, you’ll be able to use Offscreen to prepare new UI in the background so that it’s ready before the user reveals it.
+另一个例子是可复用状态。并发 React 可以将 UI 的某些部分从屏幕上移除，然后稍后再重新添加，同时复用之前的状态。例如，当用户从某个界面切换离开又返回时，React 应该能够把先前的界面恢复到离开前的同一状态。在即将发布的一个小版本中，我们计划添加一个名为 `<Offscreen>` 的新组件来实现这种模式。同样，你也可以使用 Offscreen 在后台准备新的 UI，这样在用户展示它之前它就已经准备好了。
 
-Concurrent rendering is a powerful new tool in React and most of our new features are built to take advantage of it, including Suspense, transitions, and streaming server rendering. But React 18 is just the beginning of what we aim to build on this new foundation.
+并发渲染是 React 中一个强大的新工具，我们的大多数新特性都围绕它构建，包括 Suspense、过渡和流式服务端渲染。但 React 18 只是我们希望在这一新基础上构建的一切的开始。
 
-## Gradually Adopting Concurrent Features {/*gradually-adopting-concurrent-features*/}
+## 逐步采用并发特性 {/*gradually-adopting-concurrent-features*/}
 
-Technically, concurrent rendering is a breaking change. Because concurrent rendering is interruptible, components behave slightly differently when it is enabled.
+从技术上讲，并发渲染是一个破坏性变更。由于并发渲染是可中断的，当它启用时，组件的行为会略有不同。
 
-In our testing, we've upgraded thousands of components to React 18. What we've found is that nearly all existing components "just work" with concurrent rendering, without any changes. However, some of them may require some additional migration effort. Although the changes are usually small, you'll still have the ability to make them at your own pace. The new rendering behavior in React 18 is **only enabled in the parts of your app that use new features.**
+在我们的测试中，我们已经将成千上万个组件升级到了 React 18。我们发现，几乎所有现有组件在并发渲染下都能“直接工作”，无需任何更改。不过，其中一些可能需要额外的迁移工作。虽然这些变更通常很小，但你仍然可以按照自己的节奏进行。React 18 中的新渲染行为**只会在你的应用中使用新特性的部分启用。**
 
-The overall upgrade strategy is to get your application running on React 18 without breaking existing code. Then you can gradually start adding concurrent features at your own pace. You can use [`<StrictMode>`](/reference/react/StrictMode) to help surface concurrency-related bugs during development. Strict Mode doesn't affect production behavior, but during development it will log extra warnings and double-invoke functions that are expected to be idempotent. It won't catch everything, but it's effective at preventing the most common types of mistakes.
+整体升级策略是在不破坏现有代码的前提下，让你的应用先在 React 18 上运行起来。然后你可以按照自己的节奏逐步开始添加并发特性。你可以使用 [`<StrictMode>`](/reference/react/StrictMode) 在开发过程中帮助暴露与并发相关的 bug。严格模式不会影响生产环境行为，但在开发时它会记录额外警告，并对预期幂等的函数执行两次调用。它不能捕获所有问题，但在防止最常见的错误类型方面非常有效。
 
-After you upgrade to React 18, you’ll be able to start using concurrent features immediately. For example, you can use startTransition to navigate between screens without blocking user input. Or useDeferredValue to throttle expensive re-renders.
+在升级到 React 18 之后，你就可以立即开始使用并发特性。例如，你可以使用 startTransition 在屏幕之间导航，而不会阻塞用户输入。或者使用 useDeferredValue 来节流高成本的重新渲染。
 
-However, long term, we expect the main way you’ll add concurrency to your app is by using a concurrent-enabled library or framework. In most cases, you won’t interact with concurrent APIs directly. For example, instead of developers calling startTransition whenever they navigate to a new screen, router libraries will automatically wrap navigations in startTransition.
+不过，从长远来看，我们预计你为应用添加并发的主要方式，将是使用支持并发的库或框架。在大多数情况下，你不会直接与并发 API 交互。例如，与其让开发者在每次导航到新界面时都调用 startTransition，路由库会自动将导航包装在 startTransition 中。
 
-It may take some time for libraries to upgrade to be concurrent compatible. We’ve provided new APIs to make it easier for libraries to take advantage of concurrent features. In the meantime, please be patient with maintainers as we work to gradually migrate the React ecosystem.
+库升级为并发兼容可能需要一些时间。我们已经提供了新的 API，让库更容易利用并发特性。在此期间，当我们逐步迁移 React 生态系统时，也请对维护者保持耐心。
 
-For more info, see our previous post: [How to upgrade to React 18](/blog/2022/03/08/react-18-upgrade-guide).
+更多信息请参见我们之前的文章：[如何升级到 React 18](/blog/2022/03/08/react-18-upgrade-guide)。
 
-## Suspense in Data Frameworks {/*suspense-in-data-frameworks*/}
+## 数据框架中的 Suspense {/*suspense-in-data-frameworks*/}
 
-In React 18, you can start using [Suspense](/reference/react/Suspense) for data fetching in opinionated frameworks like Relay, Next.js, Hydrogen, or Remix. Ad hoc data fetching with Suspense is technically possible, but still not recommended as a general strategy.
+在 React 18 中，你可以开始在 Relay、Next.js、Hydrogen 或 Remix 等有主见的框架中，将 [Suspense](/reference/react/Suspense) 用于数据获取。临时性的 Suspense 数据获取在技术上是可行的，但作为通用策略仍不推荐。
 
-In the future, we may expose additional primitives that could make it easier to access your data with Suspense, perhaps without the use of an opinionated framework. However, Suspense works best when it’s deeply integrated into your application’s architecture: your router, your data layer, and your server rendering environment. So even long term, we expect that libraries and frameworks will play a crucial role in the React ecosystem.
+未来，我们可能会暴露更多原语，使你更容易通过 Suspense 访问数据，也许甚至不需要使用有主见的框架。不过，当 Suspense 深度集成到你的应用架构中时，它的效果最好：包括你的路由器、数据层和服务端渲染环境。因此，即便从长远来看，我们也预计库和框架将在 React 生态系统中扮演关键角色。
 
-As in previous versions of React, you can also use Suspense for code splitting on the client with React.lazy. But our vision for Suspense has always been about much more than loading code — the goal is to extend support for Suspense so that eventually, the same declarative Suspense fallback can handle any asynchronous operation (loading code, data, images, etc).
+与之前版本的 React 一样，你也可以在客户端使用 React.lazy 配合 Suspense 进行代码拆分。但我们对 Suspense 的愿景从来都不只是加载代码——目标是扩展对 Suspense 的支持，使最终同一个声明式的 Suspense fallback 能处理任何异步操作（加载代码、数据、图片等）。
 
-## Server Components is Still in Development {/*server-components-is-still-in-development*/}
+## Server Components 仍在开发中 {/*server-components-is-still-in-development*/}
 
-[**Server Components**](/blog/2020/12/21/data-fetching-with-react-server-components) is an upcoming feature that allows developers to build apps that span the server and client, combining the rich interactivity of client-side apps with the improved performance of traditional server rendering. Server Components is not inherently coupled to Concurrent React, but it’s designed to work best with concurrent features like Suspense and streaming server rendering.
+[**Server Components**](/blog/2020/12/21/data-fetching-with-react-server-components) 是一个即将推出的特性，它允许开发者构建跨越服务端与客户端的应用，将客户端应用丰富的交互性与传统服务端渲染的性能提升结合起来。Server Components 本身并不与并发 React 绑定，但它被设计为能与 Suspense 和流式服务端渲染等并发特性更好地协同工作。
 
-Server Components is still experimental, but we expect to release an initial version in a minor 18.x release. In the meantime, we’re working with frameworks like Next.js, Hydrogen, and Remix to advance the proposal and get it ready for broad adoption.
+Server Components 仍处于实验阶段，但我们预计会在一个 18.x 的小版本中发布初始版本。与此同时，我们正在与 Next.js、Hydrogen 和 Remix 等框架合作，以推进该提案并使其适合广泛采用。
 
-## What's New in React 18 {/*whats-new-in-react-18*/}
+## React 18 中的新内容 {/*whats-new-in-react-18*/}
 
-### New Feature: Automatic Batching {/*new-feature-automatic-batching*/}
+### 新特性：自动批处理 {/*new-feature-automatic-batching*/}
 
-Batching is when React groups multiple state updates into a single re-render for better performance. Without automatic batching, we only batched updates inside React event handlers. Updates inside of promises, setTimeout, native event handlers, or any other event were not batched in React by default. With automatic batching, these updates will be batched automatically:
+批处理是指 React 将多个状态更新合并为一次重新渲染，以获得更好的性能。没有自动批处理时，我们只会在 React 事件处理函数内部对更新进行批处理。默认情况下，Promise、setTimeout、原生事件处理函数或其他任何事件中的更新都不会在 React 中被批处理。使用自动批处理后，这些更新将会自动被批处理：
 
 
 ```js
-// Before: only React events were batched.
+// 之前：只有 React 事件会被批处理。
 setTimeout(() => {
   setCount(c => c + 1);
   setFlag(f => !f);
-  // React will render twice, once for each state update (no batching)
+  // React 会渲染两次，每次状态更新一次（没有批处理）
 }, 1000);
 
-// After: updates inside of timeouts, promises,
-// native event handlers or any other event are batched.
+// 之后：timeout、Promise、
+// 原生事件处理函数或其他任何事件中的更新都会被批处理。
 setTimeout(() => {
   setCount(c => c + 1);
   setFlag(f => !f);
-  // React will only re-render once at the end (that's batching!)
+  // React 最终只会在结束时重新渲染一次（这就是批处理！）
 }, 1000);
 ```
 
-For more info, see this post for [Automatic batching for fewer renders in React 18](https://github.com/reactwg/react-18/discussions/21).
+更多信息请参见这篇文章：[React 18 中更少渲染的自动批处理](https://github.com/reactwg/react-18/discussions/21)。
 
-### New Feature: Transitions {/*new-feature-transitions*/}
+### 新特性：过渡 {/*new-feature-transitions*/}
 
-A transition is a new concept in React to distinguish between urgent and non-urgent updates.
+过渡是 React 中一个新的概念，用于区分紧急更新和非紧急更新。
 
-* **Urgent updates** reflect direct interaction, like typing, clicking, pressing, and so on.
-* **Transition updates** transition the UI from one view to another.
+* **紧急更新** 反映直接交互，例如输入、点击、按键等。
+* **过渡更新** 将 UI 从一个视图过渡到另一个视图。
 
-Urgent updates like typing, clicking, or pressing, need immediate response to match our intuitions about how physical objects behave. Otherwise they feel "wrong". However, transitions are different because the user doesn’t expect to see every intermediate value on screen.
+像输入、点击或按键这样的紧急更新，需要立即响应，以符合我们对物理对象行为的直觉。否则它们会让人感觉“有问题”。不过，过渡不同，因为用户并不期待在屏幕上看到每一个中间值。
 
-For example, when you select a filter in a dropdown, you expect the filter button itself to respond immediately when you click. However, the actual results may transition separately. A small delay would be imperceptible and often expected. And if you change the filter again before the results are done rendering, you only care to see the latest results.
+例如，当你在下拉菜单中选择一个筛选器时，你会期望筛选按钮本身在点击后立即响应。不过，实际结果可以单独过渡显示。短暂的延迟是难以察觉的，而且往往也是符合预期的。如果你在结果还没渲染完成前又更改了筛选器，你只关心看到最新结果。
 
-Typically, for the best user experience, a single user input should result in both an urgent update and a non-urgent one. You can use startTransition API inside an input event to inform React which updates are urgent and which are "transitions":
+通常，为了获得最佳用户体验，一次用户输入应该同时产生一个紧急更新和一个非紧急更新。你可以在输入事件中使用 startTransition API 来告知 React 哪些更新是紧急的，哪些是“过渡”：
 
 
 ```js
 import { startTransition } from 'react';
 
-// Urgent: Show what was typed
+// 紧急：显示输入的内容
 setInputValue(input);
 
-// Mark any state updates inside as transitions
+// 将其中的任何状态更新标记为过渡
 startTransition(() => {
-  // Transition: Show the results
+  // 过渡：显示结果
   setSearchQuery(input);
 });
 ```
 
 
-Updates wrapped in startTransition are handled as non-urgent and will be interrupted if more urgent updates like clicks or key presses come in. If a transition gets interrupted by the user (for example, by typing multiple characters in a row), React will throw out the stale rendering work that wasn’t finished and render only the latest update.
+被 startTransition 包裹的更新会被当作非紧急更新处理，如果有更紧急的更新（例如点击或按键）进入，就会被中断。如果一个过渡被用户中断（例如连续输入多个字符），React 会放弃尚未完成的过时渲染工作，只渲染最新的更新。
 
 
-* `useTransition`: a Hook to start transitions, including a value to track the pending state.
-* `startTransition`: a method to start transitions when the Hook cannot be used.
+* `useTransition`：用于启动过渡的 Hook，包括一个用于跟踪 pending 状态的值。
+* `startTransition`：当不能使用 Hook 时，用于启动过渡的方法。
 
-Transitions will opt in to concurrent rendering, which allows the update to be interrupted. If the content re-suspends, transitions also tell React to continue showing the current content while rendering the transition content in the background (see the [Suspense RFC](https://github.com/reactjs/rfcs/blob/main/text/0213-suspense-in-react-18.md) for more info).
+过渡会启用并发渲染，从而允许更新被中断。如果内容再次挂起，过渡还会告诉 React 在后台渲染过渡内容时继续显示当前内容（更多信息请参见 [Suspense RFC](https://github.com/reactjs/rfcs/blob/main/text/0213-suspense-in-react-18.md)）。
 
-[See docs for transitions here](/reference/react/useTransition).
+[在这里查看过渡文档](/reference/react/useTransition)。
 
-### New Suspense Features {/*new-suspense-features*/}
+### 新的 Suspense 特性 {/*new-suspense-features*/}
 
-Suspense lets you declaratively specify the loading state for a part of the component tree if it's not yet ready to be displayed:
+Suspense 允许你以声明式方式指定组件树某一部分尚未准备好显示时的加载状态：
 
 ```js
 <Suspense fallback={<Spinner />}>
@@ -159,186 +159,186 @@ Suspense lets you declaratively specify the loading state for a part of the comp
 </Suspense>
 ```
 
-Suspense makes the "UI loading state" a first-class declarative concept in the React programming model. This lets us build higher-level features on top of it.
+Suspense 将“UI 加载状态”作为 React 编程模型中的一等声明式概念。这使我们能够在其基础上构建更高级的特性。
 
-We introduced a limited version of Suspense several years ago. However, the only supported use case was code splitting with React.lazy, and it wasn't supported at all when rendering on the server.
+我们几年前引入了一个有限版本的 Suspense。不过，当时唯一受支持的用例是使用 React.lazy 进行代码拆分，而且在服务端渲染时完全不受支持。
 
-In React 18, we've added support for Suspense on the server and expanded its capabilities using concurrent rendering features.
+在 React 18 中，我们增加了对服务端 Suspense 的支持，并通过并发渲染特性扩展了它的能力。
 
-Suspense in React 18 works best when combined with the transition API. If you suspend during a transition, React will prevent already-visible content from being replaced by a fallback. Instead, React will delay the render until enough data has loaded to prevent a bad loading state.
+React 18 中的 Suspense 最适合与 transition API 结合使用。如果你在过渡期间挂起，React 会阻止已经可见的内容被 fallback 替换。相反，React 会延迟渲染，直到加载了足够的数据，以避免出现糟糕的加载状态。
 
-For more, see the RFC for [Suspense in React 18](https://github.com/reactjs/rfcs/blob/main/text/0213-suspense-in-react-18.md).
+更多内容请参见 [React 18 中 Suspense 的 RFC](https://github.com/reactjs/rfcs/blob/main/text/0213-suspense-in-react-18.md)。
 
-### New Client and Server Rendering APIs {/*new-client-and-server-rendering-apis*/}
+### 新的客户端和服务端渲染 API {/*new-client-and-server-rendering-apis*/}
 
-In this release we took the opportunity to redesign the APIs we expose for rendering on the client and server. These changes allow users to continue using the old APIs in React 17 mode while they upgrade to the new APIs in React 18.
+在本次发布中，我们借此机会重新设计了用于客户端和服务端渲染的 API。这些变化允许用户在升级到 React 18 的新 API 之前，继续在 React 17 模式下使用旧 API。
 
 #### React DOM Client {/*react-dom-client*/}
 
-These new APIs are now exported from `react-dom/client`:
+这些新的 API 现已从 `react-dom/client` 导出：
 
-* `createRoot`: New method to create a root to `render` or `unmount`. Use it instead of `ReactDOM.render`. New features in React 18 don't work without it.
-* `hydrateRoot`: New method to hydrate a server rendered application. Use it instead of  `ReactDOM.hydrate` in conjunction with the new React DOM Server APIs. New features in React 18 don't work without it.
+* `createRoot`：用于创建一个 root 以 `render` 或 `unmount` 的新方法。请用它代替 `ReactDOM.render`。没有它，React 18 中的新特性无法工作。
+* `hydrateRoot`：用于水合服务端渲染应用的新方法。请将它与新的 React DOM Server API 配合使用，代替 `ReactDOM.hydrate`。没有它，React 18 中的新特性无法工作。
 
-Both `createRoot` and `hydrateRoot` accept a new option called `onRecoverableError` in case you want to be notified when React recovers from errors during rendering or hydration for logging. By default, React will use [`reportError`](https://developer.mozilla.org/en-US/docs/Web/API/reportError), or `console.error` in the older browsers.
+`createRoot` 和 `hydrateRoot` 都接受一个名为 `onRecoverableError` 的新选项，以便在 React 从渲染或水合过程中的错误中恢复时通知你进行日志记录。默认情况下，React 会使用 [`reportError`](https://developer.mozilla.org/en-US/docs/Web/API/reportError)，在较旧的浏览器中则使用 `console.error`。
 
-[See docs for React DOM Client here](/reference/react-dom/client).
+[在这里查看 React DOM Client 文档](/reference/react-dom/client)。
 
 #### React DOM Server {/*react-dom-server*/}
 
-These new APIs are now exported from `react-dom/server` and have full support for streaming Suspense on the server:
+这些新的 API 现已从 `react-dom/server` 导出，并且完整支持在服务端流式处理 Suspense：
 
-* `renderToPipeableStream`: for streaming in Node environments.
-* `renderToReadableStream`: for modern edge runtime environments, such as Deno and Cloudflare workers.
+* `renderToPipeableStream`：用于在 Node 环境中进行流式渲染。
+* `renderToReadableStream`：用于现代边缘运行时环境，例如 Deno 和 Cloudflare workers。
 
-The existing `renderToString` method keeps working but is discouraged.
+现有的 `renderToString` 方法仍可继续使用，但不建议使用。
 
-[See docs for React DOM Server here](/reference/react-dom/server).
+[在这里查看 React DOM Server 文档](/reference/react-dom/server)。
 
-### New Strict Mode Behaviors {/*new-strict-mode-behaviors*/}
+### 新的 Strict Mode 行为 {/*new-strict-mode-behaviors*/}
 
-In the future, we’d like to add a feature that allows React to add and remove sections of the UI while preserving state. For example, when a user tabs away from a screen and back, React should be able to immediately show the previous screen. To do this, React would unmount and remount trees using the same component state as before.
+未来，我们希望添加一个特性，让 React 在保留状态的同时添加和移除 UI 的某些部分。例如，当用户从某个界面切换离开又返回时，React 应该能够立即显示先前的界面。为此，React 会使用与之前相同的组件状态来卸载并重新挂载树。
 
-This feature will give React apps better performance out-of-the-box, but requires components to be resilient to effects being mounted and destroyed multiple times. Most effects will work without any changes, but some effects assume they are only mounted or destroyed once.
+这个特性会让 React 应用开箱即有更好的性能，但要求组件能够对多次挂载和销毁 effects 保持健壮。大多数 effects 无需任何改动就能工作，但有些 effects 假设它们只会被挂载或销毁一次。
 
-To help surface these issues, React 18 introduces a new development-only check to Strict Mode. This new check will automatically unmount and remount every component, whenever a component mounts for the first time, restoring the previous state on the second mount.
+为了帮助暴露这些问题，React 18 在严格模式中引入了一个仅开发环境下的新检查。每当某个组件首次挂载时，这个新检查会自动卸载并重新挂载每个组件，在第二次挂载时恢复之前的状态。
 
-Before this change, React would mount the component and create the effects:
-
-```
-* React mounts the component.
-  * Layout effects are created.
-  * Effects are created.
-```
-
-
-With Strict Mode in React 18, React will simulate unmounting and remounting the component in development mode:
+在此变更之前，React 会挂载组件并创建 effects：
 
 ```
-* React mounts the component.
-  * Layout effects are created.
-  * Effects are created.
-* React simulates unmounting the component.
-  * Layout effects are destroyed.
-  * Effects are destroyed.
-* React simulates mounting the component with the previous state.
-  * Layout effects are created.
-  * Effects are created.
+* React 挂载组件。
+  * 创建布局 effects。
+  * 创建 effects。
 ```
 
-[See docs for ensuring reusable state here](/reference/react/StrictMode#fixing-bugs-found-by-re-running-effects-in-development).
 
-### New Hooks {/*new-hooks*/}
+在 React 18 的严格模式中，React 会在开发模式下模拟卸载并重新挂载组件：
+
+```
+* React 挂载组件。
+  * 创建布局 effects。
+  * 创建 effects。
+* React 模拟卸载组件。
+  * 销毁布局 effects。
+  * 销毁 effects。
+* React 模拟使用之前的状态挂载组件。
+  * 创建布局 effects。
+  * 创建 effects。
+```
+
+[在这里查看确保可复用状态的文档](/reference/react/StrictMode#fixing-bugs-found-by-re-running-effects-in-development)。
+
+### 新的 Hooks {/*new-hooks*/}
 
 #### useId {/*useid*/}
 
-`useId` is a new Hook for generating unique IDs on both the client and server, while avoiding hydration mismatches. It is primarily useful for component libraries integrating with accessibility APIs that require unique IDs. This solves an issue that already exists in React 17 and below, but it's even more important in React 18 because of how the new streaming server renderer delivers HTML out-of-order. [See docs here](/reference/react/useId).
+`useId` 是一个用于在客户端和服务端生成唯一 ID 的新 Hook，同时避免水合不匹配。它主要适用于集成了可访问性 API、且这些 API 需要唯一 ID 的组件库。这解决了 React 17 及更早版本中已经存在的问题，但由于新的流式服务端渲染器会乱序输出 HTML，这在 React 18 中变得更加重要。[在这里查看文档](/reference/react/useId)。
 
-> Note
+> 注意
 >
-> `useId` is **not** for generating [keys in a list](/learn/rendering-lists#where-to-get-your-key). Keys should be generated from your data.
+> `useId` **不是** 用来生成 [列表中的 key](/learn/rendering-lists#where-to-get-your-key) 的。key 应该从你的数据中生成。
 
 #### useTransition {/*usetransition*/}
 
-`useTransition` and `startTransition` let you mark some state updates as not urgent. Other state updates are considered urgent by default. React will allow urgent state updates (for example, updating a text input) to interrupt non-urgent state updates (for example, rendering a list of search results). [See docs here](/reference/react/useTransition).
+`useTransition` 和 `startTransition` 允许你将某些状态更新标记为非紧急。其他状态更新默认被视为紧急。React 会允许紧急状态更新（例如更新文本输入框）中断非紧急状态更新（例如渲染搜索结果列表）。[在这里查看文档](/reference/react/useTransition)。
 
 #### useDeferredValue {/*usedeferredvalue*/}
 
-`useDeferredValue` lets you defer re-rendering a non-urgent part of the tree. It is similar to debouncing, but has a few advantages compared to it. There is no fixed time delay, so React will attempt the deferred render right after the first render is reflected on the screen. The deferred render is interruptible and doesn't block user input. [See docs here](/reference/react/useDeferredValue).
+`useDeferredValue` 允许你延迟重新渲染树中非紧急的部分。它类似于防抖，但与之相比有一些优势。它没有固定的时间延迟，因此 React 会在第一次渲染已经反映到屏幕上后立即尝试延迟渲染。延迟渲染是可中断的，并且不会阻塞用户输入。[在这里查看文档](/reference/react/useDeferredValue)。
 
 #### useSyncExternalStore {/*usesyncexternalstore*/}
 
-`useSyncExternalStore` is a new Hook that allows external stores to support concurrent reads by forcing updates to the store to be synchronous. It removes the need for useEffect when implementing subscriptions to external data sources, and is recommended for any library that integrates with state external to React. [See docs here](/reference/react/useSyncExternalStore).
+`useSyncExternalStore` 是一个新的 Hook，它通过强制对 store 的更新为同步，允许外部 store 支持并发读取。它在实现对外部数据源的订阅时，不再需要 useEffect，并且推荐任何与 React 之外状态集成的库使用。[在这里查看文档](/reference/react/useSyncExternalStore)。
 
-> Note
+> 注意
 >
-> `useSyncExternalStore` is intended to be used by libraries, not application code.
+> `useSyncExternalStore`  предназначен用于库，而不是应用代码。
 
 #### useInsertionEffect {/*useinsertioneffect*/}
 
-`useInsertionEffect` is a new Hook that allows CSS-in-JS libraries to address performance issues of injecting styles in render. Unless you’ve already built a CSS-in-JS library we don’t expect you to ever use this. This Hook will run after the DOM is mutated, but before layout effects read the new layout. This solves an issue that already exists in React 17 and below, but is even more important in React 18 because React yields to the browser during concurrent rendering, giving it a chance to recalculate layout. [See docs here](/reference/react/useInsertionEffect).
+`useInsertionEffect` 是一个新的 Hook，允许 CSS-in-JS 库解决在渲染过程中注入样式所带来的性能问题。除非你已经构建了一个 CSS-in-JS 库，否则我们不认为你会用到它。这个 Hook 会在 DOM 变更之后执行，但在布局 effects 读取新的布局之前执行。这解决了 React 17 及更早版本中已经存在的问题，但在 React 18 中更为重要，因为 React 在并发渲染期间会让出给浏览器，从而给浏览器机会重新计算布局。[在这里查看文档](/reference/react/useInsertionEffect)。
 
-> Note
+> 注意
 >
-> `useInsertionEffect` is intended to be used by libraries, not application code.
+> `useInsertionEffect`  предназначен用于库，而不是应用代码。
 
-## How to Upgrade {/*how-to-upgrade*/}
+## 如何升级 {/*how-to-upgrade*/}
 
-See [How to Upgrade to React 18](/blog/2022/03/08/react-18-upgrade-guide) for step-by-step instructions and a full list of breaking and notable changes.
+有关逐步说明和完整的破坏性及显著变更列表，请参见 [如何升级到 React 18](/blog/2022/03/08/react-18-upgrade-guide)。
 
-## Changelog {/*changelog*/}
+## 更新日志 {/*changelog*/}
 
 ### React {/*react*/}
 
-* Add `useTransition` and `useDeferredValue` to separate urgent updates from transitions. ([#10426](https://github.com/facebook/react/pull/10426), [#10715](https://github.com/facebook/react/pull/10715), [#15593](https://github.com/facebook/react/pull/15593), [#15272](https://github.com/facebook/react/pull/15272), [#15578](https://github.com/facebook/react/pull/15578), [#15769](https://github.com/facebook/react/pull/15769), [#17058](https://github.com/facebook/react/pull/17058), [#18796](https://github.com/facebook/react/pull/18796), [#19121](https://github.com/facebook/react/pull/19121), [#19703](https://github.com/facebook/react/pull/19703), [#19719](https://github.com/facebook/react/pull/19719), [#19724](https://github.com/facebook/react/pull/19724), [#20672](https://github.com/facebook/react/pull/20672), [#20976](https://github.com/facebook/react/pull/20976) by [@acdlite](https://github.com/acdlite), [@lunaruan](https://github.com/lunaruan), [@rickhanlonii](https://github.com/rickhanlonii), and [@sebmarkbage](https://github.com/sebmarkbage))
-* Add `useId` for generating unique IDs. ([#17322](https://github.com/facebook/react/pull/17322), [#18576](https://github.com/facebook/react/pull/18576), [#22644](https://github.com/facebook/react/pull/22644), [#22672](https://github.com/facebook/react/pull/22672), [#21260](https://github.com/facebook/react/pull/21260) by [@acdlite](https://github.com/acdlite), [@lunaruan](https://github.com/lunaruan), and [@sebmarkbage](https://github.com/sebmarkbage))
-* Add `useSyncExternalStore` to help external store libraries integrate with React. ([#15022](https://github.com/facebook/react/pull/15022), [#18000](https://github.com/facebook/react/pull/18000), [#18771](https://github.com/facebook/react/pull/18771), [#22211](https://github.com/facebook/react/pull/22211), [#22292](https://github.com/facebook/react/pull/22292), [#22239](https://github.com/facebook/react/pull/22239), [#22347](https://github.com/facebook/react/pull/22347), [#23150](https://github.com/facebook/react/pull/23150) by [@acdlite](https://github.com/acdlite), [@bvaughn](https://github.com/bvaughn), and [@drarmstr](https://github.com/drarmstr))
-* Add `startTransition` as a version of `useTransition` without pending feedback. ([#19696](https://github.com/facebook/react/pull/19696)  by [@rickhanlonii](https://github.com/rickhanlonii))
-* Add `useInsertionEffect` for CSS-in-JS libraries. ([#21913](https://github.com/facebook/react/pull/21913)  by [@rickhanlonii](https://github.com/rickhanlonii))
-* Make Suspense remount layout effects when content reappears.  ([#19322](https://github.com/facebook/react/pull/19322), [#19374](https://github.com/facebook/react/pull/19374), [#19523](https://github.com/facebook/react/pull/19523), [#20625](https://github.com/facebook/react/pull/20625), [#21079](https://github.com/facebook/react/pull/21079) by [@acdlite](https://github.com/acdlite), [@bvaughn](https://github.com/bvaughn), and [@lunaruan](https://github.com/lunaruan))
-* Make `<StrictMode>` re-run effects to check for restorable state. ([#19523](https://github.com/facebook/react/pull/19523) , [#21418](https://github.com/facebook/react/pull/21418)  by [@bvaughn](https://github.com/bvaughn) and [@lunaruan](https://github.com/lunaruan))
-* Assume Symbols are always available. ([#23348](https://github.com/facebook/react/pull/23348)  by [@sebmarkbage](https://github.com/sebmarkbage))
-* Remove `object-assign` polyfill. ([#23351](https://github.com/facebook/react/pull/23351)  by [@sebmarkbage](https://github.com/sebmarkbage))
-* Remove unsupported `unstable_changedBits` API.  ([#20953](https://github.com/facebook/react/pull/20953)  by [@acdlite](https://github.com/acdlite))
-* Allow components to render undefined. ([#21869](https://github.com/facebook/react/pull/21869)  by [@rickhanlonii](https://github.com/rickhanlonii))
-* Flush `useEffect` resulting from discrete events like clicks synchronously. ([#21150](https://github.com/facebook/react/pull/21150)  by [@acdlite](https://github.com/acdlite))
-* Suspense `fallback={undefined}` now behaves the same as `null` and isn't ignored. ([#21854](https://github.com/facebook/react/pull/21854)  by [@rickhanlonii](https://github.com/rickhanlonii))
-* Consider all `lazy()` resolving to the same component equivalent. ([#20357](https://github.com/facebook/react/pull/20357)  by [@sebmarkbage](https://github.com/sebmarkbage))
-* Don't patch console during first render. ([#22308](https://github.com/facebook/react/pull/22308)  by [@lunaruan](https://github.com/lunaruan))
-* Improve memory usage. ([#21039](https://github.com/facebook/react/pull/21039)  by [@bgirard](https://github.com/bgirard))
-* Improve messages if string coercion throws (Temporal.*, Symbol, etc.) ([#22064](https://github.com/facebook/react/pull/22064)  by [@justingrant](https://github.com/justingrant))
-* Use `setImmediate` when available over `MessageChannel`. ([#20834](https://github.com/facebook/react/pull/20834)  by [@gaearon](https://github.com/gaearon))
-* Fix context failing to propagate inside suspended trees. ([#23095](https://github.com/facebook/react/pull/23095)  by [@gaearon](https://github.com/gaearon))
-* Fix `useReducer` observing incorrect props by removing the eager bailout mechanism. ([#22445](https://github.com/facebook/react/pull/22445)  by [@josephsavona](https://github.com/josephsavona))
-* Fix `setState` being ignored in Safari when appending iframes. ([#23111](https://github.com/facebook/react/pull/23111)  by [@gaearon](https://github.com/gaearon))
-* Fix a crash when rendering `ZonedDateTime` in the tree. ([#20617](https://github.com/facebook/react/pull/20617)  by [@dimaqq](https://github.com/dimaqq))
-* Fix a crash when document is set to `null` in tests. ([#22695](https://github.com/facebook/react/pull/22695)  by [@SimenB](https://github.com/SimenB))
-* Fix `onLoad` not triggering when concurrent features are on. ([#23316](https://github.com/facebook/react/pull/23316)  by [@gnoff](https://github.com/gnoff))
-* Fix a warning when a selector returns `NaN`.  ([#23333](https://github.com/facebook/react/pull/23333)  by [@hachibeeDI](https://github.com/hachibeeDI))
-* Fix a crash when document is set to `null` in tests. ([#22695](https://github.com/facebook/react/pull/22695) by [@SimenB](https://github.com/SimenB))
-* Fix the generated license header. ([#23004](https://github.com/facebook/react/pull/23004)  by [@vitaliemiron](https://github.com/vitaliemiron))
-* Add `package.json` as one of the entry points. ([#22954](https://github.com/facebook/react/pull/22954)  by [@Jack](https://github.com/Jack-Works))
-* Allow suspending outside a Suspense boundary. ([#23267](https://github.com/facebook/react/pull/23267)  by [@acdlite](https://github.com/acdlite))
-* Log a recoverable error whenever hydration fails. ([#23319](https://github.com/facebook/react/pull/23319)  by [@acdlite](https://github.com/acdlite))
+* 添加 `useTransition` 和 `useDeferredValue`，以将紧急更新与过渡分离。([#10426](https://github.com/facebook/react/pull/10426), [#10715](https://github.com/facebook/react/pull/10715), [#15593](https://github.com/facebook/react/pull/15593), [#15272](https://github.com/facebook/react/pull/15272), [#15578](https://github.com/facebook/react/pull/15578), [#15769](https://github.com/facebook/react/pull/15769), [#17058](https://github.com/facebook/react/pull/17058), [#18796](https://github.com/facebook/react/pull/18796), [#19121](https://github.com/facebook/react/pull/19121), [#19703](https://github.com/facebook/react/pull/19703), [#19719](https://github.com/facebook/react/pull/19719), [#19724](https://github.com/facebook/react/pull/19724), [#20672](https://github.com/facebook/react/pull/20672), [#20976](https://github.com/facebook/react/pull/20976) 由 [@acdlite](https://github.com/acdlite), [@lunaruan](https://github.com/lunaruan), [@rickhanlonii](https://github.com/rickhanlonii) 和 [@sebmarkbage](https://github.com/sebmarkbage) 提交）
+* 添加 `useId` 用于生成唯一 ID。([#17322](https://github.com/facebook/react/pull/17322), [#18576](https://github.com/facebook/react/pull/18576), [#22644](https://github.com/facebook/react/pull/22644), [#22672](https://github.com/facebook/react/pull/22672), [#21260](https://github.com/facebook/react/pull/21260) 由 [@acdlite](https://github.com/acdlite), [@lunaruan](https://github.com/lunaruan) 和 [@sebmarkbage](https://github.com/sebmarkbage) 提交）
+* 添加 `useSyncExternalStore` 以帮助外部存储库与 React 集成。([#15022](https://github.com/facebook/react/pull/15022), [#18000](https://github.com/facebook/react/pull/18000), [#18771](https://github.com/facebook/react/pull/18771), [#22211](https://github.com/facebook/react/pull/22211), [#22292](https://github.com/facebook/react/pull/22292), [#22239](https://github.com/facebook/react/pull/22239), [#22347](https://github.com/facebook/react/pull/22347), [#23150](https://github.com/facebook/react/pull/23150) 由 [@acdlite](https://github.com/acdlite), [@bvaughn](https://github.com/bvaughn) 和 [@drarmstr](https://github.com/drarmstr) 提交）
+* 添加 `startTransition`，作为不带待处理反馈的 `useTransition` 版本。([#19696](https://github.com/facebook/react/pull/19696) 由 [@rickhanlonii](https://github.com/rickhanlonii) 提交）
+* 为 CSS-in-JS 库添加 `useInsertionEffect`。([#21913](https://github.com/facebook/react/pull/21913) 由 [@rickhanlonii](https://github.com/rickhanlonii) 提交）
+* 当内容重新出现时，让 Suspense 重新挂载布局效果。([#19322](https://github.com/facebook/react/pull/19322), [#19374](https://github.com/facebook/react/pull/19374), [#19523](https://github.com/facebook/react/pull/19523), [#20625](https://github.com/facebook/react/pull/20625), [#21079](https://github.com/facebook/react/pull/21079) 由 [@acdlite](https://github.com/acdlite), [@bvaughn](https://github.com/bvaughn) 和 [@lunaruan](https://github.com/lunaruan) 提交）
+* 让 `<StrictMode>` 重新运行效果以检查可恢复状态。([#19523](https://github.com/facebook/react/pull/19523) , [#21418](https://github.com/facebook/react/pull/21418) 由 [@bvaughn](https://github.com/bvaughn) 和 [@lunaruan](https://github.com/lunaruan) 提交）
+* 假定 Symbols 始终可用。([#23348](https://github.com/facebook/react/pull/23348) 由 [@sebmarkbage](https://github.com/sebmarkbage) 提交）
+* 移除 `object-assign` polyfill。([#23351](https://github.com/facebook/react/pull/23351) 由 [@sebmarkbage](https://github.com/sebmarkbage) 提交）
+* 移除不受支持的 `unstable_changedBits` API。([#20953](https://github.com/facebook/react/pull/20953) 由 [@acdlite](https://github.com/acdlite) 提交）
+* 允许组件渲染 undefined。([#21869](https://github.com/facebook/react/pull/21869) 由 [@rickhanlonii](https://github.com/rickhanlonii) 提交）
+* 将由点击等离散事件产生的 `useEffect` 同步刷新。([#21150](https://github.com/facebook/react/pull/21150) 由 [@acdlite](https://github.com/acdlite) 提交）
+* 现在 Suspense 中的 `fallback={undefined}` 行为与 `null` 相同，并且不会被忽略。([#21854](https://github.com/facebook/react/pull/21854) 由 [@rickhanlonii](https://github.com/rickhanlonii) 提交）
+* 将所有解析为同一组件的 `lazy()` 视为等价。([#20357](https://github.com/facebook/react/pull/20357) 由 [@sebmarkbage](https://github.com/sebmarkbage) 提交）
+* 首次渲染时不要修补 console。([#22308](https://github.com/facebook/react/pull/22308) 由 [@lunaruan](https://github.com/lunaruan) 提交）
+* 改进内存使用。([#21039](https://github.com/facebook/react/pull/21039) 由 [@bgirard](https://github.com/bgirard) 提交）
+* 改进字符串强制转换抛出异常时的消息（Temporal.*、Symbol 等）。([#22064](https://github.com/facebook/react/pull/22064) 由 [@justingrant](https://github.com/justingrant) 提交）
+* 在可用时优先使用 `setImmediate` 而不是 `MessageChannel`。([#20834](https://github.com/facebook/react/pull/20834) 由 [@gaearon](https://github.com/gaearon) 提交）
+* 修复上下文无法在挂起树内传播的问题。([#23095](https://github.com/facebook/react/pull/23095) 由 [@gaearon](https://github.com/gaearon) 提交）
+* 通过移除 eager bailout 机制修复 `useReducer` 观察到错误 props 的问题。([#22445](https://github.com/facebook/react/pull/22445) 由 [@josephsavona](https://github.com/josephsavona) 提交）
+* 修复在 Safari 中追加 iframe 时 `setState` 被忽略的问题。([#23111](https://github.com/facebook/react/pull/23111) 由 [@gaearon](https://github.com/gaearon) 提交）
+* 修复在树中渲染 `ZonedDateTime` 时的崩溃。([#20617](https://github.com/facebook/react/pull/20617) 由 [@dimaqq](https://github.com/dimaqq) 提交）
+* 修复测试中将 document 设为 `null` 时的崩溃。([#22695](https://github.com/facebook/react/pull/22695) 由 [@SimenB](https://github.com/SimenB) 提交）
+* 修复在启用并发特性时 `onLoad` 不触发的问题。([#23316](https://github.com/facebook/react/pull/23316) 由 [@gnoff](https://github.com/gnoff) 提交）
+* 修复选择器返回 `NaN` 时的警告。([#23333](https://github.com/facebook/react/pull/23333) 由 [@hachibeeDI](https://github.com/hachibeeDI) 提交）
+* 修复测试中将 document 设为 `null` 时的崩溃。([#22695](https://github.com/facebook/react/pull/22695) 由 [@SimenB](https://github.com/SimenB) 提交）
+* 修复生成的许可证头。([#23004](https://github.com/facebook/react/pull/23004) 由 [@vitaliemiron](https://github.com/vitaliemiron) 提交）
+* 将 `package.json` 添加为入口点之一。([#22954](https://github.com/facebook/react/pull/22954) 由 [@Jack](https://github.com/Jack-Works) 提交）
+* 允许在 Suspense 边界之外挂起。([#23267](https://github.com/facebook/react/pull/23267) 由 [@acdlite](https://github.com/acdlite) 提交）
+* 每当 hydration 失败时记录一个可恢复错误。([#23319](https://github.com/facebook/react/pull/23319) 由 [@acdlite](https://github.com/acdlite) 提交）
 
 ### React DOM {/*react-dom*/}
 
-* Add `createRoot` and `hydrateRoot`. ([#10239](https://github.com/facebook/react/pull/10239), [#11225](https://github.com/facebook/react/pull/11225), [#12117](https://github.com/facebook/react/pull/12117), [#13732](https://github.com/facebook/react/pull/13732), [#15502](https://github.com/facebook/react/pull/15502), [#15532](https://github.com/facebook/react/pull/15532), [#17035](https://github.com/facebook/react/pull/17035), [#17165](https://github.com/facebook/react/pull/17165), [#20669](https://github.com/facebook/react/pull/20669), [#20748](https://github.com/facebook/react/pull/20748), [#20888](https://github.com/facebook/react/pull/20888), [#21072](https://github.com/facebook/react/pull/21072), [#21417](https://github.com/facebook/react/pull/21417), [#21652](https://github.com/facebook/react/pull/21652), [#21687](https://github.com/facebook/react/pull/21687), [#23207](https://github.com/facebook/react/pull/23207), [#23385](https://github.com/facebook/react/pull/23385) by [@acdlite](https://github.com/acdlite), [@bvaughn](https://github.com/bvaughn), [@gaearon](https://github.com/gaearon), [@lunaruan](https://github.com/lunaruan), [@rickhanlonii](https://github.com/rickhanlonii), [@trueadm](https://github.com/trueadm), and [@sebmarkbage](https://github.com/sebmarkbage))
-* Add selective hydration. ([#14717](https://github.com/facebook/react/pull/14717), [#14884](https://github.com/facebook/react/pull/14884), [#16725](https://github.com/facebook/react/pull/16725), [#16880](https://github.com/facebook/react/pull/16880), [#17004](https://github.com/facebook/react/pull/17004), [#22416](https://github.com/facebook/react/pull/22416), [#22629](https://github.com/facebook/react/pull/22629), [#22448](https://github.com/facebook/react/pull/22448), [#22856](https://github.com/facebook/react/pull/22856), [#23176](https://github.com/facebook/react/pull/23176) by [@acdlite](https://github.com/acdlite), [@gaearon](https://github.com/gaearon), [@salazarm](https://github.com/salazarm), and [@sebmarkbage](https://github.com/sebmarkbage))
-* Add `aria-description` to the list of known ARIA attributes. ([#22142](https://github.com/facebook/react/pull/22142)  by [@mahyareb](https://github.com/mahyareb))
-* Add `onResize` event to video elements. ([#21973](https://github.com/facebook/react/pull/21973)  by [@rileyjshaw](https://github.com/rileyjshaw))
-* Add `imageSizes` and `imageSrcSet` to known props. ([#22550](https://github.com/facebook/react/pull/22550)  by [@eps1lon](https://github.com/eps1lon))
-* Allow non-string `<option>` children if `value` is provided.  ([#21431](https://github.com/facebook/react/pull/21431)  by [@sebmarkbage](https://github.com/sebmarkbage))
-* Fix `aspectRatio` style not being applied. ([#21100](https://github.com/facebook/react/pull/21100)  by [@gaearon](https://github.com/gaearon))
-* Warn if `renderSubtreeIntoContainer` is called. ([#23355](https://github.com/facebook/react/pull/23355)  by [@acdlite](https://github.com/acdlite))
+* 添加 `createRoot` 和 `hydrateRoot`。([#10239](https://github.com/facebook/react/pull/10239), [#11225](https://github.com/facebook/react/pull/11225), [#12117](https://github.com/facebook/react/pull/12117), [#13732](https://github.com/facebook/react/pull/13732), [#15502](https://github.com/facebook/react/pull/15502), [#15532](https://github.com/facebook/react/pull/15532), [#17035](https://github.com/facebook/react/pull/17035), [#17165](https://github.com/facebook/react/pull/17165), [#20669](https://github.com/facebook/react/pull/20669), [#20748](https://github.com/facebook/react/pull/20748), [#20888](https://github.com/facebook/react/pull/20888), [#21072](https://github.com/facebook/react/pull/21072), [#21417](https://github.com/facebook/react/pull/21417), [#21652](https://github.com/facebook/react/pull/21652), [#21687](https://github.com/facebook/react/pull/21687), [#23207](https://github.com/facebook/react/pull/23207), [#23385](https://github.com/facebook/react/pull/23385) 由 [@acdlite](https://github.com/acdlite), [@bvaughn](https://github.com/bvaughn), [@gaearon](https://github.com/gaearon), [@lunaruan](https://github.com/lunaruan), [@rickhanlonii](https://github.com/rickhanlonii), [@trueadm](https://github.com/trueadm) 和 [@sebmarkbage](https://github.com/sebmarkbage) 提交）
+* 添加选择性 hydration。([#14717](https://github.com/facebook/react/pull/14717), [#14884](https://github.com/facebook/react/pull/14884), [#16725](https://github.com/facebook/react/pull/16725), [#16880](https://github.com/facebook/react/pull/16880), [#17004](https://github.com/facebook/react/pull/17004), [#22416](https://github.com/facebook/react/pull/22416), [#22629](https://github.com/facebook/react/pull/22629), [#22448](https://github.com/facebook/react/pull/22448), [#22856](https://github.com/facebook/react/pull/22856), [#23176](https://github.com/facebook/react/pull/23176) 由 [@acdlite](https://github.com/acdlite), [@gaearon](https://github.com/gaearon), [@salazarm](https://github.com/salazarm) 和 [@sebmarkbage](https://github.com/sebmarkbage) 提交）
+* 将 `aria-description` 添加到已知 ARIA 属性列表中。([#22142](https://github.com/facebook/react/pull/22142) 由 [@mahyareb](https://github.com/mahyareb) 提交）
+* 为 video 元素添加 `onResize` 事件。([#21973](https://github.com/facebook/react/pull/21973) 由 [@rileyjshaw](https://github.com/rileyjshaw) 提交）
+* 将 `imageSizes` 和 `imageSrcSet` 添加到已知 props。([#22550](https://github.com/facebook/react/pull/22550) 由 [@eps1lon](https://github.com/eps1lon) 提交）
+* 如果提供了 `value`，则允许非字符串 `<option>` 子元素。([#21431](https://github.com/facebook/react/pull/21431) 由 [@sebmarkbage](https://github.com/sebmarkbage) 提交）
+* 修复 `aspectRatio` 样式未被应用的问题。([#21100](https://github.com/facebook/react/pull/21100) 由 [@gaearon](https://github.com/gaearon) 提交）
+* 当调用 `renderSubtreeIntoContainer` 时发出警告。([#23355](https://github.com/facebook/react/pull/23355) 由 [@acdlite](https://github.com/acdlite) 提交）
 
 ### React DOM Server {/*react-dom-server-1*/}
 
-* Add the new streaming renderer. ([#14144](https://github.com/facebook/react/pull/14144), [#20970](https://github.com/facebook/react/pull/20970), [#21056](https://github.com/facebook/react/pull/21056), [#21255](https://github.com/facebook/react/pull/21255), [#21200](https://github.com/facebook/react/pull/21200), [#21257](https://github.com/facebook/react/pull/21257), [#21276](https://github.com/facebook/react/pull/21276), [#22443](https://github.com/facebook/react/pull/22443), [#22450](https://github.com/facebook/react/pull/22450), [#23247](https://github.com/facebook/react/pull/23247), [#24025](https://github.com/facebook/react/pull/24025), [#24030](https://github.com/facebook/react/pull/24030) by [@sebmarkbage](https://github.com/sebmarkbage))
-* Fix context providers in SSR when handling multiple requests. ([#23171](https://github.com/facebook/react/pull/23171)  by [@frandiox](https://github.com/frandiox))
-* Revert to client render on text mismatch. ([#23354](https://github.com/facebook/react/pull/23354)  by [@acdlite](https://github.com/acdlite))
-* Deprecate `renderToNodeStream`. ([#23359](https://github.com/facebook/react/pull/23359)  by [@sebmarkbage](https://github.com/sebmarkbage))
-* Fix a spurious error log in the new server renderer. ([#24043](https://github.com/facebook/react/pull/24043)  by [@eps1lon](https://github.com/eps1lon))
-* Fix a bug in the new server renderer. ([#22617](https://github.com/facebook/react/pull/22617)  by [@shuding](https://github.com/shuding))
-* Ignore function and symbol values inside custom elements on the server. ([#21157](https://github.com/facebook/react/pull/21157)  by [@sebmarkbage](https://github.com/sebmarkbage))
+* 添加新的流式渲染器。([#14144](https://github.com/facebook/react/pull/14144), [#20970](https://github.com/facebook/react/pull/20970), [#21056](https://github.com/facebook/react/pull/21056), [#21255](https://github.com/facebook/react/pull/21255), [#21200](https://github.com/facebook/react/pull/21200), [#21257](https://github.com/facebook/react/pull/21257), [#21276](https://github.com/facebook/react/pull/21276), [#22443](https://github.com/facebook/react/pull/22443), [#22450](https://github.com/facebook/react/pull/22450), [#23247](https://github.com/facebook/react/pull/23247), [#24025](https://github.com/facebook/react/pull/24025), [#24030](https://github.com/facebook/react/pull/24030) 由 [@sebmarkbage](https://github.com/sebmarkbage) 提交）
+* 修复在处理多个请求时 SSR 中的上下文提供器。([#23171](https://github.com/facebook/react/pull/23171) 由 [@frandiox](https://github.com/frandiox) 提交）
+* 文本不匹配时回退到客户端渲染。([#23354](https://github.com/facebook/react/pull/23354) 由 [@acdlite](https://github.com/acdlite) 提交）
+* 弃用 `renderToNodeStream`。([#23359](https://github.com/facebook/react/pull/23359) 由 [@sebmarkbage](https://github.com/sebmarkbage) 提交）
+* 修复新的服务端渲染器中的一个误报错误日志。([#24043](https://github.com/facebook/react/pull/24043) 由 [@eps1lon](https://github.com/eps1lon) 提交）
+* 修复新的服务端渲染器中的一个 bug。([#22617](https://github.com/facebook/react/pull/22617) 由 [@shuding](https://github.com/shuding) 提交）
+* 在服务器端忽略自定义元素中的函数和值符号值。([#21157](https://github.com/facebook/react/pull/21157) 由 [@sebmarkbage](https://github.com/sebmarkbage) 提交）
 
 ### React DOM Test Utils {/*react-dom-test-utils*/}
 
-* Throw when `act` is used in production. ([#21686](https://github.com/facebook/react/pull/21686)  by [@acdlite](https://github.com/acdlite))
-* Support disabling spurious act warnings with `global.IS_REACT_ACT_ENVIRONMENT`. ([#22561](https://github.com/facebook/react/pull/22561)  by [@acdlite](https://github.com/acdlite))
-* Expand act warning to cover all APIs that might schedule React work. ([#22607](https://github.com/facebook/react/pull/22607)  by [@acdlite](https://github.com/acdlite))
-* Make `act` batch updates. ([#21797](https://github.com/facebook/react/pull/21797)  by [@acdlite](https://github.com/acdlite))
-* Remove warning for dangling passive effects. ([#22609](https://github.com/facebook/react/pull/22609)  by [@acdlite](https://github.com/acdlite))
+* 当在生产环境中使用 `act` 时抛出错误。([#21686](https://github.com/facebook/react/pull/21686) 由 [@acdlite](https://github.com/acdlite) 提交）
+* 支持使用 `global.IS_REACT_ACT_ENVIRONMENT` 禁用多余的 act 警告。([#22561](https://github.com/facebook/react/pull/22561) 由 [@acdlite](https://github.com/acdlite) 提交）
+* 扩展 act 警告以涵盖所有可能调度 React 工作的 API。([#22607](https://github.com/facebook/react/pull/22607) 由 [@acdlite](https://github.com/acdlite) 提交）
+* 让 `act` 批量更新。([#21797](https://github.com/facebook/react/pull/21797) 由 [@acdlite](https://github.com/acdlite) 提交）
+* 移除对悬挂的被动效果的警告。([#22609](https://github.com/facebook/react/pull/22609) 由 [@acdlite](https://github.com/acdlite) 提交）
 
 ### React Refresh {/*react-refresh*/}
 
-* Track late-mounted roots in Fast Refresh. ([#22740](https://github.com/facebook/react/pull/22740)  by [@anc95](https://github.com/anc95))
-* Add `exports` field to `package.json`. ([#23087](https://github.com/facebook/react/pull/23087)  by [@otakustay](https://github.com/otakustay))
+* 在 Fast Refresh 中跟踪后挂载的根。([#22740](https://github.com/facebook/react/pull/22740) 由 [@anc95](https://github.com/anc95) 提交）
+* 向 `package.json` 添加 `exports` 字段。([#23087](https://github.com/facebook/react/pull/23087) 由 [@otakustay](https://github.com/otakustay) 提交）
 
 ### Server Components (Experimental) {/*server-components-experimental*/}
 
-* Add Server Context support. ([#23244](https://github.com/facebook/react/pull/23244)  by [@salazarm](https://github.com/salazarm))
-* Add `lazy` support. ([#24068](https://github.com/facebook/react/pull/24068)  by [@gnoff](https://github.com/gnoff))
-* Update webpack plugin for webpack 5 ([#22739](https://github.com/facebook/react/pull/22739)  by [@michenly](https://github.com/michenly))
-* Fix a mistake in the Node loader. ([#22537](https://github.com/facebook/react/pull/22537)  by [@btea](https://github.com/btea))
-* Use `globalThis` instead of `window` for edge environments. ([#22777](https://github.com/facebook/react/pull/22777)  by [@huozhi](https://github.com/huozhi))
+* 添加 Server Context 支持。([#23244](https://github.com/facebook/react/pull/23244) 由 [@salazarm](https://github.com/salazarm) 提交）
+* 添加 `lazy` 支持。([#24068](https://github.com/facebook/react/pull/24068) 由 [@gnoff](https://github.com/gnoff) 提交）
+* 为 webpack 5 更新 webpack 插件。([#22739](https://github.com/facebook/react/pull/22739) 由 [@michenly](https://github.com/michenly) 提交）
+* 修复 Node 加载器中的一个错误。([#22537](https://github.com/facebook/react/pull/22537) 由 [@btea](https://github.com/btea) 提交）
+* 在边缘环境中使用 `globalThis` 而不是 `window`。([#22777](https://github.com/facebook/react/pull/22777) 由 [@huozhi](https://github.com/huozhi) 提交）

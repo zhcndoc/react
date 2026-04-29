@@ -1,93 +1,93 @@
 ---
-title: Debugging and Troubleshooting
+title: 调试与排查问题
 ---
 
 <Intro>
-This guide helps you identify and fix issues when using React Compiler. Learn how to debug compilation problems and resolve common issues.
+本指南帮助你在使用 React 编译器时识别并修复问题。了解如何调试编译问题并解决常见问题。
 </Intro>
 
 <YouWillLearn>
 
-* The difference between compiler errors and runtime issues
-* Common patterns that break compilation
-* Step-by-step debugging workflow
+* 编译器错误与运行时问题之间的区别
+* 会破坏编译的常见模式
+* 分步骤的调试工作流程
 
 </YouWillLearn>
 
-## Understanding Compiler Behavior {/*understanding-compiler-behavior*/}
+## 理解编译器行为 {/*understanding-compiler-behavior*/}
 
-React Compiler is designed to handle code that follows the [Rules of React](/reference/rules). When it encounters code that might break these rules, it safely skips optimization rather than risk changing your app's behavior.
+React 编译器旨在处理符合 [React 规则](/reference/rules) 的代码。当它遇到可能违反这些规则的代码时，它会安全地跳过优化，而不是冒着改变应用行为的风险。
 
-### Compiler Errors vs Runtime Issues {/*compiler-errors-vs-runtime-issues*/}
+### 编译器错误 vs 运行时问题 {/*compiler-errors-vs-runtime-issues*/}
 
-**Compiler errors** occur at build time and prevent your code from compiling. These are rare because the compiler is designed to skip problematic code rather than fail.
+**编译器错误** 发生在构建时，会阻止代码编译。这类错误很少见，因为编译器的设计是跳过有问题的代码，而不是直接失败。
 
-**Runtime issues** occur when compiled code behaves differently than expected. Most of the time, if you encounter an issue with React Compiler, it's a runtime issue. This typically happens when your code violates the Rules of React in subtle ways that the compiler couldn't detect, and the compiler mistakenly compiled a component it should have skipped.
+**运行时问题** 发生在编译后的代码表现与预期不同的时候。大多数情况下，如果你遇到 React 编译器相关的问题，那通常是运行时问题。这通常发生在你的代码以编译器无法检测到的微妙方式违反了 React 规则，而编译器错误地编译了一个本应跳过的组件。
 
-When debugging runtime issues, focus your efforts on finding Rules of React violations in the affected components that were not detected by the ESLint rule. The compiler relies on your code following these rules, and when they're broken in ways it can't detect, that's when runtime problems occur.
+在调试运行时问题时，请重点查找受影响组件中未被 ESLint 规则检测到的 React 规则违反情况。编译器依赖你的代码遵循这些规则；当这些规则以它无法检测的方式被破坏时，就会出现运行时问题。
 
 
-## Common Breaking Patterns {/*common-breaking-patterns*/}
+## 常见的破坏模式 {/*common-breaking-patterns*/}
 
-One of the main ways React Compiler can break your app is if your code was written to rely on memoization for correctness. This means your app depends on specific values being memoized to work properly. Since the compiler may memoize differently than your manual approach, this can lead to unexpected behavior like effects over-firing, infinite loops, or missing updates.
+React 编译器可能破坏你的应用的一个主要方式，是你的代码是以依赖记忆化来保证正确性的方式编写的。这意味着你的应用依赖某些特定值被记忆化后才能正常工作。由于编译器的记忆化方式可能与你手动的做法不同，这可能导致意外行为，例如 effect 过度触发、无限循环或更新缺失。
 
-Common scenarios where this occurs:
+会发生这种情况的常见场景包括：
 
-- **Effects that rely on referential equality** - When effects depend on objects or arrays maintaining the same reference across renders
-- **Dependency arrays that need stable references** - When unstable dependencies cause effects to fire too often or create infinite loops
-- **Conditional logic based on reference checks** - When code uses referential equality checks for caching or optimization
+- **依赖引用相等性的 effect** - 当 effect 依赖对象或数组在多次渲染之间保持相同引用时
+- **需要稳定引用的依赖数组** - 当不稳定的依赖导致 effect 触发过于频繁或产生无限循环时
+- **基于引用检查的条件逻辑** - 当代码使用引用相等性检查进行缓存或优化时
 
-## Debugging Workflow {/*debugging-workflow*/}
+## 调试工作流程 {/*debugging-workflow*/}
 
-Follow these steps when you encounter issues:
+遇到问题时，请按以下步骤操作：
 
-### Compiler Build Errors {/*compiler-build-errors*/}
+### 编译器构建错误 {/*compiler-build-errors*/}
 
-If you encounter a compiler error that unexpectedly breaks your build, this is likely a bug in the compiler. Report it to the [facebook/react](https://github.com/facebook/react/issues) repository with:
-- The error message
-- The code that caused the error
-- Your React and compiler versions
+如果你遇到一个意外破坏构建的编译器错误，这很可能是编译器中的 bug。请将它报告到 [facebook/react](https://github.com/facebook/react/issues) 仓库，并附上：
+- 错误消息
+- 导致错误的代码
+- 你的 React 和编译器版本
 
-### Runtime Issues {/*runtime-issues*/}
+### 运行时问题 {/*runtime-issues*/}
 
-For runtime behavior issues:
+对于运行时行为问题：
 
-### 1. Temporarily Disable Compilation {/*temporarily-disable-compilation*/}
+### 1. 临时禁用编译 {/*temporarily-disable-compilation*/}
 
-Use `"use no memo"` to isolate whether an issue is compiler-related:
+使用 `"use no memo"` 来隔离问题是否与编译器有关：
 
 ```js
 function ProblematicComponent() {
-  "use no memo"; // Skip compilation for this component
-  // ... rest of component
+  "use no memo"; // 跳过此组件的编译
+  // ... 组件其余部分
 }
 ```
 
-If the issue disappears, it's likely related to a Rules of React violation.
+如果问题消失了，那很可能与 React 规则违反有关。
 
-You can also try removing manual memoization (useMemo, useCallback, memo) from the problematic component to verify that your app works correctly without any memoization. If the bug still occurs when all memoization is removed, you have a Rules of React violation that needs to be fixed.
+你也可以尝试从有问题的组件中移除手动记忆化（useMemo、useCallback、memo），以验证在没有任何记忆化的情况下你的应用是否能正确工作。如果在移除所有记忆化后问题仍然存在，那么你就有一个需要修复的 React 规则违反问题。
 
-### 2. Fix Issues Step by Step {/*fix-issues-step-by-step*/}
+### 2. 逐步修复问题 {/*fix-issues-step-by-step*/}
 
-1. Identify the root cause (often memoization-for-correctness)
-2. Test after each fix
-3. Remove `"use no memo"` once fixed
-4. Verify the component shows the ✨ badge in React DevTools
+1. 找出根本原因（通常是为了正确性的记忆化）
+2. 每修复一步后进行测试
+3. 修复完成后移除 `"use no memo"`
+4. 验证该组件在 React DevTools 中显示 ✨ 徽标
 
-## Reporting Compiler Bugs {/*reporting-compiler-bugs*/}
+## 报告编译器 bug {/*reporting-compiler-bugs*/}
 
-If you believe you've found a compiler bug:
+如果你认为自己发现了编译器 bug：
 
-1. **Verify it's not a Rules of React violation** - Check with ESLint
-2. **Create a minimal reproduction** - Isolate the issue in a small example
-3. **Test without the compiler** - Confirm the issue only occurs with compilation
-4. **File an [issue](https://github.com/facebook/react/issues/new?template=compiler_bug_report.yml)**:
-   - React and compiler versions
-   - Minimal reproduction code
-   - Expected vs actual behavior
-   - Any error messages
+1. **确认这不是 React 规则的违反** - 使用 ESLint 检查
+2. **创建最小可复现示例** - 在一个小例子中隔离问题
+3. **在没有编译器的情况下测试** - 确认问题只在启用编译时发生
+4. **提交一个 [issue](https://github.com/facebook/react/issues/new?template=compiler_bug_report.yml)**：
+   - React 和编译器版本
+   - 最小可复现代码
+   - 预期行为与实际行为
+   - 任何错误消息
 
-## Next Steps {/*next-steps*/}
+## 后续步骤 {/*next-steps*/}
 
-- Review the [Rules of React](/reference/rules) to prevent issues
-- Check the [incremental adoption guide](/learn/react-compiler/incremental-adoption) for gradual rollout strategies
+- 查看 [React 规则](/reference/rules) 以防止问题
+- 查看 [渐进式采用指南](/learn/react-compiler/incremental-adoption) 以了解逐步推广策略

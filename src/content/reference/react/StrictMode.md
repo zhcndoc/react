@@ -5,7 +5,7 @@ title: <StrictMode>
 
 <Intro>
 
-`<StrictMode>` lets you find common bugs in your components early during development.
+`<StrictMode>` 让你在开发过程中尽早发现组件中的常见 bug。
 
 
 ```js
@@ -20,11 +20,11 @@ title: <StrictMode>
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `<StrictMode>` {/*strictmode*/}
 
-Use `StrictMode` to enable additional development behaviors and warnings for the component tree inside:
+使用 `StrictMode` 为内部的组件树启用额外的开发行为和警告：
 
 ```js
 import { StrictMode } from 'react';
@@ -38,33 +38,33 @@ root.render(
 );
 ```
 
-[See more examples below.](#usage)
+[查看更多示例。](#usage)
 
-Strict Mode enables the following development-only behaviors:
+严格模式会启用以下仅限开发环境的行为：
 
-- Your components will [re-render an extra time](#fixing-bugs-found-by-double-rendering-in-development) to find bugs caused by impure rendering.
-- Your components will [re-run Effects an extra time](#fixing-bugs-found-by-re-running-effects-in-development) to find bugs caused by missing Effect cleanup.
-- Your components will [re-run refs callbacks an extra time](#fixing-bugs-found-by-re-running-ref-callbacks-in-development) to find bugs caused by missing ref cleanup.
-- Your components will [be checked for usage of deprecated APIs.](#fixing-deprecation-warnings-enabled-by-strict-mode)
+- 你的组件会 [额外重新渲染一次](#fixing-bugs-found-by-double-rendering-in-development)，以发现由不纯渲染引起的 bug。
+- 你的组件会 [额外重新运行 Effects 一次](#fixing-bugs-found-by-re-running-effects-in-development)，以发现由缺少 Effect 清理引起的 bug。
+- 你的组件会 [额外重新运行 ref 回调一次](#fixing-bugs-found-by-re-running-ref-callbacks-in-development)，以发现由缺少 ref 清理引起的 bug。
+- 你的组件会 [检查是否使用了已弃用的 API。](#fixing-deprecation-warnings-enabled-by-strict-mode)
 
 #### Props {/*props*/}
 
-`StrictMode` accepts no props.
+`StrictMode` 不接受任何 props。
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-* There is no way to opt out of Strict Mode inside a tree wrapped in `<StrictMode>`. This gives you confidence that all components inside `<StrictMode>` are checked. If two teams working on a product disagree whether they find the checks valuable, they need to either reach consensus or move `<StrictMode>` down in the tree.
+* 在被 `<StrictMode>` 包裹的树中，没有办法选择退出严格模式。这能让你确信 `<StrictMode>` 内的所有组件都会被检查。如果两个正在开发同一产品的团队对于这些检查是否有价值存在分歧，他们需要达成共识，或者将 `<StrictMode>` 下移到树的更深处。
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Enabling Strict Mode for entire app {/*enabling-strict-mode-for-entire-app*/}
+### 为整个应用启用严格模式 {/*enabling-strict-mode-for-entire-app*/}
 
-Strict Mode enables extra development-only checks for the entire component tree inside the `<StrictMode>` component. These checks help you find common bugs in your components early in the development process.
+严格模式会为 `<StrictMode>` 组件内部的整个组件树启用额外的仅限开发环境的检查。这些检查有助于你在开发过程的早期发现组件中的常见 bug。
 
 
-To enable Strict Mode for your entire app, wrap your root component with `<StrictMode>` when you render it:
+要为整个应用启用严格模式，在渲染根组件时用 `<StrictMode>` 包裹它：
 
 ```js {6,8}
 import { StrictMode } from 'react';
@@ -78,28 +78,28 @@ root.render(
 );
 ```
 
-We recommend wrapping your entire app in Strict Mode, especially for newly created apps. If you use a framework that calls [`createRoot`](/reference/react-dom/client/createRoot) for you, check its documentation for how to enable Strict Mode.
+我们建议将整个应用都包裹在严格模式中，尤其是新创建的应用。如果你使用的框架已经替你调用了 [`createRoot`](/reference/react-dom/client/createRoot)，请查看其文档，了解如何启用严格模式。
 
-Although the Strict Mode checks **only run in development,** they help you find bugs that already exist in your code but can be tricky to reliably reproduce in production. Strict Mode lets you fix bugs before your users report them.
+虽然严格模式检查 **只在开发环境运行，** 但它们能帮助你发现代码中已经存在、却很难在生产环境中稳定复现的 bug。严格模式让你能够在用户报告之前修复这些 bug。
 
 <Note>
 
-Strict Mode enables the following checks in development:
+严格模式在开发环境中会启用以下检查：
 
-- Your components will [re-render an extra time](#fixing-bugs-found-by-double-rendering-in-development) to find bugs caused by impure rendering.
-- Your components will [re-run Effects an extra time](#fixing-bugs-found-by-re-running-effects-in-development) to find bugs caused by missing Effect cleanup.
-- Your components will [re-run ref callbacks an extra time](#fixing-bugs-found-by-re-running-ref-callbacks-in-development) to find bugs caused by missing ref cleanup.
-- Your components will [be checked for usage of deprecated APIs.](#fixing-deprecation-warnings-enabled-by-strict-mode)
+- 你的组件会 [额外重新渲染一次](#fixing-bugs-found-by-double-rendering-in-development)，以发现由不纯渲染引起的 bug。
+- 你的组件会 [额外重新运行 Effects 一次](#fixing-bugs-found-by-re-running-effects-in-development)，以发现由缺少 Effect 清理引起的 bug。
+- 你的组件会 [额外重新运行 ref 回调一次](#fixing-bugs-found-by-re-running-ref-callbacks-in-development)，以发现由缺少 ref 清理引起的 bug。
+- 你的组件会 [检查是否使用了已弃用的 API。](#fixing-deprecation-warnings-enabled-by-strict-mode)
 
-**All of these checks are development-only and do not impact the production build.**
+**所有这些检查都只在开发环境中运行，不会影响生产构建。**
 
 </Note>
 
 ---
 
-### Enabling Strict Mode for a part of the app {/*enabling-strict-mode-for-a-part-of-the-app*/}
+### 为应用的一部分启用严格模式 {/*enabling-strict-mode-for-a-part-of-the-app*/}
 
-You can also enable Strict Mode for any part of your application:
+你也可以为应用中的任意一部分启用严格模式：
 
 ```js {7,12}
 import { StrictMode } from 'react';
@@ -120,31 +120,31 @@ function App() {
 }
 ```
 
-In this example, Strict Mode checks will not run against the `Header` and `Footer` components. However, they will run on `Sidebar` and `Content`, as well as all of the components inside them, no matter how deep.
+在这个示例中，严格模式检查不会对 `Header` 和 `Footer` 组件运行。不过，它们会对 `Sidebar` 和 `Content` 运行，以及它们内部的所有组件运行，不论层级有多深。
 
 <Note>
 
-When `StrictMode` is enabled for a part of the app, React will only enable behaviors that are possible in production. For example, if `<StrictMode>` is not enabled at the root of the app, it will not [re-run Effects an extra time](#fixing-bugs-found-by-re-running-effects-in-development) on initial mount, since this would cause child effects to double fire without the parent effects, which cannot happen in production.
+当为应用的一部分启用 `StrictMode` 时，React 只会启用那些在生产环境中也可能发生的行为。例如，如果 `<StrictMode>` 没有在应用根部启用，那么它不会在初次挂载时 [额外重新运行 Effects 一次](#fixing-bugs-found-by-re-running-effects-in-development)，因为这会导致子组件的 Effect 被执行两次，而父组件的 Effect 没有相应执行一次，这种情况在生产环境中不会发生。
 
 </Note>
 
 ---
 
-### Fixing bugs found by double rendering in development {/*fixing-bugs-found-by-double-rendering-in-development*/}
+### 修复通过开发环境中双重渲染发现的 bug {/*fixing-bugs-found-by-double-rendering-in-development*/}
 
-[React assumes that every component you write is a pure function.](/learn/keeping-components-pure) This means that React components you write must always return the same JSX given the same inputs (props, state, and context).
+[React 假定你编写的每个组件都是纯函数。](/learn/keeping-components-pure) 这意味着你编写的 React 组件在相同输入（props、state 和 context）下，必须始终返回相同的 JSX。
 
-Components breaking this rule behave unpredictably and cause bugs. To help you find accidentally impure code, Strict Mode calls some of your functions (only the ones that should be pure) **twice in development.** This includes:
+违反这一规则的组件行为不可预测，并会导致 bug。为了帮助你发现意外的不纯代码，严格模式会在开发环境中 **将你的一些函数调用两次**（仅限应该是纯函数的那些）。这包括：
 
-- Your component function body (only top-level logic, so this doesn't include code inside event handlers)
-- Functions that you pass to [`useState`](/reference/react/useState), [`set` functions](/reference/react/useState#setstate), [`useMemo`](/reference/react/useMemo), or [`useReducer`](/reference/react/useReducer)
-- Some class component methods like [`constructor`](/reference/react/Component#constructor), [`render`](/reference/react/Component#render), [`shouldComponentUpdate`](/reference/react/Component#shouldcomponentupdate) ([see the whole list](https://reactjs.org/docs/strict-mode.html#detecting-unexpected-side-effects))
+- 你的组件函数体（仅顶层逻辑，因此不包括事件处理器中的代码）
+- 你传递给 [`useState`](/reference/react/useState)、[`set` 函数](/reference/react/useState#setstate)、[`useMemo`](/reference/react/useMemo) 或 [`useReducer`](/reference/react/useReducer) 的函数
+- 某些类组件方法，例如 [`constructor`](/reference/react/Component#constructor)、[`render`](/reference/react/Component#render)、[`shouldComponentUpdate`](/reference/react/Component#shouldcomponentupdate)（[查看完整列表](https://reactjs.org/docs/strict-mode.html#detecting-unexpected-side-effects)）
 
-If a function is pure, running it twice does not change its behavior because a pure function produces the same result every time. However, if a function is impure (for example, it mutates the data it receives), running it twice tends to be noticeable (that's what makes it impure!) This helps you spot and fix the bug early.
+如果一个函数是纯函数，运行两次不会改变其行为，因为纯函数每次都会产生相同的结果。但是，如果一个函数是不纯的（例如，它会修改自己收到的数据），运行两次通常就会很明显（这正是不纯的表现！）。这能帮助你尽早发现并修复 bug。
 
-**Here is an example to illustrate how double rendering in Strict Mode helps you find bugs early.**
+**下面是一个示例，用来说明严格模式中的双重渲染如何帮助你尽早发现 bug。**
 
-This `StoryTray` component takes an array of `stories` and adds one last "Create Story" item at the end:
+这个 `StoryTray` 组件接收一个 `stories` 数组，并在末尾添加一个最后的 “Create Story” 项：
 
 <Sandpack>
 
@@ -222,9 +222,9 @@ li {
 
 </Sandpack>
 
-There is a mistake in the code above. However, it is easy to miss because the initial output appears correct.
+上面的代码有一个错误。不过，这个错误很容易被忽略，因为初始输出看起来是正确的。
 
-This mistake will become more noticeable if the `StoryTray` component re-renders multiple times. For example, let's make the `StoryTray` re-render with a different background color whenever you hover over it:
+如果 `StoryTray` 组件多次重新渲染，这个错误会变得更明显。例如，我们来让 `StoryTray` 在你悬停其上时使用不同的背景色重新渲染：
 
 <Sandpack>
 
@@ -234,7 +234,7 @@ import './styles.css';
 
 import App from './App';
 
-const root = createRoot(document.getElementById('root'));
+const root = createRoot(document.getElementById("root"));
 root.render(<App />);
 ```
 
@@ -311,20 +311,20 @@ li {
 
 </Sandpack>
 
-Notice how every time you hover over the `StoryTray` component, "Create Story" gets added to the list again. The intention of the code was to add it once at the end. But `StoryTray` directly modifies the `stories` array from the props. Every time `StoryTray` renders, it adds "Create Story" again at the end of the same array. In other words, `StoryTray` is not a pure function--running it multiple times produces different results.
+注意，每次你悬停在 `StoryTray` 组件上时，“Create Story” 都会再次被添加到列表中。代码的本意是只在末尾添加一次。但 `StoryTray` 直接修改了来自 props 的 `stories` 数组。每次 `StoryTray` 渲染时，它都会在同一个数组末尾再次添加 “Create Story”。换句话说，`StoryTray` 不是纯函数——多次运行它会产生不同结果。
 
-To fix this problem, you can make a copy of the array, and modify that copy instead of the original one:
+要修复这个问题，你可以先复制数组，然后修改这份副本，而不是修改原数组：
 
 ```js {2}
 export default function StoryTray({ stories }) {
-  const items = stories.slice(); // Clone the array
-  // ✅ Good: Pushing into a new array
+  const items = stories.slice(); // 克隆数组
+  // ✅ 好：向一个新数组中追加
   items.push({ id: 'create', label: 'Create Story' });
 ```
 
-This would [make the `StoryTray` function pure.](/learn/keeping-components-pure) Each time it is called, it would only modify a new copy of the array, and would not affect any external objects or variables. This solves the bug, but you had to make the component re-render more often before it became obvious that something is wrong with its behavior.
+这样就会 [让 `StoryTray` 函数成为纯函数。](/learn/keeping-components-pure) 每次调用它时，它只会修改数组的新副本，而不会影响任何外部对象或变量。这解决了 bug，但你必须让组件更频繁地重新渲染，问题才会变得明显。
 
-**In the original example, the bug wasn't obvious. Now let's wrap the original (buggy) code in `<StrictMode>`:**
+**在原始示例中，这个 bug 并不明显。现在让我们把原始（有 bug 的）代码包裹在 `<StrictMode>` 中：**
 
 <Sandpack>
 
@@ -407,7 +407,7 @@ li {
 
 </Sandpack>
 
-**Strict Mode *always* calls your rendering function twice, so you can see the mistake right away** ("Create Story" appears twice). This lets you notice such mistakes early in the process. When you fix your component to render in Strict Mode, you *also* fix many possible future production bugs like the hover functionality from before:
+**严格模式 *总是* 会将你的渲染函数调用两次，所以你能立刻看出错误**（“Create Story” 出现了两次）。这让你能够在流程早期发现这类错误。当你修复组件以便在严格模式下渲染时，你也 *同时* 修复了许多未来可能出现的生产环境 bug，比如前面的悬停功能：
 
 <Sandpack>
 
@@ -418,7 +418,7 @@ import './styles.css';
 
 import App from './App';
 
-const root = createRoot(document.getElementById('root'));
+const root = createRoot(document.getElementById("root"));
 root.render(
   <StrictMode>
     <App />
@@ -456,7 +456,7 @@ import { useState } from 'react';
 
 export default function StoryTray({ stories }) {
   const [isHover, setIsHover] = useState(false);
-  const items = stories.slice(); // Clone the array
+  const items = stories.slice(); // 克隆数组
   items.push({ id: 'create', label: 'Create Story' });
   return (
     <ul
@@ -499,29 +499,29 @@ li {
 
 </Sandpack>
 
-Without Strict Mode, it was easy to miss the bug until you added more re-renders. Strict Mode made the same bug appear right away. Strict Mode helps you find bugs before you push them to your team and to your users.
+如果没有严格模式，你很容易在添加更多重新渲染之前错过这个 bug。严格模式让同样的 bug 立刻出现。严格模式帮助你在把 bug 推送给团队和用户之前发现它们。
 
-[Read more about keeping components pure.](/learn/keeping-components-pure)
+[阅读更多关于保持组件纯净的内容。](/learn/keeping-components-pure)
 
 <Note>
 
-If you have [React DevTools](/learn/react-developer-tools) installed, any `console.log` calls during the second render call will appear slightly dimmed. React DevTools also offers a setting (off by default) to suppress them completely.
+如果你安装了 [React DevTools](/learn/react-developer-tools)，第二次渲染调用期间的任何 `console.log` 输出都会显得稍微暗一些。React DevTools 还提供了一个设置（默认关闭），可以完全抑制这些日志。
 
 </Note>
 
 ---
 
-### Fixing bugs found by re-running Effects in development {/*fixing-bugs-found-by-re-running-effects-in-development*/}
+### 修复通过开发环境中重新运行 Effects 发现的 bug {/*fixing-bugs-found-by-re-running-effects-in-development*/}
 
-Strict Mode can also help find bugs in [Effects.](/learn/synchronizing-with-effects)
+严格模式也可以帮助发现 [Effects](/learn/synchronizing-with-effects) 中的 bug。
 
-Every Effect has some setup code and may have some cleanup code. Normally, React calls setup when the component *mounts* (is added to the screen) and calls cleanup when the component *unmounts* (is removed from the screen). React then calls cleanup and setup again if its dependencies changed since the last render.
+每个 Effect 都有一些设置代码，并且可能有一些清理代码。通常，React 会在组件 *挂载*（添加到屏幕上）时调用设置，并在组件 *卸载*（从屏幕上移除）时调用清理。然后，如果依赖项自上次渲染以来发生变化，React 会再次调用清理和设置。
 
-When Strict Mode is on, React will also run **one extra setup+cleanup cycle in development for every Effect.** This may feel surprising, but it helps reveal subtle bugs that are hard to catch manually.
+当开启严格模式时，React 还会为 **每个 Effect 在开发环境中额外运行一次设置+清理循环。** 这可能看起来有些意外，但它有助于暴露那些很难手动捕捉的细微 bug。
 
-**Here is an example to illustrate how re-running Effects in Strict Mode helps you find bugs early.**
+**下面是一个示例，用来说明在严格模式中重新运行 Effects 如何帮助你尽早发现 bug。**
 
-Consider this example that connects a component to a chat:
+考虑这个把组件连接到聊天的示例：
 
 <Sandpack>
 
@@ -555,7 +555,7 @@ export default function ChatRoom() {
 let connections = 0;
 
 export function createConnection(serverUrl, roomId) {
-  // A real implementation would actually connect to the server
+  // 真实实现会实际连接到服务器
   return {
     connect() {
       console.log('✅ Connecting to "' + roomId + '" room at ' + serverUrl + '...');
@@ -578,9 +578,9 @@ button { margin-left: 10px; }
 
 </Sandpack>
 
-There is an issue with this code, but it might not be immediately clear.
+这段代码有个问题，但一开始可能并不明显。
 
-To make the issue more obvious, let's implement a feature. In the example below, `roomId` is not hardcoded. Instead, the user can select the `roomId` that they want to connect to from a dropdown. Click "Open chat" and then select different chat rooms one by one. Keep track of the number of active connections in the console:
+为了让问题更明显，我们来实现一个功能。在下面的示例中，`roomId` 不再是硬编码的。相反，用户可以从下拉菜单中选择他们想连接的 `roomId`。点击“Open chat”，然后依次选择不同的聊天室。请留意控制台中活动连接的数量：
 
 <Sandpack>
 
@@ -615,7 +615,7 @@ export default function App() {
   return (
     <>
       <label>
-        Choose the chat room:{' '}
+        选择聊天室：{' '}
         <select
           value={roomId}
           onChange={e => setRoomId(e.target.value)}
@@ -639,7 +639,7 @@ export default function App() {
 let connections = 0;
 
 export function createConnection(serverUrl, roomId) {
-  // A real implementation would actually connect to the server
+  // 真实实现会实际连接到服务器
   return {
     connect() {
       console.log('✅ Connecting to "' + roomId + '" room at ' + serverUrl + '...');
@@ -662,7 +662,7 @@ button { margin-left: 10px; }
 
 </Sandpack>
 
-You'll notice that the number of open connections always keeps growing. In a real app, this would cause performance and network problems. The issue is that [your Effect is missing a cleanup function:](/learn/synchronizing-with-effects#step-3-add-cleanup-if-needed)
+你会注意到，打开的连接数量总是在持续增长。在真实应用中，这会导致性能和网络问题。问题在于 [你的 Effect 缺少清理函数：](/learn/synchronizing-with-effects#step-3-add-cleanup-if-needed)
 
 ```js {4}
   useEffect(() => {
@@ -672,9 +672,9 @@ You'll notice that the number of open connections always keeps growing. In a rea
   }, [roomId]);
 ```
 
-Now that your Effect "cleans up" after itself and destroys the outdated connections, the leak is solved. However, notice that the problem did not become visible until you've added more features (the select box).
+现在你的 Effect 会在自己结束后“清理”，并销毁过时的连接，泄漏问题就解决了。不过，请注意，在你添加更多功能（下拉框）之前，这个问题并不明显。
 
-**In the original example, the bug wasn't obvious. Now let's wrap the original (buggy) code in `<StrictMode>`:**
+**在原始示例中，这个 bug 并不明显。现在让我们把原始（有 bug 的）代码包裹在 `<StrictMode>` 中：**
 
 <Sandpack>
 
@@ -713,7 +713,7 @@ export default function ChatRoom() {
 let connections = 0;
 
 export function createConnection(serverUrl, roomId) {
-  // A real implementation would actually connect to the server
+  // 真实实现会实际连接到服务器
   return {
     connect() {
       console.log('✅ Connecting to "' + roomId + '" room at ' + serverUrl + '...');
@@ -736,9 +736,9 @@ button { margin-left: 10px; }
 
 </Sandpack>
 
-**With Strict Mode, you immediately see that there is a problem** (the number of active connections jumps to 2). Strict Mode runs an extra setup+cleanup cycle for every Effect. This Effect has no cleanup logic, so it creates an extra connection but doesn't destroy it. This is a hint that you're missing a cleanup function.
+**有了严格模式，你会立刻看到这里存在问题**（活动连接数跳到了 2）。严格模式会为每个 Effect 额外运行一次设置+清理循环。这个 Effect 没有清理逻辑，所以它创建了一个额外连接，却没有销毁它。这提示你缺少一个清理函数。
 
-Strict Mode lets you notice such mistakes early in the process. When you fix your Effect by adding a cleanup function in Strict Mode, you *also* fix many possible future production bugs like the select box from before:
+严格模式让你能够尽早注意到这些错误。当你在严格模式下通过添加清理函数来修复 Effect 时，你也 *同时* 修复了许多未来可能出现的生产环境 bug，比如前面的下拉选择框：
 
 <Sandpack>
 
@@ -779,7 +779,7 @@ export default function App() {
   return (
     <>
       <label>
-        Choose the chat room:{' '}
+        选择聊天室：{' '}
         <select
           value={roomId}
           onChange={e => setRoomId(e.target.value)}
@@ -803,7 +803,7 @@ export default function App() {
 let connections = 0;
 
 export function createConnection(serverUrl, roomId) {
-  // A real implementation would actually connect to the server
+  // 真实实现会实际连接到服务器
   return {
     connect() {
       console.log('✅ Connecting to "' + roomId + '" room at ' + serverUrl + '...');
@@ -826,22 +826,22 @@ button { margin-left: 10px; }
 
 </Sandpack>
 
-Notice how the active connection count in the console doesn't keep growing anymore.
+注意控制台中的活动连接数不再持续增长了。
 
-Without Strict Mode, it was easy to miss that your Effect needed cleanup. By running *setup → cleanup → setup* instead of *setup* for your Effect in development, Strict Mode made the missing cleanup logic more noticeable.
+如果没有严格模式，你很容易忽略你的 Effect 需要清理。通过在开发环境中对你的 Effect 执行 *设置 → 清理 → 设置*，而不是 *设置*，严格模式让缺失的清理逻辑变得更明显。
 
-[Read more about implementing Effect cleanup.](/learn/synchronizing-with-effects#how-to-handle-the-effect-firing-twice-in-development)
+[阅读更多关于实现 Effect 清理的内容。](/learn/synchronizing-with-effects#how-to-handle-the-effect-firing-twice-in-development)
 
 ---
-### Fixing bugs found by re-running ref callbacks in development {/*fixing-bugs-found-by-re-running-ref-callbacks-in-development*/}
+### 修复通过开发环境中重新运行 ref 回调发现的 bug {/*fixing-bugs-found-by-re-running-ref-callbacks-in-development*/}
 
-Strict Mode can also help find bugs in [callbacks refs.](/learn/manipulating-the-dom-with-refs)
+严格模式也可以帮助发现 [回调 refs](/learn/manipulating-the-dom-with-refs) 中的 bug。
 
-Every callback `ref` has some setup code and may have some cleanup code. Normally, React calls setup when the element is *created* (is added to the DOM) and calls cleanup when the element is *removed* (is removed from the DOM).
+每个回调 `ref` 都有一些设置代码，并且可能有一些清理代码。通常，React 会在元素 *创建*（添加到 DOM 中）时调用设置，并在元素 *移除*（从 DOM 中移除）时调用清理。
 
-When Strict Mode is on, React will also run **one extra setup+cleanup cycle in development for every callback `ref`.** This may feel surprising, but it helps reveal subtle bugs that are hard to catch manually.
+当开启严格模式时，React 还会为 **每个回调 `ref` 在开发环境中额外运行一次设置+清理循环。** 这可能看起来有些意外，但它有助于暴露那些很难手动捕捉的细微 bug。
 
-Consider this example, which allows you to select an animal and then scroll to one of them. Notice when you switch from "Cats" to "Dogs", the console logs show that the number of animals in the list keeps growing, and the "Scroll to" buttons stop working:
+考虑这个示例：它允许你选择一只动物，然后滚动到其中一只。注意，当你从 “Cats” 切换到 “Dogs” 时，控制台日志显示列表中的动物数量不断增加，而且 “Scroll to” 按钮停止工作：
 
 <Sandpack>
 
@@ -852,7 +852,7 @@ import './styles.css';
 import App from './App';
 
 const root = createRoot(document.getElementById("root"));
-// ❌ Not using StrictMode.
+// ❌ 未使用 StrictMode。
 root.render(<App />);
 ```
 
@@ -904,7 +904,7 @@ export default function CatFriends() {
                   console.log('❌ Too many cats in the list!');
                 }
                 return () => {
-                  // 🚩 No cleanup, this is a bug!
+                  // 🚩 没有清理，这是个 bug！
                 }
               }}
             >
@@ -960,9 +960,9 @@ li {
 </Sandpack>
 
 
-**This is a production bug!** Since the ref callback doesn't remove animals from the list in the cleanup, the list of animals keeps growing. This is a memory leak that can cause performance problems in a real app, and breaks the behavior of the app.
+**这是一个生产环境 bug！** 由于 ref 回调没有在清理阶段将动物从列表中移除，所以动物列表会持续增长。这是一个内存泄漏，会在真实应用中造成性能问题，并破坏应用行为。
 
-The issue is the ref callback doesn't cleanup after itself:
+问题在于 ref 回调没有在完成后进行清理：
 
 ```js {6-8}
 <li
@@ -971,13 +971,13 @@ The issue is the ref callback doesn't cleanup after itself:
     const item = {animal, node};
     list.push(item);
     return () => {
-      // 🚩 No cleanup, this is a bug!
+      // 🚩 没有清理，这是个 bug！
     }
   }}
 </li>
 ```
 
-Now let's wrap the original (buggy) code in `<StrictMode>`:
+现在让我们把原始（有 bug 的）代码包裹在 `<StrictMode>` 中：
 
 <Sandpack>
 
@@ -989,7 +989,7 @@ import './styles.css';
 import App from './App';
 
 const root = createRoot(document.getElementById("root"));
-// ✅ Using StrictMode.
+// ✅ 使用 StrictMode。
 root.render(
   <StrictMode>
     <App />
@@ -1045,7 +1045,7 @@ export default function CatFriends() {
                   console.log('❌ Too many cats in the list!');
                 }
                 return () => {
-                  // 🚩 No cleanup, this is a bug!
+                  // 🚩 没有清理，这是个 bug！
                 }
               }}
             >
@@ -1100,9 +1100,9 @@ li {
 
 </Sandpack>
 
-**With Strict Mode, you immediately see that there is a problem**. Strict Mode runs an extra setup+cleanup cycle for every callback ref. This callback ref has no cleanup logic, so it adds refs but doesn't remove them. This is a hint that you're missing a cleanup function.
+**有了严格模式，你会立刻看到这里存在问题**。严格模式会为每个回调 ref 额外运行一次设置+清理循环。这个回调 ref 没有清理逻辑，所以它添加了 refs，却没有移除它们。这提示你缺少一个清理函数。
 
-Strict Mode lets you eagerly find mistakes in callback refs. When you fix your callback by adding a cleanup function in Strict Mode, you *also* fix many possible future production bugs like the "Scroll to" bug from before:
+严格模式让你能够尽早发现回调 ref 中的错误。当你在严格模式下通过添加清理函数来修复回调时，你也 *同时* 修复了许多未来可能出现的生产环境 bug，比如前面的 “Scroll to” bug：
 
 <Sandpack>
 
@@ -1114,7 +1114,7 @@ import './styles.css';
 import App from './App';
 
 const root = createRoot(document.getElementById("root"));
-// ✅ Using StrictMode.
+// ✅ 使用 StrictMode。
 root.render(
   <StrictMode>
     <App />
@@ -1226,7 +1226,7 @@ li {
 
 </Sandpack>
 
-Now on inital mount in StrictMode, the ref callbacks are all setup, cleaned up, and setup again:
+现在，在 StrictMode 初始挂载时，ref 回调会全部执行设置、清理，然后再次执行设置：
 
 ```
 ...
@@ -1237,15 +1237,15 @@ Now on inital mount in StrictMode, the ref callbacks are all setup, cleaned up, 
 ✅ Adding animal to the map. Total animals: 10
 ```
 
-**This is expected.** Strict Mode confirms that the ref callbacks are cleaned up correctly, so the size never grows above the expected amount. After the fix, there are no memory leaks, and all the features work as expected.
+**这是符合预期的。** 严格模式确认 ref 回调被正确清理，因此大小不会增长到预期值以上。修复之后，不会有内存泄漏，所有功能都能按预期工作。
 
-Without Strict Mode, it was easy to miss the bug until you clicked around to app to notice broken features. Strict Mode made the bugs appear right away, before you push them to production.
+如果没有严格模式，你很容易在四处点击后才发现某些功能坏了，从而错过这个 bug。严格模式让这些 bug 立刻显现出来，在你把它们推送到生产环境之前。
 
 ---
-### Fixing deprecation warnings enabled by Strict Mode {/*fixing-deprecation-warnings-enabled-by-strict-mode*/}
+### 修复严格模式启用的弃用警告 {/*fixing-deprecation-warnings-enabled-by-strict-mode*/}
 
-React warns if some component anywhere inside a `<StrictMode>` tree uses one of these deprecated APIs:
+如果 `<StrictMode>` 树中的某个组件使用了以下已弃用的 API，React 会发出警告：
 
-* `UNSAFE_` class lifecycle methods like [`UNSAFE_componentWillMount`](/reference/react/Component#unsafe_componentwillmount). [See alternatives.](https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#migrating-from-legacy-lifecycles)
+* `UNSAFE_` 类生命周期方法，例如 [`UNSAFE_componentWillMount`](/reference/react/Component#unsafe_componentwillmount)。[查看替代方案。](https://reactjs.org/blog/2018/03/27/update-on-async-rendering.html#migrating-from-legacy-lifecycles)
 
-These APIs are primarily used in older [class components](/reference/react/Component) so they rarely appear in modern apps.
+这些 API 主要用于较老的 [类组件](/reference/react/Component)，因此它们在现代应用中很少出现。

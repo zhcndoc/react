@@ -1,37 +1,37 @@
 ---
-title: 'Lifecycle of Reactive Effects'
+title: '响应式 Effect 的生命周期'
 ---
 
 <Intro>
 
-Effects have a different lifecycle from components. Components may mount, update, or unmount. An Effect can only do two things: to start synchronizing something, and later to stop synchronizing it. This cycle can happen multiple times if your Effect depends on props and state that change over time. React provides a linter rule to check that you've specified your Effect's dependencies correctly. This keeps your Effect synchronized to the latest props and state.
+Effect 与组件有不同的生命周期。组件可能会挂载、更新或卸载。Effect 只能做两件事：开始同步某些内容，然后在之后停止同步。 如果你的 Effect 依赖会随时间变化的 props 和 state，这个循环可能会发生多次。React 提供了一条 linter 规则来检查你是否正确指定了 Effect 的依赖项。这可以让你的 Effect 与最新的 props 和 state 保持同步。
 
 </Intro>
 
 <YouWillLearn>
 
-- How an Effect's lifecycle is different from a component's lifecycle
-- How to think about each individual Effect in isolation
-- When your Effect needs to re-synchronize, and why
-- How your Effect's dependencies are determined
-- What it means for a value to be reactive
-- What an empty dependency array means
-- How React verifies your dependencies are correct with a linter
-- What to do when you disagree with the linter
+- Effect 的生命周期与组件的生命周期有何不同
+- 如何独立地看待每一个 Effect
+- 你的 Effect 何时需要重新同步，以及原因是什么
+- 你的 Effect 的依赖项是如何确定的
+- 值具有响应性是什么意思
+- 空依赖数组意味着什么
+- React 如何通过 linter 验证你的依赖项是否正确
+- 当你不同意 linter 的判断时该怎么做
 
 </YouWillLearn>
 
-## The lifecycle of an Effect {/*the-lifecycle-of-an-effect*/}
+## Effect 的生命周期 {/*the-lifecycle-of-an-effect*/}
 
-Every React component goes through the same lifecycle:
+每个 React 组件都会经历相同的生命周期：
 
-- A component _mounts_ when it's added to the screen.
-- A component _updates_ when it receives new props or state, usually in response to an interaction.
-- A component _unmounts_ when it's removed from the screen.
+- 组件在被添加到屏幕上时会 _挂载_。
+- 组件在接收到新的 props 或 state 时会 _更新_，通常是为了响应某个交互。
+- 组件在从屏幕上移除时会 _卸载_。
 
-**It's a good way to think about components, but _not_ about Effects.** Instead, try to think about each Effect independently from your component's lifecycle. An Effect describes how to [synchronize an external system](/learn/synchronizing-with-effects) to the current props and state. As your code changes, synchronization will need to happen more or less often.
+**把这用于理解组件是很好的，但不适用于理解 Effect。** 相反，尝试把每个 Effect 看作是独立于组件生命周期的。Effect 描述的是如何将[外部系统同步](/learn/synchronizing-with-effects)到当前的 props 和 state。随着代码变化，同步需要更频繁地发生，或者更少地发生。
 
-To illustrate this point, consider this Effect connecting your component to a chat server:
+为了说明这一点，考虑这个将组件连接到聊天服务器的 Effect：
 
 ```js
 const serverUrl = 'https://localhost:1234';
@@ -48,7 +48,7 @@ function ChatRoom({ roomId }) {
 }
 ```
 
-Your Effect's body specifies how to **start synchronizing:**
+你的 Effect 主体指定了如何 **开始同步：**
 
 ```js {2-3}
     // ...
@@ -60,7 +60,7 @@ Your Effect's body specifies how to **start synchronizing:**
     // ...
 ```
 
-The cleanup function returned by your Effect specifies how to **stop synchronizing:**
+由你的 Effect 返回的清理函数指定了如何 **停止同步：**
 
 ```js {5}
     // ...
@@ -72,19 +72,19 @@ The cleanup function returned by your Effect specifies how to **stop synchronizi
     // ...
 ```
 
-Intuitively, you might think that React would **start synchronizing** when your component mounts and **stop synchronizing** when your component unmounts. However, this is not the end of the story! Sometimes, it may also be necessary to **start and stop synchronizing multiple times** while the component remains mounted.
+直觉上，你可能会认为 React 会在组件挂载时 **开始同步**，并在组件卸载时 **停止同步**。然而，事情并没有这么简单！有时，即使组件仍然处于挂载状态，也可能需要 **多次开始和停止同步**。
 
-Let's look at _why_ this is necessary, _when_ it happens, and _how_ you can control this behavior.
+让我们看看这是 _为什么_ 需要的，_何时_ 会发生，以及 _如何_ 控制这种行为。
 
 <Note>
 
-Some Effects don't return a cleanup function at all. [More often than not,](/learn/synchronizing-with-effects#how-to-handle-the-effect-firing-twice-in-development) you'll want to return one--but if you don't, React will behave as if you returned an empty cleanup function.
+有些 Effect 根本不会返回清理函数。[大多数情况下，](/learn/synchronizing-with-effects#how-to-handle-the-effect-firing-twice-in-development) 你都会希望返回一个清理函数——但如果你没有返回，React 的行为就会像你返回了一个空的清理函数一样。
 
 </Note>
 
-### Why synchronization may need to happen more than once {/*why-synchronization-may-need-to-happen-more-than-once*/}
+### 为什么同步可能需要发生不止一次 {/*why-synchronization-may-need-to-happen-more-than-once*/}
 
-Imagine this `ChatRoom` component receives a `roomId` prop that the user picks in a dropdown. Let's say that initially the user picks the `"general"` room as the `roomId`. Your app displays the `"general"` chat room:
+想象一下，这个 `ChatRoom` 组件接收了一个 `roomId` prop，而用户通过下拉框来选择它。假设一开始用户选择的是 `"general"` 房间作为 `roomId`。你的应用会显示 `"general"` 聊天室：
 
 ```js {3}
 const serverUrl = 'https://localhost:1234';
@@ -95,23 +95,23 @@ function ChatRoom({ roomId /* "general" */ }) {
 }
 ```
 
-After the UI is displayed, React will run your Effect to **start synchronizing.** It connects to the `"general"` room:
+在 UI 显示出来之后，React 会运行你的 Effect 来 **开始同步。** 它会连接到 `"general"` 房间：
 
 ```js {3,4}
 function ChatRoom({ roomId /* "general" */ }) {
   useEffect(() => {
-    const connection = createConnection(serverUrl, roomId); // Connects to the "general" room
+    const connection = createConnection(serverUrl, roomId); // 连接到 "general" 房间
     connection.connect();
     return () => {
-      connection.disconnect(); // Disconnects from the "general" room
+      connection.disconnect(); // 从 "general" 房间断开连接
     };
   }, [roomId]);
   // ...
 ```
 
-So far, so good.
+到目前为止，一切都很好。
 
-Later, the user picks a different room in the dropdown (for example, `"travel"`). First, React will update the UI:
+之后，用户在下拉框里选择了另一个房间（例如 `"travel"`）。首先，React 会更新 UI：
 
 ```js {1}
 function ChatRoom({ roomId /* "travel" */ }) {
@@ -120,93 +120,93 @@ function ChatRoom({ roomId /* "travel" */ }) {
 }
 ```
 
-Think about what should happen next. The user sees that `"travel"` is the selected chat room in the UI. However, the Effect that ran the last time is still connected to the `"general"` room. **The `roomId` prop has changed, so what your Effect did back then (connecting to the `"general"` room) no longer matches the UI.**
+想一想接下来应该发生什么。用户在 UI 中看到 `"travel"` 是当前选中的聊天室。然而，上一次运行的 Effect 仍然连接在 `"general"` 房间。**`roomId` prop 已经变了，所以你的 Effect 之前所做的事情（连接到 `"general"` 房间）已经不再与 UI 匹配了。**
 
-At this point, you want React to do two things:
+此时，你希望 React 做两件事：
 
-1. Stop synchronizing with the old `roomId` (disconnect from the `"general"` room)
-2. Start synchronizing with the new `roomId` (connect to the `"travel"` room)
+1. 停止与旧的 `roomId` 同步（从 `"general"` 房间断开连接）
+2. 开始与新的 `roomId` 同步（连接到 `"travel"` 房间）
 
-**Luckily, you've already taught React how to do both of these things!** Your Effect's body specifies how to start synchronizing, and your cleanup function specifies how to stop synchronizing. All that React needs to do now is to call them in the correct order and with the correct props and state. Let's see how exactly that happens.
+**幸运的是，你已经教会 React 如何完成这两件事！** 你的 Effect 主体指定了如何开始同步，而清理函数指定了如何停止同步。React 现在需要做的就是以正确的顺序、使用正确的 props 和 state 来调用它们。让我们看看这具体是怎么发生的。
 
-### How React re-synchronizes your Effect {/*how-react-re-synchronizes-your-effect*/}
+### React 如何重新同步你的 Effect {/*how-react-re-synchronizes-your-effect*/}
 
-Recall that your `ChatRoom` component has received a new value for its `roomId` prop. It used to be `"general"`, and now it is `"travel"`. React needs to re-synchronize your Effect to re-connect you to a different room.
+回想一下，你的 `ChatRoom` 组件收到了 `roomId` prop 的新值。它之前是 `"general"`，现在是 `"travel"`。React 需要重新同步你的 Effect，把你重新连接到另一个房间。
 
-To **stop synchronizing,** React will call the cleanup function that your Effect returned after connecting to the `"general"` room. Since `roomId` was `"general"`, the cleanup function disconnects from the `"general"` room:
+为了 **停止同步，** React 会调用你的 Effect 在连接到 `"general"` 房间后返回的清理函数。由于 `roomId` 是 `"general"`，清理函数会断开与 `"general"` 房间的连接：
 
 ```js {6}
 function ChatRoom({ roomId /* "general" */ }) {
   useEffect(() => {
-    const connection = createConnection(serverUrl, roomId); // Connects to the "general" room
+    const connection = createConnection(serverUrl, roomId); // 连接到 "general" 房间
     connection.connect();
     return () => {
-      connection.disconnect(); // Disconnects from the "general" room
+      connection.disconnect(); // 从 "general" 房间断开连接
     };
     // ...
 ```
 
-Then React will run the Effect that you've provided during this render. This time, `roomId` is `"travel"` so it will **start synchronizing** to the `"travel"` chat room (until its cleanup function is eventually called too):
+然后 React 会运行你在这次渲染中提供的 Effect。这一次，`roomId` 是 `"travel"`，所以它会 **开始同步** 到 `"travel"` 聊天室（直到它的清理函数最终也被调用）：
 
 ```js {3,4}
 function ChatRoom({ roomId /* "travel" */ }) {
   useEffect(() => {
-    const connection = createConnection(serverUrl, roomId); // Connects to the "travel" room
+    const connection = createConnection(serverUrl, roomId); // 连接到 "travel" 房间
     connection.connect();
     // ...
 ```
 
-Thanks to this, you're now connected to the same room that the user chose in the UI. Disaster averted!
+得益于此，你现在已经连接到了用户在 UI 中选择的同一个房间。避免了一场灾难！
 
-Every time after your component re-renders with a different `roomId`, your Effect will re-synchronize. For example, let's say the user changes `roomId` from `"travel"` to `"music"`. React will again **stop synchronizing** your Effect by calling its cleanup function (disconnecting you from the `"travel"` room). Then it will **start synchronizing** again by running its body with the new `roomId` prop (connecting you to the `"music"` room).
+每次你的组件因为不同的 `roomId` 重新渲染后，你的 Effect 都会重新同步。例如，假设用户将 `roomId` 从 `"travel"` 改为 `"music"`。React 会再次通过调用清理函数来 **停止同步** 你的 Effect（把你从 `"travel"` 房间断开）。然后它会再次运行主体，并使用新的 `roomId` prop 来 **开始同步**（连接到 `"music"` 房间）。
 
-Finally, when the user goes to a different screen, `ChatRoom` unmounts. Now there is no need to stay connected at all. React will **stop synchronizing** your Effect one last time and disconnect you from the `"music"` chat room.
+最后，当用户切换到另一个界面时，`ChatRoom` 会卸载。此时已经完全没有必要继续保持连接。React 会最后一次 **停止同步** 你的 Effect，并让你从 `"music"` 聊天室断开连接。
 
-### Thinking from the Effect's perspective {/*thinking-from-the-effects-perspective*/}
+### 从 Effect 的视角思考 {/*thinking-from-the-effects-perspective*/}
 
-Let's recap everything that's happened from the `ChatRoom` component's perspective:
+让我们回顾一下从 `ChatRoom` 组件的视角发生了什么：
 
-1. `ChatRoom` mounted with `roomId` set to `"general"`
-1. `ChatRoom` updated with `roomId` set to `"travel"`
-1. `ChatRoom` updated with `roomId` set to `"music"`
-1. `ChatRoom` unmounted
+1. `ChatRoom` 挂载，`roomId` 设为 `"general"`
+1. `ChatRoom` 更新，`roomId` 设为 `"travel"`
+1. `ChatRoom` 更新，`roomId` 设为 `"music"`
+1. `ChatRoom` 卸载
 
-During each of these points in the component's lifecycle, your Effect did different things:
+在组件生命周期中的这些时刻里，你的 Effect 做了不同的事情：
 
-1. Your Effect connected to the `"general"` room
-1. Your Effect disconnected from the `"general"` room and connected to the `"travel"` room
-1. Your Effect disconnected from the `"travel"` room and connected to the `"music"` room
-1. Your Effect disconnected from the `"music"` room
+1. 你的 Effect 连接到了 `"general"` 房间
+1. 你的 Effect 从 `"general"` 房间断开，并连接到 `"travel"` 房间
+1. 你的 Effect 从 `"travel"` 房间断开，并连接到 `"music"` 房间
+1. 你的 Effect 从 `"music"` 房间断开
 
-Now let's think about what happened from the perspective of the Effect itself:
+现在让我们从 Effect 本身的角度来思考发生了什么：
 
 ```js
   useEffect(() => {
-    // Your Effect connected to the room specified with roomId...
+    // 你的 Effect 连接到了由 roomId 指定的房间...
     const connection = createConnection(serverUrl, roomId);
     connection.connect();
     return () => {
-      // ...until it disconnected
+      // ...直到它断开连接
       connection.disconnect();
     };
   }, [roomId]);
 ```
 
-This code's structure might inspire you to see what happened as a sequence of non-overlapping time periods:
+这段代码的结构也许会让你把发生的事情理解为一系列互不重叠的时间段：
 
-1. Your Effect connected to the `"general"` room (until it disconnected)
-1. Your Effect connected to the `"travel"` room (until it disconnected)
-1. Your Effect connected to the `"music"` room (until it disconnected)
+1. 你的 Effect 连接到了 `"general"` 房间（直到它断开）
+1. 你的 Effect 连接到了 `"travel"` 房间（直到它断开）
+1. 你的 Effect 连接到了 `"music"` 房间（直到它断开）
 
-Previously, you were thinking from the component's perspective. When you looked from the component's perspective, it was tempting to think of Effects as "callbacks" or "lifecycle events" that fire at a specific time like "after a render" or "before unmount". This way of thinking gets complicated very fast, so it's best to avoid.
+之前，你是在从组件的角度思考。当你从组件的角度看时，很容易把 Effect 想成在某个特定时间触发的“回调”或“生命周期事件”，比如“在渲染之后”或“在卸载之前”。这种思考方式很快就会变得复杂，所以最好避免。
 
-**Instead, always focus on a single start/stop cycle at a time. It shouldn't matter whether a component is mounting, updating, or unmounting. All you need to do is to describe how to start synchronization and how to stop it. If you do it well, your Effect will be resilient to being started and stopped as many times as it's needed.**
+**相反，始终一次只关注一个开始/停止循环。组件是在挂载、更新还是卸载并不重要。你只需要描述如何开始同步，以及如何停止同步。如果你做得好，你的 Effect 就能在需要的任意多次启动和停止中保持健壮。**
 
-This might remind you how you don't think whether a component is mounting or updating when you write the rendering logic that creates JSX. You describe what should be on the screen, and React [figures out the rest.](/learn/reacting-to-input-with-state)
+这可能会让你联想到：在编写创建 JSX 的渲染逻辑时，你并不会去考虑组件是在挂载还是更新。你只需要描述屏幕上应该显示什么，剩下的由 React [来处理。](/learn/reacting-to-input-with-state)
 
-### How React verifies that your Effect can re-synchronize {/*how-react-verifies-that-your-effect-can-re-synchronize*/}
+### React 如何验证你的 Effect 可以重新同步 {/*how-react-verifies-that-your-effect-can-re-synchronize*/}
 
-Here is a live example that you can play with. Press "Open chat" to mount the `ChatRoom` component:
+下面是一个可以交互的实时示例。点击 "Open chat" 来挂载 `ChatRoom` 组件：
 
 <Sandpack>
 
@@ -231,7 +231,7 @@ export default function App() {
   return (
     <>
       <label>
-        Choose the chat room:{' '}
+        选择聊天室：{' '}
         <select
           value={roomId}
           onChange={e => setRoomId(e.target.value)}
@@ -242,7 +242,7 @@ export default function App() {
         </select>
       </label>
       <button onClick={() => setShow(!show)}>
-        {show ? 'Close chat' : 'Open chat'}
+        {show ? '关闭聊天' : '打开聊天'}
       </button>
       {show && <hr />}
       {show && <ChatRoom roomId={roomId} />}
@@ -253,13 +253,13 @@ export default function App() {
 
 ```js src/chat.js
 export function createConnection(serverUrl, roomId) {
-  // A real implementation would actually connect to the server
+  // 真实实现会实际连接到服务器
   return {
     connect() {
-      console.log('✅ Connecting to "' + roomId + '" room at ' + serverUrl + '...');
+      console.log('✅ 正在连接到 "' + roomId + '" 房间，服务器地址为 ' + serverUrl + '...');
     },
     disconnect() {
-      console.log('❌ Disconnected from "' + roomId + '" room at ' + serverUrl);
+      console.log('❌ 已从 "' + roomId + '" 房间断开连接，服务器地址为 ' + serverUrl);
     }
   };
 }
@@ -272,49 +272,49 @@ button { margin-left: 10px; }
 
 </Sandpack>
 
-Notice that when the component mounts for the first time, you see three logs:
+请注意，当组件第一次挂载时，你会看到三条日志：
 
-1. `✅ Connecting to "general" room at https://localhost:1234...` *(development-only)*
-1. `❌ Disconnected from "general" room at https://localhost:1234.` *(development-only)*
-1. `✅ Connecting to "general" room at https://localhost:1234...`
+1. `✅ 正在连接到 "general" 房间，服务器地址为 https://localhost:1234...` *(仅开发环境)*
+1. `❌ 已从 "general" 房间断开连接，服务器地址为 https://localhost:1234.` *(仅开发环境)*
+1. `✅ 正在连接到 "general" 房间，服务器地址为 https://localhost:1234...`
 
-The first two logs are development-only. In development, React always remounts each component once.
+前两条日志仅在开发环境中出现。在开发环境中，React 总是会让每个组件重新挂载一次。
 
-**React verifies that your Effect can re-synchronize by forcing it to do that immediately in development.** This might remind you of opening a door and closing it an extra time to check if the door lock works. React starts and stops your Effect one extra time in development to check [you've implemented its cleanup well.](/learn/synchronizing-with-effects#how-to-handle-the-effect-firing-twice-in-development)
+**React 会在开发环境中强制立即执行一次，以此验证你的 Effect 是否能够重新同步。** 这有点像为了检查门锁是否正常工作而额外开一次门、关一次门。React 在开发环境中会额外启动和停止一次你的 Effect，以检查[你是否正确实现了清理逻辑。](/learn/synchronizing-with-effects#how-to-handle-the-effect-firing-twice-in-development)
 
-The main reason your Effect will re-synchronize in practice is if some data it uses has changed. In the sandbox above, change the selected chat room. Notice how, when the `roomId` changes, your Effect re-synchronizes.
+你的 Effect 在实际使用中需要重新同步的主要原因，是它所使用的某些数据发生了变化。在上面的沙盒中，切换所选聊天室。注意当 `roomId` 变化时，你的 Effect 会重新同步。
 
-However, there are also more unusual cases in which re-synchronization is necessary. For example, try editing the `serverUrl` in the sandbox above while the chat is open. Notice how the Effect re-synchronizes in response to your edits to the code. In the future, React may add more features that rely on re-synchronization.
+不过，在一些更少见的情况下，也需要重新同步。例如，试着在聊天打开时编辑上面沙盒中的 `serverUrl`。注意 Effect 会在你对代码的编辑响应中重新同步。未来，React 可能会加入更多依赖重新同步的功能。
 
-### How React knows that it needs to re-synchronize the Effect {/*how-react-knows-that-it-needs-to-re-synchronize-the-effect*/}
+### React 如何知道它需要重新同步 Effect {/*how-react-knows-that-it-needs-to-re-synchronize-the-effect*/}
 
-You might be wondering how React knew that your Effect needed to re-synchronize after `roomId` changes. It's because *you told React* that its code depends on `roomId` by including it in the [list of dependencies:](/learn/synchronizing-with-effects#step-2-specify-the-effect-dependencies)
+你可能会好奇，React 是怎么知道 `roomId` 变化后你的 Effect 需要重新同步的。这是因为你通过将它包含在[依赖列表中](/learn/synchronizing-with-effects#step-2-specify-the-effect-dependencies)，**告诉了 React** 它的代码依赖于 `roomId`：
 
 ```js {1,3,8}
-function ChatRoom({ roomId }) { // The roomId prop may change over time
+function ChatRoom({ roomId }) { // roomId prop 可能会随时间变化
   useEffect(() => {
-    const connection = createConnection(serverUrl, roomId); // This Effect reads roomId
+    const connection = createConnection(serverUrl, roomId); // 这个 Effect 读取了 roomId
     connection.connect();
     return () => {
       connection.disconnect();
     };
-  }, [roomId]); // So you tell React that this Effect "depends on" roomId
+  }, [roomId]); // 因此你告诉 React，这个 Effect “依赖于” roomId
   // ...
 ```
 
-Here's how this works:
+它的工作方式如下：
 
-1. You knew `roomId` is a prop, which means it can change over time.
-2. You knew that your Effect reads `roomId` (so its logic depends on a value that may change later).
-3. This is why you specified it as your Effect's dependency (so that it re-synchronizes when `roomId` changes).
+1. 你知道 `roomId` 是一个 prop，这意味着它可能会随时间变化。
+2. 你知道你的 Effect 读取了 `roomId`（因此它的逻辑依赖于一个以后可能变化的值）。
+3. 这就是你将它指定为 Effect 依赖项的原因（这样当 `roomId` 变化时，它就会重新同步）。
 
-Every time after your component re-renders, React will look at the array of dependencies that you have passed. If any of the values in the array is different from the value at the same spot that you passed during the previous render, React will re-synchronize your Effect.
+每次组件重新渲染后，React 都会查看你传入的依赖数组。如果数组中的任意值与上一次渲染时对应位置传入的值不同，React 就会重新同步你的 Effect。
 
-For example, if you passed `["general"]` during the initial render, and later you passed `["travel"]` during the next render, React will compare `"general"` and `"travel"`. These are different values (compared with [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is)), so React will re-synchronize your Effect. On the other hand, if your component re-renders but `roomId` has not changed, your Effect will remain connected to the same room.
+例如，如果你在初始渲染时传入了 `["general"]`，而在下一次渲染时传入了 `["travel"]`，React 就会比较 `"general"` 和 `"travel"`。这些是不同的值（使用 [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is) 比较），所以 React 会重新同步你的 Effect。另一方面，如果组件重新渲染，但 `roomId` 没有变化，你的 Effect 就会继续连接到同一个房间。
 
-### Each Effect represents a separate synchronization process {/*each-effect-represents-a-separate-synchronization-process*/}
+### 每个 Effect 都代表一个独立的同步过程 {/*each-effect-represents-a-separate-synchronization-process*/}
 
-Resist adding unrelated logic to your Effect only because this logic needs to run at the same time as an Effect you already wrote. For example, let's say you want to send an analytics event when the user visits the room. You already have an Effect that depends on `roomId`, so you might feel tempted to add the analytics call there:
+不要仅仅因为某段逻辑需要和你已经写好的 Effect 同时运行，就把无关的逻辑加到这个 Effect 里。例如，假设你希望在用户访问房间时发送一条分析事件。你已经有一个依赖 `roomId` 的 Effect，所以你可能会忍不住把分析调用也加进去：
 
 ```js {3}
 function ChatRoom({ roomId }) {
@@ -330,7 +330,7 @@ function ChatRoom({ roomId }) {
 }
 ```
 
-But imagine you later add another dependency to this Effect that needs to re-establish the connection. If this Effect re-synchronizes, it will also call `logVisit(roomId)` for the same room, which you did not intend. Logging the visit **is a separate process** from connecting. Write them as two separate Effects:
+但想象一下，你后来给这个 Effect 增加了另一个需要重新建立连接的依赖项。如果这个 Effect 重新同步了，它也会对同一个房间调用 `logVisit(roomId)`，而这并不是你的本意。记录访问日志 **是一个独立的过程**，和连接是分开的。应当把它们写成两个单独的 Effect：
 
 ```js {2-4}
 function ChatRoom({ roomId }) {
@@ -346,13 +346,13 @@ function ChatRoom({ roomId }) {
 }
 ```
 
-**Each Effect in your code should represent a separate and independent synchronization process.**
+**你代码中的每个 Effect 都应该代表一个独立的同步过程。**
 
-In the above example, deleting one Effect wouldn’t break the other Effect's logic. This is a good indication that they synchronize different things, and so it made sense to split them up. On the other hand, if you split up a cohesive piece of logic into separate Effects, the code may look "cleaner" but will be [more difficult to maintain.](/learn/you-might-not-need-an-effect#chains-of-computations) This is why you should think whether the processes are same or separate, not whether the code looks cleaner.
+在上面的例子里，删除一个 Effect 并不会破坏另一个 Effect 的逻辑。这说明它们同步的是不同的事情，因此把它们拆开是合理的。另一方面，如果你把一段内聚的逻辑拆成多个 Effect，代码看起来可能更“整洁”，但会[更难维护。](/learn/you-might-not-need-an-effect#chains-of-computations) 这就是为什么你应该思考这些过程是相同还是不同，而不是代码看起来是否更整洁。
 
-## Effects "react" to reactive values {/*effects-react-to-reactive-values*/}
+## Effects “响应” reactive 值 {/*effects-react-to-reactive-values*/}
 
-Your Effect reads two variables (`serverUrl` and `roomId`), but you only specified `roomId` as a dependency:
+你的 Effect 读取了两个变量（`serverUrl` 和 `roomId`），但你只把 `roomId` 指定为了依赖项：
 
 ```js {5,10}
 const serverUrl = 'https://localhost:1234';
@@ -369,32 +369,32 @@ function ChatRoom({ roomId }) {
 }
 ```
 
-Why doesn't `serverUrl` need to be a dependency?
+为什么 `serverUrl` 不需要成为依赖项？
 
-This is because the `serverUrl` never changes due to a re-render. It's always the same no matter how many times the component re-renders and why. Since `serverUrl` never changes, it wouldn't make sense to specify it as a dependency. After all, dependencies only do something when they change over time!
+这是因为 `serverUrl` 不会因为重新渲染而改变。无论组件重新渲染多少次、因为什么原因，它始终都是同一个值。既然 `serverUrl` 不会改变，把它列为依赖项就没有意义。毕竟，依赖项只有在随时间发生变化时才有作用！
 
-On the other hand, `roomId` may be different on a re-render. **Props, state, and other values declared inside the component are _reactive_ because they're calculated during rendering and participate in the React data flow.**
+另一方面，`roomId` 在重新渲染时可能不同。**Props、state，以及组件内部声明的其他值都是 _reactive_（响应式）的，因为它们是在渲染期间计算出来的，并且参与 React 的数据流。**
 
-If `serverUrl` was a state variable, it would be reactive. Reactive values must be included in dependencies:
+如果 `serverUrl` 是一个 state 变量，那它就是 reactive 的。reactive 值必须包含在依赖项中：
 
 ```js {2,5,10}
-function ChatRoom({ roomId }) { // Props change over time
-  const [serverUrl, setServerUrl] = useState('https://localhost:1234'); // State may change over time
+function ChatRoom({ roomId }) { // Props 会随时间变化
+  const [serverUrl, setServerUrl] = useState('https://localhost:1234'); // State 可能会随时间变化
 
   useEffect(() => {
-    const connection = createConnection(serverUrl, roomId); // Your Effect reads props and state
+    const connection = createConnection(serverUrl, roomId); // 你的 Effect 读取了 props 和 state
     connection.connect();
     return () => {
       connection.disconnect();
     };
-  }, [roomId, serverUrl]); // So you tell React that this Effect "depends on" on props and state
+  }, [roomId, serverUrl]); // 所以你要告诉 React，这个 Effect “依赖于” props 和 state
   // ...
 }
 ```
 
-By including `serverUrl` as a dependency, you ensure that the Effect re-synchronizes after it changes.
+把 `serverUrl` 加入依赖项后，你就能确保它变化之后，Effect 会重新同步。
 
-Try changing the selected chat room or edit the server URL in this sandbox:
+试着在这个 sandbox 中更改选中的聊天房间，或编辑服务器 URL：
 
 <Sandpack>
 
@@ -449,13 +449,13 @@ export default function App() {
 
 ```js src/chat.js
 export function createConnection(serverUrl, roomId) {
-  // A real implementation would actually connect to the server
+  // 一个真实实现会真正连接到服务器
   return {
     connect() {
-      console.log('✅ Connecting to "' + roomId + '" room at ' + serverUrl + '...');
+      console.log('✅ 正在连接到 "' + roomId + '" 房间，地址为 ' + serverUrl + '...');
     },
     disconnect() {
-      console.log('❌ Disconnected from "' + roomId + '" room at ' + serverUrl);
+      console.log('❌ 已从 "' + roomId + '" 房间断开连接，地址为 ' + serverUrl);
     }
   };
 }
@@ -468,11 +468,11 @@ button { margin-left: 10px; }
 
 </Sandpack>
 
-Whenever you change a reactive value like `roomId` or `serverUrl`, the Effect re-connects to the chat server.
+每当你更改像 `roomId` 或 `serverUrl` 这样的 reactive 值时，Effect 都会重新连接到聊天服务器。
 
-### What an Effect with empty dependencies means {/*what-an-effect-with-empty-dependencies-means*/}
+### 空依赖项的 Effect 意味着什么 {/*what-an-effect-with-empty-dependencies-means*/}
 
-What happens if you move both `serverUrl` and `roomId` outside the component?
+如果你把 `serverUrl` 和 `roomId` 都移到组件外面，会发生什么？
 
 ```js {1,2}
 const serverUrl = 'https://localhost:1234';
@@ -485,14 +485,14 @@ function ChatRoom() {
     return () => {
       connection.disconnect();
     };
-  }, []); // ✅ All dependencies declared
+  }, []); // ✅ 已声明所有依赖项
   // ...
 }
 ```
 
-Now your Effect's code does not use *any* reactive values, so its dependencies can be empty (`[]`).
+现在你的 Effect 代码不使用任何 reactive 值，因此它的依赖项可以为空（`[]`）。
 
-Thinking from the component's perspective, the empty `[]` dependency array means this Effect connects to the chat room only when the component mounts, and disconnects only when the component unmounts. (Keep in mind that React would still [re-synchronize it an extra time](#how-react-verifies-that-your-effect-can-re-synchronize) in development to stress-test your logic.)
+从组件的角度看，空的 `[]` 依赖数组意味着：这个 Effect 只会在组件挂载时连接到聊天室，并且只会在组件卸载时断开连接。（请记住，在开发环境中，React 仍然会[额外重新同步一次](#how-react-verifies-that-your-effect-can-re-synchronize)来对你的逻辑进行压力测试。）
 
 
 <Sandpack>
@@ -529,13 +529,13 @@ export default function App() {
 
 ```js src/chat.js
 export function createConnection(serverUrl, roomId) {
-  // A real implementation would actually connect to the server
+  // 一个真实实现会真正连接到服务器
   return {
     connect() {
-      console.log('✅ Connecting to "' + roomId + '" room at ' + serverUrl + '...');
+      console.log('✅ 正在连接到 "' + roomId + '" 房间，地址为 ' + serverUrl + '...');
     },
     disconnect() {
-      console.log('❌ Disconnected from "' + roomId + '" room at ' + serverUrl);
+      console.log('❌ 已从 "' + roomId + '" 房间断开连接，地址为 ' + serverUrl);
     }
   };
 }
@@ -548,52 +548,52 @@ button { margin-left: 10px; }
 
 </Sandpack>
 
-However, if you [think from the Effect's perspective,](#thinking-from-the-effects-perspective) you don't need to think about mounting and unmounting at all. What's important is you've specified what your Effect does to start and stop synchronizing. Today, it has no reactive dependencies. But if you ever want the user to change `roomId` or `serverUrl` over time (and they would become reactive), your Effect's code won't change. You will only need to add them to the dependencies.
+然而，如果你[从 Effect 的角度思考，](#thinking-from-the-effects-perspective)你根本不需要考虑挂载和卸载。重要的是，你已经明确描述了 Effect 如何开始和停止同步。到目前为止，它没有任何 reactive 依赖项。但是如果你以后希望用户随着时间更改 `roomId` 或 `serverUrl`（它们就会变成 reactive 的），你的 Effect 代码也不需要改变。你只需要把它们加入依赖项。
 
-### All variables declared in the component body are reactive {/*all-variables-declared-in-the-component-body-are-reactive*/}
+### 组件函数体内声明的所有变量都是 reactive 的 {/*all-variables-declared-in-the-component-body-are-reactive*/}
 
-Props and state aren't the only reactive values. Values that you calculate from them are also reactive. If the props or state change, your component will re-render, and the values calculated from them will also change. This is why all variables from the component body used by the Effect should be in the Effect dependency list.
+Props 和 state 不是唯一的 reactive 值。你从它们计算出来的值也是 reactive 的。如果 props 或 state 改变了，组件会重新渲染，从它们计算出来的值也会改变。这就是为什么 Effect 使用到的组件函数体内所有变量都应该出现在 Effect 依赖列表中。
 
-Let's say that the user can pick a chat server in the dropdown, but they can also configure a default server in settings. Suppose you've already put the settings state in a [context](/learn/scaling-up-with-reducer-and-context) so you read the `settings` from that context. Now you calculate the `serverUrl` based on the selected server from props and the default server:
+假设用户可以在下拉框中选择一个聊天服务器，但他们也可以在设置里配置默认服务器。假设你已经把设置 state 放在了一个 [context](/learn/scaling-up-with-reducer-and-context) 中，因此你可以从这个 context 中读取 `settings`。现在你根据 props 中选中的服务器和默认服务器来计算 `serverUrl`：
 
 ```js {3,5,10}
-function ChatRoom({ roomId, selectedServerUrl }) { // roomId is reactive
-  const settings = useContext(SettingsContext); // settings is reactive
-  const serverUrl = selectedServerUrl ?? settings.defaultServerUrl; // serverUrl is reactive
+function ChatRoom({ roomId, selectedServerUrl }) { // roomId 是 reactive 的
+  const settings = useContext(SettingsContext); // settings 是 reactive 的
+  const serverUrl = selectedServerUrl ?? settings.defaultServerUrl; // serverUrl 是 reactive 的
   useEffect(() => {
-    const connection = createConnection(serverUrl, roomId); // Your Effect reads roomId and serverUrl
+    const connection = createConnection(serverUrl, roomId); // 你的 Effect 读取了 roomId 和 serverUrl
     connection.connect();
     return () => {
       connection.disconnect();
     };
-  }, [roomId, serverUrl]); // So it needs to re-synchronize when either of them changes!
+  }, [roomId, serverUrl]); // 所以当它们任意一个变化时，都需要重新同步！
   // ...
 }
 ```
 
-In this example, `serverUrl` is not a prop or a state variable. It's a regular variable that you calculate during rendering. But it's calculated during rendering, so it can change due to a re-render. This is why it's reactive.
+在这个例子中，`serverUrl` 既不是 prop，也不是 state 变量。它只是你在渲染期间计算出来的普通变量。但它是在渲染期间计算的，所以它可能因为重新渲染而改变。这就是它为什么是 reactive 的。
 
-**All values inside the component (including props, state, and variables in your component's body) are reactive. Any reactive value can change on a re-render, so you need to include reactive values as Effect's dependencies.**
+**组件内部的所有值（包括 props、state，以及组件函数体内的变量）都是 reactive 的。任何 reactive 值都可能在重新渲染时改变，所以你需要把 reactive 值作为 Effect 的依赖项。**
 
-In other words, Effects "react" to all values from the component body.
+换句话说，Effects 会对组件函数体中的所有值“响应”。
 
 <DeepDive>
 
-#### Can global or mutable values be dependencies? {/*can-global-or-mutable-values-be-dependencies*/}
+#### 全局值或可变值可以作为依赖项吗？ {/*can-global-or-mutable-values-be-dependencies*/}
 
-Mutable values (including global variables) aren't reactive.
+可变值（包括全局变量）不是 reactive 的。
 
-**A mutable value like [`location.pathname`](https://developer.mozilla.org/en-US/docs/Web/API/Location/pathname) can't be a dependency.** It's mutable, so it can change at any time completely outside of the React rendering data flow. Changing it wouldn't trigger a re-render of your component. Therefore, even if you specified it in the dependencies, React *wouldn't know* to re-synchronize the Effect when it changes. This also breaks the rules of React because reading mutable data during rendering (which is when you calculate the dependencies) breaks [purity of rendering.](/learn/keeping-components-pure) Instead, you should read and subscribe to an external mutable value with [`useSyncExternalStore`.](/learn/you-might-not-need-an-effect#subscribing-to-an-external-store)
+**像 [`location.pathname`](https://developer.mozilla.org/en-US/docs/Web/API/Location/pathname) 这样的可变值不能作为依赖项。** 它是可变的，因此它可以在完全脱离 React 渲染数据流的任何时候发生变化。更改它不会触发组件重新渲染。因此，即使你把它写进依赖项里，React 也*不会知道*在它变化时需要重新同步 Effect。这也违反了 React 的规则，因为在渲染期间读取可变数据（而这正是你计算依赖项的时候）会破坏[渲染纯度。](/learn/keeping-components-pure)相反，你应该使用 [`useSyncExternalStore`.](/learn/you-might-not-need-an-effect#subscribing-to-an-external-store) 来读取并订阅外部可变值。
 
-**A mutable value like [`ref.current`](/reference/react/useRef#reference) or things you read from it also can't be a dependency.** The ref object returned by `useRef` itself can be a dependency, but its `current` property is intentionally mutable. It lets you [keep track of something without triggering a re-render.](/learn/referencing-values-with-refs) But since changing it doesn't trigger a re-render, it's not a reactive value, and React won't know to re-run your Effect when it changes.
+**像 [`ref.current`](/reference/react/useRef#reference) 这样的可变值，或者你从它读取到的内容，也不能作为依赖项。** `useRef` 返回的 ref 对象本身可以作为依赖项，但它的 `current` 属性是刻意设计成可变的。它可以让你[在不触发重新渲染的情况下追踪某些值。](/learn/referencing-values-with-refs)但是由于修改它不会触发重新渲染，所以它不是 reactive 值，React 也不会在它变化时知道要重新运行你的 Effect。
 
-As you'll learn below on this page, a linter will check for these issues automatically.
+正如下文所学，linter 会自动检查这些问题。
 
 </DeepDive>
 
-### React verifies that you specified every reactive value as a dependency {/*react-verifies-that-you-specified-every-reactive-value-as-a-dependency*/}
+### React 会验证你是否将每个 reactive 值都指定为依赖项 {/*react-verifies-that-you-specified-every-reactive-value-as-a-dependency*/}
 
-If your linter is [configured for React,](/learn/editor-setup#linting) it will check that every reactive value used by your Effect's code is declared as its dependency. For example, this is a lint error because both `roomId` and `serverUrl` are reactive:
+如果你的 linter 已为 [React 配置，](/learn/editor-setup#linting)它会检查你的 Effect 代码中使用到的每个 reactive 值是否都被声明为依赖项。比如，下面这段代码会报 lint 错误，因为 `roomId` 和 `serverUrl` 都是 reactive 的：
 
 <Sandpack>
 
@@ -601,14 +601,14 @@ If your linter is [configured for React,](/learn/editor-setup#linting) it will c
 import { useState, useEffect } from 'react';
 import { createConnection } from './chat.js';
 
-function ChatRoom({ roomId }) { // roomId is reactive
-  const [serverUrl, setServerUrl] = useState('https://localhost:1234'); // serverUrl is reactive
+function ChatRoom({ roomId }) { // roomId 是 reactive 的
+  const [serverUrl, setServerUrl] = useState('https://localhost:1234'); // serverUrl 是 reactive 的
 
   useEffect(() => {
     const connection = createConnection(serverUrl, roomId);
     connection.connect();
     return () => connection.disconnect();
-  }, []); // <-- Something's wrong here!
+  }, []); // <-- 这里有问题！
 
   return (
     <>
@@ -648,13 +648,13 @@ export default function App() {
 
 ```js src/chat.js
 export function createConnection(serverUrl, roomId) {
-  // A real implementation would actually connect to the server
+  // 一个真实实现会真正连接到服务器
   return {
     connect() {
-      console.log('✅ Connecting to "' + roomId + '" room at ' + serverUrl + '...');
+      console.log('✅ 正在连接到 "' + roomId + '" 房间，地址为 ' + serverUrl + '...');
     },
     disconnect() {
-      console.log('❌ Disconnected from "' + roomId + '" room at ' + serverUrl);
+      console.log('❌ 已从 "' + roomId + '" 房间断开连接，地址为 ' + serverUrl);
     }
   };
 }
@@ -667,41 +667,41 @@ button { margin-left: 10px; }
 
 </Sandpack>
 
-This may look like a React error, but really React is pointing out a bug in your code. Both `roomId` and `serverUrl` may change over time, but you're forgetting to re-synchronize your Effect when they change. You will remain connected to the initial `roomId` and `serverUrl` even after the user picks different values in the UI.
+这看起来像是 React 报错了，但实际上 React 只是指出了你代码中的一个 bug。`roomId` 和 `serverUrl` 都可能随时间变化，但你忘了在它们变化时重新同步你的 Effect。即使用户在界面中选择了不同的值，你仍然会连接到初始的 `roomId` 和 `serverUrl`。
 
-To fix the bug, follow the linter's suggestion to specify `roomId` and `serverUrl` as dependencies of your Effect:
+要修复这个 bug，请按照 linter 的建议，把 `roomId` 和 `serverUrl` 指定为 Effect 的依赖项：
 
 ```js {9}
-function ChatRoom({ roomId }) { // roomId is reactive
-  const [serverUrl, setServerUrl] = useState('https://localhost:1234'); // serverUrl is reactive
+function ChatRoom({ roomId }) { // roomId 是 reactive 的
+  const [serverUrl, setServerUrl] = useState('https://localhost:1234'); // serverUrl 是 reactive 的
   useEffect(() => {
     const connection = createConnection(serverUrl, roomId);
     connection.connect();
     return () => {
       connection.disconnect();
     };
-  }, [serverUrl, roomId]); // ✅ All dependencies declared
+  }, [serverUrl, roomId]); // ✅ 已声明所有依赖项
   // ...
 }
 ```
 
-Try this fix in the sandbox above. Verify that the linter error is gone, and the chat re-connects when needed.
+试着在上面的 sandbox 中做这个修复。确认 linter 错误消失，并且聊天会在需要时重新连接。
 
 <Note>
 
-In some cases, React *knows* that a value never changes even though it's declared inside the component. For example, the [`set` function](/reference/react/useState#setstate) returned from `useState` and the ref object returned by [`useRef`](/reference/react/useRef) are *stable*--they are guaranteed to not change on a re-render. Stable values aren't reactive, so you may omit them from the list. Including them is allowed: they won't change, so it doesn't matter.
+在某些情况下，即使一个值声明在组件内部，React 也*知道*它永远不会改变。例如，`useState` 返回的 [`set` 函数](/reference/react/useState#setstate)以及 [`useRef`](/reference/react/useRef) 返回的 ref 对象都是 *stable*（稳定的）——它们保证不会在重新渲染时改变。稳定值不是 reactive 的，所以你可以把它们从列表中省略。把它们加进去也可以：它们不会变，所以无所谓。
 
 </Note>
 
-### What to do when you don't want to re-synchronize {/*what-to-do-when-you-dont-want-to-re-synchronize*/}
+### 当你不想重新同步时该怎么做 {/*what-to-do-when-you-dont-want-to-re-synchronize*/}
 
-In the previous example, you've fixed the lint error by listing `roomId` and `serverUrl` as dependencies.
+在前面的例子中，你通过把 `roomId` 和 `serverUrl` 列为依赖项修复了 lint 错误。
 
-**However, you could instead "prove" to the linter that these values aren't reactive values,** i.e. that they *can't* change as a result of a re-render. For example, if `serverUrl` and `roomId` don't depend on rendering and always have the same values, you can move them outside the component. Now they don't need to be dependencies:
+**不过，你也可以向 linter“证明”这些值不是 reactive 的，**也就是说，它们*不会*因为重新渲染而改变。例如，如果 `serverUrl` 和 `roomId` 不依赖于渲染，而且始终保持相同的值，你可以把它们移到组件外面。这样它们就不需要作为依赖项了：
 
 ```js {1,2,11}
-const serverUrl = 'https://localhost:1234'; // serverUrl is not reactive
-const roomId = 'general'; // roomId is not reactive
+const serverUrl = 'https://localhost:1234'; // serverUrl 不是 reactive 的
+const roomId = 'general'; // roomId 不是 reactive 的
 
 function ChatRoom() {
   useEffect(() => {
@@ -710,80 +710,80 @@ function ChatRoom() {
     return () => {
       connection.disconnect();
     };
-  }, []); // ✅ All dependencies declared
+  }, []); // ✅ 已声明所有依赖项
   // ...
 }
 ```
 
-You can also move them *inside the Effect.* They aren't calculated during rendering, so they're not reactive:
+你也可以把它们移到 *Effect 内部*。它们不是在渲染期间计算出来的，所以它们不是 reactive 的：
 
 ```js {3,4,10}
 function ChatRoom() {
   useEffect(() => {
-    const serverUrl = 'https://localhost:1234'; // serverUrl is not reactive
-    const roomId = 'general'; // roomId is not reactive
+    const serverUrl = 'https://localhost:1234'; // serverUrl 不是 reactive 的
+    const roomId = 'general'; // roomId 不是 reactive 的
     const connection = createConnection(serverUrl, roomId);
     connection.connect();
     return () => {
       connection.disconnect();
     };
-  }, []); // ✅ All dependencies declared
+  }, []); // ✅ 已声明所有依赖项
   // ...
 }
 ```
 
-**Effects are reactive blocks of code.** They re-synchronize when the values you read inside of them change. Unlike event handlers, which only run once per interaction, Effects run whenever synchronization is necessary.
+**Effects 是 reactive 的代码块。** 当你在其中读取的值发生变化时，它们会重新同步。与事件处理器不同，事件处理器每次交互只运行一次，而 Effects 会在需要同步时运行。
 
-**You can't "choose" your dependencies.** Your dependencies must include every [reactive value](#all-variables-declared-in-the-component-body-are-reactive) you read in the Effect. The linter enforces this. Sometimes this may lead to problems like infinite loops and to your Effect re-synchronizing too often. Don't fix these problems by suppressing the linter! Here's what to try instead:
+**你不能“选择”你的依赖项。** 依赖项必须包含你在 Effect 中读取的每一个[reactive 值](#all-variables-declared-in-the-component-body-are-reactive)。linter 会强制执行这一点。有时这会导致诸如无限循环之类的问题，也会让你的 Effect 过于频繁地重新同步。不要通过关闭 linter 来修复这些问题！你应该尝试以下做法：
 
-* **Check that your Effect represents an independent synchronization process.** If your Effect doesn't synchronize anything, [it might be unnecessary.](/learn/you-might-not-need-an-effect) If it synchronizes several independent things, [split it up.](#each-effect-represents-a-separate-synchronization-process)
+* **检查你的 Effect 是否表示一个独立的同步过程。** 如果你的 Effect 根本没有同步任何东西，[它也许是不必要的。](/learn/you-might-not-need-an-effect)如果它在同步多个彼此独立的内容，应该[把它拆开。](#each-effect-represents-a-separate-synchronization-process)
 
-* **If you want to read the latest value of props or state without "reacting" to it and re-synchronizing the Effect,** you can split your Effect into a reactive part (which you'll keep in the Effect) and a non-reactive part (which you'll extract into something called an _Effect Event_). [Read about separating Events from Effects.](/learn/separating-events-from-effects)
+* **如果你想读取 props 或 state 的最新值，但又不想“响应”它并重新同步 Effect，**你可以把 Effect 分成 reactive 部分（保留在 Effect 中）和 non-reactive 部分（提取到所谓的 _Effect Event_ 中）。[阅读关于将 Events 与 Effects 分离的内容。](/learn/separating-events-from-effects)
 
-* **Avoid relying on objects and functions as dependencies.** If you create objects and functions during rendering and then read them from an Effect, they will be different on every render. This will cause your Effect to re-synchronize every time. [Read more about removing unnecessary dependencies from Effects.](/learn/removing-effect-dependencies)
+* **避免依赖对象和函数。** 如果你在渲染期间创建对象和函数，然后在 Effect 中读取它们，它们在每次渲染时都会不同。这会导致你的 Effect 每次都重新同步。[阅读更多关于从 Effects 中移除不必要依赖项的内容。](/learn/removing-effect-dependencies)
 
 <Pitfall>
 
-The linter is your friend, but its powers are limited. The linter only knows when the dependencies are *wrong*. It doesn't know *the best* way to solve each case. If the linter suggests a dependency, but adding it causes a loop, it doesn't mean the linter should be ignored. You need to change the code inside (or outside) the Effect so that that value isn't reactive and doesn't *need* to be a dependency.
+linter 是你的朋友，但它的能力有限。linter 只能知道依赖项什么时候是*错的*，但它不知道每种情况*最好的*解决方式。如果 linter 建议添加某个依赖项，但添加后导致循环，这并不意味着可以忽略 linter。你需要修改 Effect 内部（或外部）的代码，让那个值不再是 reactive 的，也就不再*需要*成为依赖项。
 
-If you have an existing codebase, you might have some Effects that suppress the linter like this:
+如果你已经有一个现成的代码库，你可能会看到一些 Effect 像这样抑制了 linter：
 
 ```js {3-4}
 useEffect(() => {
   // ...
-  // 🔴 Avoid suppressing the linter like this:
+  // 🔴 不要像这样抑制 linter：
   // eslint-ignore-next-line react-hooks/exhaustive-deps
 }, []);
 ```
 
-On the [next](/learn/separating-events-from-effects) [pages](/learn/removing-effect-dependencies), you'll learn how to fix this code without breaking the rules. It's always worth fixing!
+在[下一页](/learn/separating-events-from-effects)[后续页面](/learn/removing-effect-dependencies)中，你会学到如何在不破坏规则的情况下修复这段代码。修复它总是值得的！
 
 </Pitfall>
 
 <Recap>
 
-- Components can mount, update, and unmount.
-- Each Effect has a separate lifecycle from the surrounding component.
-- Each Effect describes a separate synchronization process that can *start* and *stop*.
-- When you write and read Effects, think from each individual Effect's perspective (how to start and stop synchronization) rather than from the component's perspective (how it mounts, updates, or unmounts).
-- Values declared inside the component body are "reactive".
-- Reactive values should re-synchronize the Effect because they can change over time.
-- The linter verifies that all reactive values used inside the Effect are specified as dependencies.
-- All errors flagged by the linter are legitimate. There's always a way to fix the code to not break the rules.
+- 组件可以挂载、更新和卸载。
+- 每个 Effect 都有独立于其外层组件的生命周期。
+- 每个 Effect 都描述了一个可以*开始*和*停止*的独立同步过程。
+- 在编写和读取 Effects 时，要从每个单独 Effect 的角度思考（如何开始和停止同步），而不是从组件的角度思考（它如何挂载、更新或卸载）。
+- 在组件函数体内声明的值都是“reactive”的。
+- reactive 值应该重新同步 Effect，因为它们会随时间变化。
+- linter 会验证在 Effect 内使用到的所有 reactive 值都被指定为依赖项。
+- linter 标出的所有错误都是真实存在的问题。总能找到一种修复代码且不违反规则的方法。
 
 </Recap>
 
 <Challenges>
 
-#### Fix reconnecting on every keystroke {/*fix-reconnecting-on-every-keystroke*/}
+#### 修复每次按键都会重新连接的问题 {/*fix-reconnecting-on-every-keystroke*/}
 
-In this example, the `ChatRoom` component connects to the chat room when the component mounts, disconnects when it unmounts, and reconnects when you select a different chat room. This behavior is correct, so you need to keep it working.
+在这个例子中，`ChatRoom` 组件在组件挂载时连接到聊天室，在卸载时断开连接，并在你选择不同聊天室时重新连接。这个行为是正确的，所以你需要保持它正常工作。
 
-However, there is a problem. Whenever you type into the message box input at the bottom, `ChatRoom` *also* reconnects to the chat. (You can notice this by clearing the console and typing into the input.) Fix the issue so that this doesn't happen.
+不过，这里有个问题。每当你在底部的消息输入框中打字时，`ChatRoom` *也会*重新连接到聊天。你可以通过清空控制台并在输入框中输入来观察这一点。请修复这个问题，使它不再发生。
 
 <Hint>
 
-You might need to add a dependency array for this Effect. What dependencies should be there?
+你可能需要为这个 Effect 添加一个依赖数组。应该包含哪些依赖项？
 
 </Hint>
 
@@ -839,13 +839,13 @@ export default function App() {
 
 ```js src/chat.js
 export function createConnection(serverUrl, roomId) {
-  // A real implementation would actually connect to the server
+  // 一个真实实现会真正连接到服务器
   return {
     connect() {
-      console.log('✅ Connecting to "' + roomId + '" room at ' + serverUrl + '...');
+      console.log('✅ 正在连接到 "' + roomId + '" 房间，地址为 ' + serverUrl + '...');
     },
     disconnect() {
-      console.log('❌ Disconnected from "' + roomId + '" room at ' + serverUrl);
+      console.log('❌ 已从 "' + roomId + '" 房间断开连接，地址为 ' + serverUrl);
     }
   };
 }
@@ -860,7 +860,7 @@ button { margin-left: 10px; }
 
 <Solution>
 
-This Effect didn't have a dependency array at all, so it re-synchronized after every re-render. First, add a dependency array. Then, make sure that every reactive value used by the Effect is specified in the array. For example, `roomId` is reactive (because it's a prop), so it should be included in the array. This ensures that when the user selects a different room, the chat reconnects. On the other hand, `serverUrl` is defined outside the component. This is why it doesn't need to be in the array.
+这个 Effect 一开始根本没有依赖数组，所以它会在每次重新渲染后重新同步。首先，添加一个依赖数组。然后，确保 Effect 使用到的每个 reactive 值都被指定在数组中。例如，`roomId` 是 reactive 的（因为它是一个 prop），所以应该把它包含进去。这样可以确保当用户选择不同房间时，聊天会重新连接。另一方面，`serverUrl` 定义在组件外部，所以它不需要放进数组里。
 
 <Sandpack>
 
@@ -914,13 +914,13 @@ export default function App() {
 
 ```js src/chat.js
 export function createConnection(serverUrl, roomId) {
-  // A real implementation would actually connect to the server
+  // 一个真实实现会真正连接到服务器
   return {
     connect() {
-      console.log('✅ Connecting to "' + roomId + '" room at ' + serverUrl + '...');
+      console.log('✅ 正在连接到 "' + roomId + '" 房间，地址为 ' + serverUrl + '...');
     },
     disconnect() {
-      console.log('❌ Disconnected from "' + roomId + '" room at ' + serverUrl);
+      console.log('❌ 已从 "' + roomId + '" 房间断开连接，地址为 ' + serverUrl);
     }
   };
 }
@@ -935,15 +935,15 @@ button { margin-left: 10px; }
 
 </Solution>
 
-#### Switch synchronization on and off {/*switch-synchronization-on-and-off*/}
+#### 开关同步的启用与关闭 {/*switch-synchronization-on-and-off*/}
 
-In this example, an Effect subscribes to the window [`pointermove`](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointermove_event) event to move a pink dot on the screen. Try hovering over the preview area (or touching the screen if you're on a mobile device), and see how the pink dot follows your movement.
+在这个例子中，一个 Effect 订阅了窗口的 [`pointermove`](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointermove_event) 事件，从而让屏幕上的粉色圆点移动。试着将鼠标悬停在预览区域上（如果你在移动设备上，就触摸屏幕），看看粉色圆点如何跟随你的移动。
 
-There is also a checkbox. Ticking the checkbox toggles the `canMove` state variable, but this state variable is not used anywhere in the code. Your task is to change the code so that when `canMove` is `false` (the checkbox is ticked off), the dot should stop moving. After you toggle the checkbox back on (and set `canMove` to `true`), the box should follow the movement again. In other words, whether the dot can move or not should stay synchronized to whether the checkbox is checked.
+这里还有一个复选框。勾选复选框会切换 `canMove` 这个 state 变量，但代码里并没有在任何地方使用这个 state 变量。你的任务是修改代码，使得当 `canMove` 为 `false`（复选框未勾选）时，圆点停止移动。等你把复选框重新打开（把 `canMove` 设为 `true`）后，圆点应该再次跟随移动。换句话说，圆点能否移动，应该始终与复选框是否勾选保持同步。
 
 <Hint>
 
-You can't declare an Effect conditionally. However, the code inside the Effect can use conditions!
+你不能有条件地声明一个 Effect。不过，Effect 内部的代码可以使用条件判断！
 
 </Hint>
 
@@ -971,7 +971,7 @@ export default function App() {
           checked={canMove}
           onChange={e => setCanMove(e.target.checked)}
         />
-        The dot is allowed to move
+        允许圆点移动
       </label>
       <hr />
       <div style={{
@@ -1001,7 +1001,7 @@ body {
 
 <Solution>
 
-One solution is to wrap the `setPosition` call into an `if (canMove) { ... }` condition:
+一种解决方案是把 `setPosition` 调用包裹在 `if (canMove) { ... }` 条件中：
 
 <Sandpack>
 
@@ -1029,7 +1029,7 @@ export default function App() {
           checked={canMove}
           onChange={e => setCanMove(e.target.checked)}
         />
-        The dot is allowed to move
+        允许圆点移动
       </label>
       <hr />
       <div style={{
@@ -1057,7 +1057,7 @@ body {
 
 </Sandpack>
 
-Alternatively, you could wrap the *event subscription* logic into an `if (canMove) { ... }` condition:
+或者，你也可以把*事件订阅*逻辑包裹在 `if (canMove) { ... }` 条件中：
 
 <Sandpack>
 
@@ -1085,7 +1085,7 @@ export default function App() {
           checked={canMove}
           onChange={e => setCanMove(e.target.checked)}
         />
-        The dot is allowed to move
+        允许圆点移动
       </label>
       <hr />
       <div style={{
@@ -1113,19 +1113,19 @@ body {
 
 </Sandpack>
 
-In both of these cases, `canMove` is a reactive variable that you read inside the Effect. This is why it must be specified in the list of Effect dependencies. This ensures that the Effect re-synchronizes after every change to its value.
+在这两种情况下，`canMove` 都是你在 Effect 中读取的 reactive 变量。这就是为什么它必须被指定在 Effect 依赖列表中。这样可以确保每当它的值改变时，Effect 都会重新同步。
 
 </Solution>
 
-#### Investigate a stale value bug {/*investigate-a-stale-value-bug*/}
+#### 调查一个 stale value bug {/*investigate-a-stale-value-bug*/}
 
-In this example, the pink dot should move when the checkbox is on, and should stop moving when the checkbox is off. The logic for this has already been implemented: the `handleMove` event handler checks the `canMove` state variable.
+在这个例子中，粉色圆点应该在复选框打开时移动，在复选框关闭时停止移动。相关逻辑已经实现了：`handleMove` 事件处理器会检查 `canMove` state 变量。
 
-However, for some reason, the `canMove` state variable inside `handleMove` appears to be "stale": it's always `true`, even after you tick off the checkbox. How is this possible? Find the mistake in the code and fix it.
+然而，不知为何，`handleMove` 内部的 `canMove` state 变量似乎是“stale”的：它总是 `true`，即使你取消勾选复选框后也是如此。这是怎么发生的？找出代码中的错误并修复它。
 
 <Hint>
 
-If you see a linter rule being suppressed, remove the suppression! That's where the mistakes usually are.
+如果你看到有 linter 规则被抑制了，请移除这个抑制！错误通常就藏在那里。
 
 </Hint>
 
@@ -1157,7 +1157,7 @@ export default function App() {
           checked={canMove}
           onChange={e => setCanMove(e.target.checked)}
         />
-        The dot is allowed to move
+        允许圆点移动
       </label>
       <hr />
       <div style={{
@@ -1187,13 +1187,13 @@ body {
 
 <Solution>
 
-The problem with the original code was suppressing the dependency linter. If you remove the suppression, you'll see that this Effect depends on the `handleMove` function. This makes sense: `handleMove` is declared inside the component body, which makes it a reactive value. Every reactive value must be specified as a dependency, or it can potentially get stale over time!
+原始代码的问题在于抑制了依赖 linter。如果你移除这个抑制，就会看到这个 Effect 依赖于 `handleMove` 函数。这是有道理的：`handleMove` 是在组件函数体内声明的，因此它是一个 reactive 值。每个 reactive 值都必须被指定为依赖项，否则它可能会随着时间变得 stale！
 
-The author of the original code has "lied" to React by saying that the Effect does not depend (`[]`) on any reactive values. This is why React did not re-synchronize the Effect after `canMove` has changed (and `handleMove` with it). Because React did not re-synchronize the Effect, the `handleMove` attached as a listener is the `handleMove` function created during the initial render. During the initial render, `canMove` was `true`, which is why `handleMove` from the initial render will forever see that value.
+原始代码的作者对 React “撒了谎”，声称这个 Effect 不依赖任何 reactive 值（`[]`）。这就是为什么当 `canMove` 改变后（以及 `handleMove` 一起改变），React 没有重新同步这个 Effect。由于 React 没有重新同步 Effect，作为监听器附加的 `handleMove` 其实是初次渲染时创建的那个 `handleMove` 函数。在初次渲染时，`canMove` 是 `true`，这就是为什么初次渲染时的 `handleMove` 会永远看到这个值。
 
-**If you never suppress the linter, you will never see problems with stale values.** There are a few different ways to solve this bug, but you should always start by removing the linter suppression. Then change the code to fix the lint error.
+**如果你从不抑制 linter，就永远不会遇到 stale value 问题。** 这个 bug 有几种不同的解决方式，但你应该始终先移除 linter 抑制，然后修改代码以修复 lint 错误。
 
-You can change the Effect dependencies to `[handleMove]`, but since it's going to be a newly defined function for every render, you might as well remove dependencies array altogether. Then the Effect *will* re-synchronize after every re-render:
+你可以把 Effect 依赖改成 `[handleMove]`，但由于它每次渲染都会是一个新定义的函数，不如直接去掉依赖数组。这样 Effect 就会在每次重新渲染后重新同步：
 
 <Sandpack>
 
@@ -1222,7 +1222,7 @@ export default function App() {
           checked={canMove}
           onChange={e => setCanMove(e.target.checked)}
         />
-        The dot is allowed to move
+        允许圆点移动
       </label>
       <hr />
       <div style={{
@@ -1250,9 +1250,9 @@ body {
 
 </Sandpack>
 
-This solution works, but it's not ideal. If you put `console.log('Resubscribing')` inside the Effect, you'll notice that it resubscribes after every re-render. Resubscribing is fast, but it would still be nice to avoid doing it so often.
+这个方案可行，但并不理想。如果你在 Effect 中放入 `console.log('Resubscribing')`，你会发现它在每次重新渲染后都会重新订阅。重新订阅很快，但如果能避免这么频繁地做，还是更好。
 
-A better fix would be to move the `handleMove` function *inside* the Effect. Then `handleMove` won't be a reactive value, and so your Effect won't depend on a function. Instead, it will need to depend on `canMove` which your code now reads from inside the Effect. This matches the behavior you wanted, since your Effect will now stay synchronized with the value of `canMove`:
+更好的修复方式是把 `handleMove` 函数移到 *Effect 内部*。这样 `handleMove` 就不会是 reactive 值，因此你的 Effect 也就不会依赖某个函数了。相反，它需要依赖 `canMove`，因为你的代码现在是在 Effect 内部读取它。这与期望的行为一致，因为你的 Effect 现在会和 `canMove` 的值保持同步：
 
 <Sandpack>
 
@@ -1281,7 +1281,7 @@ export default function App() {
           checked={canMove}
           onChange={e => setCanMove(e.target.checked)}
         />
-        The dot is allowed to move
+        允许圆点移动
       </label>
       <hr />
       <div style={{
@@ -1309,21 +1309,21 @@ body {
 
 </Sandpack>
 
-Try adding `console.log('Resubscribing')` inside the Effect body and notice that now it only resubscribes when you toggle the checkbox (`canMove` changes) or edit the code. This makes it better than the previous approach that always resubscribed.
+试着在 Effect 主体中添加 `console.log('Resubscribing')`，你会发现现在它只会在你切换复选框（`canMove` 改变）或者编辑代码时重新订阅。这比前一种总是重新订阅的做法更好。
 
-You'll learn a more general approach to this type of problem in [Separating Events from Effects.](/learn/separating-events-from-effects)
+在[将 Events 与 Effects 分离。](/learn/separating-events-from-effects)中，你会学到一种更通用的方法来处理这类问题
 
 </Solution>
 
-#### Fix a connection switch {/*fix-a-connection-switch*/}
+#### 修复连接切换问题 {/*fix-a-connection-switch*/}
 
-In this example, the chat service in `chat.js` exposes two different APIs: `createEncryptedConnection` and `createUnencryptedConnection`. The root `App` component lets the user choose whether to use encryption or not, and then passes down the corresponding API method to the child `ChatRoom` component as the `createConnection` prop.
+在这个例子中，`chat.js` 中的聊天服务暴露了两个不同的 API：`createEncryptedConnection` 和 `createUnencryptedConnection`。根组件 `App` 允许用户选择是否启用加密，然后把对应的 API 方法作为 `createConnection` prop 传给子组件 `ChatRoom`。
 
-Notice that initially, the console logs say the connection is not encrypted. Try toggling the checkbox on: nothing will happen. However, if you change the selected room after that, then the chat will reconnect *and* enable encryption (as you'll see from the console messages). This is a bug. Fix the bug so that toggling the checkbox *also* causes the chat to reconnect.
+请注意，最开始控制台日志会显示连接未加密。试着勾选复选框：什么都不会发生。不过，如果你随后更改选中的房间，聊天会重新连接，并且启用加密（你可以从控制台消息中看到这一点）。这是一个 bug。请修复它，使得切换复选框时*也*会导致聊天重新连接。
 
 <Hint>
 
-Suppressing the linter is always suspicious. Could this be a bug?
+抑制 linter 总是可疑的。这会不会就是一个 bug？
 
 </Hint>
 
@@ -1391,25 +1391,25 @@ export default function ChatRoom({ roomId, createConnection }) {
 
 ```js src/chat.js
 export function createEncryptedConnection(roomId) {
-  // A real implementation would actually connect to the server
+  // 一个真实实现会真正连接到服务器
   return {
     connect() {
-      console.log('✅ 🔐 Connecting to "' + roomId + '... (encrypted)');
+      console.log('✅ 🔐 正在连接到 "' + roomId + '"...（已加密）');
     },
     disconnect() {
-      console.log('❌ 🔐 Disconnected from "' + roomId + '" room (encrypted)');
+      console.log('❌ 🔐 已从 "' + roomId + '" 房间断开连接（已加密）');
     }
   };
 }
 
 export function createUnencryptedConnection(roomId) {
-  // A real implementation would actually connect to the server
+  // 一个真实实现会真正连接到服务器
   return {
     connect() {
-      console.log('✅ Connecting to "' + roomId + '... (unencrypted)');
+      console.log('✅ 正在连接到 "' + roomId + '"...（未加密）');
     },
     disconnect() {
-      console.log('❌ Disconnected from "' + roomId + '" room (unencrypted)');
+      console.log('❌ 已从 "' + roomId + '" 房间断开连接（未加密）');
     }
   };
 }
@@ -1423,7 +1423,7 @@ label { display: block; margin-bottom: 10px; }
 
 <Solution>
 
-If you remove the linter suppression, you will see a lint error. The problem is that `createConnection` is a prop, so it's a reactive value. It can change over time! (And indeed, it should--when the user ticks the checkbox, the parent component passes a different value of the `createConnection` prop.) This is why it should be a dependency. Include it in the list to fix the bug:
+如果你移除 linter 抑制，你会看到一个 lint 错误。问题在于 `createConnection` 是一个 prop，所以它是 reactive 值。它可能会随着时间变化！（而且确实应该变化——当用户勾选复选框时，父组件会传入不同的 `createConnection` prop。）这就是为什么它应该成为依赖项。把它加入列表即可修复这个 bug：
 
 <Sandpack>
 
@@ -1488,25 +1488,25 @@ export default function ChatRoom({ roomId, createConnection }) {
 
 ```js src/chat.js
 export function createEncryptedConnection(roomId) {
-  // A real implementation would actually connect to the server
+  // 一个真实实现会真正连接到服务器
   return {
     connect() {
-      console.log('✅ 🔐 Connecting to "' + roomId + '... (encrypted)');
+      console.log('✅ 🔐 正在连接到 "' + roomId + '"...（已加密）');
     },
     disconnect() {
-      console.log('❌ 🔐 Disconnected from "' + roomId + '" room (encrypted)');
+      console.log('❌ 🔐 已从 "' + roomId + '" 房间断开连接（已加密）');
     }
   };
 }
 
 export function createUnencryptedConnection(roomId) {
-  // A real implementation would actually connect to the server
+  // 一个真实实现会真正连接到服务器
   return {
     connect() {
-      console.log('✅ Connecting to "' + roomId + '... (unencrypted)');
+      console.log('✅ 正在连接到 "' + roomId + '"...（未加密）');
     },
     disconnect() {
-      console.log('❌ Disconnected from "' + roomId + '" room (unencrypted)');
+      console.log('❌ 已从 "' + roomId + '" 房间断开连接（未加密）');
     }
   };
 }
@@ -1518,7 +1518,7 @@ label { display: block; margin-bottom: 10px; }
 
 </Sandpack>
 
-It is correct that `createConnection` is a dependency. However, this code is a bit fragile because someone could edit the `App` component to pass an inline function as the value of this prop. In that case, its value would be different every time the `App` component re-renders, so the Effect might re-synchronize too often. To avoid this, you can pass `isEncrypted` down instead:
+`createConnection` 确实是一个依赖项。不过，这段代码有点脆弱，因为有人可能会编辑 `App` 组件，让它把一个内联函数作为这个 prop 的值。在那种情况下，它的值会在 `App` 组件每次重新渲染时都不同，所以 Effect 可能会过于频繁地重新同步。为了避免这种情况，你可以改为传递 `isEncrypted`：
 
 <Sandpack>
 
@@ -1583,25 +1583,25 @@ export default function ChatRoom({ roomId, isEncrypted }) {
 
 ```js src/chat.js
 export function createEncryptedConnection(roomId) {
-  // A real implementation would actually connect to the server
+  // 一个真实实现会真正连接到服务器
   return {
     connect() {
-      console.log('✅ 🔐 Connecting to "' + roomId + '... (encrypted)');
+      console.log('✅ 🔐 正在连接到 "' + roomId + '"...（已加密）');
     },
     disconnect() {
-      console.log('❌ 🔐 Disconnected from "' + roomId + '" room (encrypted)');
+      console.log('❌ 🔐 已从 "' + roomId + '" 房间断开连接（已加密）');
     }
   };
 }
 
 export function createUnencryptedConnection(roomId) {
-  // A real implementation would actually connect to the server
+  // 一个真实实现会真正连接到服务器
   return {
     connect() {
-      console.log('✅ Connecting to "' + roomId + '... (unencrypted)');
+      console.log('✅ 正在连接到 "' + roomId + '"...（未加密）');
     },
     disconnect() {
-      console.log('❌ Disconnected from "' + roomId + '" room (unencrypted)');
+      console.log('❌ 已从 "' + roomId + '" 房间断开连接（未加密）');
     }
   };
 }
@@ -1613,21 +1613,21 @@ label { display: block; margin-bottom: 10px; }
 
 </Sandpack>
 
-In this version, the `App` component passes a boolean prop instead of a function. Inside the Effect, you decide which function to use. Since both `createEncryptedConnection` and `createUnencryptedConnection` are declared outside the component, they aren't reactive, and don't need to be dependencies. You'll learn more about this in [Removing Effect Dependencies.](/learn/removing-effect-dependencies)
+在这个版本中，`App` 组件传递的是一个布尔 prop，而不是一个函数。在 Effect 内部，你决定使用哪个函数。由于 `createEncryptedConnection` 和 `createUnencryptedConnection` 都是在组件外部声明的，它们不是 reactive 的，因此不需要作为依赖项。你会在[移除 Effect 依赖项。](/learn/removing-effect-dependencies)中了解更多关于这一点的内容
 
 </Solution>
 
-#### Populate a chain of select boxes {/*populate-a-chain-of-select-boxes*/}
+#### 填充一串下拉框 {/*populate-a-chain-of-select-boxes*/}
 
-In this example, there are two select boxes. One select box lets the user pick a planet. Another select box lets the user pick a place *on that planet.* The second box doesn't work yet. Your task is to make it show the places on the chosen planet.
+在这个例子中，有两个下拉框。一个下拉框让用户选择一个星球。另一个下拉框让用户选择该星球上的一个地点。第二个下拉框目前还不能工作。你的任务是让它显示所选星球上的地点。
 
-Look at how the first select box works. It populates the `planetList` state with the result from the `"/planets"` API call. The currently selected planet's ID is kept in the `planetId` state variable. You need to find where to add some additional code so that the `placeList` state variable is populated with the result of the `"/planets/" + planetId + "/places"` API call.
+看看第一个下拉框是如何工作的。它通过 `"/planets"` API 调用的结果来填充 `planetList` state。当前选中的星球 ID 保存在 `planetId` state 变量中。你需要找到合适的位置添加一些额外代码，让 `placeList` state 变量通过 `"/planets/" + planetId + "/places"` API 调用的结果来填充。
 
-If you implement this right, selecting a planet should populate the place list. Changing a planet should change the place list.
+如果你实现正确，选择一个星球就会填充地点列表。切换星球也应该改变地点列表。
 
 <Hint>
 
-If you have two independent synchronization processes, you need to write two separate Effects.
+如果你有两个独立的同步过程，你需要编写两个单独的 Effects。
 
 </Hint>
 
@@ -1650,7 +1650,7 @@ export default function Page() {
       if (!ignore) {
         console.log('Fetched a list of planets.');
         setPlanetList(result);
-        setPlanetId(result[0].id); // Select the first planet
+        setPlanetId(result[0].id); // 选择第一个星球
       }
     });
     return () => {
@@ -1773,12 +1773,12 @@ label { display: block; margin-bottom: 10px; }
 
 <Solution>
 
-There are two independent synchronization processes:
+这里有两个彼此独立的同步过程：
 
-- The first select box is synchronized to the remote list of planets.
-- The second select box is synchronized to the remote list of places for the current `planetId`.
+- 第一个下拉框与远程星球列表保持同步。
+- 第二个下拉框与当前 `planetId` 对应的远程地点列表保持同步。
 
-This is why it makes sense to describe them as two separate Effects. Here's an example of how you could do this:
+这就是为什么把它们描述为两个独立 Effects 是合理的。下面是一个实现示例：
 
 <Sandpack>
 
@@ -1799,7 +1799,7 @@ export default function Page() {
       if (!ignore) {
         console.log('Fetched a list of planets.');
         setPlanetList(result);
-        setPlanetId(result[0].id); // Select the first planet
+        setPlanetId(result[0].id); // 选择第一个星球
       }
     });
     return () => {
@@ -1809,7 +1809,7 @@ export default function Page() {
 
   useEffect(() => {
     if (planetId === '') {
-      // Nothing is selected in the first box yet
+      // 第一个框里还没有选中任何内容
       return;
     }
 
@@ -1818,7 +1818,7 @@ export default function Page() {
       if (!ignore) {
         console.log('Fetched a list of places on "' + planetId + '".');
         setPlaceList(result);
-        setPlaceId(result[0].id); // Select the first place
+        setPlaceId(result[0].id); // 选择第一个地点
       }
     });
     return () => {
@@ -1862,10 +1862,10 @@ export function fetchData(url) {
   } else if (url.startsWith('/planets/')) {
     const match = url.match(/^\/planets\/([\w-]+)\/places(\/)?$/);
     if (!match || !match[1] || !match[1].length) {
-      throw Error('Expected URL like "/planets/earth/places". Received: "' + url + '".');
+      throw Error('期望的 URL 形式为 "/planets/earth/places"。收到的是："' + url + '"。');
     }
     return fetchPlaces(match[1]);
-  } else throw Error('Expected URL like "/planets" or "/planets/earth/places". Received: "' + url + '".');
+  } else throw Error('期望的 URL 形式为 "/planets" 或 "/planets/earth/places"。收到的是："' + url + '"。');
 }
 
 async function fetchPlanets() {
@@ -1888,8 +1888,8 @@ async function fetchPlanets() {
 async function fetchPlaces(planetId) {
   if (typeof planetId !== 'string') {
     throw Error(
-      'fetchPlaces(planetId) expects a string argument. ' +
-      'Instead received: ' + planetId + '.'
+      'fetchPlaces(planetId) 期望一个字符串参数。' +
+      '实际收到的是：' + planetId + '。'
     );
   }
   return new Promise(resolve => {
@@ -1927,7 +1927,7 @@ async function fetchPlaces(planetId) {
           id: 'vishniac',
           name: 'Vishniac'
         }]);
-      } else throw Error('Unknown planet ID: ' + planetId);
+      } else throw Error('未知的行星 ID：' + planetId);
     }, 1000);
   });
 }
@@ -1939,9 +1939,9 @@ label { display: block; margin-bottom: 10px; }
 
 </Sandpack>
 
-This code is a bit repetitive. However, that's not a good reason to combine it into a single Effect! If you did this, you'd have to combine both Effect's dependencies into one list, and then changing the planet would refetch the list of all planets. Effects are not a tool for code reuse.
+这段代码有点重复。不过，这并不是把它合并成单个 Effect 的好理由！如果你这么做，就必须把两个 Effect 的依赖项合并到一个列表中，然后更改行星时会重新获取所有行星的列表。Effect 不是用于代码复用的工具。
 
-Instead, to reduce repetition, you can extract some logic into a custom Hook like `useSelectOptions` below:
+相反，为了减少重复，你可以把一些逻辑提取到下面这样的自定义 Hook 中，比如 `useSelectOptions`：
 
 <Sandpack>
 
@@ -1965,7 +1965,7 @@ export default function Page() {
   return (
     <>
       <label>
-        Pick a planet:{' '}
+        选择一个行星：{' '}
         <select value={planetId} onChange={e => {
           setPlanetId(e.target.value);
         }}>
@@ -1975,7 +1975,7 @@ export default function Page() {
         </select>
       </label>
       <label>
-        Pick a place:{' '}
+        选择一个地点：{' '}
         <select value={placeId} onChange={e => {
           setPlaceId(e.target.value);
         }}>
@@ -1985,7 +1985,7 @@ export default function Page() {
         </select>
       </label>
       <hr />
-      <p>You are going to: {placeId || '...'} on {planetId || '...'} </p>
+      <p>你将去往：{placeId || '...'}，位于 {planetId || '...'} </p>
     </>
   );
 }
@@ -2025,10 +2025,10 @@ export function fetchData(url) {
   } else if (url.startsWith('/planets/')) {
     const match = url.match(/^\/planets\/([\w-]+)\/places(\/)?$/);
     if (!match || !match[1] || !match[1].length) {
-      throw Error('Expected URL like "/planets/earth/places". Received: "' + url + '".');
+      throw Error('期望的 URL 形式为 "/planets/earth/places"。收到的是："' + url + '"。');
     }
     return fetchPlaces(match[1]);
-  } else throw Error('Expected URL like "/planets" or "/planets/earth/places". Received: "' + url + '".');
+  } else throw Error('期望的 URL 形式为 "/planets" 或 "/planets/earth/places"。收到的是："' + url + '"。');
 }
 
 async function fetchPlanets() {
@@ -2051,8 +2051,8 @@ async function fetchPlanets() {
 async function fetchPlaces(planetId) {
   if (typeof planetId !== 'string') {
     throw Error(
-      'fetchPlaces(planetId) expects a string argument. ' +
-      'Instead received: ' + planetId + '.'
+      'fetchPlaces(planetId) 期望一个字符串参数。' +
+      '实际收到的是：' + planetId + '。'
     );
   }
   return new Promise(resolve => {
@@ -2090,7 +2090,7 @@ async function fetchPlaces(planetId) {
           id: 'vishniac',
           name: 'Vishniac'
         }]);
-      } else throw Error('Unknown planet ID: ' + planetId);
+      } else throw Error('未知的行星 ID：' + planetId);
     }, 1000);
   });
 }
@@ -2102,7 +2102,7 @@ label { display: block; margin-bottom: 10px; }
 
 </Sandpack>
 
-Check the `useSelectOptions.js` tab in the sandbox to see how it works. Ideally, most Effects in your application should eventually be replaced by custom Hooks, whether written by you or by the community. Custom Hooks hide the synchronization logic, so the calling component doesn't know about the Effect. As you keep working on your app, you'll develop a palette of Hooks to choose from, and eventually you won't need to write Effects in your components very often.
+查看沙盒中的 `useSelectOptions.js` 选项卡，了解它是如何工作的。理想情况下，你应用中的大多数 Effect 最终都应该被自定义 Hook 替代，无论这些 Hook 是你自己编写的还是社区提供的。自定义 Hook 会隐藏同步逻辑，因此调用它的组件无需了解 Effect。随着你继续开发应用，你会逐渐积累一套可供选择的 Hook，最终就不需要再在组件中频繁编写 Effect 了。
 
 </Solution>
 

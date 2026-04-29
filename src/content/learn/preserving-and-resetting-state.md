@@ -1,28 +1,28 @@
 ---
-title: Preserving and Resetting State
+title: 保留和重置状态
 ---
 
 <Intro>
 
-State is isolated between components. React keeps track of which state belongs to which component based on their place in the UI tree. You can control when to preserve state and when to reset it between re-renders.
+状态在组件之间是隔离的。React 会根据它们在 UI 树中的位置来跟踪哪个状态属于哪个组件。你可以控制何时在重新渲染之间保留状态，以及何时重置状态。
 
 </Intro>
 
 <YouWillLearn>
 
-* When React chooses to preserve or reset the state
-* How to force React to reset component's state
-* How keys and types affect whether the state is preserved
+* 什么时候 React 会选择保留或重置状态
+* 如何强制 React 重置组件的状态
+* 键和类型如何影响状态是否被保留
 
 </YouWillLearn>
 
-## State is tied to a position in the render tree {/*state-is-tied-to-a-position-in-the-tree*/}
+## 状态与渲染树中的位置相关 {/*state-is-tied-to-a-position-in-the-tree*/}
 
-React builds [render trees](learn/understanding-your-ui-as-a-tree#the-render-tree) for the component structure in your UI.
+React 会为你 UI 中的组件结构构建 [渲染树](learn/understanding-your-ui-as-a-tree#the-render-tree)。
 
-When you give a component state, you might think the state "lives" inside the component. But the state is actually held inside React. React associates each piece of state it's holding with the correct component by where that component sits in the render tree.
+当你给组件添加状态时，你可能会认为状态“存在”于组件内部。但实际上，状态是保存在 React 里面的。React 会根据组件在渲染树中的位置，将它持有的每一份状态与正确的组件关联起来。
 
-Here, there is only one `<Counter />` JSX tag, but it's rendered at two different positions:
+这里，只有一个 `<Counter />` JSX 标签，但它在两个不同的位置被渲染：
 
 <Sandpack>
 
@@ -56,7 +56,7 @@ function Counter() {
     >
       <h1>{score}</h1>
       <button onClick={() => setScore(score + 1)}>
-        Add one
+        加一
       </button>
     </div>
   );
@@ -86,23 +86,23 @@ label {
 
 </Sandpack>
 
-Here's how these look as a tree:
+它们在树中的样子如下：
 
 <DiagramGroup>
 
-<Diagram name="preserving_state_tree" height={248} width={395} alt="Diagram of a tree of React components. The root node is labeled 'div' and has two children. Each of the children are labeled 'Counter' and both contain a state bubble labeled 'count' with value 0.">
+<Diagram name="preserving_state_tree" height={248} width={395} alt="React 组件树的示意图。根节点标记为 'div'，并有两个子节点。每个子节点都标记为 'Counter'，并且都包含一个标记为 'count'、值为 0 的状态气泡。">
 
-React tree
+React 树
 
 </Diagram>
 
 </DiagramGroup>
 
-**These are two separate counters because each is rendered at its own position in the tree.** You don't usually have to think about these positions to use React, but it can be useful to understand how it works.
+**这实际上是两个独立的计数器，因为它们各自渲染在树中的不同位置。** 你通常不需要为了使用 React 而考虑这些位置，但理解它的工作方式会很有帮助。
 
-In React, each component on the screen has fully isolated state. For example, if you render two `Counter` components side by side, each of them will get its own, independent, `score` and `hover` states.
+在 React 中，屏幕上的每个组件都拥有完全隔离的状态。例如，如果你并排渲染两个 `Counter` 组件，它们各自都会拥有独立的 `score` 和 `hover` 状态。
 
-Try clicking both counters and notice they don't affect each other:
+试着点击这两个计数器，注意它们不会互相影响：
 
 <Sandpack>
 
@@ -135,7 +135,7 @@ function Counter() {
     >
       <h1>{score}</h1>
       <button onClick={() => setScore(score + 1)}>
-        Add one
+        加一
       </button>
     </div>
   );
@@ -160,21 +160,21 @@ function Counter() {
 
 </Sandpack>
 
-As you can see, when one counter is updated, only the state for that component is updated:
+如你所见，当一个计数器更新时，只有那个组件的状态会被更新：
 
 
 <DiagramGroup>
 
-<Diagram name="preserving_state_increment" height={248} width={441} alt="Diagram of a tree of React components. The root node is labeled 'div' and has two children. The left child is labeled 'Counter' and contains a state bubble labeled 'count' with value 0. The right child is labeled 'Counter' and contains a state bubble labeled 'count' with value 1. The state bubble of the right child is highlighted in yellow to indicate its value has updated.">
+<Diagram name="preserving_state_increment" height={248} width={441} alt="React 组件树的示意图。根节点标记为 'div'，并有两个子节点。左侧子节点标记为 'Counter'，并包含一个标记为 'count'、值为 0 的状态气泡。右侧子节点标记为 'Counter'，并包含一个标记为 'count'、值为 1 的状态气泡。右侧子节点的状态气泡以黄色高亮，表示它的值已更新。">
 
-Updating state
+更新状态
 
 </Diagram>
 
 </DiagramGroup>
 
 
-React will keep the state around for as long as you render the same component at the same position in the tree. To see this, increment both counters, then remove the second component by unchecking "Render the second counter" checkbox, and then add it back by ticking it again:
+只要你持续在树中的同一位置渲染同一个组件，React 就会一直保留该状态。要看到这一点，请把两个计数器都加到某个数值，然后通过取消勾选“渲染第二个计数器”复选框来移除第二个组件，再重新勾选它把它加回来：
 
 <Sandpack>
 
@@ -195,7 +195,7 @@ export default function App() {
             setShowB(e.target.checked)
           }}
         />
-        Render the second counter
+        渲染第二个计数器
       </label>
     </div>
   );
@@ -218,7 +218,7 @@ function Counter() {
     >
       <h1>{score}</h1>
       <button onClick={() => setScore(score + 1)}>
-        Add one
+        加一
       </button>
     </div>
   );
@@ -248,35 +248,35 @@ label {
 
 </Sandpack>
 
-Notice how the moment you stop rendering the second counter, its state disappears completely. That's because when React removes a component, it destroys its state.
+注意，当你停止渲染第二个计数器的那一刻，它的状态会完全消失。这是因为当 React 移除一个组件时，它会销毁其状态。
 
 <DiagramGroup>
 
-<Diagram name="preserving_state_remove_component" height={253} width={422} alt="Diagram of a tree of React components. The root node is labeled 'div' and has two children. The left child is labeled 'Counter' and contains a state bubble labeled 'count' with value 0. The right child is missing, and in its place is a yellow 'poof' image, highlighting the component being deleted from the tree.">
+<Diagram name="preserving_state_remove_component" height={253} width={422} alt="React 组件树的示意图。根节点标记为 'div'，并有两个子节点。左侧子节点标记为 'Counter'，并包含一个标记为 'count'、值为 0 的状态气泡。右侧子节点缺失，原位置是一个黄色的 'poof' 图像，强调该组件正从树中被删除。">
 
-Deleting a component
+删除组件
 
 </Diagram>
 
 </DiagramGroup>
 
-When you tick "Render the second counter", a second `Counter` and its state are initialized from scratch (`score = 0`) and added to the DOM.
+当你勾选“渲染第二个计数器”时，第二个 `Counter` 及其状态会从头初始化（`score = 0`），并添加到 DOM 中。
 
 <DiagramGroup>
 
-<Diagram name="preserving_state_add_component" height={258} width={500} alt="Diagram of a tree of React components. The root node is labeled 'div' and has two children. The left child is labeled 'Counter' and contains a state bubble labeled 'count' with value 0. The right child is labeled 'Counter' and contains a state bubble labeled 'count' with value 0. The entire right child node is highlighted in yellow, indicating that it was just added to the tree.">
+<Diagram name="preserving_state_add_component" height={258} width={500} alt="React 组件树的示意图。根节点标记为 'div'，并有两个子节点。左侧子节点标记为 'Counter'，并包含一个标记为 'count'、值为 0 的状态气泡。右侧子节点标记为 'Counter'，并包含一个标记为 'count'、值为 0 的状态气泡。整个右侧子节点以黄色高亮，表示它刚刚被添加到树中。">
 
-Adding a component
+添加组件
 
 </Diagram>
 
 </DiagramGroup>
 
-**React preserves a component's state for as long as it's being rendered at its position in the UI tree.** If it gets removed, or a different component gets rendered at the same position, React discards its state.
+**只要组件持续在 UI 树中的同一位置被渲染，React 就会保留它的状态。** 如果它被移除，或者同一位置渲染了另一个不同的组件，React 就会丢弃它的状态。
 
-## Same component at the same position preserves state {/*same-component-at-the-same-position-preserves-state*/}
+## 同一个位置上的同一个组件会保留状态 {/*same-component-at-the-same-position-preserves-state*/}
 
-In this example, there are two different `<Counter />` tags:
+在这个示例中，有两个不同的 `<Counter />` 标签：
 
 <Sandpack>
 
@@ -300,7 +300,7 @@ export default function App() {
             setIsFancy(e.target.checked)
           }}
         />
-        Use fancy styling
+        使用精美样式
       </label>
     </div>
   );
@@ -326,7 +326,7 @@ function Counter({ isFancy }) {
     >
       <h1>{score}</h1>
       <button onClick={() => setScore(score + 1)}>
-        Add one
+        加一
       </button>
     </div>
   );
@@ -361,24 +361,24 @@ label {
 
 </Sandpack>
 
-When you tick or clear the checkbox, the counter state does not get reset. Whether `isFancy` is `true` or `false`, you always have a `<Counter />` as the first child of the `div` returned from the root `App` component:
+当你勾选或取消勾选复选框时，计数器状态不会被重置。无论 `isFancy` 是 `true` 还是 `false`，你始终都会在根 `App` 组件返回的 `div` 的第一个子元素位置上拥有一个 `<Counter />`：
 
 <DiagramGroup>
 
-<Diagram name="preserving_state_same_component" height={461} width={600} alt="Diagram with two sections separated by an arrow transitioning between them. Each section contains a layout of components with a parent labeled 'App' containing a state bubble labeled isFancy. This component has one child labeled 'div', which leads to a prop bubble containing isFancy (highlighted in purple) passed down to the only child. The last child is labeled 'Counter' and contains a state bubble with label 'count' and value 3 in both diagrams. In the left section of the diagram, nothing is highlighted and the isFancy parent state value is false. In the right section of the diagram, the isFancy parent state value has changed to true and it is highlighted in yellow, and so is the props bubble below, which has also changed its isFancy value to true.">
+<Diagram name="preserving_state_same_component" height={461} width={600} alt="一个由箭头连接、分成两部分的示意图。每一部分都包含一个组件布局：标记为 'App' 的父组件包含一个标记为 isFancy 的状态气泡。这个组件有一个标记为 'div' 的子组件，它指向一个包含 isFancy（以紫色高亮）的属性气泡，传递给唯一的子组件。最后一个子组件标记为 'Counter'，并且在两个图中都包含一个标记为 'count'、值为 3 的状态气泡。在示意图左侧，未高亮，isFancy 的父状态值为 false。在右侧，isFancy 的父状态值变为 true 并以黄色高亮，其下方的属性气泡也同样被高亮，并且其 isFancy 值也变为 true。">
 
-Updating the `App` state does not reset the `Counter` because `Counter` stays in the same position
+更新 `App` 的状态不会重置 `Counter`，因为 `Counter` 仍然处于同一位置
 
 </Diagram>
 
 </DiagramGroup>
 
 
-It's the same component at the same position, so from React's perspective, it's the same counter.
+它是同一个位置上的同一个组件，所以从 React 的角度来看，它就是同一个计数器。
 
 <Pitfall>
 
-Remember that **it's the position in the UI tree--not in the JSX markup--that matters to React!** This component has two `return` clauses with different `<Counter />` JSX tags inside and outside the `if`:
+记住，对 React 来说，**重要的是在 UI 树中的位置，而不是 JSX 标记中的位置！** 这个组件在 `if` 内外有两个不同的 `return` 子句，其中包含不同的 `<Counter />` JSX 标签：
 
 <Sandpack>
 
@@ -399,7 +399,7 @@ export default function App() {
               setIsFancy(e.target.checked)
             }}
           />
-          Use fancy styling
+          使用精美样式
         </label>
       </div>
     );
@@ -415,7 +415,7 @@ export default function App() {
             setIsFancy(e.target.checked)
           }}
         />
-        Use fancy styling
+        使用精美样式
       </label>
     </div>
   );
@@ -441,7 +441,7 @@ function Counter({ isFancy }) {
     >
       <h1>{score}</h1>
       <button onClick={() => setScore(score + 1)}>
-        Add one
+        加一
       </button>
     </div>
   );
@@ -476,15 +476,15 @@ label {
 
 </Sandpack>
 
-You might expect the state to reset when you tick checkbox, but it doesn't! This is because **both of these `<Counter />` tags are rendered at the same position.** React doesn't know where you place the conditions in your function. All it "sees" is the tree you return.
+你可能会以为勾选复选框时状态会重置，但实际上不会！这是因为**这两个 `<Counter />` 标签都渲染在同一个位置。** React 并不知道你在函数中把条件写在了哪里。它“看到”的只有你返回的那棵树。
 
-In both cases, the `App` component returns a `<div>` with `<Counter />` as a first child. To React, these two counters have the same "address": the first child of the first child of the root. This is how React matches them up between the previous and next renders, regardless of how you structure your logic.
+在这两种情况下，`App` 组件都返回了一个以 `<Counter />` 作为第一个子元素的 `<div>`。对 React 来说，这两个计数器拥有相同的“地址”：根节点的第一个子元素中的第一个子元素。这就是 React 在前后两次渲染之间对它们进行匹配的方式，不管你的逻辑结构是怎样组织的。
 
 </Pitfall>
 
-## Different components at the same position reset state {/*different-components-at-the-same-position-reset-state*/}
+## 位于同一位置的不同组件会重置状态 {/*different-components-at-the-same-position-reset-state*/}
 
-In this example, ticking the checkbox will replace `<Counter>` with a `<p>`:
+在这个示例中，勾选复选框会把 `<Counter>` 替换成一个 `<p>`：
 
 <Sandpack>
 
@@ -496,7 +496,7 @@ export default function App() {
   return (
     <div>
       {isPaused ? (
-        <p>See you later!</p>
+        <p>待会儿见！</p>
       ) : (
         <Counter />
       )}
@@ -508,7 +508,7 @@ export default function App() {
             setIsPaused(e.target.checked)
           }}
         />
-        Take a break
+        休息一下
       </label>
     </div>
   );
@@ -531,7 +531,7 @@ function Counter() {
     >
       <h1>{score}</h1>
       <button onClick={() => setScore(score + 1)}>
-        Add one
+        加 1
       </button>
     </div>
   );
@@ -561,13 +561,13 @@ label {
 
 </Sandpack>
 
-Here, you switch between _different_ component types at the same position. Initially, the first child of the `<div>` contained a `Counter`. But when you swapped in a `p`, React removed the `Counter` from the UI tree and destroyed its state.
+在这里，你在同一个位置切换了_不同_的组件类型。最初，`<div>` 的第一个子元素是一个 `Counter`。但当你换成 `p` 时，React 会从 UI 树中移除 `Counter` 并销毁它的状态。
 
 <DiagramGroup>
 
 <Diagram name="preserving_state_diff_pt1" height={290} width={753} alt="Diagram with three sections, with an arrow transitioning each section in between. The first section contains a React component labeled 'div' with a single child labeled 'Counter' containing a state bubble labeled 'count' with value 3. The middle section has the same 'div' parent, but the child component has now been deleted, indicated by a yellow 'proof' image. The third section has the same 'div' parent again, now with a new child labeled 'p', highlighted in yellow.">
 
-When `Counter` changes to `p`, the `Counter` is deleted and the `p` is added
+当 `Counter` 变成 `p` 时，`Counter` 被删除，`p` 被添加
 
 </Diagram>
 
@@ -577,13 +577,13 @@ When `Counter` changes to `p`, the `Counter` is deleted and the `p` is added
 
 <Diagram name="preserving_state_diff_pt2" height={290} width={753} alt="Diagram with three sections, with an arrow transitioning each section in between. The first section contains a React component labeled 'p'. The middle section has the same 'div' parent, but the child component has now been deleted, indicated by a yellow 'proof' image. The third section has the same 'div' parent again, now with a new child labeled 'Counter' containing a state bubble labeled 'count' with value 0, highlighted in yellow.">
 
-When switching back, the `p` is deleted and the `Counter` is added
+切换回来时，`p` 被删除，`Counter` 被添加
 
 </Diagram>
 
 </DiagramGroup>
 
-Also, **when you render a different component in the same position, it resets the state of its entire subtree.** To see how this works, increment the counter and then tick the checkbox:
+同样，**当你在同一位置渲染不同的组件时，它会重置其整个子树的状态。** 想看看这是怎么工作的，可以先增加计数器，然后勾选复选框：
 
 <Sandpack>
 
@@ -611,7 +611,7 @@ export default function App() {
             setIsFancy(e.target.checked)
           }}
         />
-        Use fancy styling
+        使用花哨样式
       </label>
     </div>
   );
@@ -637,7 +637,7 @@ function Counter({ isFancy }) {
     >
       <h1>{score}</h1>
       <button onClick={() => setScore(score + 1)}>
-        Add one
+        加 1
       </button>
     </div>
   );
@@ -672,13 +672,13 @@ label {
 
 </Sandpack>
 
-The counter state gets reset when you click the checkbox. Although you render a `Counter`, the first child of the `div` changes from a `section` to a `div`. When the child `section` was removed from the DOM, the whole tree below it (including the `Counter` and its state) was destroyed as well.
+当你点击复选框时，计数器状态会被重置。虽然你渲染了一个 `Counter`，但 `div` 的第一个子元素从 `section` 变成了 `div`。当子元素 `section` 从 DOM 中移除时，其下方整棵树（包括 `Counter` 及其状态）也被销毁了。
 
 <DiagramGroup>
 
 <Diagram name="preserving_state_diff_same_pt1" height={350} width={794} alt="Diagram with three sections, with an arrow transitioning each section in between. The first section contains a React component labeled 'div' with a single child labeled 'section', which has a single child labeled 'Counter' containing a state bubble labeled 'count' with value 3. The middle section has the same 'div' parent, but the child components have now been deleted, indicated by a yellow 'proof' image. The third section has the same 'div' parent again, now with a new child labeled 'div', highlighted in yellow, also with a new child labeled 'Counter' containing a state bubble labeled 'count' with value 0, all highlighted in yellow.">
 
-When `section` changes to `div`, the `section` is deleted and the new `div` is added
+当 `section` 变成 `div` 时，`section` 被删除，新的 `div` 被添加
 
 </Diagram>
 
@@ -688,19 +688,19 @@ When `section` changes to `div`, the `section` is deleted and the new `div` is a
 
 <Diagram name="preserving_state_diff_same_pt2" height={350} width={794} alt="Diagram with three sections, with an arrow transitioning each section in between. The first section contains a React component labeled 'div' with a single child labeled 'div', which has a single child labeled 'Counter' containing a state bubble labeled 'count' with value 0. The middle section has the same 'div' parent, but the child components have now been deleted, indicated by a yellow 'proof' image. The third section has the same 'div' parent again, now with a new child labeled 'section', highlighted in yellow, also with a new child labeled 'Counter' containing a state bubble labeled 'count' with value 0, all highlighted in yellow.">
 
-When switching back, the `div` is deleted and the new `section` is added
+切换回来时，`div` 被删除，新的 `section` 被添加
 
 </Diagram>
 
 </DiagramGroup>
 
-As a rule of thumb, **if you want to preserve the state between re-renders, the structure of your tree needs to "match up"** from one render to another. If the structure is different, the state gets destroyed because React destroys state when it removes a component from the tree.
+一般来说，**如果你想在重新渲染之间保留状态，树的结构就需要在前后两次渲染中“对上”**。如果结构不同，状态就会被销毁，因为 React 会在从树中移除组件时销毁状态。
 
 <Pitfall>
 
-This is why you should not nest component function definitions.
+这就是为什么你不应该嵌套定义组件函数。
 
-Here, the `MyTextField` component function is defined *inside* `MyComponent`:
+在这里，`MyTextField` 组件函数是定义在 `MyComponent` *内部* 的：
 
 <Sandpack>
 
@@ -726,7 +726,7 @@ export default function MyComponent() {
       <MyTextField />
       <button onClick={() => {
         setCounter(counter + 1)
-      }}>Clicked {counter} times</button>
+      }}>已点击 {counter} 次</button>
     </>
   );
 }
@@ -734,14 +734,13 @@ export default function MyComponent() {
 
 </Sandpack>
 
-
-Every time you click the button, the input state disappears! This is because a *different* `MyTextField` function is created for every render of `MyComponent`. You're rendering a *different* component in the same position, so React resets all state below. This leads to bugs and performance problems. To avoid this problem, **always declare component functions at the top level, and don't nest their definitions.**
+每次你点击按钮，输入框状态都会消失！这是因为 `MyComponent` 每次渲染都会创建一个*不同*的 `MyTextField` 函数。你在同一个位置渲染了一个*不同*的组件，所以 React 会重置其下方的所有状态。这会导致 bug 和性能问题。为避免这个问题，**始终在顶层声明组件函数，不要嵌套定义它们。**
 
 </Pitfall>
 
-## Resetting state at the same position {/*resetting-state-at-the-same-position*/}
+## 在同一位置重置状态 {/*resetting-state-at-the-same-position*/}
 
-By default, React preserves state of a component while it stays at the same position. Usually, this is exactly what you want, so it makes sense as the default behavior. But sometimes, you may want to reset a component's state. Consider this app that lets two players keep track of their scores during each turn:
+默认情况下，只要 React 保持某个组件处于同一位置，就会保留它的状态。通常这正是你想要的，所以它作为默认行为是合理的。但有时，你可能想要重置组件的状态。考虑这个应用，它允许两个玩家在每一回合中记录自己的分数：
 
 <Sandpack>
 
@@ -760,7 +759,7 @@ export default function Scoreboard() {
       <button onClick={() => {
         setIsPlayerA(!isPlayerA);
       }}>
-        Next player!
+        下一位玩家！
       </button>
     </div>
   );
@@ -781,9 +780,9 @@ function Counter({ person }) {
       onPointerEnter={() => setHover(true)}
       onPointerLeave={() => setHover(false)}
     >
-      <h1>{person}'s score: {score}</h1>
+      <h1>{person} 的分数：{score}</h1>
       <button onClick={() => setScore(score + 1)}>
-        Add one
+        加 1
       </button>
     </div>
   );
@@ -811,19 +810,19 @@ h1 {
 
 </Sandpack>
 
-Currently, when you change the player, the score is preserved. The two `Counter`s appear in the same position, so React sees them as *the same* `Counter` whose `person` prop has changed.
+目前，当你切换玩家时，分数会被保留。两个 `Counter` 出现在同一位置，所以 React 把它们视为*同一个* `Counter`，只是它的 `person` prop 改变了。
 
-But conceptually, in this app they should be two separate counters. They might appear in the same place in the UI, but one is a counter for Taylor, and another is a counter for Sarah.
+但从概念上说，在这个应用里它们应该是两个独立的计数器。它们可能在 UI 中出现在同一个位置，但一个是 Taylor 的计数器，另一个是 Sarah 的计数器。
 
-There are two ways to reset state when switching between them:
+切换它们时重置状态有两种方法：
 
-1. Render components in different positions
-2. Give each component an explicit identity with `key`
+1. 将组件渲染在不同的位置
+2. 通过 `key` 为每个组件赋予明确的身份
 
 
-### Option 1: Rendering a component in different positions {/*option-1-rendering-a-component-in-different-positions*/}
+### 选项 1：将组件渲染在不同的位置 {/*option-1-rendering-a-component-in-different-positions*/}
 
-If you want these two `Counter`s to be independent, you can render them in two different positions:
+如果你希望这两个 `Counter` 相互独立，可以把它们渲染在两个不同的位置：
 
 <Sandpack>
 
@@ -843,7 +842,7 @@ export default function Scoreboard() {
       <button onClick={() => {
         setIsPlayerA(!isPlayerA);
       }}>
-        Next player!
+        下一位玩家！
       </button>
     </div>
   );
@@ -864,9 +863,9 @@ function Counter({ person }) {
       onPointerEnter={() => setHover(true)}
       onPointerLeave={() => setHover(false)}
     >
-      <h1>{person}'s score: {score}</h1>
+      <h1>{person} 的分数：{score}</h1>
       <button onClick={() => setScore(score + 1)}>
-        Add one
+        加 1
       </button>
     </div>
   );
@@ -894,42 +893,42 @@ h1 {
 
 </Sandpack>
 
-* Initially, `isPlayerA` is `true`. So the first position contains `Counter` state, and the second one is empty.
-* When you click the "Next player" button the first position clears but the second one now contains a `Counter`.
+* 最初，`isPlayerA` 为 `true`。所以第一个位置包含 `Counter` 状态，第二个位置为空。
+* 当你点击“下一位玩家”按钮时，第一个位置被清空，但第二个位置现在包含一个 `Counter`。
 
 <DiagramGroup>
 
 <Diagram name="preserving_state_diff_position_p1" height={375} width={504} alt="Diagram with a tree of React components. The parent is labeled 'Scoreboard' with a state bubble labeled isPlayerA with value 'true'. The only child, arranged to the left, is labeled Counter with a state bubble labeled 'count' and value 0. All of the left child is highlighted in yellow, indicating it was added.">
 
-Initial state
+初始状态
 
 </Diagram>
 
 <Diagram name="preserving_state_diff_position_p2" height={375} width={504} alt="Diagram with a tree of React components. The parent is labeled 'Scoreboard' with a state bubble labeled isPlayerA with value 'false'. The state bubble is highlighted in yellow, indicating that it has changed. The left child is replaced with a yellow 'poof' image indicating that it has been deleted and there is a new child on the right, highlighted in yellow indicating that it was added. The new child is labeled 'Counter' and contains a state bubble labeled 'count' with value 0.">
 
-Clicking "next"
+点击“next”
 
 </Diagram>
 
 <Diagram name="preserving_state_diff_position_p3" height={375} width={504} alt="Diagram with a tree of React components. The parent is labeled 'Scoreboard' with a state bubble labeled isPlayerA with value 'true'. The state bubble is highlighted in yellow, indicating that it has changed. There is a new child on the left, highlighted in yellow indicating that it was added. The new child is labeled 'Counter' and contains a state bubble labeled 'count' with value 0. The right child is replaced with a yellow 'poof' image indicating that it has been deleted.">
 
-Clicking "next" again
+再次点击“next”
 
 </Diagram>
 
 </DiagramGroup>
 
-Each `Counter`'s state gets destroyed each time it's removed from the DOM. This is why they reset every time you click the button.
+每个 `Counter` 在从 DOM 中移除时，其状态都会被销毁。这就是为什么每次点击按钮时它们都会重置。
 
-This solution is convenient when you only have a few independent components rendered in the same place. In this example, you only have two, so it's not a hassle to render both separately in the JSX.
+当你只有少量在同一位置渲染的独立组件时，这个方案很方便。在这个例子里你只有两个，所以在 JSX 中分别渲染它们并不麻烦。
 
-### Option 2: Resetting state with a key {/*option-2-resetting-state-with-a-key*/}
+### 选项 2：使用 key 重置状态 {/*option-2-resetting-state-with-a-key*/}
 
-There is also another, more generic, way to reset a component's state.
+还有另一种更通用的方法，可以用来重置组件状态。
 
-You might have seen `key`s when [rendering lists.](/learn/rendering-lists#keeping-list-items-in-order-with-key) Keys aren't just for lists! You can use keys to make React distinguish between any components. By default, React uses order within the parent ("first counter", "second counter") to discern between components. But keys let you tell React that this is not just a *first* counter, or a *second* counter, but a specific counter--for example, *Taylor's* counter. This way, React will know *Taylor's* counter wherever it appears in the tree!
+你可能在[渲染列表](/learn/rendering-lists#keeping-list-items-in-order-with-key)时见过 `key`。`key` 不只是用于列表！你可以用 `key` 让 React 区分任意组件。默认情况下，React 使用父组件中的顺序（“第一个计数器”“第二个计数器”）来区分组件。但 `key` 可以让你告诉 React，这不只是一个*第一个*计数器或*第二个*计数器，而是一个特定的计数器——例如，*Taylor 的*计数器。这样，无论 Taylor 的计数器出现在树中的哪个位置，React 都能识别出来！
 
-In this example, the two `<Counter />`s don't share state even though they appear in the same place in JSX:
+在这个例子中，两个 `<Counter />` 即使在 JSX 中出现在同一个位置，也不会共享状态：
 
 <Sandpack>
 
@@ -948,7 +947,7 @@ export default function Scoreboard() {
       <button onClick={() => {
         setIsPlayerA(!isPlayerA);
       }}>
-        Next player!
+        下一位玩家！
       </button>
     </div>
   );
@@ -969,9 +968,9 @@ function Counter({ person }) {
       onPointerEnter={() => setHover(true)}
       onPointerLeave={() => setHover(false)}
     >
-      <h1>{person}'s score: {score}</h1>
+      <h1>{person} 的分数：{score}</h1>
       <button onClick={() => setScore(score + 1)}>
-        Add one
+        加 1
       </button>
     </div>
   );
@@ -999,7 +998,7 @@ h1 {
 
 </Sandpack>
 
-Switching between Taylor and Sarah does not preserve the state. This is because **you gave them different `key`s:**
+在 Taylor 和 Sarah 之间切换不会保留状态。这是因为**你给了它们不同的 `key`：**
 
 ```js
 {isPlayerA ? (
@@ -1009,19 +1008,19 @@ Switching between Taylor and Sarah does not preserve the state. This is because 
 )}
 ```
 
-Specifying a `key` tells React to use the `key` itself as part of the position, instead of their order within the parent. This is why, even though you render them in the same place in JSX, React sees them as two different counters, and so they will never share state. Every time a counter appears on the screen, its state is created. Every time it is removed, its state is destroyed. Toggling between them resets their state over and over.
+指定 `key` 会告诉 React 将 `key` 本身作为位置的一部分，而不是父组件中的顺序。这就是为什么，即使你在 JSX 中把它们渲染在同一个位置，React 也会把它们视为两个不同的计数器，因此它们永远不会共享状态。每次计数器出现在屏幕上时，都会创建它的状态。每次它被移除时，都会销毁它的状态。在它们之间切换会反复重置状态。
 
 <Note>
 
-Remember that keys are not globally unique. They only specify the position *within the parent*.
+请记住，`key` 不是全局唯一的。它们只指定*父组件内部*的位置。
 
 </Note>
 
-### Resetting a form with a key {/*resetting-a-form-with-a-key*/}
+### 使用 key 重置表单 {/*resetting-a-form-with-a-key*/}
 
-Resetting state with a key is particularly useful when dealing with forms.
+使用 key 重置状态在处理表单时特别有用。
 
-In this chat app, the `<Chat>` component contains the text input state:
+在这个聊天应用中，`<Chat>` 组件包含文本输入状态：
 
 <Sandpack>
 
@@ -1084,11 +1083,11 @@ export default function Chat({ contact }) {
     <section className="chat">
       <textarea
         value={text}
-        placeholder={'Chat to ' + contact.name}
+        placeholder={'与 ' + contact.name 聊天'}
         onChange={e => setText(e.target.value)}
       />
       <br />
-      <button>Send to {contact.email}</button>
+      <button>发送给 {contact.email}</button>
     </section>
   );
 }
@@ -1116,17 +1115,17 @@ textarea {
 
 </Sandpack>
 
-Try entering something into the input, and then press "Alice" or "Bob" to choose a different recipient. You will notice that the input state is preserved because the `<Chat>` is rendered at the same position in the tree.
+试着在输入框里输入一些内容，然后点击 “Alice” 或 “Bob” 来选择不同的收件人。你会注意到输入框状态被保留了，因为 `<Chat>` 被渲染在树中的同一位置。
 
-**In many apps, this may be the desired behavior, but not in a chat app!** You don't want to let the user send a message they already typed to a wrong person due to an accidental click. To fix it, add a `key`:
+**在很多应用中，这可能是期望的行为，但在聊天应用里就不是！** 你不希望用户因为误点而把已经输入的消息发给错误的人。要修复这个问题，添加一个 `key`：
 
 ```js
 <Chat key={to.id} contact={to} />
 ```
 
-This ensures that when you select a different recipient, the `Chat` component will be recreated from scratch, including any state in the tree below it. React will also re-create the DOM elements instead of reusing them.
+这样可以确保当你选择不同的收件人时，`Chat` 组件会从头重新创建，包括其下方树中的任何状态。React 也会重新创建 DOM 元素，而不是复用它们。
 
-Now switching the recipient always clears the text field:
+现在切换收件人时总会清空文本框：
 
 <Sandpack>
 
@@ -1189,11 +1188,11 @@ export default function Chat({ contact }) {
     <section className="chat">
       <textarea
         value={text}
-        placeholder={'Chat to ' + contact.name}
+        placeholder={'与 ' + contact.name 聊天'}
         onChange={e => setText(e.target.value)}
       />
       <br />
-      <button>Send to {contact.email}</button>
+      <button>发送给 {contact.email}</button>
     </section>
   );
 }
@@ -1223,24 +1222,24 @@ textarea {
 
 <DeepDive>
 
-#### Preserving state for removed components {/*preserving-state-for-removed-components*/}
+#### 为被移除的组件保留状态 {/*preserving-state-for-removed-components*/}
 
-In a real chat app, you'd probably want to recover the input state when the user selects the previous recipient again. There are a few ways to keep the state "alive" for a component that's no longer visible:
+在真实的聊天应用中，当用户再次选择之前的收件人时，你大概希望恢复输入框状态。要让一个不再可见的组件的状态继续“存活”，有几种方法：
 
-- You could render _all_ chats instead of just the current one, but hide all the others with CSS. The chats would not get removed from the tree, so their local state would be preserved. This solution works great for simple UIs. But it can get very slow if the hidden trees are large and contain a lot of DOM nodes.
-- You could [lift the state up](/learn/sharing-state-between-components) and hold the pending message for each recipient in the parent component. This way, when the child components get removed, it doesn't matter, because it's the parent that keeps the important information. This is the most common solution.
-- You might also use a different source in addition to React state. For example, you probably want a message draft to persist even if the user accidentally closes the page. To implement this, you could have the `Chat` component initialize its state by reading from the [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage), and save the drafts there too.
+- 你可以渲染 _所有_ 聊天内容，而不是只渲染当前聊天，同时用 CSS 把其他的都隐藏起来。这样聊天项不会从树中移除，因此它们的本地状态会被保留。这个方案对简单界面很有效。但如果隐藏的树很大并且包含很多 DOM 节点，它会变得很慢。
+- 你可以[将状态提升](/learn/sharing-state-between-components)到父组件中，在父组件里保存每个收件人的待发消息。这样，当子组件被移除时就没关系了，因为真正保存关键信息的是父组件。这是最常见的解决方案。
+- 你也可以在 React state 之外再使用别的数据源。例如，即使用户不小心关闭了页面，你可能仍然希望消息草稿被保留。为实现这一点，你可以让 `Chat` 组件通过读取 [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) 来初始化状态，并把草稿也保存到那里。
 
-No matter which strategy you pick, a chat _with Alice_ is conceptually distinct from a chat _with Bob_, so it makes sense to give a `key` to the `<Chat>` tree based on the current recipient.
+不管你选择哪种策略，给定 _Alice_ 的聊天与给定 _Bob_ 的聊天在概念上都是不同的，因此根据当前收件人给 `<Chat>` 树设置一个 `key` 是合理的。
 
 </DeepDive>
 
 <Recap>
 
-- React keeps state for as long as the same component is rendered at the same position.
-- State is not kept in JSX tags. It's associated with the tree position in which you put that JSX.
-- You can force a subtree to reset its state by giving it a different key.
-- Don't nest component definitions, or you'll reset state by accident.
+- 只要同一个组件在同一位置被渲染，React 就会保留它的状态。
+- 状态并不保存在 JSX 标签中。它与放入该 JSX 的树位置相关联。
+- 你可以通过给子树不同的 `key` 来强制重置其状态。
+- 不要嵌套定义组件，否则你会不小心重置状态。
 
 </Recap>
 
@@ -1248,9 +1247,9 @@ No matter which strategy you pick, a chat _with Alice_ is conceptually distinct 
 
 <Challenges>
 
-#### Fix disappearing input text {/*fix-disappearing-input-text*/}
+#### 修复消失的输入文本 {/*fix-disappearing-input-text*/}
 
-This example shows a message when you press the button. However, pressing the button also accidentally resets the input. Why does this happen? Fix it so that pressing the button does not reset the input text.
+这个示例在你点击按钮时会显示一条消息。然而，点击按钮也会意外地重置输入框。为什么会这样？修复它，使点击按钮不会重置输入文本。
 
 <Sandpack>
 
@@ -1262,11 +1261,11 @@ export default function App() {
   if (showHint) {
     return (
       <div>
-        <p><i>Hint: Your favorite city?</i></p>
+        <p><i>提示：你最喜欢的城市？</i></p>
         <Form />
         <button onClick={() => {
           setShowHint(false);
-        }}>Hide hint</button>
+        }}>隐藏提示</button>
       </div>
     );
   }
@@ -1275,7 +1274,7 @@ export default function App() {
       <Form />
       <button onClick={() => {
         setShowHint(true);
-      }}>Show hint</button>
+      }}>显示提示</button>
     </div>
   );
 }
@@ -1299,9 +1298,9 @@ textarea { display: block; margin: 10px 0; }
 
 <Solution>
 
-The problem is that `Form` is rendered in different positions. In the `if` branch, it is the second child of the `<div>`, but in the `else` branch, it is the first child. Therefore, the component type in each position changes. The first position changes between holding a `p` and a `Form`, while the second position changes between holding a `Form` and a `button`. React resets the state every time the component type changes.
+问题在于 `Form` 被渲染在不同的位置。在 `if` 分支中，它是 `<div>` 的第二个子元素；但在 `else` 分支中，它是第一个子元素。因此，每个位置上的组件类型都发生了变化。第一个位置在 `p` 和 `Form` 之间切换，而第二个位置在 `Form` 和 `button` 之间切换。每次组件类型变化时，React 都会重置状态。
 
-The easiest solution is to unify the branches so that `Form` always renders in the same position:
+最简单的解决方案是统一分支，让 `Form` 始终渲染在同一位置：
 
 <Sandpack>
 
@@ -1313,17 +1312,17 @@ export default function App() {
   return (
     <div>
       {showHint &&
-        <p><i>Hint: Your favorite city?</i></p>
+        <p><i>提示：你最喜欢的城市？</i></p>
       }
       <Form />
       {showHint ? (
         <button onClick={() => {
           setShowHint(false);
-        }}>Hide hint</button>
+        }}>隐藏提示</button>
       ) : (
         <button onClick={() => {
           setShowHint(true);
-        }}>Show hint</button>
+        }}>显示提示</button>
       )}
     </div>
   );
@@ -1347,7 +1346,7 @@ textarea { display: block; margin: 10px 0; }
 </Sandpack>
 
 
-Technically, you could also add `null` before `<Form />` in the `else` branch to match the `if` branch structure:
+从技术上讲，你也可以在 `else` 分支中在 `<Form />` 前面添加 `null`，以匹配 `if` 分支的结构：
 
 <Sandpack>
 
@@ -1359,11 +1358,11 @@ export default function App() {
   if (showHint) {
     return (
       <div>
-        <p><i>Hint: Your favorite city?</i></p>
+        <p><i>提示：你最喜欢的城市？</i></p>
         <Form />
         <button onClick={() => {
           setShowHint(false);
-        }}>Hide hint</button>
+        }}>隐藏提示</button>
       </div>
     );
   }
@@ -1373,7 +1372,7 @@ export default function App() {
       <Form />
       <button onClick={() => {
         setShowHint(true);
-      }}>Show hint</button>
+      }}>显示提示</button>
     </div>
   );
 }
@@ -1395,19 +1394,19 @@ textarea { display: block; margin: 10px 0; }
 
 </Sandpack>
 
-This way, `Form` is always the second child, so it stays in the same position and keeps its state. But this approach is much less obvious and introduces a risk that someone else will remove that `null`.
+这样一来，`Form` 始终是第二个子元素，因此它会保持在同一位置并保留状态。但这种方法不太直观，而且有可能被别人把那个 `null` 删掉。
 
 </Solution>
 
-#### Swap two form fields {/*swap-two-form-fields*/}
+#### 交换两个表单字段 {/*swap-two-form-fields*/}
 
-This form lets you enter first and last name. It also has a checkbox controlling which field goes first. When you tick the checkbox, the "Last name" field will appear before the "First name" field.
+这个表单让你输入姓和名。它还有一个复选框，用来控制哪个字段在前面。当你勾选复选框时，“姓”字段会出现在“名”字段前面。
 
-It almost works, but there is a bug. If you fill in the "First name" input and tick the checkbox, the text will stay in the first input (which is now "Last name"). Fix it so that the input text *also* moves when you reverse the order.
+它几乎能工作，但有个 bug。如果你在“名”输入框中填入内容，然后勾选复选框，文本会留在第一个输入框里（现在这个输入框是“姓”）。修复它，使得当你反转顺序时，输入文本也会一起移动。
 
 <Hint>
 
-It seems like for these fields, their position within the parent is not enough. Is there some way to tell React how to match up the state between re-renders?
+看起来对这些字段来说，它们在父组件中的位置还不够。有没有办法告诉 React 如何在重新渲染之间匹配状态？
 
 </Hint>
 
@@ -1425,22 +1424,22 @@ export default function App() {
         checked={reverse}
         onChange={e => setReverse(e.target.checked)}
       />
-      Reverse order
+      反转顺序
     </label>
   );
   if (reverse) {
     return (
       <>
-        <Field label="Last name" />
-        <Field label="First name" />
+        <Field label="姓" />
+        <Field label="名" />
         {checkbox}
       </>
     );
   } else {
     return (
       <>
-        <Field label="First name" />
-        <Field label="Last name" />
+        <Field label="名" />
+        <Field label="姓" />
         {checkbox}
       </>
     );
@@ -1471,7 +1470,7 @@ label { display: block; margin: 10px 0; }
 
 <Solution>
 
-Give a `key` to both `<Field>` components in both `if` and `else` branches. This tells React how to "match up" the correct state for either `<Field>` even if their order within the parent changes:
+在 `if` 和 `else` 分支中都给两个 `<Field>` 组件添加 `key`。这会告诉 React 即使它们在父组件中的顺序改变了，也该如何为任意一个 `<Field>`“匹配”正确的状态：
 
 <Sandpack>
 
@@ -1487,22 +1486,22 @@ export default function App() {
         checked={reverse}
         onChange={e => setReverse(e.target.checked)}
       />
-      Reverse order
+      反转顺序
     </label>
   );
   if (reverse) {
     return (
       <>
-        <Field key="lastName" label="Last name" />
-        <Field key="firstName" label="First name" />
+        <Field key="lastName" label="姓" />
+        <Field key="firstName" label="名" />
         {checkbox}
       </>
     );
   } else {
     return (
       <>
-        <Field key="firstName" label="First name" />
-        <Field key="lastName" label="Last name" />
+        <Field key="firstName" label="名" />
+        <Field key="lastName" label="姓" />
         {checkbox}
       </>
     );
@@ -1533,11 +1532,11 @@ label { display: block; margin: 10px 0; }
 
 </Solution>
 
-#### Reset a detail form {/*reset-a-detail-form*/}
+#### 重置详情表单 {/*reset-a-detail-form*/}
 
-This is an editable contact list. You can edit the selected contact's details and then either press "Save" to update it, or "Reset" to undo your changes.
+这是一个可编辑的联系人列表。你可以编辑所选联系人的详细信息，然后点击“Save”来更新它，或者点击“Reset”来撤销你的更改。
 
-When you select a different contact (for example, Alice), the state updates but the form keeps showing the previous contact's details. Fix it so that the form gets reset when the selected contact changes.
+当你选择另一个联系人（例如 Alice）时，状态会更新，但表单仍然显示上一个联系人的详细信息。修复它，使得当所选联系人改变时，表单被重置。
 
 <Sandpack>
 
@@ -1629,7 +1628,7 @@ export default function EditContact({ initialData, onSave }) {
   return (
     <section>
       <label>
-        Name:{' '}
+        姓名：{' '}
         <input
           type="text"
           value={name}
@@ -1637,7 +1636,7 @@ export default function EditContact({ initialData, onSave }) {
         />
       </label>
       <label>
-        Email:{' '}
+        邮箱：{' '}
         <input
           type="email"
           value={email}
@@ -1652,13 +1651,13 @@ export default function EditContact({ initialData, onSave }) {
         };
         onSave(updatedData);
       }}>
-        Save
+        保存
       </button>
       <button onClick={() => {
         setName(initialData.name);
         setEmail(initialData.email);
       }}>
-        Reset
+        重置
       </button>
     </section>
   );
@@ -1689,7 +1688,7 @@ button {
 
 <Solution>
 
-Give `key={selectedId}` to the `EditContact` component. This way, switching between different contacts will reset the form:
+给 `EditContact` 组件添加 `key={selectedId}`。这样，在不同联系人之间切换时就会重置表单：
 
 <Sandpack>
 
@@ -1782,7 +1781,7 @@ export default function EditContact({ initialData, onSave }) {
   return (
     <section>
       <label>
-        Name:{' '}
+        姓名：{' '}
         <input
           type="text"
           value={name}
@@ -1790,7 +1789,7 @@ export default function EditContact({ initialData, onSave }) {
         />
       </label>
       <label>
-        Email:{' '}
+        邮箱：{' '}
         <input
           type="email"
           value={email}
@@ -1805,13 +1804,13 @@ export default function EditContact({ initialData, onSave }) {
         };
         onSave(updatedData);
       }}>
-        Save
+        保存
       </button>
       <button onClick={() => {
         setName(initialData.name);
         setEmail(initialData.email);
       }}>
-        Reset
+        重置
       </button>
     </section>
   );
@@ -1842,13 +1841,13 @@ button {
 
 </Solution>
 
-#### Clear an image while it's loading {/*clear-an-image-while-its-loading*/}
+#### 图片加载时清空它 {/*clear-an-image-while-its-loading*/}
 
-When you press "Next", the browser starts loading the next image. However, because it's displayed in the same `<img>` tag, by default you would still see the previous image until the next one loads. This may be undesirable if it's important for the text to always match the image. Change it so that the moment you press "Next", the previous image immediately clears.
+当你点击“Next”时，浏览器会开始加载下一张图片。然而，因为它显示在同一个 `<img>` 标签中，默认情况下你仍然会看到上一张图片，直到下一张加载完成。如果文本必须始终与图片匹配，这可能并不理想。请修改它，让你点击“Next”的那一刻，上一张图片立刻清空。
 
 <Hint>
 
-Is there a way to tell React to re-create the DOM instead of reusing it?
+有没有办法告诉 React 重新创建 DOM，而不是复用它？
 
 </Hint>
 
@@ -1873,10 +1872,10 @@ export default function Gallery() {
   return (
     <>
       <button onClick={handleClick}>
-        Next
+        下一张
       </button>
       <h3>
-        Image {index + 1} of {images.length}
+        第 {index + 1} 张，共 {images.length} 张
       </h3>
       <img src={image.src} />
       <p>
@@ -1887,25 +1886,25 @@ export default function Gallery() {
 }
 
 let images = [{
-  place: 'Penang, Malaysia',
+  place: '马来西亚，槟城',
   src: 'https://react.dev/images/docs/scientists/FJeJR8M.jpg'
 }, {
-  place: 'Lisbon, Portugal',
+  place: '葡萄牙，里斯本',
   src: 'https://react.dev/images/docs/scientists/dB2LRbj.jpg'
 }, {
-  place: 'Bilbao, Spain',
+  place: '西班牙，毕尔巴鄂',
   src: 'https://react.dev/images/docs/scientists/z08o2TS.jpg'
 }, {
-  place: 'Valparaíso, Chile',
+  place: '智利，瓦尔帕莱索',
   src: 'https://react.dev/images/docs/scientists/Y3utgTi.jpg'
 }, {
-  place: 'Schwyz, Switzerland',
+  place: '瑞士，施维茨',
   src: 'https://react.dev/images/docs/scientists/JBbMpWY.jpg'
 }, {
-  place: 'Prague, Czechia',
+  place: '捷克，布拉格',
   src: 'https://react.dev/images/docs/scientists/QwUKKmF.jpg'
 }, {
-  place: 'Ljubljana, Slovenia',
+  place: '斯洛文尼亚，卢布尔雅那',
   src: 'https://react.dev/images/docs/scientists/3aIiwfm.jpg'
 }];
 ```
@@ -1918,7 +1917,7 @@ img { width: 150px; height: 150px; }
 
 <Solution>
 
-You can provide a `key` to the `<img>` tag. When that `key` changes, React will re-create the `<img>` DOM node from scratch. This causes a brief flash when each image loads, so it's not something you'd want to do for every image in your app. But it makes sense if you want to ensure the image always matches the text.
+你可以给 `<img>` 标签提供一个 `key`。当这个 `key` 改变时，React 会从头重新创建 `<img>` DOM 节点。这会在每张图片加载时导致短暂闪烁，所以你不会想在应用中的每张图片都这样做。但如果你想确保图片始终与文本匹配，这么做是合理的。
 
 <Sandpack>
 
@@ -1941,10 +1940,10 @@ export default function Gallery() {
   return (
     <>
       <button onClick={handleClick}>
-        Next
+        下一张
       </button>
       <h3>
-        Image {index + 1} of {images.length}
+        第 {index + 1} 张，共 {images.length} 张
       </h3>
       <img key={image.src} src={image.src} />
       <p>
@@ -1955,25 +1954,25 @@ export default function Gallery() {
 }
 
 let images = [{
-  place: 'Penang, Malaysia',
+  place: '马来西亚，槟城',
   src: 'https://react.dev/images/docs/scientists/FJeJR8M.jpg'
 }, {
-  place: 'Lisbon, Portugal',
+  place: '葡萄牙，里斯本',
   src: 'https://react.dev/images/docs/scientists/dB2LRbj.jpg'
 }, {
-  place: 'Bilbao, Spain',
+  place: '西班牙，毕尔巴鄂',
   src: 'https://react.dev/images/docs/scientists/z08o2TS.jpg'
 }, {
-  place: 'Valparaíso, Chile',
+  place: '智利，瓦尔帕莱索',
   src: 'https://react.dev/images/docs/scientists/Y3utgTi.jpg'
 }, {
-  place: 'Schwyz, Switzerland',
+  place: '瑞士，施维茨',
   src: 'https://react.dev/images/docs/scientists/JBbMpWY.jpg'
 }, {
-  place: 'Prague, Czechia',
+  place: '捷克，布拉格',
   src: 'https://react.dev/images/docs/scientists/QwUKKmF.jpg'
 }, {
-  place: 'Ljubljana, Slovenia',
+  place: '斯洛文尼亚，卢布尔雅那',
   src: 'https://react.dev/images/docs/scientists/3aIiwfm.jpg'
 }];
 ```
@@ -1986,11 +1985,11 @@ img { width: 150px; height: 150px; }
 
 </Solution>
 
-#### Fix misplaced state in the list {/*fix-misplaced-state-in-the-list*/}
+#### 修复列表中错位的状态 {/*fix-misplaced-state-in-the-list*/}
 
-In this list, each `Contact` has state that determines whether "Show email" has been pressed for it. Press "Show email" for Alice, and then tick the "Show in reverse order" checkbox. You will notice that it's _Taylor's_ email that is expanded now, but Alice's--which has moved to the bottom--appears collapsed.
+在这个列表中，每个 `Contact` 都有一个状态，用来决定是否已经按下过“Show email”。先为 Alice 按下“Show email”，然后勾选“Show in reverse order”复选框。你会注意到现在展开的是 _Taylor_ 的邮箱，但移到下面的 Alice 却仍然是折叠状态。
 
-Fix it so that the expanded state is associated with each contact, regardless of the chosen ordering.
+请修复它，使展开状态与每个联系人绑定，而不受所选排序影响。
 
 <Sandpack>
 
@@ -2016,7 +2015,7 @@ export default function ContactList() {
             setReverse(e.target.checked)
           }}
         />{' '}
-        Show in reverse order
+        反向显示顺序
       </label>
       <ul>
         {displayedContacts.map((contact, i) =>
@@ -2050,7 +2049,7 @@ export default function Contact({ contact }) {
       <button onClick={() => {
         setExpanded(!expanded);
       }}>
-        {expanded ? 'Hide' : 'Show'} email
+        {expanded ? '隐藏' : '显示'}邮箱
       </button>
     </>
   );
@@ -2080,16 +2079,16 @@ button {
 
 <Solution>
 
-The problem is that this example was using index as a `key`:
+问题在于这个示例把索引用作了 `key`：
 
 ```js
 {displayedContacts.map((contact, i) =>
   <li key={i}>
 ```
 
-However, you want the state to be associated with _each particular contact_.
+然而，你希望状态与_每一个具体联系人_关联。
 
-Using the contact ID as a `key` instead fixes the issue:
+改用联系人 ID 作为 `key` 就能修复这个问题：
 
 <Sandpack>
 
@@ -2115,7 +2114,7 @@ export default function ContactList() {
             setReverse(e.target.checked)
           }}
         />{' '}
-        Show in reverse order
+        反向显示顺序
       </label>
       <ul>
         {displayedContacts.map(contact =>
@@ -2149,7 +2148,7 @@ export default function Contact({ contact }) {
       <button onClick={() => {
         setExpanded(!expanded);
       }}>
-        {expanded ? 'Hide' : 'Show'} email
+        {expanded ? '隐藏' : '显示'}邮箱
       </button>
     </>
   );
@@ -2177,7 +2176,7 @@ button {
 
 </Sandpack>
 
-State is associated with the tree position. A `key` lets you specify a named position instead of relying on order.
+状态与树中的位置相关联。`key` 让你可以指定一个命名位置，而不是依赖顺序。
 
 </Solution>
 

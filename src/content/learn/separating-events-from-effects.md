@@ -1,37 +1,37 @@
 ---
-title: 'Separating Events from Effects'
+title: '将事件与 Effect 分离'
 ---
 
 <Intro>
 
-Event handlers only re-run when you perform the same interaction again. Unlike event handlers, Effects re-synchronize if some value they read, like a prop or a state variable, is different from what it was during the last render. Sometimes, you also want a mix of both behaviors: an Effect that re-runs in response to some values but not others. This page will teach you how to do that.
+事件处理函数只有在你再次执行同样的交互时才会重新运行。与事件处理函数不同，如果某个 Effect 读取的值（比如 props 或 state 变量）与上一次渲染时不同，Effect 会重新同步。有时候，你也会希望同时具备这两种行为：一个会根据某些值重新运行、但不会因其他值而重新运行的 Effect。本页将教你如何做到这一点。
 
 </Intro>
 
 <YouWillLearn>
 
-- How to choose between an event handler and an Effect
-- Why Effects are reactive, and event handlers are not
-- What to do when you want a part of your Effect's code to not be reactive
-- What Effect Events are, and how to extract them from your Effects
-- How to read the latest props and state from Effects using Effect Events
+- 如何在事件处理函数和 Effect 之间做选择
+- 为什么 Effect 是响应式的，而事件处理函数不是
+- 当你希望 Effect 中的一部分代码不具备响应性时该怎么做
+- 什么是 Effect Event，以及如何从 Effect 中提取它们
+- 如何使用 Effect Event 从 Effect 中读取最新的 props 和 state
 
 </YouWillLearn>
 
-## Choosing between event handlers and Effects {/*choosing-between-event-handlers-and-effects*/}
+## 在事件处理函数和 Effect 之间做选择 {/*choosing-between-event-handlers-and-effects*/}
 
-First, let's recap the difference between event handlers and Effects.
+首先，让我们回顾一下事件处理函数和 Effect 的区别。
 
-Imagine you're implementing a chat room component. Your requirements look like this:
+假设你正在实现一个聊天室组件。你的需求如下：
 
-1. Your component should automatically connect to the selected chat room.
-1. When you click the "Send" button, it should send a message to the chat.
+1. 组件应当自动连接到所选的聊天室。
+1. 当你点击 “Send” 按钮时，它应该向聊天发送一条消息。
 
-Let's say you've already implemented the code for them, but you're not sure where to put it. Should you use event handlers or Effects? Every time you need to answer this question, consider [*why* the code needs to run.](/learn/synchronizing-with-effects#what-are-effects-and-how-are-they-different-from-events)
+假设你已经为它们实现好了代码，但不确定该放在哪里。应该使用事件处理函数还是 Effect？每次你需要回答这个问题时，都要考虑 [*为什么* 这段代码需要运行。](/learn/synchronizing-with-effects#what-are-effects-and-how-are-they-different-from-events)
 
-### Event handlers run in response to specific interactions {/*event-handlers-run-in-response-to-specific-interactions*/}
+### 事件处理函数会响应特定交互而运行 {/*event-handlers-run-in-response-to-specific-interactions*/}
 
-From the user's perspective, sending a message should happen *because* the particular "Send" button was clicked. The user will get rather upset if you send their message at any other time or for any other reason. This is why sending a message should be an event handler. Event handlers let you handle specific interactions:
+从用户的角度看，发送消息应该是*因为*点击了特定的 “Send” 按钮才发生的。如果你在其他时间或出于其他原因发送他们的消息，用户会相当不满。这就是为什么发送消息应该是一个事件处理函数。事件处理函数让你处理特定交互：
 
 ```js {4-6}
 function ChatRoom({ roomId }) {
@@ -44,19 +44,19 @@ function ChatRoom({ roomId }) {
   return (
     <>
       <input value={message} onChange={e => setMessage(e.target.value)} />
-      <button onClick={handleSendClick}>Send</button>
+      <button onClick={handleSendClick}>发送</button>
     </>
   );
 }
 ```
 
-With an event handler, you can be sure that `sendMessage(message)` will *only* run if the user presses the button.
+有了事件处理函数，你可以确定 `sendMessage(message)` *只会*在用户按下按钮时运行。
 
-### Effects run whenever synchronization is needed {/*effects-run-whenever-synchronization-is-needed*/}
+### Effect 会在需要同步时运行 {/*effects-run-whenever-synchronization-is-needed*/}
 
-Recall that you also need to keep the component connected to the chat room. Where does that code go?
+还记得你也需要保持组件连接到聊天室。那段代码应该放在哪里？
 
-The *reason* to run this code is not some particular interaction. It doesn't matter why or how the user navigated to the chat room screen. Now that they're looking at it and could interact with it, the component needs to stay connected to the selected chat server. Even if the chat room component was the initial screen of your app, and the user has not performed any interactions at all, you would *still* need to connect. This is why it's an Effect:
+运行这段代码的*原因*并不是某个特定交互。用户是如何、为什么进入聊天室界面的并不重要。现在他们正在查看它并可能与之交互，组件需要保持与所选聊天服务器的连接。即使聊天室组件是应用的初始界面，且用户根本没有进行任何交互，你*仍然*需要连接。这就是为什么它应该是一个 Effect：
 
 ```js {3-9}
 function ChatRoom({ roomId }) {
@@ -72,7 +72,7 @@ function ChatRoom({ roomId }) {
 }
 ```
 
-With this code, you can be sure that there is always an active connection to the currently selected chat server, *regardless* of the specific interactions performed by the user. Whether the user has only opened your app, selected a different room, or navigated to another screen and back, your Effect ensures that the component will *remain synchronized* with the currently selected room, and will [re-connect whenever it's necessary.](/learn/lifecycle-of-reactive-effects#why-synchronization-may-need-to-happen-more-than-once)
+有了这段代码，你可以确定始终有一个到当前所选聊天服务器的活动连接，*无论*用户执行了什么具体交互。无论用户只是打开了你的应用、选择了不同的房间，还是切换到别的界面再回来，你的 Effect 都会确保组件始终与当前所选房间*保持同步*，并且会在必要时[重新连接。](/learn/lifecycle-of-reactive-effects#why-synchronization-may-need-to-happen-more-than-once)
 
 <Sandpack>
 
@@ -97,9 +97,9 @@ function ChatRoom({ roomId }) {
 
   return (
     <>
-      <h1>Welcome to the {roomId} room!</h1>
+      <h1>欢迎来到 {roomId} 房间！</h1>
       <input value={message} onChange={e => setMessage(e.target.value)} />
-      <button onClick={handleSendClick}>Send</button>
+      <button onClick={handleSendClick}>发送</button>
     </>
   );
 }
@@ -110,7 +110,7 @@ export default function App() {
   return (
     <>
       <label>
-        Choose the chat room:{' '}
+        选择聊天室：{' '}
         <select
           value={roomId}
           onChange={e => setRoomId(e.target.value)}
@@ -121,7 +121,7 @@ export default function App() {
         </select>
       </label>
       <button onClick={() => setShow(!show)}>
-        {show ? 'Close chat' : 'Open chat'}
+        {show ? '关闭聊天' : '打开聊天'}
       </button>
       {show && <hr />}
       {show && <ChatRoom roomId={roomId} />}
@@ -132,17 +132,17 @@ export default function App() {
 
 ```js src/chat.js
 export function sendMessage(message) {
-  console.log('🔵 You sent: ' + message);
+  console.log('🔵 你发送了：' + message);
 }
 
 export function createConnection(serverUrl, roomId) {
-  // A real implementation would actually connect to the server
+  // 真实实现会实际连接到服务器
   return {
     connect() {
-      console.log('✅ Connecting to "' + roomId + '" room at ' + serverUrl + '...');
+      console.log('✅ 正在连接到 "' + roomId + '" 房间，地址 ' + serverUrl + '...');
     },
     disconnect() {
-      console.log('❌ Disconnected from "' + roomId + '" room at ' + serverUrl);
+      console.log('❌ 已从 "' + roomId + '" 房间断开，地址 ' + serverUrl);
     }
   };
 }
@@ -154,13 +154,13 @@ input, select { margin-right: 20px; }
 
 </Sandpack>
 
-## Reactive values and reactive logic {/*reactive-values-and-reactive-logic*/}
+## 响应式值与响应式逻辑 {/*reactive-values-and-reactive-logic*/}
 
-Intuitively, you could say that event handlers are always triggered "manually", for example by clicking a button. Effects, on the other hand, are "automatic": they run and re-run as often as it's needed to stay synchronized.
+直观地说，你可以认为事件处理函数总是被“手动”触发的，例如通过点击按钮。另一方面，Effect 是“自动”的：它们会按需运行和重新运行，以保持同步。
 
-There is a more precise way to think about this.
+不过，我们可以更精确地理解这一点。
 
-Props, state, and variables declared inside your component's body are called <CodeStep step={2}>reactive values</CodeStep>. In this example, `serverUrl` is not a reactive value, but `roomId` and `message` are. They participate in the rendering data flow:
+在组件函数体内声明的 props、state 和变量被称为<CodeStep step={2}>响应式值</CodeStep>。在这个例子中，`serverUrl` 不是响应式值，而 `roomId` 和 `message` 是。它们参与渲染数据流：
 
 ```js [[2, 3, "roomId"], [2, 4, "message"]]
 const serverUrl = 'https://localhost:1234';
@@ -172,16 +172,16 @@ function ChatRoom({ roomId }) {
 }
 ```
 
-Reactive values like these can change due to a re-render. For example, the user may edit the `message` or choose a different `roomId` in a dropdown. Event handlers and Effects respond to changes differently:
+像这样的响应式值可能会因为重新渲染而变化。例如，用户可能编辑 `message`，或者在下拉菜单中选择不同的 `roomId`。事件处理函数和 Effect 对变化的响应方式不同：
 
-- **Logic inside event handlers is *not reactive.*** It will not run again unless the user performs the same interaction (e.g. a click) again. Event handlers can read reactive values without "reacting" to their changes.
-- **Logic inside Effects is *reactive.*** If your Effect reads a reactive value, [you have to specify it as a dependency.](/learn/lifecycle-of-reactive-effects#effects-react-to-reactive-values) Then, if a re-render causes that value to change, React will re-run your Effect's logic with the new value.
+- **事件处理函数中的逻辑*不是响应式的。*** 除非用户再次执行同样的交互（例如点击）否则它不会再次运行。事件处理函数可以读取响应式值，而不会对它们的变化“做出反应”。
+- **Effect 中的逻辑是*响应式的。*** 如果你的 Effect 读取了一个响应式值，[你必须将它指定为依赖项。](/learn/lifecycle-of-reactive-effects#effects-react-to-reactive-values) 然后，如果一次重新渲染导致该值变化，React 会使用新值重新运行你的 Effect 逻辑。
 
-Let's revisit the previous example to illustrate this difference.
+让我们回到前面的例子来说明这种区别。
 
-### Logic inside event handlers is not reactive {/*logic-inside-event-handlers-is-not-reactive*/}
+### 事件处理函数中的逻辑不是响应式的 {/*logic-inside-event-handlers-is-not-reactive*/}
 
-Take a look at this line of code. Should this logic be reactive or not?
+看看这行代码。这里的逻辑应该是响应式的吗？
 
 ```js [[2, 2, "message"]]
     // ...
@@ -189,7 +189,7 @@ Take a look at this line of code. Should this logic be reactive or not?
     // ...
 ```
 
-From the user's perspective, **a change to the `message` does _not_ mean that they want to send a message.** It only means that the user is typing. In other words, the logic that sends a message should not be reactive. It should not run again only because the <CodeStep step={2}>reactive value</CodeStep> has changed. That's why it belongs in the event handler:
+从用户的角度看，**`message` 的变化并不意味着他们想要发送一条消息。** 它只意味着用户正在输入。换句话说，发送消息的逻辑不应该是响应式的。它不应该仅仅因为<CodeStep step={2}>响应式值</CodeStep>变化了就再次运行。这就是它属于事件处理函数的原因：
 
 ```js {2}
   function handleSendClick() {
@@ -197,11 +197,11 @@ From the user's perspective, **a change to the `message` does _not_ mean that th
   }
 ```
 
-Event handlers aren't reactive, so `sendMessage(message)` will only run when the user clicks the Send button.
+事件处理函数不是响应式的，所以 `sendMessage(message)` 只会在用户点击 Send 按钮时运行。
 
-### Logic inside Effects is reactive {/*logic-inside-effects-is-reactive*/}
+### Effect 中的逻辑是响应式的 {/*logic-inside-effects-is-reactive*/}
 
-Now let's return to these lines:
+现在让我们回到这些代码行：
 
 ```js [[2, 2, "roomId"]]
     // ...
@@ -210,7 +210,7 @@ Now let's return to these lines:
     // ...
 ```
 
-From the user's perspective, **a change to the `roomId` *does* mean that they want to connect to a different room.** In other words, the logic for connecting to the room should be reactive. You *want* these lines of code to "keep up" with the <CodeStep step={2}>reactive value</CodeStep>, and to run again if that value is different. That's why it belongs in an Effect:
+从用户的角度看，**`roomId` 的变化确实意味着他们想要连接到另一个房间。** 换句话说，连接房间的逻辑应该是响应式的。你*希望*这些代码行能“跟上”<CodeStep step={2}>响应式值</CodeStep>，并在该值变化时重新运行。这就是它属于 Effect 的原因：
 
 ```js {2-3}
   useEffect(() => {
@@ -222,13 +222,13 @@ From the user's perspective, **a change to the `roomId` *does* mean that they wa
   }, [roomId]);
 ```
 
-Effects are reactive, so `createConnection(serverUrl, roomId)` and `connection.connect()` will run for every distinct value of `roomId`. Your Effect keeps the chat connection synchronized to the currently selected room.
+Effect 是响应式的，所以 `createConnection(serverUrl, roomId)` 和 `connection.connect()` 会在 `roomId` 的每个不同值上运行。你的 Effect 会让聊天连接与当前所选房间保持同步。
 
-## Extracting non-reactive logic out of Effects {/*extracting-non-reactive-logic-out-of-effects*/}
+## 将非响应式逻辑从 Effect 中提取出来 {/*extracting-non-reactive-logic-out-of-effects*/}
 
-Things get more tricky when you want to mix reactive logic with non-reactive logic.
+当你想把响应式逻辑与非响应式逻辑混合在一起时，事情就会变得更复杂。
 
-For example, imagine that you want to show a notification when the user connects to the chat. You read the current theme (dark or light) from the props so that you can show the notification in the correct color:
+例如，假设你想在用户连接到聊天时显示一条通知。你从 props 中读取当前主题（深色或浅色），以便用正确的颜色显示通知：
 
 ```js {1,4-6}
 function ChatRoom({ roomId, theme }) {
@@ -241,7 +241,7 @@ function ChatRoom({ roomId, theme }) {
     // ...
 ```
 
-However, `theme` is a reactive value (it can change as a result of re-rendering), and [every reactive value read by an Effect must be declared as its dependency.](/learn/lifecycle-of-reactive-effects#react-verifies-that-you-specified-every-reactive-value-as-a-dependency) Now you have to specify `theme` as a dependency of your Effect:
+然而，`theme` 是一个响应式值（它可能会因为重新渲染而变化），并且[Effect 读取到的每一个响应式值都必须被声明为依赖项。](/learn/lifecycle-of-reactive-effects#react-verifies-that-you-specified-every-reactive-value-as-a-dependency) 现在你必须把 `theme` 指定为 Effect 的依赖项：
 
 ```js {5,11}
 function ChatRoom({ roomId, theme }) {
@@ -254,11 +254,11 @@ function ChatRoom({ roomId, theme }) {
     return () => {
       connection.disconnect()
     };
-  }, [roomId, theme]); // ✅ All dependencies declared
+  }, [roomId, theme]); // ✅ 已声明所有依赖项
   // ...
 ```
 
-Play with this example and see if you can spot the problem with this user experience:
+试试这个示例，看看你能否找出这个用户体验中的问题：
 
 <Sandpack>
 
@@ -296,7 +296,7 @@ function ChatRoom({ roomId, theme }) {
     return () => connection.disconnect();
   }, [roomId, theme]);
 
-  return <h1>Welcome to the {roomId} room!</h1>
+  return <h1>欢迎来到 {roomId} 房间！</h1>
 }
 
 export default function App() {
@@ -305,7 +305,7 @@ export default function App() {
   return (
     <>
       <label>
-        Choose the chat room:{' '}
+        选择聊天室：{' '}
         <select
           value={roomId}
           onChange={e => setRoomId(e.target.value)}
@@ -321,7 +321,7 @@ export default function App() {
           checked={isDark}
           onChange={e => setIsDark(e.target.checked)}
         />
-        Use dark theme
+        使用深色主题
       </label>
       <hr />
       <ChatRoom
@@ -335,7 +335,7 @@ export default function App() {
 
 ```js src/chat.js
 export function createConnection(serverUrl, roomId) {
-  // A real implementation would actually connect to the server
+  // 真实实现会实际连接到服务器
   let connectedCallback;
   let timeout;
   return {
@@ -386,9 +386,9 @@ label { display: block; margin-top: 10px; }
 
 </Sandpack>
 
-When the `roomId` changes, the chat re-connects as you would expect. But since `theme` is also a dependency, the chat *also* re-connects every time you switch between the dark and the light theme. That's not great!
+当 `roomId` 变化时，聊天会按预期重新连接。但由于 `theme` 也是一个依赖项，所以每次你在深色和浅色主题之间切换时，聊天也会重新连接。这不太好！
 
-In other words, you *don't* want this line to be reactive, even though it is inside an Effect (which is reactive):
+换句话说，尽管这行代码位于一个 Effect 中（而 Effect 是响应式的），你*并不*希望它是响应式的：
 
 ```js
       // ...
@@ -396,11 +396,11 @@ In other words, you *don't* want this line to be reactive, even though it is ins
       // ...
 ```
 
-You need a way to separate this non-reactive logic from the reactive Effect around it.
+你需要一种方法，把这段非响应式逻辑从其外层的响应式 Effect 中分离出来。
 
-### Declaring an Effect Event {/*declaring-an-effect-event*/}
+### 声明一个 Effect Event {/*declaring-an-effect-event*/}
 
-Use a special Hook called [`useEffectEvent`](/reference/react/useEffectEvent) to extract this non-reactive logic out of your Effect:
+使用一个名为 [`useEffectEvent`](/reference/react/useEffectEvent) 的特殊 Hook 来把这段非响应式逻辑从你的 Effect 中提取出来：
 
 ```js {1,4-6}
 import { useEffect, useEffectEvent } from 'react';
@@ -412,9 +412,9 @@ function ChatRoom({ roomId, theme }) {
   // ...
 ```
 
-Here, `onConnected` is called an *Effect Event.* It's a part of your Effect logic, but it behaves a lot more like an event handler. The logic inside it is not reactive, and it always "sees" the latest values of your props and state.
+这里，`onConnected` 被称为一个 *Effect Event*。它是你的 Effect 逻辑的一部分，但行为更像一个事件处理函数。它内部的逻辑不是响应式的，而且总是能“看到”props 和 state 的最新值。
 
-Now you can call the `onConnected` Effect Event from inside your Effect:
+现在你可以在 Effect 内部调用 `onConnected` 这个 Effect Event：
 
 ```js {2-4,9,13}
 function ChatRoom({ roomId, theme }) {
@@ -429,13 +429,13 @@ function ChatRoom({ roomId, theme }) {
     });
     connection.connect();
     return () => connection.disconnect();
-  }, [roomId]); // ✅ All dependencies declared
+  }, [roomId]); // ✅ 已声明所有依赖项
   // ...
 ```
 
-This solves the problem. Note that you had to *remove* `theme` from the list of your Effect's dependencies, because it's no longer used in the Effect. You also don't need to *add* `onConnected` to it, because **Effect Events are not reactive and must be omitted from dependencies.**
+这解决了问题。注意，你必须把 `theme` 从 Effect 的依赖项列表中*移除*，因为它不再在 Effect 中使用了。你也不需要把 `onConnected` *添加*进去，因为**Effect Event 不是响应式的，必须从依赖项中省略。**
 
-Verify that the new behavior works as you would expect:
+验证一下新的行为是否符合预期：
 
 <Sandpack>
 
@@ -478,7 +478,7 @@ function ChatRoom({ roomId, theme }) {
     return () => connection.disconnect();
   }, [roomId]);
 
-  return <h1>Welcome to the {roomId} room!</h1>
+  return <h1>欢迎来到 {roomId} 房间！</h1>
 }
 
 export default function App() {
@@ -487,7 +487,7 @@ export default function App() {
   return (
     <>
       <label>
-        Choose the chat room:{' '}
+        选择聊天室：{' '}
         <select
           value={roomId}
           onChange={e => setRoomId(e.target.value)}
@@ -503,7 +503,7 @@ export default function App() {
           checked={isDark}
           onChange={e => setIsDark(e.target.checked)}
         />
-        Use dark theme
+        使用深色主题
       </label>
       <hr />
       <ChatRoom
@@ -517,7 +517,7 @@ export default function App() {
 
 ```js src/chat.js
 export function createConnection(serverUrl, roomId) {
-  // A real implementation would actually connect to the server
+  // 真实实现会实际连接到服务器
   let connectedCallback;
   let timeout;
   return {
@@ -568,13 +568,13 @@ label { display: block; margin-top: 10px; }
 
 </Sandpack>
 
-You can think of Effect Events as being very similar to event handlers. The main difference is that event handlers run in response to user interactions, whereas Effect Events are triggered by you from Effects. Effect Events let you "break the chain" between the reactivity of Effects and code that should not be reactive.
+你可以把 Effect Event 看作和事件处理函数非常相似。主要区别在于，事件处理函数是响应用户交互而运行，而 Effect Events 是由你从 Effect 中触发的。Effect Events 让你可以“打断”Effect 的响应式链条与那些不应该响应式的代码之间的联系。
 
-### Reading latest props and state with Effect Events {/*reading-latest-props-and-state-with-effect-events*/}
+### 使用 Effect Event 读取最新的 props 和 state {/*reading-latest-props-and-state-with-effect-events*/}
 
-Effect Events let you fix many patterns where you might be tempted to suppress the dependency linter.
+Effect Event 可以帮助你修复很多你可能想通过抑制依赖项检查器来处理的模式。
 
-For example, say you have an Effect to log the page visits:
+例如，假设你有一个用于记录页面访问的 Effect：
 
 ```js
 function Page() {
@@ -585,29 +585,29 @@ function Page() {
 }
 ```
 
-Later, you add multiple routes to your site. Now your `Page` component receives a `url` prop with the current path. You want to pass the `url` as a part of your `logVisit` call, but the dependency linter complains:
+后来，你的网站增加了多个路由。现在你的 `Page` 组件会接收一个表示当前路径的 `url` prop。你希望在 `logVisit` 调用中传入 `url`，但依赖项检查器会报错：
 
 ```js {1,3}
 function Page({ url }) {
   useEffect(() => {
     logVisit(url);
-  }, []); // 🔴 React Hook useEffect has a missing dependency: 'url'
+  }, []); // 🔴 React Hook useEffect 缺少依赖项：'url'
   // ...
 }
 ```
 
-Think about what you want the code to do. You *want* to log a separate visit for different URLs since each URL represents a different page. In other words, this `logVisit` call *should* be reactive with respect to the `url`. This is why, in this case, it makes sense to follow the dependency linter, and add `url` as a dependency:
+想一想你希望这段代码做什么。你*希望*针对不同的 URL 记录分别的访问，因为每个 URL 都代表一个不同的页面。换句话说，这次 `logVisit` 调用*应该*对 `url` 保持响应式。这就是为什么在这种情况下，遵循依赖项检查器并把 `url` 加入依赖项是合理的：
 
 ```js {4}
 function Page({ url }) {
   useEffect(() => {
     logVisit(url);
-  }, [url]); // ✅ All dependencies declared
+  }, [url]); // ✅ 已声明所有依赖项
   // ...
 }
 ```
 
-Now let's say you want to include the number of items in the shopping cart together with every page visit:
+现在假设你想在每次页面访问时都把购物车中的商品数量一起记录：
 
 ```js {2-3,6}
 function Page({ url }) {
@@ -616,14 +616,14 @@ function Page({ url }) {
 
   useEffect(() => {
     logVisit(url, numberOfItems);
-  }, [url]); // 🔴 React Hook useEffect has a missing dependency: 'numberOfItems'
+  }, [url]); // 🔴 React Hook useEffect 缺少依赖项：'numberOfItems'
   // ...
 }
 ```
 
-You used `numberOfItems` inside the Effect, so the linter asks you to add it as a dependency. However, you *don't* want the `logVisit` call to be reactive with respect to `numberOfItems`. If the user puts something into the shopping cart, and the `numberOfItems` changes, this *does not mean* that the user visited the page again. In other words, *visiting the page* is, in some sense, an "event". It happens at a precise moment in time.
+你在 Effect 内部使用了 `numberOfItems`，所以检查器要求你把它添加为依赖项。然而，你*并不*希望 `logVisit` 调用对 `numberOfItems` 保持响应式。如果用户把商品放进购物车，导致 `numberOfItems` 变化，这*并不意味着*用户再次访问了页面。换句话说，*访问页面*在某种意义上是一个“事件”。它发生在时间上的某个精确时刻。
 
-Split the code in two parts:
+把代码拆成两部分：
 
 ```js {5-7,10}
 function Page({ url }) {
@@ -636,20 +636,20 @@ function Page({ url }) {
 
   useEffect(() => {
     onVisit(url);
-  }, [url]); // ✅ All dependencies declared
+  }, [url]); // ✅ 已声明所有依赖项
   // ...
 }
 ```
 
-Here, `onVisit` is an Effect Event. The code inside it isn't reactive. This is why you can use `numberOfItems` (or any other reactive value!) without worrying that it will cause the surrounding code to re-execute on changes.
+这里的 `onVisit` 是一个 Effect Event。它内部的代码不是响应式的。这就是为什么你可以使用 `numberOfItems`（或任何其他响应式值！），而不用担心它会导致外层代码在变化时重新执行。
 
-On the other hand, the Effect itself remains reactive. Code inside the Effect uses the `url` prop, so the Effect will re-run after every re-render with a different `url`. This, in turn, will call the `onVisit` Effect Event.
+另一方面，Effect 本身仍然是响应式的。Effect 内部的代码使用了 `url` prop，因此 Effect 会在每次重新渲染且 `url` 不同时重新运行。而这又会调用 `onVisit` 这个 Effect Event。
 
-As a result, you will call `logVisit` for every change to the `url`, and always read the latest `numberOfItems`. However, if `numberOfItems` changes on its own, this will not cause any of the code to re-run.
+结果就是，你会在 `url` 每次变化时都调用 `logVisit`，并且始终读取到最新的 `numberOfItems`。不过，如果 `numberOfItems` 自己变化了，这不会导致任何代码重新运行。
 
 <Note>
 
-You might be wondering if you could call `onVisit()` with no arguments, and read the `url` inside it:
+你可能会想，是否可以直接不带参数地调用 `onVisit()`，然后在其中读取 `url`：
 
 ```js {2,6}
   const onVisit = useEffectEvent(() => {
@@ -661,7 +661,7 @@ You might be wondering if you could call `onVisit()` with no arguments, and read
   }, [url]);
 ```
 
-This would work, but it's better to pass this `url` to the Effect Event explicitly. **By passing `url` as an argument to your Effect Event, you are saying that visiting a page with a different `url` constitutes a separate "event" from the user's perspective.** The `visitedUrl` is a *part* of the "event" that happened:
+这也能工作，但最好还是把这个 `url` 显式作为参数传给 Effect Event。**通过把 `url` 作为参数传给你的 Effect Event，你是在说，从用户的角度看，访问一个不同 `url` 的页面构成了一个单独的“事件”。** `visitedUrl` 是发生的“事件”的一*部分*：
 
 ```js {1-2,6}
   const onVisit = useEffectEvent(visitedUrl => {
@@ -673,9 +673,9 @@ This would work, but it's better to pass this `url` to the Effect Event explicit
   }, [url]);
 ```
 
-Since your Effect Event explicitly "asks" for the `visitedUrl`, now you can't accidentally remove `url` from the Effect's dependencies. If you remove the `url` dependency (causing distinct page visits to be counted as one), the linter will warn you about it. You want `onVisit` to be reactive with regards to the `url`, so instead of reading the `url` inside (where it wouldn't be reactive), you pass it *from* your Effect.
+由于你的 Effect Event 明确“要求”传入 `visitedUrl`，现在你就不可能意外地从 Effect 的依赖项中移除 `url`。如果你移除了 `url` 依赖项（导致不同页面访问被算作一次），检查器会提醒你。你希望 `onVisit` 对 `url` 保持响应式，所以不要在内部读取 `url`（那样它就不会响应式），而是*从*你的 Effect 中把它传进去。
 
-This becomes especially important if there is some asynchronous logic inside the Effect:
+如果 Effect 中存在某些异步逻辑，这一点尤其重要：
 
 ```js {6,8}
   const onVisit = useEffectEvent(visitedUrl => {
@@ -685,19 +685,19 @@ This becomes especially important if there is some asynchronous logic inside the
   useEffect(() => {
     setTimeout(() => {
       onVisit(url);
-    }, 5000); // Delay logging visits
+    }, 5000); // 延迟记录访问
   }, [url]);
 ```
 
-Here, `url` inside `onVisit` corresponds to the *latest* `url` (which could have already changed), but `visitedUrl` corresponds to the `url` that originally caused this Effect (and this `onVisit` call) to run.
+这里 `onVisit` 内部的 `url` 对应的是*最新的* `url`（它可能已经改变），而 `visitedUrl` 对应的是最初触发这个 Effect（以及这次 `onVisit` 调用）运行的那个 `url`。
 
 </Note>
 
 <DeepDive>
 
-#### Is it okay to suppress the dependency linter instead? {/*is-it-okay-to-suppress-the-dependency-linter-instead*/}
+#### 直接抑制依赖项检查器可以吗？ {/*is-it-okay-to-suppress-the-dependency-linter-instead*/}
 
-In the existing codebases, you may sometimes see the lint rule suppressed like this:
+在现有代码库中，你有时可能会看到像这样抑制 lint 规则：
 
 ```js {expectedErrors: {'react-compiler': [8]}} {7-9}
 function Page({ url }) {
@@ -706,20 +706,20 @@ function Page({ url }) {
 
   useEffect(() => {
     logVisit(url, numberOfItems);
-    // 🔴 Avoid suppressing the linter like this:
+    // 🔴 不要像这样抑制检查器：
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url]);
   // ...
 }
 ```
 
-We recommend **never suppressing the linter**.
+我们建议**永远不要抑制检查器**。
 
-The first downside of suppressing the rule is that React will no longer warn you when your Effect needs to "react" to a new reactive dependency you've introduced to your code. In the earlier example, you added `url` to the dependencies *because* React reminded you to do it. You will no longer get such reminders for any future edits to that Effect if you disable the linter. This leads to bugs.
+抑制规则的第一个缺点是：当你的 Effect 需要“响应”你后来添加到代码中的新响应式依赖时，React 将不再提醒你。在前面的例子里，你之所以把 `url` 加入依赖项，*正是因为* React 提醒了你这么做。如果你禁用了检查器，以后对这个 Effect 的任何修改都不会再得到这样的提醒。这会导致 bug。
 
-Here is an example of a confusing bug caused by suppressing the linter. In this example, the `handleMove` function is supposed to read the current `canMove` state variable value in order to decide whether the dot should follow the cursor. However, `canMove` is always `true` inside `handleMove`.
+下面是一个因抑制检查器而导致的令人困惑的 bug 示例。在这个例子里，`handleMove` 函数本应读取当前 `canMove` state 变量的值，以决定这个点是否应该跟随光标。然而，`handleMove` 内部的 `canMove` 总是 `true`。
 
-Can you see why?
+你能看出原因吗？
 
 <Sandpack>
 
@@ -749,7 +749,7 @@ export default function App() {
           checked={canMove}
           onChange={e => setCanMove(e.target.checked)}
         />
-        The dot is allowed to move
+        允许这个点移动
       </label>
       <hr />
       <div style={{
@@ -778,13 +778,13 @@ body {
 </Sandpack>
 
 
-The problem with this code is in suppressing the dependency linter. If you remove the suppression, you'll see that this Effect should depend on the `handleMove` function. This makes sense: `handleMove` is declared inside the component body, which makes it a reactive value. Every reactive value must be specified as a dependency, or it can potentially get stale over time!
+这段代码的问题在于抑制了依赖项检查器。如果你移除这个抑制，React 会告诉你这个 Effect 的代码依赖于 `handleMove` 函数。这是有道理的：`handleMove` 定义在组件函数体内，因此它是一个响应式值。每个响应式值都必须被指定为依赖项，否则它就可能随着时间推移变得陈旧！
 
-The author of the original code has "lied" to React by saying that the Effect does not depend (`[]`) on any reactive values. This is why React did not re-synchronize the Effect after `canMove` has changed (and `handleMove` with it). Because React did not re-synchronize the Effect, the `handleMove` attached as a listener is the `handleMove` function created during the initial render. During the initial render, `canMove` was `true`, which is why `handleMove` from the initial render will forever see that value.
+原始代码的作者对 React “撒了谎”，声称这个 Effect 不依赖任何响应式值（`[]`）。这就是为什么 `canMove` 改变后，React 没有重新同步这个 Effect（以及其中的 `handleMove`）。因为 React 没有重新同步这个 Effect，作为监听器附加上的 `handleMove` 就是初始渲染时创建的那个 `handleMove` 函数。在初始渲染时，`canMove` 是 `true`，这就是为什么初始渲染中的 `handleMove` 永远看到这个值。
 
-**If you never suppress the linter, you will never see problems with stale values.**
+**如果你从不抑制检查器，就永远不会看到陈旧值的问题。**
 
-With `useEffectEvent`, there is no need to "lie" to the linter, and the code works as you would expect:
+使用 `useEffectEvent` 时，就没有必要对检查器“撒谎”，代码也会如你所期望的那样工作：
 
 <Sandpack>
 
@@ -814,7 +814,7 @@ export default function App() {
           checked={canMove}
           onChange={e => setCanMove(e.target.checked)}
         />
-        The dot is allowed to move
+        允许这个点移动
       </label>
       <hr />
       <div style={{
@@ -842,20 +842,20 @@ body {
 
 </Sandpack>
 
-This doesn't mean that `useEffectEvent` is *always* the correct solution. You should only apply it to the lines of code that you don't want to be reactive. In the above sandbox, you didn't want the Effect's code to be reactive with regards to `canMove`. That's why it made sense to extract an Effect Event.
+这并不意味着 `useEffectEvent` *总是*正确的解决方案。你只应将它应用于那些你不希望具备响应性的代码行。在上面的沙盒中，你不希望 Effect 的代码对 `canMove` 保持响应式。这就是为什么提取一个 Effect Event 是合理的。
 
-Read [Removing Effect Dependencies](/learn/removing-effect-dependencies) for other correct alternatives to suppressing the linter.
+请阅读[移除 Effect 依赖项](/learn/removing-effect-dependencies)了解其他可以正确替代抑制检查器的方法。
 
 </DeepDive>
 
-### Limitations of Effect Events {/*limitations-of-effect-events*/}
+### Effect Event 的限制 {/*limitations-of-effect-events*/}
 
-Effect Events are very limited in how you can use them:
+Effect Event 的使用非常受限：
 
-* **Only call them from inside Effects.**
-* **Never pass them to other components or Hooks.**
+* **只能在 Effect 内部调用它们。**
+* **绝不要把它们传给其他组件或 Hook。**
 
-For example, don't declare and pass an Effect Event like this:
+例如，不要像这样声明并传递一个 Effect Event：
 
 ```js {4-6,8}
 function Timer() {
@@ -865,7 +865,7 @@ function Timer() {
     setCount(count + 1);
   });
 
-  useTimer(onTick, 1000); // 🔴 Avoid: Passing Effect Events
+  useTimer(onTick, 1000); // 🔴 避免：传递 Effect Event
 
   return <h1>{count}</h1>
 }
@@ -878,11 +878,11 @@ function useTimer(callback, delay) {
     return () => {
       clearInterval(id);
     };
-  }, [delay, callback]); // Need to specify "callback" in dependencies
+  }, [delay, callback]); // 需要在依赖项中指定 "callback"
 }
 ```
 
-Instead, always declare Effect Events directly next to the Effects that use them:
+相反，始终把 Effect Event 直接声明在使用它的 Effect 附近：
 
 ```js {10-12,16,21}
 function Timer() {
@@ -900,40 +900,40 @@ function useTimer(callback, delay) {
 
   useEffect(() => {
     const id = setInterval(() => {
-      onTick(); // ✅ Good: Only called locally inside an Effect
+      onTick(); // ✅ 好：仅在 Effect 内部本地调用
     }, delay);
     return () => {
       clearInterval(id);
     };
-  }, [delay]); // No need to specify "onTick" (an Effect Event) as a dependency
+  }, [delay]); // 不需要把 "onTick"（一个 Effect Event）指定为依赖项
 }
 ```
 
-Effect Events are non-reactive "pieces" of your Effect code. They should be next to the Effect using them.
+Effect Event 是你的 Effect 代码中不具备响应性的“片段”。它们应该放在使用它们的 Effect 附近。
 
 <Recap>
 
-- Event handlers run in response to specific interactions.
-- Effects run whenever synchronization is needed.
-- Logic inside event handlers is not reactive.
-- Logic inside Effects is reactive.
-- You can move non-reactive logic from Effects into Effect Events.
-- Only call Effect Events from inside Effects.
-- Don't pass Effect Events to other components or Hooks.
+- 事件处理函数会响应特定交互而运行。
+- Effect 会在需要同步时运行。
+- 事件处理函数中的逻辑不是响应式的。
+- Effect 中的逻辑是响应式的。
+- 你可以把 Effect 中的非响应式逻辑移动到 Effect Event 中。
+- 只能在 Effect 内部调用 Effect Event。
+- 不要把 Effect Event 传给其他组件或 Hook。
 
 </Recap>
 
 <Challenges>
 
-#### Fix a variable that doesn't update {/*fix-a-variable-that-doesnt-update*/}
+#### 修复一个不会更新的变量 {/*fix-a-variable-that-doesnt-update*/}
 
-This `Timer` component keeps a `count` state variable which increases every second. The value by which it's increasing is stored in the `increment` state variable. You can control the `increment` variable with the plus and minus buttons.
+这个 `Timer` 组件维护了一个 `count` state 变量，它每秒增加一次。它每次增加的值存储在 `increment` state 变量中。你可以通过加号和减号按钮控制 `increment` 变量。
 
-However, no matter how many times you click the plus button, the counter is still incremented by one every second. What's wrong with this code? Why is `increment` always equal to `1` inside the Effect's code? Find the mistake and fix it.
+然而，不管你点击多少次加号按钮，计数器每秒仍然只会加一。这个代码哪里有问题？为什么在 Effect 的代码里 `increment` 总是等于 `1`？找出错误并修复它。
 
 <Hint>
 
-To fix this code, it's enough to follow the rules.
+要修复这段代码，只需遵循规则即可。
 
 </Hint>
 
@@ -959,12 +959,12 @@ export default function Timer() {
   return (
     <>
       <h1>
-        Counter: {count}
-        <button onClick={() => setCount(0)}>Reset</button>
+        计数器：{count}
+        <button onClick={() => setCount(0)}>重置</button>
       </h1>
       <hr />
       <p>
-        Every second, increment by:
+        每秒增加：
         <button disabled={increment === 0} onClick={() => {
           setIncrement(i => i - 1);
         }}>–</button>
@@ -986,9 +986,9 @@ button { margin: 10px; }
 
 <Solution>
 
-As usual, when you're looking for bugs in Effects, start by searching for linter suppressions.
+像往常一样，当你在 Effect 中查找 bug 时，先搜索 lint 抑制。
 
-If you remove the suppression comment, React will tell you that this Effect's code depends on `increment`, but you "lied" to React by claiming that this Effect does not depend on any reactive values (`[]`). Add `increment` to the dependency array:
+如果你移除这条抑制注释，React 会告诉你这个 Effect 的代码依赖于 `increment`，但你却对 React “撒了谎”，声称这个 Effect 不依赖任何响应式值（`[]`）。把 `increment` 加到依赖数组中：
 
 <Sandpack>
 
@@ -1011,12 +1011,12 @@ export default function Timer() {
   return (
     <>
       <h1>
-        Counter: {count}
-        <button onClick={() => setCount(0)}>Reset</button>
+        计数器：{count}
+        <button onClick={() => setCount(0)}>重置</button>
       </h1>
       <hr />
       <p>
-        Every second, increment by:
+        每秒增加：
         <button disabled={increment === 0} onClick={() => {
           setIncrement(i => i - 1);
         }}>–</button>
@@ -1036,19 +1036,19 @@ button { margin: 10px; }
 
 </Sandpack>
 
-Now, when `increment` changes, React will re-synchronize your Effect, which will restart the interval.
+现在，当 `increment` 变化时，React 会重新同步你的 Effect，并重新启动这个间隔计时器。
 
 </Solution>
 
-#### Fix a freezing counter {/*fix-a-freezing-counter*/}
+#### 修复一个冻结的计数器 {/*fix-a-freezing-counter*/}
 
-This `Timer` component keeps a `count` state variable which increases every second. The value by which it's increasing is stored in the `increment` state variable, which you can control it with the plus and minus buttons. For example, try pressing the plus button nine times, and notice that the `count` now increases each second by ten rather than by one.
+这个 `Timer` 组件维护了一个 `count` state 变量，它每秒增加一次。它每次增加的值存储在 `increment` state 变量中，你可以用加号和减号按钮来控制它。例如，试着按九次加号按钮，你会注意到 `count` 现在每秒增加十，而不是一。
 
-There is a small issue with this user interface. You might notice that if you keep pressing the plus or minus buttons faster than once per second, the timer itself seems to pause. It only resumes after a second passes since the last time you've pressed either button. Find why this is happening, and fix the issue so that the timer ticks on *every* second without interruptions.
+这个用户界面有一个小问题。你可能会注意到，如果你连续以每秒一次以上的速度按加号或减号按钮，计时器本身似乎会暂停。它只有在你最后一次按下按钮之后再过一秒才会恢复。找出原因，并修复这个问题，让计时器能够*每*秒都不中断地走动。
 
 <Hint>
 
-It seems like the Effect which sets up the timer "reacts" to the `increment` value. Does the line that uses the current `increment` value in order to call `setCount` really need to be reactive?
+看起来设置计时器的 Effect 会对 `increment` 值“做出反应”。使用当前 `increment` 值来调用 `setCount` 的那一行真的需要具备响应式吗？
 
 </Hint>
 
@@ -1074,12 +1074,12 @@ export default function Timer() {
   return (
     <>
       <h1>
-        Counter: {count}
-        <button onClick={() => setCount(0)}>Reset</button>
+        计数器：{count}
+        <button onClick={() => setCount(0)}>重置</button>
       </h1>
       <hr />
       <p>
-        Every second, increment by:
+        每秒增加：
         <button disabled={increment === 0} onClick={() => {
           setIncrement(i => i - 1);
         }}>–</button>
@@ -1101,9 +1101,9 @@ button { margin: 10px; }
 
 <Solution>
 
-The issue is that the code inside the Effect uses the `increment` state variable. Since it's a dependency of your Effect, every change to `increment` causes the Effect to re-synchronize, which causes the interval to clear. If you keep clearing the interval every time before it has a chance to fire, it will appear as if the timer has stalled.
+问题在于 Effect 内部的代码使用了 `increment` state 变量。由于它是这个 Effect 的依赖项，`increment` 的每次变化都会导致 Effect 重新同步，从而清除间隔计时器。如果你在计时器有机会触发之前不断清除它，它看起来就会像是卡住了一样。
 
-To solve the issue, extract an `onTick` Effect Event from the Effect:
+要解决这个问题，从 Effect 中提取一个 `onTick` Effect Event：
 
 <Sandpack>
 
@@ -1131,12 +1131,12 @@ export default function Timer() {
   return (
     <>
       <h1>
-        Counter: {count}
-        <button onClick={() => setCount(0)}>Reset</button>
+        计数器：{count}
+        <button onClick={() => setCount(0)}>重置</button>
       </h1>
       <hr />
       <p>
-        Every second, increment by:
+        每秒增加：
         <button disabled={increment === 0} onClick={() => {
           setIncrement(i => i - 1);
         }}>–</button>
@@ -1157,17 +1157,17 @@ button { margin: 10px; }
 
 </Sandpack>
 
-Since `onTick` is an Effect Event, the code inside it isn't reactive. The change to `increment` does not trigger any Effects.
+由于 `onTick` 是一个 Effect Event，它内部的代码不是响应式的。`increment` 的变化不会触发任何 Effect。
 
 </Solution>
 
-#### Fix a non-adjustable delay {/*fix-a-non-adjustable-delay*/}
+#### 修复一个无法调整的延迟 {/*fix-a-non-adjustable-delay*/}
 
-In this example, you can customize the interval delay. It's stored in a `delay` state variable which is updated by two buttons. However, even if you press the "plus 100 ms" button until the `delay` is 1000 milliseconds (that is, a second), you'll notice that the timer still increments very fast (every 100 ms). It's as if your changes to the `delay` are ignored. Find and fix the bug.
+在这个示例中，你可以自定义计时间隔的延迟。它存储在一个 `delay` state 变量中，并通过两个按钮更新。然而，即使你一直按 “plus 100 ms” 按钮直到 `delay` 变为 1000 毫秒（也就是一秒），你会注意到计时器仍然增长得很快（每 100 毫秒一次）。就好像你对 `delay` 的修改被忽略了一样。找出并修复这个 bug。
 
 <Hint>
 
-Code inside Effect Events is not reactive. Are there cases in which you would _want_ the `setInterval` call to re-run?
+Effect Event 中的代码不是响应式的。有没有一些情况，你会希望 `setInterval` 调用重新运行？
 
 </Hint>
 
@@ -1202,12 +1202,12 @@ export default function Timer() {
   return (
     <>
       <h1>
-        Counter: {count}
-        <button onClick={() => setCount(0)}>Reset</button>
+        计数器：{count}
+        <button onClick={() => setCount(0)}>重置</button>
       </h1>
       <hr />
       <p>
-        Increment by:
+        每秒增加：
         <button disabled={increment === 0} onClick={() => {
           setIncrement(i => i - 1);
         }}>–</button>
@@ -1217,14 +1217,14 @@ export default function Timer() {
         }}>+</button>
       </p>
       <p>
-        Increment delay:
+        增加延迟：
         <button disabled={delay === 100} onClick={() => {
           setDelay(d => d - 100);
-        }}>–100 ms</button>
-        <b>{delay} ms</b>
+        }}>–100 毫秒</button>
+        <b>{delay} 毫秒</b>
         <button onClick={() => {
           setDelay(d => d + 100);
-        }}>+100 ms</button>
+        }}>+100 毫秒</button>
       </p>
     </>
   );
@@ -1240,7 +1240,7 @@ button { margin: 10px; }
 
 <Solution>
 
-The problem with the above example is that it extracted an Effect Event called `onMount` without considering what the code should actually be doing. You should only extract Effect Events for a specific reason: when you want to make a part of your code non-reactive. However, the `setInterval` call *should* be reactive with respect to the `delay` state variable. If the `delay` changes, you want to set up the interval from scratch! To fix this code, pull all the reactive code back inside the Effect:
+上面示例的问题在于，它提取了一个名为 `onMount` 的 Effect Event，却没有考虑代码实际上应该做什么。你只应在有特定原因时才提取 Effect Event：当你希望把代码的某一部分变为非响应式时。然而，`setInterval` 调用*应该*对 `delay` state 变量保持响应式。如果 `delay` 变化了，你就希望从头重新设置这个间隔计时器！要修复这段代码，需要把所有响应式代码放回 Effect 内部：
 
 <Sandpack>
 
@@ -1269,12 +1269,12 @@ export default function Timer() {
   return (
     <>
       <h1>
-        Counter: {count}
-        <button onClick={() => setCount(0)}>Reset</button>
+        计数器：{count}
+        <button onClick={() => setCount(0)}>重置</button>
       </h1>
       <hr />
       <p>
-        Increment by:
+        每秒增加：
         <button disabled={increment === 0} onClick={() => {
           setIncrement(i => i - 1);
         }}>–</button>
@@ -1284,14 +1284,14 @@ export default function Timer() {
         }}>+</button>
       </p>
       <p>
-        Increment delay:
+        增加延迟：
         <button disabled={delay === 100} onClick={() => {
           setDelay(d => d - 100);
-        }}>–100 ms</button>
-        <b>{delay} ms</b>
+        }}>–100 毫秒</button>
+        <b>{delay} 毫秒</b>
         <button onClick={() => {
           setDelay(d => d + 100);
-        }}>+100 ms</button>
+        }}>+100 毫秒</button>
       </p>
     </>
   );
@@ -1304,21 +1304,21 @@ button { margin: 10px; }
 
 </Sandpack>
 
-In general, you should be suspicious of functions like `onMount` that focus on the *timing* rather than the *purpose* of a piece of code. It may feel "more descriptive" at first but it obscures your intent. As a rule of thumb, Effect Events should correspond to something that happens from the *user's* perspective. For example, `onMessage`, `onTick`, `onVisit`, or `onConnected` are good Effect Event names. Code inside them would likely not need to be reactive. On the other hand, `onMount`, `onUpdate`, `onUnmount`, or `onAfterRender` are so generic that it's easy to accidentally put code that *should* be reactive into them. This is why you should name your Effect Events after *what the user thinks has happened,* not when some code happened to run.
+一般来说，你应该对那些更关注*时机*而不是*目的*的函数，比如 `onMount`，保持警惕。一开始它们可能显得“更有描述性”，但其实会掩盖你的意图。通常来说，Effect Event 应该对应于从*用户*角度看发生的某件事。例如，`onMessage`、`onTick`、`onVisit` 或 `onConnected` 都是不错的 Effect Event 命名。它们内部的代码通常不需要具备响应式。另一方面，`onMount`、`onUpdate`、`onUnmount` 或 `onAfterRender` 太过通用，很容易不小心把本应具备响应式的代码放进去。这就是为什么你应该根据*用户认为发生了什么*来命名 Effect Event，而不是根据某段代码何时执行。
 
 </Solution>
 
-#### Fix a delayed notification {/*fix-a-delayed-notification*/}
+#### 修复一个延迟显示的通知 {/*fix-a-delayed-notification*/}
 
-When you join a chat room, this component shows a notification. However, it doesn't show the notification immediately. Instead, the notification is artificially delayed by two seconds so that the user has a chance to look around the UI.
+当你加入一个聊天室时，这个组件会显示一条通知。然而，它不会立即显示通知，而是故意延迟两秒，让用户有时间看看界面。
 
-This almost works, but there is a bug. Try changing the dropdown from "general" to "travel" and then to "music" very quickly. If you do it fast enough, you will see two notifications (as expected!) but they will *both* say "Welcome to music".
+这几乎可行，但有一个 bug。试着快速从 “general” 切换到 “travel”，再切换到 “music”。如果你操作得足够快，你会看到两条通知（这本来应该如此！），但它们*都会*显示 “Welcome to music”。
 
-Fix it so that when you switch from "general" to "travel" and then to "music" very quickly, you see two notifications, the first one being "Welcome to travel" and the second one being "Welcome to music". (For an additional challenge, assuming you've *already* made the notifications show the correct rooms, change the code so that only the latter notification is displayed.)
+修复它，使得当你快速从 “general” 切换到 “travel” 再切换到 “music” 时，你会看到两条通知，第一条是 “Welcome to travel”，第二条是 “Welcome to music”。（作为额外挑战，假设你*已经*让通知显示正确的房间名，请修改代码让只显示后者通知。）
 
 <Hint>
 
-Your Effect knows which room it connected to. Is there any information that you might want to pass to your Effect Event?
+你的 Effect 知道它连接到了哪个房间。有没有什么信息你可能想传给你的 Effect Event？
 
 </Hint>
 
@@ -1365,7 +1365,7 @@ function ChatRoom({ roomId, theme }) {
     return () => connection.disconnect();
   }, [roomId]);
 
-  return <h1>Welcome to the {roomId} room!</h1>
+  return <h1>欢迎来到 {roomId} 房间！</h1>
 }
 
 export default function App() {
@@ -1374,7 +1374,7 @@ export default function App() {
   return (
     <>
       <label>
-        Choose the chat room:{' '}
+        选择聊天室：{' '}
         <select
           value={roomId}
           onChange={e => setRoomId(e.target.value)}
@@ -1390,7 +1390,7 @@ export default function App() {
           checked={isDark}
           onChange={e => setIsDark(e.target.checked)}
         />
-        Use dark theme
+        使用深色主题
       </label>
       <hr />
       <ChatRoom
@@ -1404,7 +1404,7 @@ export default function App() {
 
 ```js src/chat.js
 export function createConnection(serverUrl, roomId) {
-  // A real implementation would actually connect to the server
+  // 真实实现会实际连接到服务器
   let connectedCallback;
   let timeout;
   return {
@@ -1457,11 +1457,11 @@ label { display: block; margin-top: 10px; }
 
 <Solution>
 
-Inside your Effect Event, `roomId` is the value *at the time Effect Event was called.*
+在你的 Effect Event 内部，`roomId` 是 Effect Event 被调用时的值。
 
-Your Effect Event is called with a two second delay. If you're quickly switching from the travel to the music room, by the time the travel room's notification shows, `roomId` is already `"music"`. This is why both notifications say "Welcome to music".
+你的 Effect Event 在两秒后才会被调用。如果你迅速从 travel 房间切换到 music 房间，那么等 travel 房间的通知显示出来时，`roomId` 已经是 `"music"` 了。这就是为什么两条通知都显示 “Welcome to music”。
 
-To fix the issue, instead of reading the *latest* `roomId` inside the Effect Event, make it a parameter of your Effect Event, like `connectedRoomId` below. Then pass `roomId` from your Effect by calling `onConnected(roomId)`:
+要解决这个问题，不要在 Effect Event 内部读取*最新的* `roomId`，而是把它作为 Effect Event 的参数，例如下面的 `connectedRoomId`。然后通过调用 `onConnected(roomId)` 从你的 Effect 中传入 `roomId`：
 
 <Sandpack>
 
@@ -1506,7 +1506,7 @@ function ChatRoom({ roomId, theme }) {
     return () => connection.disconnect();
   }, [roomId]);
 
-  return <h1>Welcome to the {roomId} room!</h1>
+  return <h1>欢迎来到 {roomId} 房间！</h1>
 }
 
 export default function App() {
@@ -1515,7 +1515,7 @@ export default function App() {
   return (
     <>
       <label>
-        Choose the chat room:{' '}
+        选择聊天室：{' '}
         <select
           value={roomId}
           onChange={e => setRoomId(e.target.value)}
@@ -1531,7 +1531,7 @@ export default function App() {
           checked={isDark}
           onChange={e => setIsDark(e.target.checked)}
         />
-        Use dark theme
+        使用深色主题
       </label>
       <hr />
       <ChatRoom
@@ -1545,7 +1545,7 @@ export default function App() {
 
 ```js src/chat.js
 export function createConnection(serverUrl, roomId) {
-  // A real implementation would actually connect to the server
+  // 真实实现会实际连接到服务器
   let connectedCallback;
   let timeout;
   return {
@@ -1596,9 +1596,9 @@ label { display: block; margin-top: 10px; }
 
 </Sandpack>
 
-The Effect that had `roomId` set to `"travel"` (so it connected to the `"travel"` room) will show the notification for `"travel"`. The Effect that had `roomId` set to `"music"` (so it connected to the `"music"` room) will show the notification for `"music"`. In other words, `connectedRoomId` comes from your Effect (which is reactive), while `theme` always uses the latest value.
+`roomId` 被设为 `"travel"` 的那个 Effect（因此它连接到了 `"travel"` 房间）会显示 `"travel"` 的通知。`roomId` 被设为 `"music"` 的那个 Effect（因此它连接到了 `"music"` 房间）会显示 `"music"` 的通知。换句话说，`connectedRoomId` 来自你的 Effect（它是响应式的），而 `theme` 则始终使用最新值。
 
-To solve the additional challenge, save the notification timeout ID and clear it in the cleanup function of your Effect:
+要完成额外挑战，请保存通知的 timeout ID，并在 Effect 的清理函数中将其清除：
 
 <Sandpack>
 
@@ -1629,7 +1629,7 @@ const serverUrl = 'https://localhost:1234';
 
 function ChatRoom({ roomId, theme }) {
   const onConnected = useEffectEvent(connectedRoomId => {
-    showNotification('Welcome to ' + connectedRoomId, theme);
+    showNotification('欢迎来到 ' + connectedRoomId, theme);
   });
 
   useEffect(() => {
@@ -1649,7 +1649,7 @@ function ChatRoom({ roomId, theme }) {
     };
   }, [roomId]);
 
-  return <h1>Welcome to the {roomId} room!</h1>
+  return <h1>欢迎来到 {roomId} 房间！</h1>
 }
 
 export default function App() {
@@ -1658,7 +1658,7 @@ export default function App() {
   return (
     <>
       <label>
-        Choose the chat room:{' '}
+        选择聊天房间：{' '}
         <select
           value={roomId}
           onChange={e => setRoomId(e.target.value)}
@@ -1674,7 +1674,7 @@ export default function App() {
           checked={isDark}
           onChange={e => setIsDark(e.target.checked)}
         />
-        Use dark theme
+        使用深色主题
       </label>
       <hr />
       <ChatRoom
@@ -1688,7 +1688,7 @@ export default function App() {
 
 ```js src/chat.js
 export function createConnection(serverUrl, roomId) {
-  // A real implementation would actually connect to the server
+  // 实际实现会真正连接到服务器
   let connectedCallback;
   let timeout;
   return {
@@ -1739,7 +1739,7 @@ label { display: block; margin-top: 10px; }
 
 </Sandpack>
 
-This ensures that already scheduled (but not yet displayed) notifications get cancelled when you change rooms.
+这确保了当你切换房间时，已经排队（但尚未显示）的通知会被取消。
 
 </Solution>
 

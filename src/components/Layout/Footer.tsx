@@ -293,13 +293,25 @@ export function Footer() {
             dir="ltr">
             Copyright &copy; Meta Platforms, Inc
           </div>
+          <div className="text-xs mt-2 flex flex-col gap-1">
+            {/* eslint-disable-next-line react/jsx-no-target-blank */}
+            <a target="_blank" href="https://www.zhcndoc.com">
+              简中文档
+            </a>
+            <a
+              target="_blank"
+              href="https://beian.miit.gov.cn"
+              rel="nofollow noreferrer noopener">
+              沪ICP备2024070610号-3
+            </a>
+          </div>
           <div
             className="uwu-visible text-xs cursor-pointer hover:text-link hover:dark:text-link-dark hover:underline"
             onClick={() => {
               // @ts-ignore
               window.__setUwu(false);
             }}>
-            no uwu plz
+            不要 uwu 了
           </div>
           <div
             className="uwu-hidden text-xs cursor-pointer hover:text-link hover:dark:text-link-dark hover:underline"
@@ -307,10 +319,10 @@ export function Footer() {
               // @ts-ignore
               window.__setUwu(true);
             }}>
-            uwu?
+            uwu？
           </div>
           <div className="uwu-visible text-xs">
-            Logo by
+            徽标由
             <ExternalLink
               className="ms-1"
               href="https://twitter.com/sawaratsuki1004">
@@ -320,50 +332,44 @@ export function Footer() {
         </div>
         <div className="flex flex-col">
           <FooterLink href="/learn" isHeader={true}>
-            Learn React
+            学习 React
           </FooterLink>
-          <FooterLink href="/learn/">Quick Start</FooterLink>
-          <FooterLink href="/learn/installation">Installation</FooterLink>
-          <FooterLink href="/learn/describing-the-ui">
-            Describing the UI
-          </FooterLink>
-          <FooterLink href="/learn/adding-interactivity">
-            Adding Interactivity
-          </FooterLink>
-          <FooterLink href="/learn/managing-state">Managing State</FooterLink>
-          <FooterLink href="/learn/escape-hatches">Escape Hatches</FooterLink>
+          <FooterLink href="/learn/">快速开始</FooterLink>
+          <FooterLink href="/learn/installation">安装</FooterLink>
+          <FooterLink href="/learn/describing-the-ui">描述界面</FooterLink>
+          <FooterLink href="/learn/adding-interactivity">添加交互</FooterLink>
+          <FooterLink href="/learn/managing-state">管理状态</FooterLink>
+          <FooterLink href="/learn/escape-hatches">逃生通道</FooterLink>
         </div>
         <div className="flex flex-col">
           <FooterLink href="/reference/react" isHeader={true}>
-            API Reference
+            API 参考
           </FooterLink>
-          <FooterLink href="/reference/react">React APIs</FooterLink>
-          <FooterLink href="/reference/react-dom">React DOM APIs</FooterLink>
+          <FooterLink href="/reference/react">React API</FooterLink>
+          <FooterLink href="/reference/react-dom">React DOM API</FooterLink>
         </div>
         <div className="md:col-start-2 xl:col-start-4 flex flex-col">
           <FooterLink href="/community" isHeader={true}>
-            Community
+            社区
           </FooterLink>
           <FooterLink href="https://github.com/facebook/react/blob/main/CODE_OF_CONDUCT.md">
-            Code of Conduct
+            行为准则
           </FooterLink>
-          <FooterLink href="/community/team">Meet the Team</FooterLink>
+          <FooterLink href="/community/team">认识团队</FooterLink>
           <FooterLink href="/community/docs-contributors">
-            Docs Contributors
+            文档贡献者
           </FooterLink>
-          <FooterLink href="/community/acknowledgements">
-            Acknowledgements
-          </FooterLink>
+          <FooterLink href="/community/acknowledgements">致谢</FooterLink>
         </div>
         <div className="flex flex-col">
-          <FooterLink isHeader={true}>More</FooterLink>
-          <FooterLink href="/blog">Blog</FooterLink>
+          <FooterLink isHeader={true}>更多</FooterLink>
+          <FooterLink href="/blog">博客</FooterLink>
           <FooterLink href="https://reactnative.dev/">React Native</FooterLink>
           <FooterLink href="https://opensource.facebook.com/legal/privacy">
-            Privacy
+            隐私
           </FooterLink>
           <FooterLink href="https://opensource.fb.com/legal/terms/">
-            Terms
+            条款
           </FooterLink>
           <div className="flex flex-row items-center mt-8 gap-x-2">
             <ExternalLink

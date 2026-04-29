@@ -1,54 +1,54 @@
 ---
-title: Quick Start
+title: 快速开始
 ---
 
 <Intro>
 
-Welcome to the React documentation! This page will give you an introduction to 80% of the React concepts that you will use on a daily basis.
+欢迎来到 React 文档！本页将向你介绍你在日常工作中会用到的 80% 的 React 概念。
 
 </Intro>
 
 <YouWillLearn>
 
-- How to create and nest components
-- How to add markup and styles
-- How to display data
-- How to render conditions and lists
-- How to respond to events and update the screen
-- How to share data between components
+- 如何创建和嵌套组件
+- 如何添加标记和样式
+- 如何显示数据
+- 如何渲染条件和列表
+- 如何响应事件并更新屏幕
+- 如何在组件之间共享数据
 
 </YouWillLearn>
 
-## Creating and nesting components {/*components*/}
+## 创建和嵌套组件 {/*components*/}
 
-React apps are made out of *components*. A component is a piece of the UI (user interface) that has its own logic and appearance. A component can be as small as a button, or as large as an entire page.
+React 应用由 *组件* 构成。组件是 UI（用户界面）的一部分，拥有自己的逻辑和外观。组件可以小到一个按钮，也可以大到整个页面。
 
-React components are JavaScript functions that return markup:
+React 组件是返回标记的 JavaScript 函数：
 
 ```js
 function MyButton() {
   return (
-    <button>I'm a button</button>
+    <button>我是一个按钮</button>
   );
 }
 ```
 
-Now that you've declared `MyButton`, you can nest it into another component:
+现在你已经声明了 `MyButton`，就可以把它嵌套到另一个组件中：
 
 ```js {5}
 export default function MyApp() {
   return (
     <div>
-      <h1>Welcome to my app</h1>
+      <h1>欢迎来到我的应用</h1>
       <MyButton />
     </div>
   );
 }
 ```
 
-Notice that `<MyButton />` starts with a capital letter. That's how you know it's a React component. React component names must always start with a capital letter, while HTML tags must be lowercase.
+注意 `<MyButton />` 以大写字母开头。这就是你知道它是 React 组件的方式。React 组件名称必须始终以大写字母开头，而 HTML 标签必须是小写字母。
 
-Have a look at the result:
+看看结果：
 
 <Sandpack>
 
@@ -56,7 +56,7 @@ Have a look at the result:
 function MyButton() {
   return (
     <button>
-      I'm a button
+      我是一个按钮
     </button>
   );
 }
@@ -64,7 +64,7 @@ function MyButton() {
 export default function MyApp() {
   return (
     <div>
-      <h1>Welcome to my app</h1>
+      <h1>欢迎来到我的应用</h1>
       <MyButton />
     </div>
   );
@@ -73,49 +73,49 @@ export default function MyApp() {
 
 </Sandpack>
 
-The `export default` keywords specify the main component in the file. If you're not familiar with some piece of JavaScript syntax, [MDN](https://developer.mozilla.org/en-US/docs/web/javascript/reference/statements/export) and [javascript.info](https://javascript.info/import-export) have great references.
+`export default` 关键字指定文件中的主组件。如果你对某些 JavaScript 语法不熟悉，[MDN](https://developer.mozilla.org/en-US/docs/web/javascript/reference/statements/export) 和 [javascript.info](https://javascript.info/import-export) 提供了很好的参考资料。
 
-## Writing markup with JSX {/*writing-markup-with-jsx*/}
+## 使用 JSX 编写标记 {/*writing-markup-with-jsx*/}
 
-The markup syntax you've seen above is called *JSX*. It is optional, but most React projects use JSX for its convenience. All of the [tools we recommend for local development](/learn/installation) support JSX out of the box.
+上面你看到的标记语法称为 *JSX*。它是可选的，但大多数 React 项目为了方便都会使用 JSX。我们推荐用于本地开发的所有[工具](/learn/installation)都原生支持 JSX。
 
-JSX is stricter than HTML. You have to close tags like `<br />`. Your component also can't return multiple JSX tags. You have to wrap them into a shared parent, like a `<div>...</div>` or an empty `<>...</>` wrapper:
+JSX 比 HTML 更严格。你必须关闭像 `<br />` 这样的标签。你的组件也不能返回多个 JSX 标签。你必须把它们包裹在一个共享的父元素中，比如 `<div>...</div>` 或一个空的 `<>...</>` 包裹器：
 
 ```js {3,6}
 function AboutPage() {
   return (
     <>
-      <h1>About</h1>
-      <p>Hello there.<br />How do you do?</p>
+      <h1>关于</h1>
+      <p>你好。<br />你好吗？</p>
     </>
   );
 }
 ```
 
-If you have a lot of HTML to port to JSX, you can use an [online converter.](https://transform.tools/html-to-jsx)
+如果你有很多 HTML 需要转换成 JSX，可以使用[在线转换器。](https://transform.tools/html-to-jsx)
 
-## Adding styles {/*adding-styles*/}
+## 添加样式 {/*adding-styles*/}
 
-In React, you specify a CSS class with `className`. It works the same way as the HTML [`class`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/class) attribute:
+在 React 中，你使用 `className` 指定 CSS 类。它的工作方式与 HTML 的 [`class`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/class) 属性相同：
 
 ```js
 <img className="avatar" />
 ```
 
-Then you write the CSS rules for it in a separate CSS file:
+然后你在单独的 CSS 文件中为它编写 CSS 规则：
 
 ```css
-/* In your CSS */
+/* 在你的 CSS 中 */
 .avatar {
   border-radius: 50%;
 }
 ```
 
-React does not prescribe how you add CSS files. In the simplest case, you'll add a [`<link>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link) tag to your HTML. If you use a build tool or a framework, consult its documentation to learn how to add a CSS file to your project.
+React 并不规定你如何添加 CSS 文件。在最简单的情况下，你需要在 HTML 中添加一个 [`<link>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link) 标签。如果你使用构建工具或框架，请查阅其文档，了解如何将 CSS 文件添加到你的项目中。
 
-## Displaying data {/*displaying-data*/}
+## 显示数据 {/*displaying-data*/}
 
-JSX lets you put markup into JavaScript. Curly braces let you "escape back" into JavaScript so that you can embed some variable from your code and display it to the user. For example, this will display `user.name`:
+JSX 允许你把标记写进 JavaScript 中。花括号让你“返回到” JavaScript，这样你就可以嵌入代码中的某个变量并将其显示给用户。例如，下面会显示 `user.name`：
 
 ```js {3}
 return (
@@ -125,7 +125,7 @@ return (
 );
 ```
 
-You can also "escape into JavaScript" from JSX attributes, but you have to use curly braces *instead of* quotes. For example, `className="avatar"` passes the `"avatar"` string as the CSS class, but `src={user.imageUrl}` reads the JavaScript `user.imageUrl` variable value, and then passes that value as the `src` attribute:
+你也可以从 JSX 属性中“进入 JavaScript”，但必须使用花括号*而不是*引号。例如，`className="avatar"` 会把 `"avatar"` 字符串作为 CSS 类传递，而 `src={user.imageUrl}` 会读取 JavaScript 的 `user.imageUrl` 变量值，然后把该值作为 `src` 属性传递：
 
 ```js {3,4}
 return (
@@ -136,7 +136,7 @@ return (
 );
 ```
 
-You can put more complex expressions inside the JSX curly braces too, for example, [string concatenation](https://javascript.info/operators#string-concatenation-with-binary):
+你也可以在 JSX 花括号中放入更复杂的表达式，例如，[字符串拼接](https://javascript.info/operators#string-concatenation-with-binary)：
 
 <Sandpack>
 
@@ -154,7 +154,7 @@ export default function Profile() {
       <img
         className="avatar"
         src={user.imageUrl}
-        alt={'Photo of ' + user.name}
+        alt={'Hedy Lamarr 的照片'}
         style={{
           width: user.imageSize,
           height: user.imageSize
@@ -177,11 +177,11 @@ export default function Profile() {
 
 </Sandpack>
 
-In the above example, `style={{}}` is not a special syntax, but a regular `{}` object inside the `style={ }` JSX curly braces. You can use the `style` attribute when your styles depend on JavaScript variables.
+在上面的示例中，`style={{}}` 并不是特殊语法，而是在 `style={ }` JSX 花括号内部的普通 `{}` 对象。当你的样式依赖 JavaScript 变量时，你可以使用 `style` 属性。
 
-## Conditional rendering {/*conditional-rendering*/}
+## 条件渲染 {/*conditional-rendering*/}
 
-In React, there is no special syntax for writing conditions. Instead, you'll use the same techniques as you use when writing regular JavaScript code. For example, you can use an [`if`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/if...else) statement to conditionally include JSX:
+在 React 中，编写条件语句没有特殊语法。相反，你会使用与编写普通 JavaScript 代码时相同的技巧。例如，你可以使用 [`if`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/if...else) 语句来有条件地包含 JSX：
 
 ```js
 let content;
@@ -197,7 +197,7 @@ return (
 );
 ```
 
-If you prefer more compact code, you can use the [conditional `?` operator.](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_Operator) Unlike `if`, it works inside JSX:
+如果你更喜欢更紧凑的代码，可以使用[条件 `?` 运算符。](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_Operator) 与 `if` 不同，它可以在 JSX 内部工作：
 
 ```js
 <div>
@@ -209,7 +209,7 @@ If you prefer more compact code, you can use the [conditional `?` operator.](htt
 </div>
 ```
 
-When you don't need the `else` branch, you can also use a shorter [logical `&&` syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_AND#short-circuit_evaluation):
+当你不需要 `else` 分支时，也可以使用更短的[逻辑 `&&` 语法](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Logical_AND#short-circuit_evaluation)：
 
 ```js
 <div>
@@ -217,13 +217,13 @@ When you don't need the `else` branch, you can also use a shorter [logical `&&` 
 </div>
 ```
 
-All of these approaches also work for conditionally specifying attributes. If you're unfamiliar with some of this JavaScript syntax, you can start by always using `if...else`.
+以上所有方法也适用于有条件地指定属性。如果你对其中某些 JavaScript 语法不熟悉，可以先始终使用 `if...else`。
 
-## Rendering lists {/*rendering-lists*/}
+## 渲染列表 {/*rendering-lists*/}
 
-You will rely on JavaScript features like [`for` loop](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for) and the [array `map()` function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) to render lists of components.
+你将依赖 JavaScript 的一些特性，例如 [`for` 循环](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for) 和 [数组的 `map()` 函数](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map)，来渲染组件列表。
 
-For example, let's say you have an array of products:
+例如，假设你有一个产品数组：
 
 ```js
 const products = [
@@ -233,7 +233,7 @@ const products = [
 ];
 ```
 
-Inside your component, use the `map()` function to transform an array of products into an array of `<li>` items:
+在组件内部，使用 `map()` 函数将产品数组转换为 `<li>` 项数组：
 
 ```js
 const listItems = products.map(product =>
@@ -247,7 +247,7 @@ return (
 );
 ```
 
-Notice how `<li>` has a `key` attribute. For each item in a list, you should pass a string or a number that uniquely identifies that item among its siblings. Usually, a key should be coming from your data, such as a database ID. React uses your keys to know what happened if you later insert, delete, or reorder the items.
+注意 `<li>` 具有一个 `key` 属性。对于列表中的每个项目，你都应该传递一个字符串或数字，用于在其兄弟项中唯一标识该项目。通常，key 应该来自你的数据，例如数据库 ID。React 使用你的 key 来判断如果你之后插入、删除或重新排序项目时发生了什么。
 
 <Sandpack>
 
@@ -278,37 +278,37 @@ export default function ShoppingList() {
 
 </Sandpack>
 
-## Responding to events {/*responding-to-events*/}
+## 响应事件 {/*responding-to-events*/}
 
-You can respond to events by declaring *event handler* functions inside your components:
+你可以通过在组件内部声明 *事件处理函数* 来响应事件：
 
 ```js {2-4,7}
 function MyButton() {
   function handleClick() {
-    alert('You clicked me!');
+    alert('你点击了我！');
   }
 
   return (
     <button onClick={handleClick}>
-      Click me
+      点击我
     </button>
   );
 }
 ```
 
-Notice how `onClick={handleClick}` has no parentheses at the end! Do not _call_ the event handler function: you only need to *pass it down*. React will call your event handler when the user clicks the button.
+注意 `onClick={handleClick}` 末尾没有括号！不要 _调用_ 事件处理函数：你只需要*传递*它。React 会在用户点击按钮时调用你的事件处理函数。
 
-## Updating the screen {/*updating-the-screen*/}
+## 更新屏幕 {/*updating-the-screen*/}
 
-Often, you'll want your component to "remember" some information and display it. For example, maybe you want to count the number of times a button is clicked. To do this, add *state* to your component.
+通常，你会希望组件“记住”一些信息并将其显示出来。例如，也许你想统计一个按钮被点击的次数。为此，请为你的组件添加 *state*。
 
-First, import [`useState`](/reference/react/useState) from React:
+首先，从 React 导入 [`useState`](/reference/react/useState)：
 
 ```js
 import { useState } from 'react';
 ```
 
-Now you can declare a *state variable* inside your component:
+现在你可以在组件内部声明一个 *state 变量*：
 
 ```js
 function MyButton() {
@@ -316,9 +316,9 @@ function MyButton() {
   // ...
 ```
 
-You’ll get two things from `useState`: the current state (`count`), and the function that lets you update it (`setCount`). You can give them any names, but the convention is to write `[something, setSomething]`.
+你会从 `useState` 获得两样东西：当前状态（`count`），以及允许你更新它的函数（`setCount`）。你可以为它们取任何名字，但惯例是写成 `[something, setSomething]`。
 
-The first time the button is displayed, `count` will be `0` because you passed `0` to `useState()`. When you want to change state, call `setCount()` and pass the new value to it. Clicking this button will increment the counter:
+按钮第一次显示时，`count` 将是 `0`，因为你向 `useState()` 传入了 `0`。当你想更改状态时，调用 `setCount()` 并将新值传给它。点击这个按钮会使计数器递增：
 
 ```js {5}
 function MyButton() {
@@ -330,15 +330,15 @@ function MyButton() {
 
   return (
     <button onClick={handleClick}>
-      Clicked {count} times
+      点击了 {count} 次
     </button>
   );
 }
 ```
 
-React will call your component function again. This time, `count` will be `1`. Then it will be `2`. And so on.
+React 会再次调用你的组件函数。这一次，`count` 将是 `1`。然后它会变成 `2`。以此类推。
 
-If you render the same component multiple times, each will get its own state. Click each button separately:
+如果你多次渲染同一个组件，每个组件都会拥有自己的 state。分别点击每个按钮：
 
 <Sandpack>
 
@@ -348,7 +348,7 @@ import { useState } from 'react';
 export default function MyApp() {
   return (
     <div>
-      <h1>Counters that update separately</h1>
+      <h1>分别更新的计数器</h1>
       <MyButton />
       <MyButton />
     </div>
@@ -364,7 +364,7 @@ function MyButton() {
 
   return (
     <button onClick={handleClick}>
-      Clicked {count} times
+      点击了 {count} 次
     </button>
   );
 }
@@ -379,59 +379,59 @@ button {
 
 </Sandpack>
 
-Notice how each button "remembers" its own `count` state and doesn't affect other buttons.
+注意每个按钮如何“记住”自己的 `count` 状态，并且不会影响其他按钮。
 
-## Using Hooks {/*using-hooks*/}
+## 使用 Hooks {/*using-hooks*/}
 
-Functions starting with `use` are called *Hooks*. `useState` is a built-in Hook provided by React. You can find other built-in Hooks in the [API reference.](/reference/react) You can also write your own Hooks by combining the existing ones.
+以 `use` 开头的函数被称为 *Hooks*。`useState` 是 React 提供的内置 Hook。你可以在 [API reference.](/reference/react) 中找到其他内置 Hooks。你也可以通过组合现有的 Hooks 来编写你自己的 Hooks。
 
-Hooks are more restrictive than other functions. You can only call Hooks *at the top* of your components (or other Hooks). If you want to use `useState` in a condition or a loop, extract a new component and put it there.
+Hooks 比其他函数有更多限制。你只能在组件（或其他 Hooks）的 *顶层* 调用 Hooks。如果你想在条件语句或循环中使用 `useState`，请提取一个新组件并把它放在那里。
 
-## Sharing data between components {/*sharing-data-between-components*/}
+## 组件之间共享数据 {/*sharing-data-between-components*/}
 
-In the previous example, each `MyButton` had its own independent `count`, and when each button was clicked, only the `count` for the button clicked changed:
+在前面的示例中，每个 `MyButton` 都有自己独立的 `count`，并且当每个按钮被点击时，只有被点击按钮的 `count` 会发生变化：
 
 <DiagramGroup>
 
 <Diagram name="sharing_data_child" height={367} width={407} alt="Diagram showing a tree of three components, one parent labeled MyApp and two children labeled MyButton. Both MyButton components contain a count with value zero.">
 
-Initially, each `MyButton`'s `count` state is `0`
+最初，每个 `MyButton` 的 `count` 状态都是 `0`
 
 </Diagram>
 
 <Diagram name="sharing_data_child_clicked" height={367} width={407} alt="The same diagram as the previous, with the count of the first child MyButton component highlighted indicating a click with the count value incremented to one. The second MyButton component still contains value zero." >
 
-The first `MyButton` updates its `count` to `1`
+第一个 `MyButton` 将它的 `count` 更新为 `1`
 
 </Diagram>
 
 </DiagramGroup>
 
-However, often you'll need components to *share data and always update together*.
+然而，通常你会需要组件 *共享数据并始终一起更新*。
 
-To make both `MyButton` components display the same `count` and update together, you need to move the state from the individual buttons "upwards" to the closest component containing all of them.
+要让这两个 `MyButton` 组件显示相同的 `count` 并一起更新，你需要将状态从各个按钮“提升”到包含它们的最近公共组件。
 
-In this example, it is `MyApp`:
+在这个例子中，它是 `MyApp`：
 
 <DiagramGroup>
 
 <Diagram name="sharing_data_parent" height={385} width={410} alt="Diagram showing a tree of three components, one parent labeled MyApp and two children labeled MyButton. MyApp contains a count value of zero which is passed down to both of the MyButton components, which also show value zero." >
 
-Initially, `MyApp`'s `count` state is `0` and is passed down to both children
+最初，`MyApp` 的 `count` 状态是 `0`，并被传递给两个子组件
 
 </Diagram>
 
 <Diagram name="sharing_data_parent_clicked" height={385} width={410} alt="The same diagram as the previous, with the count of the parent MyApp component highlighted indicating a click with the value incremented to one. The flow to both of the children MyButton components is also highlighted, and the count value in each child is set to one indicating the value was passed down." >
 
-On click, `MyApp` updates its `count` state to `1` and passes it down to both children
+点击时，`MyApp` 将它的 `count` 状态更新为 `1`，并将其传递给两个子组件
 
 </Diagram>
 
 </DiagramGroup>
 
-Now when you click either button, the `count` in `MyApp` will change, which will change both of the counts in `MyButton`. Here's how you can express this in code.
+现在，当你点击任意一个按钮时，`MyApp` 中的 `count` 会改变，这会使 `MyButton` 中两个计数都发生变化。下面是你如何在代码中表达这一点。
 
-First, *move the state up* from `MyButton` into `MyApp`:
+首先，将状态从 `MyButton` *提升* 到 `MyApp` 中：
 
 ```js {2-6,18}
 export default function MyApp() {
@@ -443,7 +443,7 @@ export default function MyApp() {
 
   return (
     <div>
-      <h1>Counters that update separately</h1>
+      <h1>分别更新的计数器</h1>
       <MyButton />
       <MyButton />
     </div>
@@ -451,12 +451,12 @@ export default function MyApp() {
 }
 
 function MyButton() {
-  // ... we're moving code from here ...
+  // ... 我们正在把代码从这里移走 ...
 }
 
 ```
 
-Then, *pass the state down* from `MyApp` to each `MyButton`, together with the shared click handler. You can pass information to `MyButton` using the JSX curly braces, just like you previously did with built-in tags like `<img>`:
+然后，将状态从 `MyApp` *向下传递* 给每个 `MyButton`，同时传入共享的点击处理函数。你可以使用 JSX 花括号将信息传递给 `MyButton`，就像你之前对 `<img>` 这类内置标签所做的那样：
 
 ```js {11-12}
 export default function MyApp() {
@@ -468,7 +468,7 @@ export default function MyApp() {
 
   return (
     <div>
-      <h1>Counters that update together</h1>
+      <h1>一起更新的计数器</h1>
       <MyButton count={count} onClick={handleClick} />
       <MyButton count={count} onClick={handleClick} />
     </div>
@@ -476,21 +476,21 @@ export default function MyApp() {
 }
 ```
 
-The information you pass down like this is called _props_. Now the `MyApp` component contains the `count` state and the `handleClick` event handler, and *passes both of them down as props* to each of the buttons.
+你这样向下传递的信息被称为 _props_。现在 `MyApp` 组件包含了 `count` 状态和 `handleClick` 事件处理函数，并且把它们都作为 props *向下传递* 给每个按钮。
 
-Finally, change `MyButton` to *read* the props you have passed from its parent component:
+最后，修改 `MyButton`，让它*读取*从父组件传递过来的 props：
 
 ```js {1,3}
 function MyButton({ count, onClick }) {
   return (
     <button onClick={onClick}>
-      Clicked {count} times
+      点击了 {count} 次
     </button>
   );
 }
 ```
 
-When you click the button, the `onClick` handler fires. Each button's `onClick` prop was set to the `handleClick` function inside `MyApp`, so the code inside of it runs. That code calls `setCount(count + 1)`, incrementing the `count` state variable. The new `count` value is passed as a prop to each button, so they all show the new value. This is called "lifting state up". By moving state up, you've shared it between components.
+当你点击按钮时，`onClick` 处理函数会被触发。每个按钮的 `onClick` prop 都被设置为 `MyApp` 内部的 `handleClick` 函数，所以其中的代码会执行。那段代码调用 `setCount(count + 1)`，使 `count` 状态变量加一。新的 `count` 值会作为 prop 传递给每个按钮，因此它们都会显示新值。这被称为“状态提升”。通过提升状态，你已经在组件之间共享了它。
 
 <Sandpack>
 
@@ -506,7 +506,7 @@ export default function MyApp() {
 
   return (
     <div>
-      <h1>Counters that update together</h1>
+      <h1>一起更新的计数器</h1>
       <MyButton count={count} onClick={handleClick} />
       <MyButton count={count} onClick={handleClick} />
     </div>
@@ -516,7 +516,7 @@ export default function MyApp() {
 function MyButton({ count, onClick }) {
   return (
     <button onClick={onClick}>
-      Clicked {count} times
+      点击了 {count} 次
     </button>
   );
 }
@@ -531,8 +531,8 @@ button {
 
 </Sandpack>
 
-## Next Steps {/*next-steps*/}
+## 下一步 {/*next-steps*/}
 
-By now, you know the basics of how to write React code!
+到现在为止，你已经了解了编写 React 代码的基础知识！
 
-Check out the [Tutorial](/learn/tutorial-tic-tac-toe) to put them into practice and build your first mini-app with React.
+看看 [教程](/learn/tutorial-tic-tac-toe)，把这些知识付诸实践，并用 React 构建你的第一个迷你应用。

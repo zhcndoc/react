@@ -4,13 +4,13 @@ title: flushSync
 
 <Pitfall>
 
-Using `flushSync` is uncommon and can hurt the performance of your app.
+使用 `flushSync` 并不常见，而且可能会损害你应用的性能。
 
 </Pitfall>
 
 <Intro>
 
-`flushSync` lets you force React to flush any updates inside the provided callback synchronously. This ensures that the DOM is updated immediately.
+`flushSync` 允许你强制 React 同步刷新提供的回调中的任何更新。这可以确保 DOM 立即更新。
 
 ```js
 flushSync(callback)
@@ -22,11 +22,11 @@ flushSync(callback)
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `flushSync(callback)` {/*flushsync*/}
 
-Call `flushSync` to force React to flush any pending work and update the DOM synchronously.
+调用 `flushSync` 以强制 React 同步刷新任何待处理的工作并更新 DOM。
 
 ```js
 import { flushSync } from 'react-dom';
@@ -36,50 +36,50 @@ flushSync(() => {
 });
 ```
 
-Most of the time, `flushSync` can be avoided. Use `flushSync` as last resort.
+大多数时候，可以避免使用 `flushSync`。请将 `flushSync` 作为最后的手段。
 
-[See more examples below.](#usage)
+[查看更多示例。](#usage)
 
-#### Parameters {/*parameters*/}
+#### 参数 {/*parameters*/}
 
 
-* `callback`: A function. React will immediately call this callback and flush any updates it contains synchronously. It may also flush any pending updates, or Effects, or updates inside of Effects. If an update suspends as a result of this `flushSync` call, the fallbacks may be re-shown.
+* `callback`：一个函数。React 会立即调用这个回调，并同步刷新其中包含的任何更新。它也可能刷新任何待处理的更新、Effects，或 Effects 内部的更新。如果某个更新因这次 `flushSync` 调用而挂起，fallback 可能会被重新显示。
 
-#### Returns {/*returns*/}
+#### 返回值 {/*returns*/}
 
-`flushSync` returns `undefined`.
+`flushSync` 返回 `undefined`。
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-* `flushSync` can significantly hurt performance. Use sparingly.
-* `flushSync` may force pending Suspense boundaries to show their `fallback` state.
-* `flushSync` may run pending Effects and synchronously apply any updates they contain before returning.
-* `flushSync` may flush updates outside the callback when necessary to flush the updates inside the callback. For example, if there are pending updates from a click, React may flush those before flushing the updates inside the callback.
+* `flushSync` 会显著影响性能。请谨慎使用。
+* `flushSync` 可能会强制尚未完成的 Suspense 边界显示其 `fallback` 状态。
+* `flushSync` 可能会在返回前运行待处理的 Effects，并同步应用其中包含的任何更新。
+* `flushSync` 在必要时可能会在刷新回调内更新之前，先刷新回调外部的更新。例如，如果有来自点击事件的待处理更新，React 可能会先刷新这些更新，再刷新回调中的更新。
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Flushing updates for third-party integrations {/*flushing-updates-for-third-party-integrations*/}
+### 为第三方集成刷新更新 {/*flushing-updates-for-third-party-integrations*/}
 
-When integrating with third-party code such as browser APIs or UI libraries, it may be necessary to force React to flush updates. Use `flushSync` to force React to flush any <CodeStep step={1}>state updates</CodeStep> inside the callback synchronously:
+当与第三方代码（如浏览器 API 或 UI 库）集成时，可能需要强制 React 刷新更新。使用 `flushSync` 可以强制 React 同步刷新回调中的任何 <CodeStep step={1}>状态更新</CodeStep>：
 
 ```js [[1, 2, "setSomething(123)"]]
 flushSync(() => {
   setSomething(123);
 });
-// By this line, the DOM is updated.
+// 到这一行时，DOM 已更新。
 ```
 
-This ensures that, by the time the next line of code runs, React has already updated the DOM.
+这可以确保在下一行代码执行时，React 已经更新了 DOM。
 
-**Using `flushSync` is uncommon, and using it often can significantly hurt the performance of your app.** If your app only uses React APIs, and does not integrate with third-party libraries, `flushSync` should be unnecessary.
+**使用 `flushSync` 并不常见，而且频繁使用会显著损害应用性能。** 如果你的应用只使用 React API，且不与第三方库集成，那么通常不需要 `flushSync`。
 
-However, it can be helpful for integrating with third-party code like browser APIs.
+不过，在与浏览器 API 等第三方代码集成时，它会很有帮助。
 
-Some browser APIs expect results inside of callbacks to be written to the DOM synchronously, by the end of the callback, so the browser can do something with the rendered DOM. In most cases, React handles this for you automatically. But in some cases it may be necessary to force a synchronous update.
+某些浏览器 API 期望回调中的结果在回调结束时就同步写入 DOM，以便浏览器可以对渲染后的 DOM 执行某些操作。在大多数情况下，React 会自动为你处理。但在某些情况下，可能需要强制同步更新。
 
-For example, the browser `onbeforeprint` API allows you to change the page immediately before the print dialog opens. This is useful for applying custom print styles that allow the document to display better for printing. In the example below, you use `flushSync` inside of the `onbeforeprint` callback to immediately "flush" the React state to the DOM. Then, by the time the print dialog opens, `isPrinting` displays "yes":
+例如，浏览器的 `onbeforeprint` API 允许你在打印对话框打开之前立即更改页面。这对于应用自定义打印样式、让文档在打印时显示得更好很有用。在下面的示例中，你在 `onbeforeprint` 回调中使用 `flushSync`，将 React 状态立即“刷新”到 DOM。然后在打印对话框打开时，`isPrinting` 会显示为 "yes"：
 
 <Sandpack>
 
@@ -113,7 +113,7 @@ export default function PrintApp() {
     <>
       <h1>isPrinting: {isPrinting ? 'yes' : 'no'}</h1>
       <button onClick={() => window.print()}>
-        Print
+        打印
       </button>
     </>
   );
@@ -122,38 +122,38 @@ export default function PrintApp() {
 
 </Sandpack>
 
-Without `flushSync`, the print dialog will display `isPrinting` as "no". This is because React batches the updates asynchronously and the print dialog is displayed before the state is updated.
+如果不使用 `flushSync`，打印对话框会将 `isPrinting` 显示为 "no"。这是因为 React 会异步批处理更新，而打印对话框在状态更新之前就已经显示了。
 
 <Pitfall>
 
-`flushSync` can significantly hurt performance, and may unexpectedly force pending Suspense boundaries to show their fallback state.
+`flushSync` 会显著影响性能，并且可能意外强制尚未完成的 Suspense 边界显示其 fallback 状态。
 
-Most of the time, `flushSync` can be avoided, so use `flushSync` as a last resort.
+大多数时候都可以避免使用 `flushSync`，所以请将 `flushSync` 作为最后的手段。
 
 </Pitfall>
 
 ---
 
-## Troubleshooting {/*troubleshooting*/}
+## 故障排除 {/*troubleshooting*/}
 
-### I'm getting an error: "flushSync was called from inside a lifecycle method" {/*im-getting-an-error-flushsync-was-called-from-inside-a-lifecycle-method*/}
+### 我收到一个错误：“flushSync was called from inside a lifecycle method” {/*im-getting-an-error-flushsync-was-called-from-inside-a-lifecycle-method*/}
 
 
-React cannot `flushSync` in the middle of a render. If you do, it will noop and warn:
+React 不能在渲染过程中间执行 `flushSync`。如果这样做，它会变成 noop 并发出警告：
 
 <ConsoleBlock level="error">
 
-Warning: flushSync was called from inside a lifecycle method. React cannot flush when React is already rendering. Consider moving this call to a scheduler task or micro task.
+警告：`flushSync` 是在生命周期方法内部调用的。React 不能在 React 已经处于渲染中时进行刷新。请考虑将此调用移到调度器任务或微任务中。
 
 </ConsoleBlock>
 
-This includes calling `flushSync` inside:
+这包括在以下位置调用 `flushSync`：
 
-- rendering a component.
-- `useLayoutEffect` or `useEffect` hooks.
-- Class component lifecycle methods.
+- 在渲染组件时。
+- 在 `useLayoutEffect` 或 `useEffect` Hooks 中。
+- 在类组件的生命周期方法中。
 
-For example, calling `flushSync` in an Effect will noop and warn:
+例如，在 Effect 中调用 `flushSync` 会变成 noop 并发出警告：
 
 ```js
 import { useEffect } from 'react';
@@ -161,7 +161,7 @@ import { flushSync } from 'react-dom';
 
 function MyComponent() {
   useEffect(() => {
-    // 🚩 Wrong: calling flushSync inside an effect
+    // 🚩 错误：在 effect 内部调用 flushSync
     flushSync(() => {
       setSomething(newValue);
     });
@@ -171,11 +171,11 @@ function MyComponent() {
 }
 ```
 
-To fix this, you usually want to move the `flushSync` call to an event:
+要修复这个问题，你通常需要把 `flushSync` 调用移到一个事件中：
 
 ```js
 function handleClick() {
-  // ✅ Correct: flushSync in event handlers is safe
+  // ✅ 正确：在事件处理函数中调用 flushSync 是安全的
   flushSync(() => {
     setSomething(newValue);
   });
@@ -183,11 +183,11 @@ function handleClick() {
 ```
 
 
-If it's difficult to move to an event, you can defer `flushSync` in a microtask:
+如果很难移到事件中，你可以在微任务中延迟执行 `flushSync`：
 
 ```js {3,7}
 useEffect(() => {
-  // ✅ Correct: defer flushSync to a microtask
+  // ✅ 正确：将 flushSync 延迟到微任务中
   queueMicrotask(() => {
     flushSync(() => {
       setSomething(newValue);
@@ -196,10 +196,10 @@ useEffect(() => {
 }, []);
 ```
 
-This will allow the current render to finish and schedule another syncronous render to flush the updates.
+这将允许当前渲染完成，并调度另一个同步渲染来刷新更新。
 
 <Pitfall>
 
-`flushSync` can significantly hurt performance, but this particular pattern is even worse for performance. Exhaust all other options before calling `flushSync` in a microtask as an escape hatch.
+`flushSync` 会显著影响性能，但这种特定模式对性能的影响更糟。在将 `flushSync` 作为逃生舱口在微任务中调用之前，请先穷尽其他所有选项。
 
 </Pitfall>

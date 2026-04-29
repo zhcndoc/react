@@ -4,9 +4,9 @@ title: <Fragment> (<>...</>)
 
 <Intro>
 
-`<Fragment>`, often used via `<>...</>` syntax, lets you group elements without a wrapper node.
+`<Fragment>`，通常通过 `<>...</>` 语法使用，可让你将元素分组而无需额外的包装节点。
 
-<Canary> Fragments can also accept refs, which enable interacting with underlying DOM nodes without adding wrapper elements. See reference and usage below.</Canary>
+<Canary> Fragment 还可以接受 refs，这使得你可以在不添加包装元素的情况下与底层 DOM 节点交互。请参阅下方的参考与用法。</Canary>
 
 ```js
 <>
@@ -21,58 +21,58 @@ title: <Fragment> (<>...</>)
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `<Fragment>` {/*fragment*/}
 
-Wrap elements in `<Fragment>` to group them together in situations where you need a single element. Grouping elements in `Fragment` has no effect on the resulting DOM; it is the same as if the elements were not grouped. The empty JSX tag `<></>` is shorthand for `<Fragment></Fragment>` in most cases.
+使用 `<Fragment>` 将元素包裹起来，以便在需要单个元素的场景中将它们分组。用 `Fragment` 对元素进行分组不会对最终的 DOM 产生任何影响；它与这些元素未被分组时是一样的。在大多数情况下，空的 JSX 标签 `<></>` 是 `<Fragment></Fragment>` 的简写。
 
-#### Props {/*props*/}
+#### 属性 {/*props*/}
 
-- **optional** `key`: Fragments declared with the explicit `<Fragment>` syntax may have [keys.](/learn/rendering-lists#keeping-list-items-in-order-with-key)
-- <CanaryBadge />  **optional** `ref`: A ref object (e.g. from [`useRef`](/reference/react/useRef)) or [callback function](/reference/react-dom/components/common#ref-callback). React provides a `FragmentInstance` as the ref value that implements methods for interacting with the DOM nodes wrapped by the Fragment.
+- **可选** `key`：使用显式 `<Fragment>` 语法声明的 Fragment 可以具有 [keys.](/learn/rendering-lists#keeping-list-items-in-order-with-key)
+- <CanaryBadge />  **可选** `ref`：一个 ref 对象（例如来自 [`useRef`](/reference/react/useRef)）或 [回调函数](/reference/react-dom/components/common#ref-callback)。React 会提供一个 `FragmentInstance` 作为 ref 值，其中实现了用于与被 Fragment 包裹的 DOM 节点交互的方法。
 
 ### <CanaryBadge /> FragmentInstance {/*fragmentinstance*/}
 
-When you pass a ref to a fragment, React provides a `FragmentInstance` object with methods for interacting with the DOM nodes wrapped by the fragment:
+当你向 fragment 传入 ref 时，React 会提供一个 `FragmentInstance` 对象，其中包含用于与被 fragment 包裹的 DOM 节点交互的方法：
 
-**Event handling methods:**
-- `addEventListener(type, listener, options?)`: Adds an event listener to all first-level DOM children of the Fragment.
-- `removeEventListener(type, listener, options?)`: Removes an event listener from all first-level DOM children of the Fragment.
-- `dispatchEvent(event)`: Dispatches an event to a virtual child of the Fragment to call any added listeners and can bubble to the DOM parent.
+**事件处理方法：**
+- `addEventListener(type, listener, options?)`：向 Fragment 的所有一级 DOM 子节点添加事件监听器。
+- `removeEventListener(type, listener, options?)`：从 Fragment 的所有一级 DOM 子节点移除事件监听器。
+- `dispatchEvent(event)`：向 Fragment 的一个虚拟子节点分发事件，以调用任何已添加的监听器，并且可以冒泡到 DOM 父节点。
 
-**Layout methods:**
-- `compareDocumentPosition(otherNode)`: Compares the document position of the Fragment with another node.
-  - If the Fragment has children, the native `compareDocumentPosition` value is returned.
-  - Empty Fragments will attempt to compare positioning within the React tree and include `Node.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC`.
-  - Elements that have a different relationship in the React tree and DOM tree due to portaling or other insertions are `Node.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC`.
-- `getClientRects()`: Returns a flat array of `DOMRect` objects representing the bounding rectangles of all children.
-- `getRootNode()`: Returns the root node containing the Fragment's parent DOM node.
+**布局方法：**
+- `compareDocumentPosition(otherNode)`：比较 Fragment 与另一个节点在文档中的位置。
+  - 如果 Fragment 有子节点，则返回原生的 `compareDocumentPosition` 值。
+  - 空 Fragment 会尝试比较 React 树中的位置，并包含 `Node.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC`。
+  - 由于 portal 或其他插入方式导致 React 树与 DOM 树中的关系不同的元素，其值为 `Node.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC`。
+- `getClientRects()`：返回一个由 `DOMRect` 对象组成的扁平数组，表示所有子节点的边界矩形。
+- `getRootNode()`：返回包含 Fragment 父 DOM 节点的根节点。
 
-**Focus management methods:**
-- `focus(options?)`: Focuses the first focusable DOM node in the Fragment. Focus is attempted on nested children depth-first.
-- `focusLast(options?)`: Focuses the last focusable DOM node in the Fragment. Focus is attempted on nested children depth-first.
-- `blur()`: Removes focus if `document.activeElement` is within the Fragment.
+**焦点管理方法：**
+- `focus(options?)`：使 Fragment 中第一个可聚焦的 DOM 节点获得焦点。会优先对嵌套子节点进行深度优先的聚焦尝试。
+- `focusLast(options?)`：使 Fragment 中最后一个可聚焦的 DOM 节点获得焦点。会优先对嵌套子节点进行深度优先的聚焦尝试。
+- `blur()`：如果 `document.activeElement` 位于 Fragment 内，则移除焦点。
 
-**Observer methods:**
-- `observeUsing(observer)`: Starts observing the Fragment's DOM children with an IntersectionObserver or ResizeObserver.
-- `unobserveUsing(observer)`: Stops observing the Fragment's DOM children with the specified observer.
+**观察者方法：**
+- `observeUsing(observer)`：使用 IntersectionObserver 或 ResizeObserver 开始观察 Fragment 的 DOM 子节点。
+- `unobserveUsing(observer)`：使用指定的观察器停止观察 Fragment 的 DOM 子节点。
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-- If you want to pass `key` to a Fragment, you can't use the `<>...</>` syntax. You have to explicitly import `Fragment` from `'react'` and render `<Fragment key={yourKey}>...</Fragment>`.
+- 如果你想向 Fragment 传递 `key`，就不能使用 `<>...</>` 语法。你必须显式地从 `'react'` 导入 `Fragment`，并渲染 `<Fragment key={yourKey}>...</Fragment>`。
 
-- React does not [reset state](/learn/preserving-and-resetting-state) when you go from rendering `<><Child /></>` to `[<Child />]` or back, or when you go from rendering `<><Child /></>` to `<Child />` and back. This only works a single level deep: for example, going from `<><><Child /></></>` to `<Child />` resets the state. See the precise semantics [here.](https://gist.github.com/clemmy/b3ef00f9507909429d8aa0d3ee4f986b)
+- 当你从渲染 `<><Child /></>` 切换到 `[<Child />]` 或反过来，或者从渲染 `<><Child /></>` 切换到 `<Child />` 再切回来时，React 不会 [重置状态](/learn/preserving-and-resetting-state)。这只在单层深度下有效：例如，从 `<><><Child /></></>` 切换到 `<Child />` 会重置状态。精确语义请参见 [这里。](https://gist.github.com/clemmy/b3ef00f9507909429d8aa0d3ee4f986b)
 
-- <CanaryBadge /> If you want to pass `ref` to a Fragment, you can't use the `<>...</>` syntax. You have to explicitly import `Fragment` from `'react'` and render `<Fragment ref={yourRef}>...</Fragment>`.
+- <CanaryBadge /> 如果你想向 Fragment 传递 `ref`，就不能使用 `<>...</>` 语法。你必须显式地从 `'react'` 导入 `Fragment`，并渲染 `<Fragment ref={yourRef}>...</Fragment>`。
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Returning multiple elements {/*returning-multiple-elements*/}
+### 返回多个元素 {/*returning-multiple-elements*/}
 
-Use `Fragment`, or the equivalent `<>...</>` syntax, to group multiple elements together. You can use it to put multiple elements in any place where a single element can go. For example, a component can only return one element, but by using a Fragment you can group multiple elements together and then return them as a group:
+使用 `Fragment`，或等价的 `<>...</>` 语法，将多个元素分组在一起。你可以在任何只能放单个元素的位置使用它来放置多个元素。例如，组件只能返回一个元素，但借助 Fragment，你可以将多个元素组合在一起，然后作为一个整体返回：
 
 ```js {3,6}
 function Post() {
@@ -85,7 +85,7 @@ function Post() {
 }
 ```
 
-Fragments are useful because grouping elements with a Fragment has no effect on layout or styles, unlike if you wrapped the elements in another container like a DOM element. If you inspect this example with the browser tools, you'll see that all `<h1>` and `<article>` DOM nodes appear as siblings without wrappers around them:
+Fragment 很有用，因为使用 Fragment 对元素分组不会影响布局或样式，而如果你把这些元素包裹在另一个容器中（例如 DOM 元素）就会有影响。如果你使用浏览器工具检查这个示例，你会看到所有 `<h1>` 和 `<article>` DOM 节点都作为兄弟节点出现，而周围没有包装器：
 
 <Sandpack>
 
@@ -125,9 +125,9 @@ function PostBody({ body }) {
 
 <DeepDive>
 
-#### How to write a Fragment without the special syntax? {/*how-to-write-a-fragment-without-the-special-syntax*/}
+#### 如何在不使用特殊语法的情况下编写 Fragment？ {/*how-to-write-a-fragment-without-the-special-syntax*/}
 
-The example above is equivalent to importing `Fragment` from React:
+上面的示例等价于从 React 导入 `Fragment`：
 
 ```js {1,5,8}
 import { Fragment } from 'react';
@@ -142,15 +142,15 @@ function Post() {
 }
 ```
 
-Usually you won't need this unless you need to [pass a `key` to your `Fragment`.](#rendering-a-list-of-fragments)
+通常你不需要这样做，除非你需要 [向你的 `Fragment` 传递 `key`。](#rendering-a-list-of-fragments)
 
 </DeepDive>
 
 ---
 
-### Assigning multiple elements to a variable {/*assigning-multiple-elements-to-a-variable*/}
+### 将多个元素赋值给变量 {/*assigning-multiple-elements-to-a-variable*/}
 
-Like any other element, you can assign Fragment elements to variables, pass them as props, and so on:
+和其他元素一样，你可以将 Fragment 元素赋值给变量、将它们作为 props 传递，等等：
 
 ```js
 function CloseDialog() {
@@ -162,7 +162,7 @@ function CloseDialog() {
   );
   return (
     <AlertDialog buttons={buttons}>
-      Are you sure you want to leave this page?
+      你确定要离开这个页面吗？
     </AlertDialog>
   );
 }
@@ -170,17 +170,17 @@ function CloseDialog() {
 
 ---
 
-### Grouping elements with text {/*grouping-elements-with-text*/}
+### 将元素与文本分组 {/*grouping-elements-with-text*/}
 
-You can use `Fragment` to group text together with components:
+你可以使用 `Fragment` 将文本与组件组合在一起：
 
 ```js
 function DateRangePicker({ start, end }) {
   return (
     <>
-      From
+      从
       <DatePicker date={start} />
-      to
+      到
       <DatePicker date={end} />
     </>
   );
@@ -189,9 +189,9 @@ function DateRangePicker({ start, end }) {
 
 ---
 
-### Rendering a list of Fragments {/*rendering-a-list-of-fragments*/}
+### 渲染 Fragment 列表 {/*rendering-a-list-of-fragments*/}
 
-Here's a situation where you need to write `Fragment` explicitly instead of using the `<></>` syntax. When you [render multiple elements in a loop](/learn/rendering-lists), you need to assign a `key` to each element. If the elements within the loop are Fragments, you need to use the normal JSX element syntax in order to provide the `key` attribute:
+这里有一种情况，你需要显式编写 `Fragment`，而不是使用 `<></>` 语法。当你在循环中 [渲染多个元素](/learn/rendering-lists) 时，需要为每个元素分配一个 `key`。如果循环中的元素是 Fragments，则需要使用普通的 JSX 元素语法，以便提供 `key` 属性：
 
 ```js {3,6}
 function Blog() {
@@ -204,7 +204,7 @@ function Blog() {
 }
 ```
 
-You can inspect the DOM to verify that there are no wrapper elements around the Fragment children:
+你可以检查 DOM，以验证 Fragment 子节点周围没有包装元素：
 
 <Sandpack>
 
@@ -242,9 +242,9 @@ function PostBody({ body }) {
 
 ---
 
-### <CanaryBadge /> Using Fragment refs for DOM interaction {/*using-fragment-refs-for-dom-interaction*/}
+### <CanaryBadge /> 使用 Fragment refs 进行 DOM 交互 {/*using-fragment-refs-for-dom-interaction*/}
 
-Fragment refs allow you to interact with the DOM nodes wrapped by a Fragment without adding extra wrapper elements. This is useful for event handling, visibility tracking, focus management, and replacing deprecated patterns like `ReactDOM.findDOMNode()`.
+Fragment refs 允许你在不添加额外包装元素的情况下与被 Fragment 包裹的 DOM 节点交互。这对于事件处理、可见性跟踪、焦点管理，以及替代已弃用的模式（如 `ReactDOM.findDOMNode()`）都很有用。
 
 ```js
 import { Fragment } from 'react';
@@ -262,9 +262,9 @@ function ClickableFragment({ children, onClick }) {
 ```
 ---
 
-### <CanaryBadge /> Tracking visibility with Fragment refs {/*tracking-visibility-with-fragment-refs*/}
+### <CanaryBadge /> 使用 Fragment refs 跟踪可见性 {/*tracking-visibility-with-fragment-refs*/}
 
-Fragment refs are useful for visibility tracking and intersection observation. This enables you to monitor when content becomes visible without requiring the child Components to expose refs:
+Fragment refs 对可见性跟踪和交叉观察很有用。这使你能够在不要求子组件暴露 refs 的情况下监测内容何时变得可见：
 
 ```js {19,21,31-34}
 import { Fragment, useRef, useLayoutEffect } from 'react';
@@ -293,7 +293,7 @@ function VisibilityObserverFragment({ threshold = 0.5, onVisibilityChange, child
 
 function MyComponent() {
   const handleVisibilityChange = (isVisible) => {
-    console.log('Component is', isVisible ? 'visible' : 'hidden');
+    console.log('组件是', isVisible ? '可见' : '隐藏');
   };
 
   return (
@@ -305,13 +305,13 @@ function MyComponent() {
 }
 ```
 
-This pattern is an alternative to Effect-based visibility logging, which is an anti-pattern in most cases. Relying on Effects alone does not guarantee that the rendered Component is observable by the user.
+这种模式是基于 Effect 的可见性日志记录的一种替代方案，而在大多数情况下，这属于反模式。仅仅依赖 Effects 并不能保证渲染出的组件对用户是可观察的。
 
 ---
 
-### <CanaryBadge /> Focus management with Fragment refs {/*focus-management-with-fragment-refs*/}
+### <CanaryBadge /> 使用 Fragment refs 进行焦点管理 {/*focus-management-with-fragment-refs*/}
 
-Fragment refs provide focus management methods that work across all DOM nodes within the Fragment:
+Fragment refs 提供可跨 Fragment 内所有 DOM 节点工作的焦点管理方法：
 
 ```js
 import { Fragment, useRef } from 'react';
@@ -325,4 +325,4 @@ function FocusFragment({ children }) {
 }
 ```
 
-The `focus()` method focuses the first focusable element within the Fragment, while `focusLast()` focuses the last focusable element.
+`focus()` 方法会使 Fragment 内第一个可聚焦元素获得焦点，而 `focusLast()` 会使最后一个可聚焦元素获得焦点。

@@ -1,161 +1,161 @@
 ---
-title: React Blog
+title: React 博客
 ---
 
 <Intro>
 
-This blog is the official source for the updates from the React team. Anything important, including release notes or deprecation notices, will be posted here first.
+这个博客是 React 团队更新的官方来源。任何重要内容，包括发布说明或弃用通知，都会先发布在这里。
 
-You can also follow the [@react.dev](https://bsky.app/profile/react.dev) account on Bluesky, or [@reactjs](https://twitter.com/reactjs) account on Twitter, but you won’t miss anything essential if you only read this blog.
+你也可以在 Bluesky 上关注 [@react.dev](https://bsky.app/profile/react.dev) 账号，或者在 Twitter 上关注 [@reactjs](https://twitter.com/reactjs) 账号，不过即使你只看这个博客，也不会错过任何重要内容。
 
 </Intro>
 
 <div className="sm:-mx-5 flex flex-col gap-5 mt-12">
 
-<BlogCard title="The React Foundation: A New Home for React Hosted by the Linux Foundation" date="February 24, 2026" url="/blog/2026/02/24/the-react-foundation">
+<BlogCard title="React 基金会：React 的新家，由 Linux 基金会托管" date="2026年2月24日" url="/blog/2026/02/24/the-react-foundation">
 
-The React Foundation has officially launched under the Linux Foundation.
-
-</BlogCard>
-
-<BlogCard title="Denial of Service and Source Code Exposure in React Server Components" date="December 11, 2025" url="/blog/2025/12/11/denial-of-service-and-source-code-exposure-in-react-server-components">
-
-Security researchers have found and disclosed two additional vulnerabilities in React Server Components while attempting to exploit the patches in last week’s critical vulnerability...
+React 基金会已正式在 Linux 基金会旗下启动。
 
 </BlogCard>
 
-<BlogCard title="Critical Security Vulnerability in React Server Components" date="December 3, 2025" url="/blog/2025/12/03/critical-security-vulnerability-in-react-server-components">
+<BlogCard title="React Server Components 中的拒绝服务与源代码泄露" date="2025年12月11日" url="/blog/2025/12/11/denial-of-service-and-source-code-exposure-in-react-server-components">
 
-There is an unauthenticated remote code execution vulnerability in React Server Components. A fix has been published in versions 19.0.1, 19.1.2, and 19.2.1. We recommend upgrading immediately.
-
-</BlogCard>
-
-<BlogCard title="React Conf 2025 Recap" date="October 16, 2025" url="/blog/2025/10/16/react-conf-2025-recap">
-
-Last week we hosted React Conf 2025. In this post, we summarize the talks and announcements from the event...
+安全研究人员在尝试利用上周关键漏洞的修补程序时，又发现并披露了 React Server Components 中另外两个漏洞……
 
 </BlogCard>
 
-<BlogCard title="React Compiler v1.0" date="October 7, 2025" url="/blog/2025/10/07/react-compiler-1">
+<BlogCard title="React Server Components 中的严重安全漏洞" date="2025年12月3日" url="/blog/2025/12/03/critical-security-vulnerability-in-react-server-components">
 
-We're releasing the compiler's first stable release today, plus linting and tooling improvements to make adoption easier.
-
-</BlogCard>
-
-<BlogCard title="Introducing the React Foundation" date="October 7, 2025" url="/blog/2025/10/07/introducing-the-react-foundation">
-
-Today, we're announcing our plans to create the React Foundation and a new technical governance structure ...
+React Server Components 中存在一个未经身份验证的远程代码执行漏洞。已在 19.0.1、19.1.2 和 19.2.1 版本中发布修复。我们建议立即升级。
 
 </BlogCard>
 
-<BlogCard title="React 19.2" date="October 1, 2025" url="/blog/2025/10/01/react-19-2">
+<BlogCard title="React Conf 2025 回顾" date="2025年10月16日" url="/blog/2025/10/16/react-conf-2025-recap">
 
-React 19.2 adds new features like Activity, React Performance Tracks, useEffectEvent, and more. In this post ...
-
-</BlogCard>
-
-<BlogCard title="React Labs: View Transitions, Activity, and more" date="April 23, 2025" url="/blog/2025/04/23/react-labs-view-transitions-activity-and-more">
-
-In React Labs posts, we write about projects in active research and development. In this post, we're sharing two new experimental features that are ready to try today, and sharing other areas we're working on now ...
+上周我们举办了 React Conf 2025。本文将总结此次活动中的演讲和公告……
 
 </BlogCard>
 
-<BlogCard title="Sunsetting Create React App" date="February 14, 2025" url="/blog/2025/02/14/sunsetting-create-react-app">
+<BlogCard title="React 编译器 v1.0" date="2025年10月7日" url="/blog/2025/10/07/react-compiler-1">
 
-Today, we’re deprecating Create React App for new apps, and encouraging existing apps to migrate to a framework, or to migrate to a build tool like Vite, Parcel, or RSBuild. We’re also providing docs for when a framework isn’t a good fit for your project, you want to build your own framework, or you just want to learn how React works by building a React app from scratch ...
-
-</BlogCard>
-
-<BlogCard title="React v19 " date="December 5, 2024" url="/blog/2024/12/05/react-19">
-
-In the React 19 Upgrade Guide, we shared step-by-step instructions for upgrading your app to React 19. In this post, we'll give an overview of the new features in React 19, and how you can adopt them ...
+我们今天发布编译器的首个稳定版本，并带来 lint 和工具改进，以便更容易采用。
 
 </BlogCard>
 
-<BlogCard title="React Compiler Beta Release" date="October 21, 2024" url="/blog/2024/10/21/react-compiler-beta-release">
+<BlogCard title="介绍 React 基金会" date="2025年10月7日" url="/blog/2025/10/07/introducing-the-react-foundation">
 
-We announced an experimental release of React Compiler at React Conf 2024. We've made a lot of progress since then, and in this post we want to share what's next for React Compiler ...
-
-</BlogCard>
-
-<BlogCard title="React Conf 2024 Recap" date="May 22, 2024" url="/blog/2024/05/22/react-conf-2024-recap">
-
-Last week we hosted React Conf 2024, a two-day conference in Henderson, Nevada where 700+ attendees gathered in-person to discuss the latest in UI engineering. This was our first in-person conference since 2019, and we were thrilled to be able to bring the community together again ...
+今天，我们宣布计划创建 React 基金会以及新的技术治理结构……
 
 </BlogCard>
 
-<BlogCard title="React 19 Upgrade Guide" date="April 25, 2024" url="/blog/2024/04/25/react-19-upgrade-guide">
+<BlogCard title="React 19.2" date="2025年10月1日" url="/blog/2025/10/01/react-19-2">
 
-The improvements added to React 19 require some breaking changes, but we've worked to make the upgrade as smooth as possible, and we don't expect the changes to impact most apps. In this post, we will guide you through the steps for upgrading libraries to React 19 ...
-
-</BlogCard>
-
-<BlogCard title="React Labs: What We've Been Working On – February 2024" date="February 15, 2024" url="/blog/2024/02/15/react-labs-what-we-have-been-working-on-february-2024">
-
-In React Labs posts, we write about projects in active research and development. Since our last update, we've made significant progress on React Compiler, new features, and React 19, and we'd like to share what we learned.
+React 19.2 添加了 Activity、React Performance Tracks、useEffectEvent 等新功能。本文……
 
 </BlogCard>
 
-<BlogCard title="React Canaries: Incremental Feature Rollout Outside Meta" date="May 3, 2023" url="/blog/2023/05/03/react-canaries">
+<BlogCard title="React Labs：视图过渡、Activity 等更多内容" date="2025年4月23日" url="/blog/2025/04/23/react-labs-view-transitions-activity-and-more">
 
-Traditionally, new React features used to only be available at Meta first, and land in the open source releases later. We'd like to offer the React community an option to adopt individual new features as soon as their design is close to final--similar to how Meta uses React internally. We are introducing a new officially supported Canary release channel. It lets curated setups like frameworks decouple adoption of individual React features from the React release schedule.
-
-</BlogCard>
-
-<BlogCard title="React Labs: What We've Been Working On – March 2023" date="March 22, 2023" url="/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023">
-
-In React Labs posts, we write about projects in active research and development. Since our last update, we've made significant progress on React Server Components, Asset Loading, Optimizing Compiler, Offscreen Rendering, and Transition Tracing, and we'd like to share what we learned.
+在 React Labs 的文章中，我们会介绍正在积极研究和开发中的项目。在本文中，我们分享两个今天就可以尝试的新实验性功能，并介绍我们目前正在进行的其他领域……
 
 </BlogCard>
 
+<BlogCard title="逐步停止维护 Create React App" date="2025年2月14日" url="/blog/2025/02/14/sunsetting-create-react-app">
 
-<BlogCard title="Introducing react.dev" date="March 16, 2023" url="/blog/2023/03/16/introducing-react-dev">
+今天，我们将对新应用弃用 Create React App，并鼓励现有应用迁移到框架，或者迁移到像 Vite、Parcel 或 RSBuild 这样的构建工具。我们也提供了文档，帮助处理框架不适合你的项目、你想构建自己的框架，或者你只是想通过从零构建一个 React 应用来学习 React 的工作原理等情况……
 
-Today we are thrilled to launch react.dev, the new home for React and its documentation. In this post, we would like to give you a tour of the new site.
+</BlogCard>
+
+<BlogCard title="React v19 " date="2024年12月5日" url="/blog/2024/12/05/react-19">
+
+在《React 19 升级指南》中，我们分享了将你的应用升级到 React 19 的逐步说明。在本文中，我们将概述 React 19 的新功能，以及你如何采用它们……
+
+</BlogCard>
+
+<BlogCard title="React 编译器 Beta 版发布" date="2024年10月21日" url="/blog/2024/10/21/react-compiler-beta-release">
+
+我们在 React Conf 2024 上宣布了 React 编译器的实验性版本。自那以后我们取得了很大进展，本文中我们想分享 React 编译器接下来的计划……
+
+</BlogCard>
+
+<BlogCard title="React Conf 2024 回顾" date="2024年5月22日" url="/blog/2024/05/22/react-conf-2024-recap">
+
+上周我们举办了 React Conf 2024，这是一场在内华达州亨德森举行的为期两天的会议，700 多名参会者现场聚集在一起讨论 UI 工程的最新进展。这是我们自 2019 年以来首次线下会议，我们非常高兴能够再次把社区聚集在一起……
+
+</BlogCard>
+
+<BlogCard title="React 19 升级指南" date="2024年4月25日" url="/blog/2024/04/25/react-19-upgrade-guide">
+
+React 19 带来的改进需要一些破坏性变更，但我们已经尽力让升级尽可能顺畅，并且我们不认为这些变更会影响大多数应用。在本文中，我们将引导你完成将库升级到 React 19 的步骤……
+
+</BlogCard>
+
+<BlogCard title="React Labs：我们一直在做什么 – 2024年2月" date="2024年2月15日" url="/blog/2024/02/15/react-labs-what-we-have-been-working-on-february-2024">
+
+在 React Labs 的文章中，我们会介绍正在积极研究和开发中的项目。自上次更新以来，我们在 React 编译器、新功能和 React 19 上都取得了重大进展，我们想分享我们的收获。
+
+</BlogCard>
+
+<BlogCard title="React Canaries：在 Meta 之外逐步推出新功能" date="2023年5月3日" url="/blog/2023/05/03/react-canaries">
+
+传统上，新的 React 功能通常先只在 Meta 内部可用，之后才会进入开源版本。我们希望为 React 社区提供一种选择：在单个新功能设计接近最终定稿时就尽快采用它们——这类似于 Meta 在内部使用 React 的方式。我们正在推出一个新的、官方支持的 Canary 发布渠道。它让像框架这样的精选方案能够将单个 React 功能的采用与 React 的发布计划解耦。
+
+</BlogCard>
+
+<BlogCard title="React Labs：我们一直在做什么 – 2023年3月" date="2023年3月22日" url="/blog/2023/03/22/react-labs-what-we-have-been-working-on-march-2023">
+
+在 React Labs 的文章中，我们会介绍正在积极研究和开发中的项目。自上次更新以来，我们在 React Server Components、资源加载、优化编译器、Offscreen 渲染和 Transition Tracing 上都取得了重大进展，我们想分享我们的收获。
 
 </BlogCard>
 
 
-<BlogCard title="React Labs: What We've Been Working On – June 2022" date="June 15, 2022" url="/blog/2022/06/15/react-labs-what-we-have-been-working-on-june-2022">
-React 18 was years in the making, and with it brought valuable lessons for the React team. Its release was the result of many years of research and exploring many paths. Some of those paths were successful; many more were dead-ends that led to new insights. One lesson we’ve learned is that it’s frustrating for the community to wait for new features without having insight into these paths that we’re exploring...
+<BlogCard title="介绍 react.dev" date="2023年3月16日" url="/blog/2023/03/16/introducing-react-dev">
+
+今天我们非常高兴地推出 react.dev，这是 React 及其文档的新家。在本文中，我们想带你浏览一下这个新站点。
+
 </BlogCard>
 
-<BlogCard title="React v18.0" date="March 29, 2022" url="/blog/2022/03/29/react-v18">
-React 18 is now available on npm! In our last post, we shared step-by-step instructions for upgrading your app to React 18. In this post, we’ll give an overview of what’s new in React 18, and what it means for the future...
+
+<BlogCard title="React Labs：我们一直在做什么 – 2022年6月" date="2022年6月15日" url="/blog/2022/06/15/react-labs-what-we-have-been-working-on-june-2022">
+React 18 的开发历时多年，这也为 React 团队带来了宝贵的经验。它的发布是多年研究和探索多条路径的结果。其中一些路径是成功的；更多的路径则是死胡同，但也由此带来了新的见解。我们学到的一条经验是：社区在等待新功能时，如果对我们正在探索的这些路径缺乏了解，就会感到沮丧……
 </BlogCard>
 
-<BlogCard title="How to Upgrade to React 18" date="March 8, 2022" url="/blog/2022/03/08/react-18-upgrade-guide">
-As we shared in the release post, React 18 introduces features powered by our new concurrent renderer, with a gradual adoption strategy for existing applications. In this post, we will guide you through the steps for upgrading to React 18...
+<BlogCard title="React v18.0" date="2022年3月29日" url="/blog/2022/03/29/react-v18">
+React 18 现已可在 npm 上获得！在上一篇文章中，我们分享了将你的应用升级到 React 18 的逐步说明。在本文中，我们将概述 React 18 的新内容，以及这对未来意味着什么……
 </BlogCard>
 
-<BlogCard title="React Conf 2021 Recap" date="December 17, 2021" url="/blog/2021/12/17/react-conf-2021-recap">
-Last week we hosted our 6th React Conf.  In previous years, we’ve used the React Conf stage to deliver industry changing announcements such as React Native and React Hooks. This year, we shared our multi-platform vision for React, starting with the release of React 18 and gradual adoption of concurrent features...
+<BlogCard title="如何升级到 React 18" date="2022年3月8日" url="/blog/2022/03/08/react-18-upgrade-guide">
+正如我们在发布文章中所分享的，React 18 引入了由我们新的并发渲染器支持的功能，并采用面向现有应用的渐进式采用策略。在本文中，我们将引导你完成升级到 React 18 的步骤……
 </BlogCard>
 
-<BlogCard title="The Plan for React 18" date="June 8, 2021" url="/blog/2021/06/08/the-plan-for-react-18">
-The React team is excited to share a few updates:
-
-- We’ve started work on the React 18 release, which will be our next major version.
-- We’ve created a Working Group to prepare the community for gradual adoption of new features in React 18.
-- We’ve published a React 18 Alpha so that library authors can try it and provide feedback...
+<BlogCard title="React Conf 2021 回顾" date="2021年12月17日" url="/blog/2021/12/17/react-conf-2021-recap">
+上周我们举办了第 6 届 React Conf。在前几年，我们曾利用 React Conf 的舞台发布改变行业的公告，例如 React Native 和 React Hooks。今年，我们分享了 React 的多平台愿景，从发布 React 18 和逐步采用并发功能开始……
 </BlogCard>
 
-<BlogCard title="Introducing Zero-Bundle-Size React Server Components" date="December 21, 2020" url="/blog/2020/12/21/data-fetching-with-react-server-components">
-2020 has been a long year. As it comes to an end we wanted to share a special Holiday Update on our research into zero-bundle-size React Server Components. To introduce React Server Components, we have prepared a talk and a demo. If you want, you can check them out during the holidays, or later when work picks back up in the new year...
+<BlogCard title="React 18 计划" date="2021年6月8日" url="/blog/2021/06/08/the-plan-for-react-18">
+React 团队很高兴分享一些更新：
+
+- 我们已经开始着手 React 18 的发布，这将是我们的下一个主要版本。
+- 我们创建了一个工作组，为社区逐步采用 React 18 中的新功能做好准备。
+- 我们发布了 React 18 Alpha，以便库作者可以尝试并提供反馈……
+</BlogCard>
+
+<BlogCard title="介绍零包体积的 React Server Components" date="2020年12月21日" url="/blog/2020/12/21/data-fetching-with-react-server-components">
+2020 年是漫长的一年。随着这一年接近尾声，我们想分享一份特别的节日更新，介绍我们对零包体积 React Server Components 的研究。为了介绍 React Server Components，我们准备了一场演讲和一个演示。如果你愿意，可以在假期期间，或者稍后新年工作重新开始时再查看这些内容……
 </BlogCard>
 
 </div>
 
 ---
 
-### All release notes {/*all-release-notes*/}
+### 所有发布说明 {/*all-release-notes*/}
 
-Not every React release deserves its own blog post, but you can find a detailed changelog for every release in the [`CHANGELOG.md`](https://github.com/facebook/react/blob/main/CHANGELOG.md) file in the React repository, as well as on the [Releases](https://github.com/facebook/react/releases) page.
+并非每个 React 版本都值得拥有自己的博客文章，但你可以在 React 仓库中的 [`CHANGELOG.md`](https://github.com/facebook/react/blob/main/CHANGELOG.md) 文件里，以及 [Releases](https://github.com/facebook/react/releases) 页面上，找到每个版本的详细更新日志。
 
 ---
 
-### Older posts {/*older-posts*/}
+### 更早的文章 {/*older-posts*/}
 
-See the [older posts.](https://reactjs.org/blog/all.html)
+查看[更早的文章。](https://reactjs.org/blog/all.html)
 
 <div className="h-12"></div>

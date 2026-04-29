@@ -1,9 +1,9 @@
 ---
-title: Rules of React
+title: React 规则
 ---
 
 <Intro>
-Just as different programming languages have their own ways of expressing concepts, React has its own idioms — or rules — for how to express patterns in a way that is easy to understand and yields high-quality applications.
+就像不同的编程语言有各自表达概念的方式一样，React 也有自己的惯用法——或者说规则——来以易于理解并能产出高质量应用的方式表达各种模式。
 </Intro>
 
 <InlineToc />
@@ -11,42 +11,42 @@ Just as different programming languages have their own ways of expressing concep
 ---
 
 <Note>
-To learn more about expressing UIs with React, we recommend reading [Thinking in React](/learn/thinking-in-react).
+要进一步了解如何使用 React 表达 UI，我们建议阅读 [Thinking in React](/learn/thinking-in-react)。
 </Note>
 
-This section describes the rules you need to follow to write idiomatic React code. Writing idiomatic React code can help you write well organized, safe, and composable applications. These properties make your app more resilient to changes and makes it easier to work with other developers, libraries, and tools.
+本节描述了编写符合 React 惯用法代码所需遵循的规则。编写符合惯用法的 React 代码可以帮助你编写组织良好、安全且可组合的应用。这些特性会让你的应用更能适应变化，也更容易与其他开发者、库和工具协作。
 
-These rules are known as the **Rules of React**. They are rules – and not just guidelines – in the sense that if they are broken, your app likely has bugs. Your code also becomes unidiomatic and harder to understand and reason about.
+这些规则被称为 **React 规则**。它们之所以称为规则——而不仅仅是建议——是因为如果被违反，你的应用很可能会出现 bug。你的代码也会变得不符合惯用法，更难理解和推理。
 
-We strongly recommend using [Strict Mode](/reference/react/StrictMode) alongside React's [ESLint plugin](https://www.npmjs.com/package/eslint-plugin-react-hooks) to help your codebase follow the Rules of React. By following the Rules of React, you'll be able to find and address these bugs and keep your application maintainable.
-
----
-
-## Components and Hooks must be pure {/*components-and-hooks-must-be-pure*/}
-
-[Purity in Components and Hooks](/reference/rules/components-and-hooks-must-be-pure) is a key rule of React that makes your app predictable, easy to debug, and allows React to automatically optimize your code.
-
-* [Components must be idempotent](/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent) – React components are assumed to always return the same output with respect to their inputs – props, state, and context.
-* [Side effects must run outside of render](/reference/rules/components-and-hooks-must-be-pure#side-effects-must-run-outside-of-render) – Side effects should not run in render, as React can render components multiple times to create the best possible user experience.
-* [Props and state are immutable](/reference/rules/components-and-hooks-must-be-pure#props-and-state-are-immutable) – A component’s props and state are immutable snapshots with respect to a single render. Never mutate them directly.
-* [Return values and arguments to Hooks are immutable](/reference/rules/components-and-hooks-must-be-pure#return-values-and-arguments-to-hooks-are-immutable) – Once values are passed to a Hook, you should not modify them. Like props in JSX, values become immutable when passed to a Hook.
-* [Values are immutable after being passed to JSX](/reference/rules/components-and-hooks-must-be-pure#values-are-immutable-after-being-passed-to-jsx) – Don’t mutate values after they’ve been used in JSX. Move the mutation before the JSX is created.
+我们强烈建议将 [Strict Mode](/reference/react/StrictMode) 与 React 的 [ESLint plugin](https://www.npmjs.com/package/eslint-plugin-react-hooks) 一起使用，以帮助你的代码库遵循 React 规则。通过遵循 React 规则，你将能够发现并修复这些 bug，并保持应用的可维护性。
 
 ---
 
-## React calls Components and Hooks {/*react-calls-components-and-hooks*/}
+## 组件和 Hook 必须是纯的 {/*components-and-hooks-must-be-pure*/}
 
-[React is responsible for rendering components and hooks when necessary to optimize the user experience.](/reference/rules/react-calls-components-and-hooks) It is declarative: you tell React what to render in your component’s logic, and React will figure out how best to display it to your user.
+[组件和 Hook 中的纯度](/reference/rules/components-and-hooks-must-be-pure) 是 React 的一条关键规则，它能让你的应用可预测、易于调试，并允许 React 自动优化你的代码。
 
-* [Never call component functions directly](/reference/rules/react-calls-components-and-hooks#never-call-component-functions-directly) – Components should only be used in JSX. Don’t call them as regular functions.
-* [Never pass around hooks as regular values](/reference/rules/react-calls-components-and-hooks#never-pass-around-hooks-as-regular-values) – Hooks should only be called inside of components. Never pass it around as a regular value.
+* [组件必须是幂等的](/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent) – React 假定组件始终会针对其输入——props、state 和 context——返回相同的输出。
+* [副作用必须在渲染之外运行](/reference/rules/components-and-hooks-must-be-pure#side-effects-must-run-outside-of-render) – 副作用不应在渲染过程中运行，因为 React 可能会多次渲染组件，以创造最佳的用户体验。
+* [Props 和 state 是不可变的](/reference/rules/components-and-hooks-must-be-pure#props-and-state-are-immutable) – 组件的 props 和 state 是相对于单次渲染的不可变快照。永远不要直接修改它们。
+* [Hooks 的返回值和参数是不可变的](/reference/rules/components-and-hooks-must-be-pure#return-values-and-arguments-to-hooks-are-immutable) – 一旦值被传递给 Hook，你就不应再修改它们。像 JSX 中的 props 一样，值在传给 Hook 后就变成不可变的。
+* [值在传递给 JSX 后是不可变的](/reference/rules/components-and-hooks-must-be-pure#values-are-immutable-after-being-passed-to-jsx) – 不要在值已用于 JSX 之后再修改它们。应将修改移动到 JSX 创建之前。
 
 ---
 
-## Rules of Hooks {/*rules-of-hooks*/}
+## React 会调用组件和 Hooks {/*react-calls-components-and-hooks*/}
 
-Hooks are defined using JavaScript functions, but they represent a special type of reusable UI logic with restrictions on where they can be called. You need to follow the [Rules of Hooks](/reference/rules/rules-of-hooks) when using them.
+[React 负责在必要时渲染组件和 hook，以优化用户体验。](/reference/rules/react-calls-components-and-hooks) 它是声明式的：你在组件逻辑中告诉 React 要渲染什么，而 React 会自行决定如何以最佳方式向用户展示它。
 
-* [Only call Hooks at the top level](/reference/rules/rules-of-hooks#only-call-hooks-at-the-top-level) – Don’t call Hooks inside loops, conditions, or nested functions. Instead, always use Hooks at the top level of your React function, before any early returns.
-* [Only call Hooks from React functions](/reference/rules/rules-of-hooks#only-call-hooks-from-react-functions) – Don’t call Hooks from regular JavaScript functions.
+* [永远不要直接调用组件函数](/reference/rules/react-calls-components-and-hooks#never-call-component-functions-directly) – 组件只能在 JSX 中使用。不要把它们当作普通函数调用。
+* [永远不要把 hook 作为普通值传来传去](/reference/rules/react-calls-components-and-hooks#never-pass-around-hooks-as-regular-values) – Hook 只能在组件内部调用。不要把它当作普通值传递。
+
+---
+
+## Hooks 规则 {/*rules-of-hooks*/}
+
+Hooks 使用 JavaScript 函数定义，但它们代表一种特殊的、可复用的 UI 逻辑类型，并且对其可被调用的位置有限制。使用它们时，你需要遵循 [Hooks 规则](/reference/rules/rules-of-hooks)。
+
+* [只能在顶层调用 Hooks](/reference/rules/rules-of-hooks#only-call-hooks-at-the-top-level) – 不要在循环、条件语句或嵌套函数中调用 Hooks。相反，应始终在 React 函数的顶层使用 Hooks，并且要在任何提前返回之前。
+* [只能从 React 函数中调用 Hooks](/reference/rules/rules-of-hooks#only-call-hooks-from-react-functions) – 不要从普通 JavaScript 函数中调用 Hooks。
 

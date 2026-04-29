@@ -4,7 +4,7 @@ title: act
 
 <Intro>
 
-`act` is a test helper to apply pending React updates before making assertions.
+`act` 是一个测试辅助工具，用于在进行断言之前应用尚未处理的 React 更新。
 
 ```js
 await act(async actFn)
@@ -12,10 +12,10 @@ await act(async actFn)
 
 </Intro>
 
-To prepare a component for assertions, wrap the code rendering it and performing updates inside an `await act()` call. This makes your test run closer to how React works in the browser.
+在为断言准备组件时，请将渲染它并执行更新的代码包裹在一个 `await act()` 调用中。这会使你的测试行为更接近 React 在浏览器中的工作方式。
 
 <Note>
-You might find using `act()` directly a bit too verbose. To avoid some of the boilerplate, you could use a library like [React Testing Library](https://testing-library.com/docs/react-testing-library/intro), whose helpers are wrapped with `act()`.
+你可能会觉得直接使用 `act()` 有点太啰嗦了。为了避免一些样板代码，你可以使用像 [React Testing Library](https://testing-library.com/docs/react-testing-library/intro) 这样的库，它的辅助工具已经用 `act()` 包裹好了。
 </Note>
 
 
@@ -23,13 +23,13 @@ You might find using `act()` directly a bit too verbose. To avoid some of the bo
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `await act(async actFn)` {/*await-act-async-actfn*/}
 
-When writing UI tests, tasks like rendering, user events, or data fetching can be considered as “units” of interaction with a user interface. React provides a helper called `act()` that makes sure all updates related to these “units” have been processed and applied to the DOM before you make any assertions.
+在编写 UI 测试时，渲染、用户事件或数据获取之类的任务可以被视为与用户界面的“交互单元”。React 提供了一个名为 `act()` 的辅助工具，它可以确保与这些“单元”相关的所有更新都已在你进行任何断言之前被处理并应用到 DOM 上。
 
-The name `act` comes from the [Arrange-Act-Assert](https://wiki.c2.com/?ArrangeActAssert) pattern.
+`act` 这个名字来自 [Arrange-Act-Assert](https://wiki.c2.com/?ArrangeActAssert) 模式。
 
 ```js {2,4}
 it ('renders with button disabled', async () => {
@@ -42,25 +42,25 @@ it ('renders with button disabled', async () => {
 
 <Note>
 
-We recommend using `act` with `await` and an `async` function. Although the sync version works in many cases, it doesn't work in all cases and due to the way React schedules updates internally, it's difficult to predict when you can use the sync version.
+我们建议将 `act` 与 `await` 和 `async` 函数一起使用。虽然同步版本在许多情况下都能工作，但并非所有情况都适用，而且由于 React 内部调度更新的方式，很难预测何时可以使用同步版本。
 
-We will deprecate and remove the sync version in the future.
+我们将来会弃用并移除同步版本。
 
 </Note>
 
-#### Parameters {/*parameters*/}
+#### 参数 {/*parameters*/}
 
-* `async actFn`: An async function wrapping renders or interactions for components being tested. Any updates triggered within the `actFn`, are added to an internal act queue, which are then flushed together to process and apply any changes to the DOM. Since it is async, React will also run any code that crosses an async boundary, and flush any updates scheduled.
+* `async actFn`: 一个包装被测组件渲染或交互的异步函数。`actFn` 内触发的任何更新都会被加入内部的 act 队列，然后一起刷新，以处理并应用到 DOM 的任何变更。由于它是异步的，React 还会运行任何跨越异步边界的代码，并刷新任何已调度的更新。
 
-#### Returns {/*returns*/}
+#### 返回值 {/*returns*/}
 
-`act` does not return anything.
+`act` 不返回任何内容。
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-When testing a component, you can use `act` to make assertions about its output.
+在测试组件时，你可以使用 `act` 来对其输出进行断言。
 
-For example, let’s say we have this `Counter` component, the usage examples below show how to test it:
+例如，假设我们有这个 `Counter` 组件，下面的用法示例展示了如何测试它：
 
 ```js
 function Counter() {
@@ -84,9 +84,9 @@ function Counter() {
 }
 ```
 
-### Rendering components in tests {/*rendering-components-in-tests*/}
+### 在测试中渲染组件 {/*rendering-components-in-tests*/}
 
-To test the render output of a component, wrap the render inside `act()`:
+要测试组件的渲染输出，请将渲染包裹在 `act()` 中：
 
 ```js  {10,12}
 import {act} from 'react';
@@ -97,7 +97,7 @@ it('can render and update a counter', async () => {
   container = document.createElement('div');
   document.body.appendChild(container);
 
-  // ✅ Render the component inside act().
+  // ✅ 在 act() 中渲染组件。
   await act(() => {
     ReactDOMClient.createRoot(container).render(<Counter />);
   });
@@ -109,13 +109,13 @@ it('can render and update a counter', async () => {
 });
 ```
 
-Here, we create a container, append it to the document, and render the `Counter` component inside `act()`. This ensures that the component is rendered and its effects are applied before making assertions.
+这里，我们创建一个容器，将其附加到文档中，并在 `act()` 内渲染 `Counter` 组件。这可以确保组件已完成渲染，并且其副作用已在进行断言之前被应用。
 
-Using `act` ensures that all updates have been applied before we make assertions.
+使用 `act` 可以确保在我们进行断言之前，所有更新都已被应用。
 
-### Dispatching events in tests {/*dispatching-events-in-tests*/}
+### 在测试中分发事件 {/*dispatching-events-in-tests*/}
 
-To test events, wrap the event dispatch inside `act()`:
+要测试事件，请将事件分发包裹在 `act()` 中：
 
 ```js {14,16}
 import {act} from 'react';
@@ -130,7 +130,7 @@ it.only('can render and update a counter', async () => {
     ReactDOMClient.createRoot(container).render(<Counter />);
   });
 
-  // ✅ Dispatch the event inside act().
+  // ✅ 在 act() 中分发事件。
   await act(async () => {
     button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
   });
@@ -142,29 +142,29 @@ it.only('can render and update a counter', async () => {
 });
 ```
 
-Here, we render the component with `act`, and then dispatch the event inside another `act()`. This ensures that all updates from the event are applied before making assertions.
+这里，我们使用 `act` 渲染组件，然后在另一个 `act()` 中分发事件。这可以确保来自该事件的所有更新都已在进行断言之前被应用。
 
 <Pitfall>
 
-Don’t forget that dispatching DOM events only works when the DOM container is added to the document. You can use a library like [React Testing Library](https://testing-library.com/docs/react-testing-library/intro) to reduce the boilerplate code.
+不要忘记，只有当 DOM 容器被添加到文档中时，分发 DOM 事件才有效。你可以使用像 [React Testing Library](https://testing-library.com/docs/react-testing-library/intro) 这样的库来减少样板代码。
 
 </Pitfall>
 
-## Troubleshooting {/*troubleshooting*/}
+## 故障排查 {/*troubleshooting*/}
 
-### I'm getting an error: "The current testing environment is not configured to support act(...)" {/*error-the-current-testing-environment-is-not-configured-to-support-act*/}
+### 我收到一个错误：“当前测试环境未配置为支持 act(...)” {/*error-the-current-testing-environment-is-not-configured-to-support-act*/}
 
-Using `act` requires setting `global.IS_REACT_ACT_ENVIRONMENT=true` in your test environment. This is to ensure that `act` is only used in the correct environment.
+使用 `act` 需要在你的测试环境中设置 `global.IS_REACT_ACT_ENVIRONMENT=true`。这是为了确保 `act` 只在正确的环境中使用。
 
-If you don't set the global, you will see an error like this:
+如果你没有设置这个全局变量，你会看到如下错误：
 
 <ConsoleBlock level="error">
 
-Warning: The current testing environment is not configured to support act(...)
+警告：当前测试环境未配置为支持 act(...)
 
 </ConsoleBlock>
 
-To fix, add this to your global setup file for React tests:
+要修复此问题，请在 React 测试的全局初始化文件中添加以下内容：
 
 ```js
 global.IS_REACT_ACT_ENVIRONMENT=true
@@ -172,6 +172,6 @@ global.IS_REACT_ACT_ENVIRONMENT=true
 
 <Note>
 
-In testing frameworks like [React Testing Library](https://testing-library.com/docs/react-testing-library/intro), `IS_REACT_ACT_ENVIRONMENT` is already set for you.
+在像 [React Testing Library](https://testing-library.com/docs/react-testing-library/intro) 这样的测试框架中，`IS_REACT_ACT_ENVIRONMENT` 已经为你设置好了。
 
 </Note>

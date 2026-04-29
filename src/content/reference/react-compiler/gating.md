@@ -4,7 +4,7 @@ title: gating
 
 <Intro>
 
-The `gating` option enables conditional compilation, allowing you to control when optimized code is used at runtime.
+`gating` 选项启用条件编译，允许你控制优化后的代码在运行时何时被使用。
 
 </Intro>
 
@@ -21,13 +21,13 @@ The `gating` option enables conditional compilation, allowing you to control whe
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `gating` {/*gating*/}
 
-Configures runtime feature flag gating for compiled functions.
+为已编译函数配置运行时特性标志门控。
 
-#### Type {/*type*/}
+#### 类型 {/*type*/}
 
 ```
 {
@@ -36,38 +36,38 @@ Configures runtime feature flag gating for compiled functions.
 } | null
 ```
 
-#### Default value {/*default-value*/}
+#### 默认值 {/*default-value*/}
 
 `null`
 
-#### Properties {/*properties*/}
+#### 属性 {/*properties*/}
 
-- **`source`**: Module path to import the feature flag from
-- **`importSpecifierName`**: Name of the exported function to import
+- **`source`**：要从中导入特性标志的模块路径
+- **`importSpecifierName`**：要导入的已导出函数名称
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-- The gating function must return a boolean
-- Both compiled and original versions increase bundle size
-- The import is added to every file with compiled functions
+- 门控函数必须返回布尔值
+- 编译版本和原始版本都会增加包体积
+- 每个包含已编译函数的文件都会添加该导入
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Basic feature flag setup {/*basic-setup*/}
+### 基础特性标志设置 {/*basic-setup*/}
 
-1. Create a feature flag module:
+1. 创建一个特性标志模块：
 
 ```js
 // src/utils/feature-flags.js
 export function shouldUseCompiler() {
-  // your logic here
+  // 你的逻辑在这里
   return getFeatureFlag('react-compiler-enabled');
 }
 ```
 
-2. Configure the compiler:
+2. 配置编译器：
 
 ```js
 {
@@ -78,62 +78,62 @@ export function shouldUseCompiler() {
 }
 ```
 
-3. The compiler generates gated code:
+3. 编译器生成带门控的代码：
 
 ```js
-// Input
+// 输入
 function Button(props) {
   return <button>{props.label}</button>;
 }
 
-// Output (simplified)
+// 输出（简化）
 import { shouldUseCompiler } from './src/utils/feature-flags';
 
 const Button = shouldUseCompiler()
-  ? function Button_optimized(props) { /* compiled version */ }
-  : function Button_original(props) { /* original version */ };
+  ? function Button_optimized(props) { /* 编译版本 */ }
+  : function Button_original(props) { /* 原始版本 */ };
 ```
 
-Note that the gating function is evaluated once at module time, so once the JS bundle has been parsed and evaluated the choice of component stays static for the rest of the browser session.
+请注意，门控函数会在模块加载时执行一次，因此一旦 JS 包被解析并执行，组件的选择在浏览器会话的剩余时间内都会保持静态。
 
 ---
 
-## Troubleshooting {/*troubleshooting*/}
+## 故障排查 {/*troubleshooting*/}
 
-### Feature flag not working {/*flag-not-working*/}
+### 特性标志不工作 {/*flag-not-working*/}
 
-Verify your flag module exports the correct function:
+请验证你的标志模块导出了正确的函数：
 
 ```js
-// ❌ Wrong: Default export
+// ❌ 错误：默认导出
 export default function shouldUseCompiler() {
   return true;
 }
 
-// ✅ Correct: Named export matching importSpecifierName
+// ✅ 正确：与 importSpecifierName 匹配的命名导出
 export function shouldUseCompiler() {
   return true;
 }
 ```
 
-### Import errors {/*import-errors*/}
+### 导入错误 {/*import-errors*/}
 
-Ensure the source path is correct:
+确保 source 路径正确：
 
 ```js
-// ❌ Wrong: Relative to babel.config.js
+// ❌ 错误：相对于 babel.config.js
 {
   source: './src/flags',
   importSpecifierName: 'flag'
 }
 
-// ✅ Correct: Module resolution path
+// ✅ 正确：模块解析路径
 {
   source: '@myapp/feature-flags',
   importSpecifierName: 'flag'
 }
 
-// ✅ Also correct: Absolute path from project root
+// ✅ 也正确：从项目根目录开始的绝对路径
 {
   source: './src/utils/flags',
   importSpecifierName: 'flag'

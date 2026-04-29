@@ -1,60 +1,60 @@
 ---
-title: Rules of Hooks
+title: Hooks 规则
 ---
 
-You are probably here because you got the following error message:
+你之所以来到这里，可能是因为你遇到了以下错误信息：
 
 <ConsoleBlock level="error">
 
-Hooks can only be called inside the body of a function component.
+Hooks 只能在函数组件的主体内部被调用。
 
 </ConsoleBlock>
 
-There are three common reasons you might be seeing it:
+你可能看到它有三个常见原因：
 
-1. You might be **breaking the Rules of Hooks**.
-2. You might have **mismatching versions** of React and React DOM.
-3. You might have **more than one copy of React** in the same app.
+1. 你可能**违反了 Hooks 规则**。
+2. 你可能使用了**不匹配版本**的 React 和 React DOM。
+3. 你在同一个应用中可能有**不止一份 React 副本**。
 
-Let's look at each of these cases.
+让我们逐一看看这些情况。
 
-## Breaking Rules of Hooks {/*breaking-rules-of-hooks*/}
+## 违反 Hooks 规则 {/*breaking-rules-of-hooks*/}
 
-Functions whose names start with `use` are called [*Hooks*](/reference/react) in React.
+名字以 `use` 开头的函数在 React 中被称为 [*Hooks*](/reference/react)。
 
-**Don’t call Hooks inside loops, conditions, or nested functions.** Instead, always use Hooks at the top level of your React function, before any early returns. You can only call Hooks while React is rendering a function component:
+**不要在循环、条件语句或嵌套函数中调用 Hooks。** 相反，请始终在你的 React 函数的顶层调用 Hooks，在任何提前返回之前。你只能在 React 正在渲染函数组件时调用 Hooks：
 
-* ✅ Call them at the top level in the body of a [function component](/learn/your-first-component).
-* ✅ Call them at the top level in the body of a [custom Hook](/learn/reusing-logic-with-custom-hooks).
+* ✅ 在 [函数组件](/learn/your-first-component) 的主体顶层调用它们。
+* ✅ 在 [自定义 Hook](/learn/reusing-logic-with-custom-hooks) 的主体顶层调用它们。
 
 ```js{2-3,8-9}
 function Counter() {
-  // ✅ Good: top-level in a function component
+  // ✅ 好：在函数组件的顶层
   const [count, setCount] = useState(0);
   // ...
 }
 
 function useWindowWidth() {
-  // ✅ Good: top-level in a custom Hook
+  // ✅ 好：在自定义 Hook 的顶层
   const [width, setWidth] = useState(window.innerWidth);
   // ...
 }
 ```
 
-It’s **not** supported to call Hooks (functions starting with `use`) in any other cases, for example:
+在其他任何情况下调用 Hooks（以 `use` 开头的函数）都是**不被支持的**，例如：
 
-* 🔴 Do not call Hooks inside conditions or loops.
-* 🔴 Do not call Hooks after a conditional `return` statement.
-* 🔴 Do not call Hooks in event handlers.
-* 🔴 Do not call Hooks in class components.
-* 🔴 Do not call Hooks inside functions passed to `useMemo`, `useReducer`, or `useEffect`.
+* 🔴 不要在条件语句或循环中调用 Hooks。
+* 🔴 不要在条件 `return` 语句之后调用 Hooks。
+* 🔴 不要在事件处理器中调用 Hooks。
+* 🔴 不要在类组件中调用 Hooks。
+* 🔴 不要在传递给 `useMemo`、`useReducer` 或 `useEffect` 的函数内部调用 Hooks。
 
-If you break these rules, you might see this error.
+如果你违反这些规则，可能会看到这个错误。
 
 ```js{3-4,11-12,20-21}
 function Bad({ cond }) {
   if (cond) {
-    // 🔴 Bad: inside a condition (to fix, move it outside!)
+    // 🔴 坏：在条件语句内部（要修复，请把它移到外面！）
     const theme = useContext(ThemeContext);
   }
   // ...
@@ -62,7 +62,7 @@ function Bad({ cond }) {
 
 function Bad() {
   for (let i = 0; i < 10; i++) {
-    // 🔴 Bad: inside a loop (to fix, move it outside!)
+    // 🔴 坏：在循环内部（要修复，请把它移到外面！）
     const theme = useContext(ThemeContext);
   }
   // ...
@@ -72,14 +72,14 @@ function Bad({ cond }) {
   if (cond) {
     return;
   }
-  // 🔴 Bad: after a conditional return (to fix, move it before the return!)
+  // 🔴 坏：在条件 return 之后（要修复，请把它移到 return 之前！）
   const theme = useContext(ThemeContext);
   // ...
 }
 
 function Bad() {
   function handleClick() {
-    // 🔴 Bad: inside an event handler (to fix, move it outside!)
+    // 🔴 坏：在事件处理器内部（要修复，请把它移到外面！）
     const theme = useContext(ThemeContext);
   }
   // ...
@@ -87,7 +87,7 @@ function Bad() {
 
 function Bad() {
   const style = useMemo(() => {
-    // 🔴 Bad: inside useMemo (to fix, move it outside!)
+    // 🔴 坏：在 useMemo 内部（要修复，请把它移到外面！）
     const theme = useContext(ThemeContext);
     return createStyle(theme);
   });
@@ -96,32 +96,32 @@ function Bad() {
 
 class Bad extends React.Component {
   render() {
-    // 🔴 Bad: inside a class component (to fix, write a function component instead of a class!)
+    // 🔴 坏：在类组件内部（要修复，请改写为函数组件，而不是类！）
     useEffect(() => {})
     // ...
   }
 }
 ```
 
-You can use the [`eslint-plugin-react-hooks` plugin](https://www.npmjs.com/package/eslint-plugin-react-hooks) to catch these mistakes.
+你可以使用 [`eslint-plugin-react-hooks` 插件](https://www.npmjs.com/package/eslint-plugin-react-hooks) 来捕获这些错误。
 
 <Note>
 
-[Custom Hooks](/learn/reusing-logic-with-custom-hooks) *may* call other Hooks (that's their whole purpose). This works because custom Hooks are also supposed to only be called while a function component is rendering.
+[自定义 Hooks](/learn/reusing-logic-with-custom-hooks) *可以*调用其他 Hooks（这正是它们存在的目的）。这是有效的，因为自定义 Hooks 也应该只在函数组件渲染时被调用。
 
 </Note>
 
-## Mismatching Versions of React and React DOM {/*mismatching-versions-of-react-and-react-dom*/}
+## React 和 React DOM 版本不匹配 {/*mismatching-versions-of-react-and-react-dom*/}
 
-You might be using a version of `react-dom` (< 16.8.0) or `react-native` (< 0.59) that doesn't yet support Hooks. You can run `npm ls react-dom` or `npm ls react-native` in your application folder to check which version you're using. If you find more than one of them, this might also create problems (more on that below).
+你可能正在使用一个尚不支持 Hooks 的 `react-dom`（< 16.8.0）或 `react-native`（< 0.59）版本。你可以在你的应用文件夹中运行 `npm ls react-dom` 或 `npm ls react-native` 来检查你正在使用的版本。如果你发现它们中有多个，也可能会引发问题（下面会详细说明）。
 
-## Duplicate React {/*duplicate-react*/}
+## 重复的 React {/*duplicate-react*/}
 
-In order for Hooks to work, the `react` import from your application code needs to resolve to the same module as the `react` import from inside the `react-dom` package.
+为了让 Hooks 正常工作，你的应用代码中的 `react` 导入需要解析到与 `react-dom` 包内部的 `react` 导入相同的模块。
 
-If these `react` imports resolve to two different exports objects, you will see this warning. This may happen if you **accidentally end up with two copies** of the `react` package.
+如果这些 `react` 导入解析到两个不同的导出对象，你就会看到这个警告。这可能发生在你**不小心得到了两份** `react` 包的时候。
 
-If you use Node for package management, you can run this check in your project folder:
+如果你使用 Node 进行包管理，可以在项目文件夹中运行以下检查：
 
 <TerminalBlock>
 
@@ -129,30 +129,30 @@ npm ls react
 
 </TerminalBlock>
 
-If you see more than one React, you'll need to figure out why this happens and fix your dependency tree. For example, maybe a library you're using incorrectly specifies `react` as a dependency (rather than a peer dependency). Until that library is fixed, [Yarn resolutions](https://yarnpkg.com/lang/en/docs/selective-version-resolutions/) is one possible workaround.
+如果你看到不止一个 React，你就需要弄清楚为什么会这样，并修复你的依赖树。例如，你正在使用的某个库可能错误地将 `react` 指定为依赖项（而不是 peer dependency）。在那个库修复之前，[Yarn resolutions](https://yarnpkg.com/lang/en/docs/selective-version-resolutions/) 是一种可能的解决办法。
 
-You can also try to debug this problem by adding some logs and restarting your development server:
+你也可以通过添加一些日志并重启开发服务器来尝试调试这个问题：
 
 ```js
-// Add this in node_modules/react-dom/index.js
+// 将此添加到 node_modules/react-dom/index.js 中
 window.React1 = require('react');
 
-// Add this in your component file
+// 将此添加到你的组件文件中
 require('react-dom');
 window.React2 = require('react');
 console.log(window.React1 === window.React2);
 ```
 
-If it prints `false` then you might have two Reacts and need to figure out why that happened. [This issue](https://github.com/facebook/react/issues/13991) includes some common reasons encountered by the community.
+如果它打印出 `false`，那么你可能有两个 React，需要弄清楚这是为什么。[这个问题](https://github.com/facebook/react/issues/13991)包含了社区遇到的一些常见原因。
 
-This problem can also come up when you use `npm link` or an equivalent. In that case, your bundler might "see" two Reacts — one in application folder and one in your library folder. Assuming `myapp` and `mylib` are sibling folders, one possible fix is to run `npm link ../myapp/node_modules/react` from `mylib`. This should make the library use the application's React copy.
+当你使用 `npm link` 或类似工具时，这个问题也可能出现。在这种情况下，你的打包器可能会“看到”两个 React——一个在应用文件夹中，一个在你的库文件夹中。假设 `myapp` 和 `mylib` 是相邻文件夹，一种可能的修复方法是在 `mylib` 中运行 `npm link ../myapp/node_modules/react`。这应该会让该库使用应用中的 React 副本。
 
 <Note>
 
-In general, React supports using multiple independent copies on one page (for example, if an app and a third-party widget both use it). It only breaks if `require('react')` resolves differently between the component and the `react-dom` copy it was rendered with.
+通常，React 支持在同一页面上使用多个彼此独立的副本（例如，如果一个应用和一个第三方小部件都在使用它）。只有当组件中的 `require('react')` 与其渲染所使用的 `react-dom` 副本之间解析结果不同时，才会出问题。
 
 </Note>
 
-## Other Causes {/*other-causes*/}
+## 其他原因 {/*other-causes*/}
 
-If none of this worked, please comment in [this issue](https://github.com/facebook/react/issues/13991) and we'll try to help. Try to create a small reproducing example — you might discover the problem as you're doing it.
+如果以上方法都不起作用，请在[这个 issue](https://github.com/facebook/react/issues/13991) 中留言，我们会尽力帮助你。尽量创建一个能重现问题的小示例——你可能会在这样做的过程中发现问题所在。

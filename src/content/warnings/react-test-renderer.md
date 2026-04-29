@@ -1,14 +1,14 @@
 ---
-title: react-test-renderer Deprecation Warnings
+title: react-test-renderer 弃用警告
 ---
 
-## ReactTestRenderer.create() warning {/*reacttestrenderercreate-warning*/}
+## ReactTestRenderer.create() 警告 {/*reacttestrenderercreate-warning*/}
 
-react-test-renderer is deprecated. A warning will fire whenever calling ReactTestRenderer.create() or ReactShallowRender.render(). The react-test-renderer package will remain available on NPM but will not be maintained and may break with new React features or changes to React's internals.
+react-test-renderer 已弃用。每当调用 ReactTestRenderer.create() 或 ReactShallowRender.render() 时，都会触发警告。react-test-renderer 包仍可在 NPM 上使用，但不会再维护，并且可能会因新的 React 特性或 React 内部实现的变更而失效。
 
-The React Team recommends migrating your tests to [@testing-library/react](https://testing-library.com/docs/react-testing-library/intro/) or [@testing-library/react-native](https://callstack.github.io/react-native-testing-library/docs/start/intro) for a modern and well supported testing experience.
+React 团队建议将你的测试迁移到 [@testing-library/react](https://testing-library.com/docs/react-testing-library/intro/) 或 [@testing-library/react-native](https://callstack.github.io/react-native-testing-library/docs/start/intro)，以获得现代且受良好支持的测试体验。
 
 
-## new ShallowRenderer() warning {/*new-shallowrenderer-warning*/}
+## new ShallowRenderer() 警告 {/*new-shallowrenderer-warning*/}
 
-The react-test-renderer package no longer exports a shallow renderer at `react-test-renderer/shallow`. This was simply a repackaging of a previously extracted separate package: `react-shallow-renderer`. Therefore you can continue using the shallow renderer in the same way by installing it directly. See [Github](https://github.com/enzymejs/react-shallow-renderer) / [NPM](https://www.npmjs.com/package/react-shallow-renderer).
+react-test-renderer 包不再从 `react-test-renderer/shallow` 导出浅渲染器。这实际上只是将之前提取出来的独立包 `react-shallow-renderer` 重新打包了一次。因此，你可以通过直接安装它，以相同的方式继续使用浅渲染器。参见 [Github](https://github.com/enzymejs/react-shallow-renderer) / [NPM](https://www.npmjs.com/package/react-shallow-renderer)。

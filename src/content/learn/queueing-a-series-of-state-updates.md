@@ -1,23 +1,23 @@
 ---
-title: Queueing a Series of State Updates
+title: 队列化一系列状态更新
 ---
 
 <Intro>
 
-Setting a state variable will queue another render. But sometimes you might want to perform multiple operations on the value before queueing the next render. To do this, it helps to understand how React batches state updates.
+设置一个状态变量会触发下一次渲染。但有时你可能想在触发下一次渲染之前对这个值执行多个操作。要做到这一点，理解 React 如何批量处理状态更新会很有帮助。
 
 </Intro>
 
 <YouWillLearn>
 
-* What "batching" is and how React uses it to process multiple state updates
-* How to apply several updates to the same state variable in a row
+* 什么是“批处理”，以及 React 如何使用它来处理多个状态更新
+* 如何连续对同一个状态变量应用多个更新
 
 </YouWillLearn>
 
-## React batches state updates {/*react-batches-state-updates*/}
+## React 会批量处理状态更新 {/*react-batches-state-updates*/}
 
-You might expect that clicking the "+3" button will increment the counter three times because it calls `setNumber(number + 1)` three times:
+你可能会以为，点击 "+3" 按钮会让计数器增加三次，因为它连续调用了三次 `setNumber(number + 1)`：
 
 <Sandpack>
 
@@ -47,7 +47,7 @@ h1 { display: inline-block; margin: 10px; width: 30px; text-align: center; }
 
 </Sandpack>
 
-However, as you might recall from the previous section, [each render's state values are fixed](/learn/state-as-a-snapshot#rendering-takes-a-snapshot-in-time), so the value of `number` inside the first render's event handler is always `0`, no matter how many times you call `setNumber(1)`:
+然而，正如你在上一节中可能还记得的那样，[每次渲染时的状态值都是固定的](/learn/state-as-a-snapshot#rendering-takes-a-snapshot-in-time)，所以第一次渲染中的事件处理函数里 `number` 的值始终是 `0`，不管你调用多少次 `setNumber(1)`：
 
 ```js
 setNumber(0 + 1);
@@ -55,21 +55,21 @@ setNumber(0 + 1);
 setNumber(0 + 1);
 ```
 
-But there is one other factor at play here. **React waits until *all* code in the event handlers has run before processing your state updates.** This is why the re-render only happens *after* all these `setNumber()` calls.
+但这里还有另一个因素在起作用。**React 会等到事件处理函数中的 *所有* 代码都执行完后，才处理你的状态更新。** 这就是为什么只有在所有这些 `setNumber()` 调用之后，才会发生重新渲染。
 
-This might remind you of a waiter taking an order at the restaurant. A waiter doesn't run to the kitchen at the mention of your first dish! Instead, they let you finish your order, let you make changes to it, and even take orders from other people at the table.
+这可能会让你联想到餐厅里的服务员记订单。服务员不会因为你点了第一道菜就立刻冲进厨房！相反，他们会等你点完，允许你修改订单，甚至还会帮同桌的其他人一起下单。
 
-<Illustration src="/images/docs/illustrations/i_react-batching.png"  alt="An elegant cursor at a restaurant places and order multiple times with React, playing the part of the waiter. After she calls setState() multiple times, the waiter writes down the last one she requested as her final order." />
+<Illustration src="/images/docs/illustrations/i_react-batching.png"  alt="一位优雅的顾客在餐厅中多次下单，React 扮演服务员的角色。她多次调用 setState() 后，服务员把她最后一次要求的内容记为最终订单。" />
 
-This lets you update multiple state variables--even from multiple components--without triggering too many [re-renders.](/learn/render-and-commit#re-renders-when-state-updates) But this also means that the UI won't be updated until _after_ your event handler, and any code in it, completes. This behavior, also known as **batching,** makes your React app run much faster. It also avoids dealing with confusing "half-finished" renders where only some of the variables have been updated.
+这使你能够更新多个状态变量——即使来自多个组件——而不会触发过多的[重新渲染。](/learn/render-and-commit#re-renders-when-state-updates) 但这也意味着，UI 不会在你的事件处理函数以及其中的任何代码执行完毕之前更新。这种行为，也被称为**批处理**，能让你的 React 应用运行得快得多。它还避免了处理令人困惑的“半完成”渲染——也就是只有部分变量被更新的情况。
 
-**React does not batch across *multiple* intentional events like clicks**--each click is handled separately. Rest assured that React only does batching when it's generally safe to do. This ensures that, for example, if the first button click disables a form, the second click would not submit it again.
+**React 不会跨越多个有意图的事件（如点击）进行批处理**——每次点击都会单独处理。请放心，React 只会在通常安全的情况下进行批处理。这确保了例如第一次按钮点击如果禁用了表单，那么第二次点击就不会再次提交它。
 
-## Updating the same state multiple times before the next render {/*updating-the-same-state-multiple-times-before-the-next-render*/}
+## 在下一次渲染前多次更新同一个状态 {/*updating-the-same-state-multiple-times-before-the-next-render*/}
 
-It is an uncommon use case, but if you would like to update the same state variable multiple times before the next render, instead of passing the *next state value* like `setNumber(number + 1)`, you can pass a *function* that calculates the next state based on the previous one in the queue, like `setNumber(n => n + 1)`. It is a way to tell React to "do something with the state value" instead of just replacing it.
+这不是一种常见用法，但如果你想在下一次渲染前多次更新同一个状态变量，与其传入*下一个状态值*（例如 `setNumber(number + 1)`），你可以传入一个*函数*，它会基于队列中前一个值计算下一个状态，例如 `setNumber(n => n + 1)`。这是一种告诉 React“对这个状态值做点什么”而不是直接替换它的方法。
 
-Try incrementing the counter now:
+现在试着让计数器增加：
 
 <Sandpack>
 
@@ -99,10 +99,10 @@ h1 { display: inline-block; margin: 10px; width: 30px; text-align: center; }
 
 </Sandpack>
 
-Here, `n => n + 1` is called an **updater function.** When you pass it to a state setter:
+这里，`n => n + 1` 被称为**更新函数**。当你把它传给状态设置函数时：
 
-1. React queues this function to be processed after all the other code in the event handler has run.
-2. During the next render, React goes through the queue and gives you the final updated state.
+1. React 会将这个函数排入队列，等到事件处理函数中的其他代码都执行完后再处理。
+2. 在下一次渲染时，React 会遍历这个队列，并给你最终更新后的状态。
 
 ```js
 setNumber(n => n + 1);
@@ -110,26 +110,26 @@ setNumber(n => n + 1);
 setNumber(n => n + 1);
 ```
 
-Here's how React works through these lines of code while executing the event handler:
+下面是 React 在执行事件处理函数时如何处理这些代码行的：
 
-1. `setNumber(n => n + 1)`: `n => n + 1` is a function. React adds it to a queue.
-1. `setNumber(n => n + 1)`: `n => n + 1` is a function. React adds it to a queue.
-1. `setNumber(n => n + 1)`: `n => n + 1` is a function. React adds it to a queue.
+1. `setNumber(n => n + 1)`：`n => n + 1` 是一个函数。React 将它加入队列。
+1. `setNumber(n => n + 1)`：`n => n + 1` 是一个函数。React 将它加入队列。
+1. `setNumber(n => n + 1)`：`n => n + 1` 是一个函数。React 将它加入队列。
 
-When you call `useState` during the next render, React goes through the queue. The previous `number` state was `0`, so that's what React passes to the first updater function as the `n` argument. Then React takes the return value of your previous updater function and passes it to the next updater as `n`, and so on:
+当你在下一次渲染时调用 `useState`，React 会遍历队列。之前的 `number` 状态是 `0`，所以 React 会把它作为第一个更新函数的 `n` 参数传入。然后 React 取出上一个更新函数的返回值，把它作为下一个更新函数的 `n`，依此类推：
 
-|  queued update | `n` | returns |
+|  队列中的更新 | `n` | 返回值 |
 |--------------|---------|-----|
 | `n => n + 1` | `0` | `0 + 1 = 1` |
 | `n => n + 1` | `1` | `1 + 1 = 2` |
 | `n => n + 1` | `2` | `2 + 1 = 3` |
 
-React stores `3` as the final result and returns it from `useState`.
+React 将 `3` 作为最终结果存储起来，并从 `useState` 返回它。
 
-This is why clicking "+3" in the above example correctly increments the value by 3.
-### What happens if you update state after replacing it {/*what-happens-if-you-update-state-after-replacing-it*/}
+这就是为什么在上面的示例中点击 "+3" 会正确地让值增加 3。
+### 如果在替换状态后再更新它，会发生什么 {/*what-happens-if-you-update-state-after-replacing-it*/}
 
-What about this event handler? What do you think `number` will be in the next render?
+看看这个事件处理函数？你觉得下一次渲染时 `number` 会是多少？
 
 ```js
 <button onClick={() => {
@@ -165,29 +165,29 @@ h1 { display: inline-block; margin: 10px; width: 30px; text-align: center; }
 
 </Sandpack>
 
-Here's what this event handler tells React to do:
+这个事件处理函数告诉 React 要做的是：
 
-1. `setNumber(number + 5)`: `number` is `0`, so `setNumber(0 + 5)`. React adds *"replace with `5`"* to its queue.
-2. `setNumber(n => n + 1)`: `n => n + 1` is an updater function. React adds *that function* to its queue.
+1. `setNumber(number + 5)`：`number` 是 `0`，所以是 `setNumber(0 + 5)`。React 会把*"替换为 `5`"*加入队列。
+2. `setNumber(n => n + 1)`：`n => n + 1` 是一个更新函数。React 会把*这个函数*加入队列。
 
-During the next render, React goes through the state queue:
+在下一次渲染期间，React 会遍历状态队列：
 
-|   queued update       | `n` | returns |
+|   队列中的更新       | `n` | 返回值 |
 |--------------|---------|-----|
-| "replace with `5`" | `0` (unused) | `5` |
+| "替换为 `5`" | `0`（未使用） | `5` |
 | `n => n + 1` | `5` | `5 + 1 = 6` |
 
-React stores `6` as the final result and returns it from `useState`.
+React 将 `6` 作为最终结果存储起来，并从 `useState` 返回它。
 
 <Note>
 
-You may have noticed that `setState(5)` actually works like `setState(n => 5)`, but `n` is unused!
+你可能已经注意到，`setState(5)` 实际上就像 `setState(n => 5)` 一样工作，只是 `n` 没有被使用！
 
 </Note>
 
-### What happens if you replace state after updating it {/*what-happens-if-you-replace-state-after-updating-it*/}
+### 如果在更新后再替换状态，会发生什么 {/*what-happens-if-you-replace-state-after-updating-it*/}
 
-Let's try one more example. What do you think `number` will be in the next render?
+我们再试一个例子。你觉得下一次渲染时 `number` 会是多少？
 
 ```js
 <button onClick={() => {
@@ -225,32 +225,32 @@ h1 { display: inline-block; margin: 10px; width: 30px; text-align: center; }
 
 </Sandpack>
 
-Here's how React works through these lines of code while executing this event handler:
+下面是 React 在执行这个事件处理函数时如何处理这些代码行的：
 
-1. `setNumber(number + 5)`: `number` is `0`, so `setNumber(0 + 5)`. React adds *"replace with `5`"* to its queue.
-2. `setNumber(n => n + 1)`: `n => n + 1` is an updater function. React adds *that function* to its queue.
-3. `setNumber(42)`: React adds *"replace with `42`"* to its queue.
+1. `setNumber(number + 5)`：`number` 是 `0`，所以是 `setNumber(0 + 5)`。React 会把*"替换为 `5`"*加入队列。
+2. `setNumber(n => n + 1)`：`n => n + 1` 是一个更新函数。React 会把*这个函数*加入队列。
+3. `setNumber(42)`：React 会把*"替换为 `42`"*加入队列。
 
-During the next render, React goes through the state queue:
+在下一次渲染期间，React 会遍历状态队列：
 
-|   queued update       | `n` | returns |
+|   队列中的更新       | `n` | 返回值 |
 |--------------|---------|-----|
-| "replace with `5`" | `0` (unused) | `5` |
+| "替换为 `5`" | `0`（未使用） | `5` |
 | `n => n + 1` | `5` | `5 + 1 = 6` |
-| "replace with `42`" | `6` (unused) | `42` |
+| "替换为 `42`" | `6`（未使用） | `42` |
 
-Then React stores `42` as the final result and returns it from `useState`.
+然后 React 将 `42` 作为最终结果存储起来，并从 `useState` 返回它。
 
-To summarize, here's how you can think of what you're passing to the `setNumber` state setter:
+总结一下，你可以这样理解传给 `setNumber` 状态设置函数的内容：
 
-* **An updater function** (e.g. `n => n + 1`) gets added to the queue.
-* **Any other value** (e.g. number `5`) adds "replace with `5`" to the queue, ignoring what's already queued.
+* **更新函数**（例如 `n => n + 1`）会被加入队列。
+* **任何其他值**（例如数字 `5`）都会把*"替换为 `5`"*加入队列，并忽略队列里已有的内容。
 
-After the event handler completes, React will trigger a re-render. During the re-render, React will process the queue. Updater functions run during rendering, so **updater functions must be [pure](/learn/keeping-components-pure)** and only *return* the result. Don't try to set state from inside of them or run other side effects. In Strict Mode, React will run each updater function twice (but discard the second result) to help you find mistakes.
+事件处理函数执行完毕后，React 会触发一次重新渲染。在重新渲染期间，React 会处理这个队列。更新函数会在渲染期间运行，所以**更新函数必须是[纯函数](/learn/keeping-components-pure)**，并且只需*返回*结果。不要试图在其中设置状态或执行其他副作用。在严格模式下，React 会把每个更新函数执行两次（但会丢弃第二次结果），以帮助你发现错误。
 
-### Naming conventions {/*naming-conventions*/}
+### 命名约定 {/*naming-conventions*/}
 
-It's common to name the updater function argument by the first letters of the corresponding state variable:
+通常会用对应状态变量前几个字母来命名更新函数的参数：
 
 ```js
 setEnabled(e => !e);
@@ -258,13 +258,13 @@ setLastName(ln => ln.reverse());
 setFriendCount(fc => fc * 2);
 ```
 
-If you prefer more verbose code, another common convention is to repeat the full state variable name, like `setEnabled(enabled => !enabled)`, or to use a prefix like `setEnabled(prevEnabled => !prevEnabled)`.
+如果你更喜欢更详细的代码，另一种常见约定是重复完整的状态变量名，例如 `setEnabled(enabled => !enabled)`，或者使用前缀，例如 `setEnabled(prevEnabled => !prevEnabled)`。
 
 <Recap>
 
-* Setting state does not change the variable in the existing render, but it requests a new render.
-* React processes state updates after event handlers have finished running. This is called batching.
-* To update some state multiple times in one event, you can use `setNumber(n => n + 1)` updater function.
+* 设置状态不会改变现有渲染中的变量，但会请求一次新的渲染。
+* React 会在事件处理函数执行完毕后处理状态更新。这叫做批处理。
+* 如果要在一个事件中多次更新某些状态，可以使用 `setNumber(n => n + 1)` 这样的更新函数。
 
 </Recap>
 
@@ -272,13 +272,13 @@ If you prefer more verbose code, another common convention is to repeat the full
 
 <Challenges>
 
-#### Fix a request counter {/*fix-a-request-counter*/}
+#### 修复请求计数器 {/*fix-a-request-counter*/}
 
-You're working on an art marketplace app that lets the user submit multiple orders for an art item at the same time. Each time the user presses the "Buy" button, the "Pending" counter should increase by one. After three seconds, the "Pending" counter should decrease, and the "Completed" counter should increase.
+你正在开发一个艺术品交易市场应用，用户可以同时为一件艺术品提交多个订单。每次用户按下 "Buy" 按钮时，“Pending” 计数器都应该加一。三秒后，“Pending” 计数器应该减少，“Completed” 计数器应该增加。
 
-However, the "Pending" counter does not behave as intended. When you press "Buy", it decreases to `-1` (which should not be possible!). And if you click fast twice, both counters seem to behave unpredictably.
+然而，“Pending” 计数器的行为并不符合预期。当你按下 "Buy" 时，它会变成 `-1`（这本不该发生！）。而且如果你快速点击两次，这两个计数器的行为似乎都不可预测。
 
-Why does this happen? Fix both counters.
+为什么会这样？请修复这两个计数器。
 
 <Sandpack>
 
@@ -322,7 +322,7 @@ function delay(ms) {
 
 <Solution>
 
-Inside the `handleClick` event handler, the values of `pending` and `completed` correspond to what they were at the time of the click event. For the first render, `pending` was `0`, so `setPending(pending - 1)` becomes `setPending(-1)`, which is wrong. Since you want to *increment* or *decrement* the counters, rather than set them to a concrete value determined during the click, you can instead pass the updater functions:
+在 `handleClick` 事件处理函数中，`pending` 和 `completed` 的值对应于点击事件发生时它们的值。对于第一次渲染，`pending` 是 `0`，所以 `setPending(pending - 1)` 变成了 `setPending(-1)`，这显然是错的。由于你想要的是让计数器*增加*或*减少*，而不是把它们设置为点击时确定的具体值，所以你可以改为传入更新函数：
 
 <Sandpack>
 
@@ -364,23 +364,23 @@ function delay(ms) {
 
 </Sandpack>
 
-This ensures that when you increment or decrement a counter, you do it in relation to its *latest* state rather than what the state was at the time of the click.
+这样可以确保当你增加或减少某个计数器时，依据的是它的*最新*状态，而不是点击发生时的状态。
 
 </Solution>
 
-#### Implement the state queue yourself {/*implement-the-state-queue-yourself*/}
+#### 自己实现状态队列 {/*implement-the-state-queue-yourself*/}
 
-In this challenge, you will reimplement a tiny part of React from scratch! It's not as hard as it sounds.
+在这个挑战中，你将从零开始重写 React 的一小部分！这听起来没那么难。
 
-Scroll through the sandbox preview. Notice that it shows **four test cases.** They correspond to the examples you've seen earlier on this page. Your task is to implement the `getFinalState` function so that it returns the correct result for each of those cases. If you implement it correctly, all four tests should pass.
+滚动查看 sandbox 预览。注意它展示了**四个测试用例**。它们对应于你之前在本页看到的示例。你的任务是实现 `getFinalState` 函数，使它为这些情况返回正确结果。如果你实现正确，四个测试都应该通过。
 
-You will receive two arguments: `baseState` is the initial state (like `0`), and the `queue` is an array which contains a mix of numbers (like `5`) and updater functions (like `n => n + 1`) in the order they were added.
+你会收到两个参数：`baseState` 是初始状态（例如 `0`），`queue` 是一个数组，按添加顺序包含数字（例如 `5`）和更新函数（例如 `n => n + 1`）的混合内容。
 
-Your task is to return the final state, just like the tables on this page show!
+你的任务是返回最终状态，就像本页中的表格展示的那样！
 
 <Hint>
 
-If you're feeling stuck, start with this code structure:
+如果你卡住了，可以从这个代码结构开始：
 
 ```js
 export function getFinalState(baseState, queue) {
@@ -388,9 +388,9 @@ export function getFinalState(baseState, queue) {
 
   for (let update of queue) {
     if (typeof update === 'function') {
-      // TODO: apply the updater function
+      // TODO: 应用更新函数
     } else {
-      // TODO: replace the state
+      // TODO: 替换状态
     }
   }
 
@@ -398,7 +398,7 @@ export function getFinalState(baseState, queue) {
 }
 ```
 
-Fill out the missing lines!
+把缺少的几行补上！
 
 </Hint>
 
@@ -408,7 +408,7 @@ Fill out the missing lines!
 export function getFinalState(baseState, queue) {
   let finalState = baseState;
 
-  // TODO: do something with the queue...
+  // TODO: 对队列做点什么...
 
   return finalState;
 }
@@ -495,7 +495,7 @@ function TestCase({
 
 <Solution>
 
-This is the exact algorithm described on this page that React uses to calculate the final state:
+这正是本页描述的 React 计算最终状态所使用的算法：
 
 <Sandpack>
 
@@ -505,10 +505,10 @@ export function getFinalState(baseState, queue) {
 
   for (let update of queue) {
     if (typeof update === 'function') {
-      // Apply the updater function.
+      // 应用更新函数。
       finalState = update(finalState);
     } else {
-      // Replace the next state.
+      // 替换下一个状态。
       finalState = update;
     }
   }
@@ -596,7 +596,7 @@ function TestCase({
 
 </Sandpack>
 
-Now you know how this part of React works!
+现在你知道这部分 React 是如何工作的了！
 
 </Solution>
 

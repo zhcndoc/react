@@ -1,37 +1,37 @@
 ---
-title: Reacting to Input with State
+title: 使用状态响应输入
 ---
 
 <Intro>
 
-React provides a declarative way to manipulate the UI. Instead of manipulating individual pieces of the UI directly, you describe the different states that your component can be in, and switch between them in response to the user input. This is similar to how designers think about the UI.
+React 提供了一种声明式的方式来操作 UI。你不是直接操作 UI 的某一部分，而是描述组件可能处于的不同状态，并根据用户输入在这些状态之间切换。这和设计师思考 UI 的方式很相似。
 
 </Intro>
 
 <YouWillLearn>
 
-* How declarative UI programming differs from imperative UI programming
-* How to enumerate the different visual states your component can be in
-* How to trigger the changes between the different visual states from code
+* 声明式 UI 编程与命令式 UI 编程有何不同
+* 如何列举组件可能处于的不同视觉状态
+* 如何从代码中触发不同视觉状态之间的变化
 
 </YouWillLearn>
 
-## How declarative UI compares to imperative {/*how-declarative-ui-compares-to-imperative*/}
+## 声明式 UI 与命令式 UI 的比较 {/*how-declarative-ui-compares-to-imperative*/}
 
-When you design UI interactions, you probably think about how the UI *changes* in response to user actions. Consider a form that lets the user submit an answer:
+当你设计 UI 交互时，你大概会想到 UI 如何随着用户操作而*变化*。考虑一个让用户提交答案的表单：
 
-* When you type something into the form, the "Submit" button **becomes enabled.**
-* When you press "Submit", both the form and the button **become disabled,** and a spinner **appears.**
-* If the network request succeeds, the form **gets hidden,** and the "Thank you" message **appears.**
-* If the network request fails, an error message **appears,** and the form **becomes enabled** again.
+* 当你在表单中输入内容时，“提交”按钮**变为可用。**
+* 当你按下“提交”时，表单和按钮都会**变为不可用，**并且会**出现**一个加载动画。
+* 如果网络请求成功，表单**会被隐藏，**而“谢谢你”消息**会出现。**
+* 如果网络请求失败，**会出现**一条错误消息，并且表单再次**变为可用。**
 
-In **imperative programming,** the above corresponds directly to how you implement interaction. You have to write the exact instructions to manipulate the UI depending on what just happened. Here's another way to think about this: imagine riding next to someone in a car and telling them turn by turn where to go.
+在**命令式编程**中，上面的描述会直接对应你如何实现交互。你必须根据刚刚发生的事情，编写精确的指令来操作 UI。换个方式来理解：想象你坐在车里，告诉旁边的人每一个转弯该往哪里走。
 
-<Illustration src="/images/docs/illustrations/i_imperative-ui-programming.png"  alt="In a car driven by an anxious-looking person representing JavaScript, a passenger orders the driver to execute a sequence of complicated turn by turn navigations." />
+<Illustration src="/images/docs/illustrations/i_imperative-ui-programming.png"  alt="车里坐着一个看起来很焦虑的人代表 JavaScript，乘客指挥司机按复杂的转弯导航顺序行驶。" />
 
-They don't know where you want to go, they just follow your commands. (And if you get the directions wrong, you end up in the wrong place!) It's called *imperative* because you have to "command" each element, from the spinner to the button, telling the computer *how* to update the UI.
+他们不知道你想去哪里，只是照着你的命令做。（如果你给的路线错了，最后就会到错的地方！）之所以叫*命令式*，是因为你必须“命令”每个元素，从加载动画到按钮，告诉计算机*如何*更新 UI。
 
-In this example of imperative UI programming, the form is built *without* React. It only uses the browser [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model):
+在这个命令式 UI 编程示例中，表单是在*没有* React 的情况下构建的。它只使用浏览器的 [DOM](https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model)：
 
 <Sandpack>
 
@@ -81,13 +81,13 @@ function disable(el) {
 }
 
 function submitForm(answer) {
-  // Pretend it's hitting the network.
+  // 假装它在请求网络。
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       if (answer.toLowerCase() === 'istanbul') {
         resolve();
       } else {
-        reject(new Error('Good guess but a wrong answer. Try again!'));
+        reject(new Error('猜得不错，但答案错了。再试一次！'));
       }
     }, 1500);
   });
@@ -111,17 +111,17 @@ textarea.oninput = handleTextareaChange;
 
 ```html public/index.html
 <form id="form">
-  <h2>City quiz</h2>
+  <h2>城市测验</h2>
   <p>
-    What city is located on two continents?
+    哪座城市位于两个大陆上？
   </p>
   <textarea id="textarea"></textarea>
   <br />
-  <button id="button" disabled>Submit</button>
-  <p id="loading" style="display: none">Loading...</p>
+  <button id="button" disabled>提交</button>
+  <p id="loading" style="display: none">加载中...</p>
   <p id="error" style="display: none; color: red;"></p>
 </form>
-<h1 id="success" style="display: none">That's right!</h1>
+<h1 id="success" style="display: none">答对了！</h1>
 
 <style>
 * { box-sizing: border-box; }
@@ -131,37 +131,37 @@ body { font-family: sans-serif; margin: 20px; padding: 0; }
 
 </Sandpack>
 
-Manipulating the UI imperatively works well enough for isolated examples, but it gets exponentially more difficult to manage in more complex systems. Imagine updating a page full of different forms like this one. Adding a new UI element or a new interaction would require carefully checking all existing code to make sure you haven't introduced a bug (for example, forgetting to show or hide something).
+对于独立的例子来说，命令式地操作 UI 还算足够好用，但在更复杂的系统中，管理起来会变得指数级更困难。想象一下要更新一个充满类似表单的页面。添加一个新的 UI 元素或新的交互，都需要仔细检查所有现有代码，以确保你没有引入 bug（例如，忘记显示或隐藏某些内容）。
 
-React was built to solve this problem.
+React 就是为了解决这个问题而构建的。
 
-In React, you don't directly manipulate the UI--meaning you don't enable, disable, show, or hide components directly. Instead, you **declare what you want to show,** and React figures out how to update the UI. Think of getting into a taxi and telling the driver where you want to go instead of telling them exactly where to turn. It's the driver's job to get you there, and they might even know some shortcuts you haven't considered!
+在 React 中，你不会直接操作 UI——也就是说，你不会直接启用、禁用、显示或隐藏组件。相反，你会**声明你想要显示什么，**然后由 React 来决定如何更新 UI。可以把它想象成坐进出租车，告诉司机你想去哪里，而不是告诉他每一个转弯该怎么走。把你送到目的地是司机的工作，而且他们甚至可能知道一些你没想到的捷径！
 
-<Illustration src="/images/docs/illustrations/i_declarative-ui-programming.png" alt="In a car driven by React, a passenger asks to be taken to a specific place on the map. React figures out how to do that." />
+<Illustration src="/images/docs/illustrations/i_declarative-ui-programming.png" alt="由 React 驾驶的车里，乘客要求被带到地图上的某个具体地点。React 负责想办法实现这一点。" />
 
-## Thinking about UI declaratively {/*thinking-about-ui-declaratively*/}
+## 声明式地思考 UI {/*thinking-about-ui-declaratively*/}
 
-You've seen how to implement a form imperatively above. To better understand how to think in React, you'll walk through reimplementing this UI in React below:
+你已经看过上面如何用命令式方式实现一个表单。为了更好地理解如何在 React 中思考，下面你将一步步在 React 中重新实现这个 UI：
 
-1. **Identify** your component's different visual states
-2. **Determine** what triggers those state changes
-3. **Represent** the state in memory using `useState`
-4. **Remove** any non-essential state variables
-5. **Connect** the event handlers to set the state
+1. **识别**组件的不同视觉状态
+2. **确定**是什么触发了这些状态变化
+3. 使用 `useState` **在内存中表示**状态
+4. **移除**任何非必要的状态变量
+5. **连接**事件处理函数来设置状态
 
-### Step 1: Identify your component's different visual states {/*step-1-identify-your-components-different-visual-states*/}
+### 第 1 步：识别组件的不同视觉状态 {/*step-1-identify-your-components-different-visual-states*/}
 
-In computer science, you may hear about a ["state machine"](https://en.wikipedia.org/wiki/Finite-state_machine) being in one of several “states”. If you work with a designer, you may have seen mockups for different "visual states". React stands at the intersection of design and computer science, so both of these ideas are sources of inspiration.
+在计算机科学中，你可能会听到“[状态机](https://en.wikipedia.org/wiki/Finite-state_machine)”处于若干“状态”之一。如果你和设计师合作过，你可能见过不同“视觉状态”的设计稿。React 处于设计和计算机科学的交汇点，因此这两种想法都是灵感来源。
 
-First, you need to visualize all the different "states" of the UI the user might see:
+首先，你需要把用户可能看到的 UI 的所有不同“状态”都想象出来：
 
-* **Empty**: Form has a disabled "Submit" button.
-* **Typing**: Form has an enabled "Submit" button.
-* **Submitting**: Form is completely disabled. Spinner is shown.
-* **Success**: "Thank you" message is shown instead of a form.
-* **Error**: Same as Typing state, but with an extra error message.
+* **空白**：表单有一个不可用的“提交”按钮。
+* **输入中**：表单有一个可用的“提交”按钮。
+* **提交中**：表单完全不可用。显示加载动画。
+* **成功**：显示“谢谢你”消息，而不是表单。
+* **错误**：与输入中状态相同，但额外显示一条错误消息。
 
-Just like a designer, you'll want to "mock up" or create "mocks" for the different states before you add logic. For example, here is a mock for just the visual part of the form. This mock is controlled by a prop called `status` with a default value of `'empty'`:
+就像设计师一样，在添加逻辑之前，你最好先为不同状态“画出原型”或创建“模拟图”。例如，下面只是表单视觉部分的一个模拟图。这个模拟图由一个名为 `status` 的 prop 控制，默认值为 `'empty'`：
 
 <Sandpack>
 
@@ -170,19 +170,19 @@ export default function Form({
   status = 'empty'
 }) {
   if (status === 'success') {
-    return <h1>That's right!</h1>
+    return <h1>答对了！</h1>
   }
   return (
     <>
-      <h2>City quiz</h2>
+      <h2>城市测验</h2>
       <p>
-        In which city is there a billboard that turns air into drinkable water?
+        在哪个城市有一块把空气变成可饮用水的广告牌？
       </p>
       <form>
         <textarea />
         <br />
         <button>
-          Submit
+          提交
         </button>
       </form>
     </>
@@ -192,23 +192,23 @@ export default function Form({
 
 </Sandpack>
 
-You could call that prop anything you like, the naming is not important. Try editing `status = 'empty'` to `status = 'success'` to see the success message appear. Mocking lets you quickly iterate on the UI before you wire up any logic. Here is a more fleshed out prototype of the same component, still "controlled" by the `status` prop:
+这个 prop 叫什么都可以，命名并不重要。试着把 `status = 'empty'` 改成 `status = 'success'`，看看成功消息出现。模拟图可以让你在编写任何逻辑之前快速迭代 UI。下面是同一个组件更完整的原型，仍然由 `status` prop“控制”：
 
 <Sandpack>
 
 ```js
 export default function Form({
-  // Try 'submitting', 'error', 'success':
+  // 试试 'submitting'、'error'、'success'：
   status = 'empty'
 }) {
   if (status === 'success') {
-    return <h1>That's right!</h1>
+    return <h1>答对了！</h1>
   }
   return (
     <>
-      <h2>City quiz</h2>
+      <h2>城市测验</h2>
       <p>
-        In which city is there a billboard that turns air into drinkable water?
+        在哪个城市有一块把空气变成可饮用水的广告牌？
       </p>
       <form>
         <textarea disabled={
@@ -219,11 +219,11 @@ export default function Form({
           status === 'empty' ||
           status === 'submitting'
         }>
-          Submit
+          提交
         </button>
         {status === 'error' &&
           <p className="Error">
-            Good guess but a wrong answer. Try again!
+            猜得不错，但答案错了。再试一次！
           </p>
         }
       </form>
@@ -240,9 +240,9 @@ export default function Form({
 
 <DeepDive>
 
-#### Displaying many visual states at once {/*displaying-many-visual-states-at-once*/}
+#### 同时展示多个视觉状态 {/*displaying-many-visual-states-at-once*/}
 
-If a component has a lot of visual states, it can be convenient to show them all on one page:
+如果一个组件有很多视觉状态，把它们都显示在同一页上会很方便：
 
 <Sandpack>
 
@@ -262,7 +262,7 @@ export default function App() {
     <>
       {statuses.map(status => (
         <section key={status}>
-          <h4>Form ({status}):</h4>
+          <h4>表单（{status}）：</h4>
           <Form status={status} />
         </section>
       ))}
@@ -274,7 +274,7 @@ export default function App() {
 ```js src/Form.js
 export default function Form({ status }) {
   if (status === 'success') {
-    return <h1>That's right!</h1>
+    return <h1>答对了！</h1>
   }
   return (
     <form>
@@ -286,11 +286,11 @@ export default function Form({ status }) {
         status === 'empty' ||
         status === 'submitting'
       }>
-        Submit
+        提交
       </button>
       {status === 'error' &&
         <p className="Error">
-          Good guess but a wrong answer. Try again!
+          猜得不错，但答案错了。再试一次！
         </p>
       }
     </form>
@@ -307,61 +307,61 @@ body { margin: 0; }
 
 </Sandpack>
 
-Pages like this are often called "living styleguides" or "storybooks".
+这样的页面常被称为“活的样式指南”或“Storybook”。
 
 </DeepDive>
 
-### Step 2: Determine what triggers those state changes {/*step-2-determine-what-triggers-those-state-changes*/}
+### 第 2 步：确定是什么触发这些状态变化 {/*step-2-determine-what-triggers-those-state-changes*/}
 
-You can trigger state updates in response to two kinds of inputs:
+你可以响应两类输入来触发状态更新：
 
-* **Human inputs,** like clicking a button, typing in a field, navigating a link.
-* **Computer inputs,** like a network response arriving, a timeout completing, an image loading.
+* **人为输入**，例如点击按钮、在字段中输入、点击链接导航。
+* **计算机输入**，例如网络响应到达、超时完成、图片加载完成。
 
 <IllustrationBlock>
-  <Illustration caption="Human inputs" alt="A finger." src="/images/docs/illustrations/i_inputs1.png" />
-  <Illustration caption="Computer inputs" alt="Ones and zeroes." src="/images/docs/illustrations/i_inputs2.png" />
+  <Illustration caption="人为输入" alt="一根手指。" src="/images/docs/illustrations/i_inputs1.png" />
+  <Illustration caption="计算机输入" alt="一串零和一。" src="/images/docs/illustrations/i_inputs2.png" />
 </IllustrationBlock>
 
-In both cases, **you must set [state variables](/learn/state-a-components-memory#anatomy-of-usestate) to update the UI.** For the form you're developing, you will need to change state in response to a few different inputs:
+在这两种情况下，**你都必须设置[状态变量](/learn/state-a-components-memory#anatomy-of-usestate)来更新 UI。** 对于你正在开发的表单，你需要根据几种不同输入来改变状态：
 
-* **Changing the text input** (human) should switch it from the *Empty* state to the *Typing* state or back, depending on whether the text box is empty or not.
-* **Clicking the Submit button** (human) should switch it to the *Submitting* state.
-* **Successful network response** (computer) should switch it to the *Success* state.
-* **Failed network response** (computer) should switch it to the *Error* state with the matching error message.
+* **更改文本输入**（人为）应该会把它从*空白*状态切换到*输入中*状态，或者相反，取决于文本框是否为空。
+* **点击提交按钮**（人为）应该会把它切换到*提交中*状态。
+* **成功的网络响应**（计算机）应该会切换到*成功*状态。
+* **失败的网络响应**（计算机）应该会切换到带有匹配错误消息的*错误*状态。
 
 <Note>
 
-Notice that human inputs often require [event handlers](/learn/responding-to-events)!
+注意，人为输入通常需要[事件处理函数](/learn/responding-to-events)！
 
 </Note>
 
-To help visualize this flow, try drawing each state on paper as a labeled circle, and each change between two states as an arrow. You can sketch out many flows this way and sort out bugs long before implementation.
+为了帮助你可视化这个流程，试着把每个状态画成一个带标签的圆圈，再把两个状态之间的变化画成箭头。你可以这样草绘出很多流程，并在实现之前就找出 bug。
 
 <DiagramGroup>
 
-<Diagram name="responding_to_input_flow" height={350} width={688} alt="Flow chart moving left to right with 5 nodes. The first node labeled 'empty' has one edge labeled 'start typing' connected to a node labeled 'typing'. That node has one edge labeled 'press submit' connected to a node labeled 'submitting', which has two edges. The left edge is labeled 'network error' connecting to a node labeled 'error'. The right edge is labeled 'network success' connecting to a node labeled 'success'.">
+<Diagram name="responding_to_input_flow" height={350} width={688} alt="从左到右移动的流程图，有 5 个节点。第一个标注为 'empty' 的节点有一条标注 'start typing' 的边连接到标注为 'typing' 的节点。该节点有一条标注 'press submit' 的边连接到标注为 'submitting' 的节点，而后者有两条边。左边标注 'network error'，连接到标注为 'error' 的节点。右边标注 'network success'，连接到标注为 'success' 的节点。">
 
-Form states
+表单状态
 
 </Diagram>
 
 </DiagramGroup>
 
-### Step 3: Represent the state in memory with `useState` {/*step-3-represent-the-state-in-memory-with-usestate*/}
+### 第 3 步：使用 `useState` 在内存中表示状态 {/*step-3-represent-the-state-in-memory-with-usestate*/}
 
-Next you'll need to represent the visual states of your component in memory with [`useState`.](/reference/react/useState) Simplicity is key: each piece of state is a "moving piece", and **you want as few "moving pieces" as possible.** More complexity leads to more bugs!
+接下来，你需要使用 [`useState`.](/reference/react/useState) 在内存中表示组件的视觉状态。简洁是关键：每一份状态都是一个“活动部件”，而**你希望这样的“活动部件”越少越好。** 复杂度越高，bug 就越多！
 
-Start with the state that *absolutely must* be there. For example, you'll need to store the `answer` for the input, and the `error` (if it exists) to store the last error:
+先从*绝对必须存在*的状态开始。例如，你需要存储输入框的 `answer`，以及（如果存在）存储上一次错误的 `error`：
 
 ```js
 const [answer, setAnswer] = useState('');
 const [error, setError] = useState(null);
 ```
 
-Then, you'll need a state variable representing which one of the visual states that you want to display. There's usually more than a single way to represent that in memory, so you'll need to experiment with it.
+然后，你还需要一个状态变量来表示你想显示哪一种视觉状态。通常，在内存中表示这件事的方法不止一种，所以你需要进行尝试。
 
-If you struggle to think of the best way immediately, start by adding enough state that you're *definitely* sure that all the possible visual states are covered:
+如果你一时想不出最好的方式，可以先添加足够多的状态，确保你*完全确定*覆盖了所有可能的视觉状态：
 
 ```js
 const [isEmpty, setIsEmpty] = useState(true);
@@ -371,39 +371,39 @@ const [isSuccess, setIsSuccess] = useState(false);
 const [isError, setIsError] = useState(false);
 ```
 
-Your first idea likely won't be the best, but that's ok--refactoring state is a part of the process!
+你最初的想法很可能不是最好的，但没关系——重构状态本身就是这个过程的一部分！
 
-### Step 4: Remove any non-essential state variables {/*step-4-remove-any-non-essential-state-variables*/}
+### 第 4 步：移除任何非必要的状态变量 {/*step-4-remove-any-non-essential-state-variables*/}
 
-You want to avoid duplication in the state content so you're only tracking what is essential. Spending a little time on refactoring your state structure will make your components easier to understand, reduce duplication, and avoid unintended meanings. Your goal is to **prevent the cases where the state in memory doesn't represent any valid UI that you'd want a user to see.** (For example, you never want to show an error message and disable the input at the same time, or the user won't be able to correct the error!)
+你希望避免状态内容中的重复，这样你只追踪必要的信息。花一点时间重构状态结构，会让你的组件更容易理解、减少重复，并避免不想要的含义。你的目标是**防止出现这种情况：内存中的状态并不代表你希望用户看到的任何有效 UI。**（例如，你绝不希望同时显示错误消息和禁用输入框，否则用户就无法修正错误了！）
 
-Here are some questions you can ask about your state variables:
+你可以针对状态变量问自己几个问题：
 
-* **Does this state cause a paradox?** For example, `isTyping` and `isSubmitting` can't both be `true`. A paradox usually means that the state is not constrained enough. There are four possible combinations of two booleans, but only three correspond to valid states. To remove the "impossible" state, you can combine these into a `status` that must be one of three values: `'typing'`, `'submitting'`, or `'success'`.
-* **Is the same information available in another state variable already?** Another paradox: `isEmpty` and `isTyping` can't be `true` at the same time. By making them separate state variables, you risk them going out of sync and causing bugs. Fortunately, you can remove `isEmpty` and instead check `answer.length === 0`.
-* **Can you get the same information from the inverse of another state variable?** `isError` is not needed because you can check `error !== null` instead.
+* **这个状态会造成悖论吗？** 例如，`isTyping` 和 `isSubmitting` 不可能同时为 `true`。悖论通常意味着状态约束得不够。两个布尔值有四种组合，但只有三种对应有效状态。要移除这个“不可能”状态，你可以把它们合并成一个必须取三个值之一的 `status`：`'typing'`、`'submitting'` 或 `'success'`。
+* **同样的信息是否已经可以从另一个状态变量中得到？** 另一个悖论：`isEmpty` 和 `isTyping` 不可能同时为 `true`。把它们拆成独立状态变量，会有不同步并引发 bug 的风险。幸运的是，你可以移除 `isEmpty`，改为检查 `answer.length === 0`。
+* **是否可以通过另一个状态变量的反面得到同样的信息？** 不需要 `isError`，因为你可以改为检查 `error !== null`。
 
-After this clean-up, you're left with 3 (down from 7!) *essential* state variables:
+经过这一步清理后，你只剩下 3 个（从 7 个减少到了 3 个！）*必要*状态变量：
 
 ```js
 const [answer, setAnswer] = useState('');
 const [error, setError] = useState(null);
-const [status, setStatus] = useState('typing'); // 'typing', 'submitting', or 'success'
+const [status, setStatus] = useState('typing'); // 'typing'、'submitting' 或 'success'
 ```
 
-You know they are essential, because you can't remove any of them without breaking the functionality.
+你知道它们是必要的，因为如果移除其中任何一个，功能就会被破坏。
 
 <DeepDive>
 
-#### Eliminating “impossible” states with a reducer {/*eliminating-impossible-states-with-a-reducer*/}
+#### 用 reducer 消除“不可能”状态 {/*eliminating-impossible-states-with-a-reducer*/}
 
-These three variables are a good enough representation of this form's state. However, there are still some intermediate states that don't fully make sense. For example, a non-null `error` doesn't make sense when `status` is `'success'`. To model the state more precisely, you can [extract it into a reducer.](/learn/extracting-state-logic-into-a-reducer) Reducers let you unify multiple state variables into a single object and consolidate all the related logic!
+这三个变量已经足够表示这个表单的状态了。不过，仍然存在一些中间状态并不完全合理。例如，当 `status` 是 `'success'` 时，非空的 `error` 就没有意义。为了更精确地建模状态，你可以[把它提取到 reducer 中。](/learn/extracting-state-logic-into-a-reducer) Reducer 可以让你把多个状态变量统一到一个对象里，并将所有相关逻辑集中起来！
 
 </DeepDive>
 
-### Step 5: Connect the event handlers to set state {/*step-5-connect-the-event-handlers-to-set-state*/}
+### 第 5 步：连接事件处理函数来设置状态 {/*step-5-connect-the-event-handlers-to-set-state*/}
 
-Lastly, create event handlers that update the state. Below is the final form, with all event handlers wired up:
+最后，创建更新状态的事件处理函数。下面是最终版本，已经连接好了所有事件处理函数：
 
 <Sandpack>
 
@@ -416,7 +416,7 @@ export default function Form() {
   const [status, setStatus] = useState('typing');
 
   if (status === 'success') {
-    return <h1>That's right!</h1>
+    return <h1>答对了！</h1>
   }
 
   async function handleSubmit(e) {
@@ -437,9 +437,9 @@ export default function Form() {
 
   return (
     <>
-      <h2>City quiz</h2>
+      <h2>城市测验</h2>
       <p>
-        In which city is there a billboard that turns air into drinkable water?
+        在哪个城市有一块把空气变成可饮用水的广告牌？
       </p>
       <form onSubmit={handleSubmit}>
         <textarea
@@ -452,7 +452,7 @@ export default function Form() {
           answer.length === 0 ||
           status === 'submitting'
         }>
-          Submit
+          提交
         </button>
         {error !== null &&
           <p className="Error">
@@ -465,12 +465,12 @@ export default function Form() {
 }
 
 function submitForm(answer) {
-  // Pretend it's hitting the network.
+  // 假装它在请求网络。
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       let shouldError = answer.toLowerCase() !== 'lima'
       if (shouldError) {
-        reject(new Error('Good guess but a wrong answer. Try again!'));
+        reject(new Error('猜得不错，但答案错了。再试一次！'));
       } else {
         resolve();
       }
@@ -485,17 +485,17 @@ function submitForm(answer) {
 
 </Sandpack>
 
-Although this code is longer than the original imperative example, it is much less fragile. Expressing all interactions as state changes lets you later introduce new visual states without breaking existing ones. It also lets you change what should be displayed in each state without changing the logic of the interaction itself.
+虽然这段代码比原来的命令式示例更长，但它脆弱性要小得多。把所有交互都表达成状态变化，可以让你以后在不破坏现有视觉状态的情况下引入新的视觉状态。它还允许你在不改变交互逻辑本身的前提下，改变每个状态下应该显示什么。
 
 <Recap>
 
-* Declarative programming means describing the UI for each visual state rather than micromanaging the UI (imperative).
-* When developing a component:
-  1. Identify all its visual states.
-  2. Determine the human and computer triggers for state changes.
-  3. Model the state with `useState`.
-  4. Remove non-essential state to avoid bugs and paradoxes.
-  5. Connect the event handlers to set state.
+* 声明式编程意味着描述每个视觉状态下的 UI，而不是微观管理 UI（命令式）。
+* 开发组件时：
+  1. 识别它所有的视觉状态。
+  2. 确定触发状态变化的人为和计算机输入。
+  3. 使用 `useState` 建模状态。
+  4. 移除非必要状态以避免 bug 和悖论。
+  5. 连接事件处理函数来设置状态。
 
 </Recap>
 
@@ -503,11 +503,11 @@ Although this code is longer than the original imperative example, it is much le
 
 <Challenges>
 
-#### Add and remove a CSS class {/*add-and-remove-a-css-class*/}
+#### 添加和移除 CSS 类 {/*add-and-remove-a-css-class*/}
 
-Make it so that clicking on the picture *removes* the `background--active` CSS class from the outer `<div>`, but *adds* the `picture--active` class to the `<img>`. Clicking the background again should restore the original CSS classes.
+使得点击图片时，会从外层 `<div>` 移除 `background--active` 这个 CSS 类，但会给 `<img>` 添加 `picture--active` 类。再次点击背景时，应恢复原始的 CSS 类。
 
-Visually, you should expect that clicking on the picture removes the purple background and highlights the picture border. Clicking outside the picture highlights the background, but removes the picture border highlight.
+从视觉上看，你应该预期点击图片会移除紫色背景，并高亮图片边框。点击图片外部会高亮背景，但移除图片边框的高亮。
 
 <Sandpack>
 
@@ -517,7 +517,7 @@ export default function Picture() {
     <div className="background background--active">
       <img
         className="picture"
-        alt="Rainbow houses in Kampung Pelangi, Indonesia"
+        alt="印度尼西亚 Kampung Pelangi 的彩虹房屋"
         src="https://react.dev/images/docs/scientists/5qwVYb1.jpeg"
       />
     </div>
@@ -557,14 +557,14 @@ body { margin: 0; padding: 0; height: 250px; }
 
 <Solution>
 
-This component has two visual states: when the image is active, and when the image is inactive:
+这个组件有两个视觉状态：图片处于激活状态，以及图片处于未激活状态：
 
-* When the image is active, the CSS classes are `background` and `picture picture--active`.
-* When the image is inactive, the CSS classes are `background background--active` and `picture`.
+* 当图片处于激活状态时，CSS 类是 `background` 和 `picture picture--active`。
+* 当图片处于未激活状态时，CSS 类是 `background background--active` 和 `picture`。
 
-A single boolean state variable is enough to remember whether the image is active. The original task was to remove or add CSS classes. However, in React you need to *describe* what you want to see rather than *manipulate* the UI elements. So you need to calculate both CSS classes based on the current state. You also need to [stop the propagation](/learn/responding-to-events#stopping-propagation) so that clicking the image doesn't register as a click on the background.
+一个布尔状态变量就足以记住图片是否处于激活状态。原始任务是移除或添加 CSS 类。不过在 React 中，你需要*描述*你想看到什么，而不是*操作* UI 元素。所以你需要根据当前状态计算两个 CSS 类。你还需要[停止冒泡](/learn/responding-to-events#stopping-propagation)，这样点击图片就不会被记录为点击背景。
 
-Verify that this version works by clicking the image and then outside of it:
+通过先点击图片，再点击图片外部来验证这个版本是否工作：
 
 <Sandpack>
 
@@ -593,7 +593,7 @@ export default function Picture() {
           setIsActive(true);
         }}
         className={pictureClassName}
-        alt="Rainbow houses in Kampung Pelangi, Indonesia"
+        alt="印度尼西亚 Kampung Pelangi 的彩虹房屋"
         src="https://react.dev/images/docs/scientists/5qwVYb1.jpeg"
       />
     </div>
@@ -631,7 +631,7 @@ body { margin: 0; padding: 0; height: 250px; }
 
 </Sandpack>
 
-Alternatively, you could return two separate chunks of JSX:
+或者，你也可以返回两段不同的 JSX：
 
 <Sandpack>
 
@@ -648,7 +648,7 @@ export default function Picture() {
       >
         <img
           className="picture picture--active"
-          alt="Rainbow houses in Kampung Pelangi, Indonesia"
+          alt="印度尼西亚 Kampung Pelangi 的彩虹房屋"
           src="https://react.dev/images/docs/scientists/5qwVYb1.jpeg"
           onClick={e => e.stopPropagation()}
         />
@@ -659,7 +659,7 @@ export default function Picture() {
     <div className="background background--active">
       <img
         className="picture"
-        alt="Rainbow houses in Kampung Pelangi, Indonesia"
+        alt="印度尼西亚 Kampung Pelangi 的彩虹房屋"
         src="https://react.dev/images/docs/scientists/5qwVYb1.jpeg"
         onClick={() => setIsActive(true)}
       />
@@ -698,13 +698,13 @@ body { margin: 0; padding: 0; height: 250px; }
 
 </Sandpack>
 
-Keep in mind that if two different JSX chunks describe the same tree, their nesting (first `<div>` → first `<img>`) has to line up. Otherwise, toggling `isActive` would recreate the whole tree below and [reset its state.](/learn/preserving-and-resetting-state) This is why, if a similar JSX tree gets returned in both cases, it is better to write them as a single piece of JSX.
+请记住，如果两段不同的 JSX 描述的是同一棵树，它们的嵌套结构（第一个 `<div>` → 第一个 `<img>`）必须对得上。否则，切换 `isActive` 会重新创建下面的整个树，并[重置其状态。](/learn/preserving-and-resetting-state) 这就是为什么，如果两种情况下返回的 JSX 树类似，最好把它们写成同一段 JSX。
 
 </Solution>
 
-#### Profile editor {/*profile-editor*/}
+#### 个人资料编辑器 {/*profile-editor*/}
 
-Here is a small form implemented with plain JavaScript and DOM. Play with it to understand its behavior:
+这里有一个使用原生 JavaScript 和 DOM 实现的小表单。先试着操作它，理解它的行为：
 
 <Sandpack>
 
@@ -773,7 +773,7 @@ lastNameInput.oninput = handleLastNameChange;
 ```html public/index.html
 <form id="form">
   <label>
-    First name:
+    名字：
     <b id="firstNameText">Jane</b>
     <input
       id="firstNameInput"
@@ -781,15 +781,15 @@ lastNameInput.oninput = handleLastNameChange;
       style="display: none">
   </label>
   <label>
-    Last name:
+    姓氏：
     <b id="lastNameText">Jacobs</b>
     <input
       id="lastNameInput"
       value="Jacobs"
       style="display: none">
   </label>
-  <button type="submit" id="editButton">Edit Profile</button>
-  <p><i id="helloText">Hello, Jane Jacobs!</i></p>
+  <button type="submit" id="editButton">编辑资料</button>
+  <p><i id="helloText">你好，Jane Jacobs！</i></p>
 </form>
 
 <style>
@@ -801,11 +801,11 @@ label { display: block; margin-bottom: 20px; }
 
 </Sandpack>
 
-This form switches between two modes: in the editing mode, you see the inputs, and in the viewing mode, you only see the result. The button label changes between "Edit" and "Save" depending on the mode you're in. When you change the inputs, the welcome message at the bottom updates in real time.
+这个表单在两种模式之间切换：在编辑模式下，你会看到输入框；在查看模式下，你只会看到结果。按钮标签会根据模式在“编辑”和“保存”之间变化。当你修改输入框时，底部的欢迎信息会实时更新。
 
-Your task is to reimplement it in React in the sandbox below. For your convenience, the markup was already converted to JSX, but you'll need to make it show and hide the inputs like the original does.
+你的任务是在下面的沙盒中用 React 重新实现它。为了方便起见，标记已经被转换为 JSX，但你需要让它像原版一样显示和隐藏输入框。
 
-Make sure that it updates the text at the bottom, too!
+也要确保底部文本会更新！
 
 <Sandpack>
 
@@ -814,19 +814,19 @@ export default function EditProfile() {
   return (
     <form>
       <label>
-        First name:{' '}
+        名字：{' '}
         <b>Jane</b>
         <input />
       </label>
       <label>
-        Last name:{' '}
+        姓氏：{' '}
         <b>Jacobs</b>
         <input />
       </label>
       <button type="submit">
-        Edit Profile
+        编辑资料
       </button>
-      <p><i>Hello, Jane Jacobs!</i></p>
+      <p><i>你好，Jane Jacobs！</i></p>
     </form>
   );
 }
@@ -840,9 +840,9 @@ label { display: block; margin-bottom: 20px; }
 
 <Solution>
 
-You will need two state variables to hold the input values: `firstName` and `lastName`. You're also going to need an `isEditing` state variable that holds whether to display the inputs or not. You should _not_ need a `fullName` variable because the full name can always be calculated from the `firstName` and the `lastName`.
+你需要两个状态变量来保存输入值：`firstName` 和 `lastName`。你还需要一个 `isEditing` 状态变量，用来表示是否显示输入框。你_不_需要 `fullName` 变量，因为完整姓名总是可以由 `firstName` 和 `lastName` 计算出来。
 
-Finally, you should use [conditional rendering](/learn/conditional-rendering) to show or hide the inputs depending on `isEditing`.
+最后，你应该根据 `isEditing` 使用[条件渲染](/learn/conditional-rendering)来显示或隐藏输入框。
 
 <Sandpack>
 
@@ -860,7 +860,7 @@ export default function EditProfile() {
       setIsEditing(!isEditing);
     }}>
       <label>
-        First name:{' '}
+        名字：{' '}
         {isEditing ? (
           <input
             value={firstName}
@@ -873,7 +873,7 @@ export default function EditProfile() {
         )}
       </label>
       <label>
-        Last name:{' '}
+        姓氏：{' '}
         {isEditing ? (
           <input
             value={lastName}
@@ -886,9 +886,9 @@ export default function EditProfile() {
         )}
       </label>
       <button type="submit">
-        {isEditing ? 'Save' : 'Edit'} Profile
+        {isEditing ? '保存' : '编辑'} 资料
       </button>
-      <p><i>Hello, {firstName} {lastName}!</i></p>
+      <p><i>你好，{firstName} {lastName}！</i></p>
     </form>
   );
 }
@@ -900,13 +900,13 @@ label { display: block; margin-bottom: 20px; }
 
 </Sandpack>
 
-Compare this solution to the original imperative code. How are they different?
+把这个解决方案和原来的命令式代码比较一下。它们有什么不同？
 
 </Solution>
 
-#### Refactor the imperative solution without React {/*refactor-the-imperative-solution-without-react*/}
+#### 在不使用 React 的情况下重构命令式方案 {/*refactor-the-imperative-solution-without-react*/}
 
-Here is the original sandbox from the previous challenge, written imperatively without React:
+下面是上一个挑战中的原始沙盒，它是用命令式方式写的，没有使用 React：
 
 <Sandpack>
 
@@ -975,7 +975,7 @@ lastNameInput.oninput = handleLastNameChange;
 ```html public/index.html
 <form id="form">
   <label>
-    First name:
+    名字：
     <b id="firstNameText">Jane</b>
     <input
       id="firstNameInput"
@@ -983,15 +983,15 @@ lastNameInput.oninput = handleLastNameChange;
       style="display: none">
   </label>
   <label>
-    Last name:
+    姓氏：
     <b id="lastNameText">Jacobs</b>
     <input
       id="lastNameInput"
       value="Jacobs"
       style="display: none">
   </label>
-  <button type="submit" id="editButton">Edit Profile</button>
-  <p><i id="helloText">Hello, Jane Jacobs!</i></p>
+  <button type="submit" id="editButton">编辑资料</button>
+  <p><i id="helloText">你好，Jane Jacobs！</i></p>
 </form>
 
 <style>
@@ -1003,9 +1003,9 @@ label { display: block; margin-bottom: 20px; }
 
 </Sandpack>
 
-Imagine React didn't exist. Can you refactor this code in a way that makes the logic less fragile and more similar to the React version? What would it look like if the state was explicit, like in React?
+假设 React 并不存在。你能以一种让逻辑更不脆弱、并且更接近 React 版本的方式重构这段代码吗？如果状态是显式的，就像在 React 里那样，它会是什么样子？
 
-If you're struggling to think where to start, the stub below already has most of the structure in place. If you start here, fill in the missing logic in the `updateDOM` function. (Refer to the original code where needed.)
+如果你在想从哪里开始有困难，下面的骨架已经有了大部分结构。如果你从这里开始，就把缺失的逻辑补到 `updateDOM` 函数里。（需要时参考原始代码。）
 
 <Sandpack>
 
@@ -1044,13 +1044,13 @@ function setIsEditing(value) {
 
 function updateDOM() {
   if (isEditing) {
-    editButton.textContent = 'Save Profile';
-    // TODO: show inputs, hide content
+    editButton.textContent = '保存资料';
+    // TODO: 显示输入框，隐藏内容
   } else {
-    editButton.textContent = 'Edit Profile';
-    // TODO: hide inputs, show content
+    editButton.textContent = '编辑资料';
+    // TODO: 隐藏输入框，显示内容
   }
-  // TODO: update text labels
+  // TODO: 更新文本标签
 }
 
 function hide(el) {
@@ -1082,7 +1082,7 @@ lastNameInput.oninput = handleLastNameChange;
 ```html public/index.html
 <form id="form">
   <label>
-    First name:
+    名字：
     <b id="firstNameText">Jane</b>
     <input
       id="firstNameInput"
@@ -1090,15 +1090,15 @@ lastNameInput.oninput = handleLastNameChange;
       style="display: none">
   </label>
   <label>
-    Last name:
+    姓氏：
     <b id="lastNameText">Jacobs</b>
     <input
       id="lastNameInput"
       value="Jacobs"
       style="display: none">
   </label>
-  <button type="submit" id="editButton">Edit Profile</button>
-  <p><i id="helloText">Hello, Jane Jacobs!</i></p>
+  <button type="submit" id="editButton">编辑资料</button>
+  <p><i id="helloText">你好，Jane Jacobs！</i></p>
 </form>
 
 <style>
@@ -1112,7 +1112,7 @@ label { display: block; margin-bottom: 20px; }
 
 <Solution>
 
-The missing logic included toggling the display of inputs and content, and updating the labels:
+缺失的逻辑包括切换输入框和内容的显示，以及更新标签：
 
 <Sandpack>
 
@@ -1151,13 +1151,13 @@ function setIsEditing(value) {
 
 function updateDOM() {
   if (isEditing) {
-    editButton.textContent = 'Save Profile';
+    editButton.textContent = '保存资料';
     hide(firstNameText);
     hide(lastNameText);
     show(firstNameInput);
     show(lastNameInput);
   } else {
-    editButton.textContent = 'Edit Profile';
+    editButton.textContent = '编辑资料';
     hide(firstNameInput);
     hide(lastNameInput);
     show(firstNameText);
@@ -1166,9 +1166,9 @@ function updateDOM() {
   firstNameText.textContent = firstName;
   lastNameText.textContent = lastName;
   helloText.textContent = (
-    'Hello ' +
+    '你好，' +
     firstName + ' ' +
-    lastName + '!'
+    lastName + '！'
   );
 }
 
@@ -1201,7 +1201,7 @@ lastNameInput.oninput = handleLastNameChange;
 ```html public/index.html
 <form id="form">
   <label>
-    First name:
+    名字：
     <b id="firstNameText">Jane</b>
     <input
       id="firstNameInput"
@@ -1209,15 +1209,15 @@ lastNameInput.oninput = handleLastNameChange;
       style="display: none">
   </label>
   <label>
-    Last name:
+    姓氏：
     <b id="lastNameText">Jacobs</b>
     <input
       id="lastNameInput"
       value="Jacobs"
       style="display: none">
   </label>
-  <button type="submit" id="editButton">Edit Profile</button>
-  <p><i id="helloText">Hello, Jane Jacobs!</i></p>
+  <button type="submit" id="editButton">编辑资料</button>
+  <p><i id="helloText">你好，Jane Jacobs！</i></p>
 </form>
 
 <style>
@@ -1229,7 +1229,7 @@ label { display: block; margin-bottom: 20px; }
 
 </Sandpack>
 
-The `updateDOM` function you wrote shows what React does under the hood when you set the state. (However, React also avoids touching the DOM for properties that have not changed since the last time they were set.)
+你写的 `updateDOM` 函数展示了当你设置状态时，React 在底层所做的事情。（不过，React 还会避免触碰那些自上次设置后没有变化的 DOM 属性。）
 
 </Solution>
 

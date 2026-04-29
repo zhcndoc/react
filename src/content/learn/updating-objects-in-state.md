@@ -1,57 +1,57 @@
 ---
-title: Updating Objects in State
+title: 更新状态中的对象
 ---
 
 <Intro>
 
-State can hold any kind of JavaScript value, including objects. But you shouldn't change objects that you hold in the React state directly. Instead, when you want to update an object, you need to create a new one (or make a copy of an existing one), and then set the state to use that copy.
+状态可以保存任何类型的 JavaScript 值，包括对象。但你不应该直接修改存放在 React 状态中的对象。相反，当你想更新一个对象时，你需要创建一个新的对象（或者创建现有对象的副本），然后将状态设置为使用那个副本。
 
 </Intro>
 
 <YouWillLearn>
 
-- How to correctly update an object in React state
-- How to update a nested object without mutating it
-- What immutability is, and how not to break it
-- How to make object copying less repetitive with Immer
+- 如何在 React 状态中正确更新对象
+- 如何在不修改嵌套对象的情况下更新它
+- 什么是不可变性，以及如何不破坏它
+- 如何借助 Immer 让对象拷贝更少重复
 
 </YouWillLearn>
 
-## What's a mutation? {/*whats-a-mutation*/}
+## 什么是 mutation？ {/*whats-a-mutation*/}
 
-You can store any kind of JavaScript value in state.
+你可以在状态中存储任何类型的 JavaScript 值。
 
 ```js
 const [x, setX] = useState(0);
 ```
 
-So far you've been working with numbers, strings, and booleans. These kinds of JavaScript values are "immutable", meaning unchangeable or "read-only". You can trigger a re-render to _replace_ a value:
+到目前为止，你一直在处理数字、字符串和布尔值。这些 JavaScript 值是“不可变的”，意思是不可更改或“只读”。你可以触发重新渲染来_替换_一个值：
 
 ```js
 setX(5);
 ```
 
-The `x` state changed from `0` to `5`, but the _number `0` itself_ did not change. It's not possible to make any changes to the built-in primitive values like numbers, strings, and booleans in JavaScript.
+`x` 状态从 `0` 变成了 `5`，但_数字 `0` 本身_并没有改变。在 JavaScript 中，不可能对数字、字符串和布尔值这类内置原始值做任何修改。
 
-Now consider an object in state:
+现在考虑状态中的一个对象：
 
 ```js
 const [position, setPosition] = useState({ x: 0, y: 0 });
 ```
 
-Technically, it is possible to change the contents of _the object itself_. **This is called a mutation:**
+从技术上讲，修改_对象本身_的内容是可能的。**这叫做 mutation（突变）：**
 
 ```js
 position.x = 5;
 ```
 
-However, although objects in React state are technically mutable, you should treat them **as if** they were immutable--like numbers, booleans, and strings. Instead of mutating them, you should always replace them.
+然而，虽然 React 状态中的对象从技术上讲是可变的，你应该把它们**当作**不可变的——就像数字、布尔值和字符串一样。不要修改它们，而应该始终替换它们。
 
-## Treat state as read-only {/*treat-state-as-read-only*/}
+## 将状态视为只读 {/*treat-state-as-read-only*/}
 
-In other words, you should **treat any JavaScript object that you put into state as read-only.**
+换句话说，你应该**把放进状态里的任何 JavaScript 对象都当作只读的。**
 
-This example holds an object in state to represent the current pointer position. The red dot is supposed to move when you touch or move the cursor over the preview area. But the dot stays in the initial position:
+这个示例在状态中保存了一个对象，用来表示当前指针位置。红点应该在你触摸或在预览区域内移动光标时跟着移动。但红点却停留在初始位置：
 
 <Sandpack>
 
@@ -95,7 +95,7 @@ body { margin: 0; padding: 0; height: 250px; }
 
 </Sandpack>
 
-The problem is with this bit of code.
+问题出在这段代码上。
 
 ```js
 onPointerMove={e => {
@@ -104,9 +104,9 @@ onPointerMove={e => {
 }}
 ```
 
-This code modifies the object assigned to `position` from [the previous render.](/learn/state-as-a-snapshot#rendering-takes-a-snapshot-in-time) But without using the state setting function, React has no idea that object has changed. So React does not do anything in response. It's like trying to change the order after you've already eaten the meal. While mutating state can work in some cases, we don't recommend it. You should treat the state value you have access to in a render as read-only.
+这段代码修改了赋给 `position` 的对象，而这个对象来自[上一次渲染。](/learn/state-as-a-snapshot#rendering-takes-a-snapshot-in-time)但如果不使用状态设置函数，React 根本不知道这个对象已经改变了。所以 React 不会对此做出任何反应。这就像你已经吃完这顿饭之后才想去改变顺序一样。虽然在某些情况下修改状态可以工作，但我们不建议这样做。你应该把在一次渲染中可访问到的状态值视为只读。
 
-To actually [trigger a re-render](/learn/state-as-a-snapshot#setting-state-triggers-renders) in this case, **create a *new* object and pass it to the state setting function:**
+要在这种情况下真正[触发重新渲染](/learn/state-as-a-snapshot#setting-state-triggers-renders)，**请创建一个*新*对象并把它传给状态设置函数：**
 
 ```js
 onPointerMove={e => {
@@ -117,12 +117,12 @@ onPointerMove={e => {
 }}
 ```
 
-With `setPosition`, you're telling React:
+使用 `setPosition` 时，你是在告诉 React：
 
-* Replace `position` with this new object
-* And render this component again
+* 用这个新对象替换 `position`
+* 然后再次渲染这个组件
 
-Notice how the red dot now follows your pointer when you touch or hover over the preview area:
+注意当你触摸或在预览区域悬停时，红点现在会跟随你的指针移动：
 
 <Sandpack>
 
@@ -170,16 +170,16 @@ body { margin: 0; padding: 0; height: 250px; }
 
 <DeepDive>
 
-#### Local mutation is fine {/*local-mutation-is-fine*/}
+#### 局部 mutation 是可以的 {/*local-mutation-is-fine*/}
 
-Code like this is a problem because it modifies an *existing* object in state:
+像这样的代码会有问题，因为它修改了状态中*已有*的对象：
 
 ```js
 position.x = e.clientX;
 position.y = e.clientY;
 ```
 
-But code like this is **absolutely fine** because you're mutating a fresh object you have *just created*:
+但像这样的代码**完全没问题**，因为你修改的是一个你*刚刚创建*出来的新对象：
 
 ```js
 const nextPosition = {};
@@ -188,7 +188,7 @@ nextPosition.y = e.clientY;
 setPosition(nextPosition);
 ```
 
-In fact, it is completely equivalent to writing this:
+实际上，它完全等价于这样写：
 
 ```js
 setPosition({
@@ -197,15 +197,15 @@ setPosition({
 });
 ```
 
-Mutation is only a problem when you change *existing* objects that are already in state. Mutating an object you've just created is okay because *no other code references it yet.* Changing it isn't going to accidentally impact something that depends on it. This is called a "local mutation". You can even do local mutation [while rendering.](/learn/keeping-components-pure#local-mutation-your-components-little-secret) Very convenient and completely okay!
+mutation 只有在你修改已经在状态中的*已有*对象时才会成为问题。修改你刚创建的对象是可以的，因为*还没有任何其他代码引用它。*修改它不会意外影响依赖它的东西。这叫做“局部 mutation”。你甚至可以在[渲染时](/learn/keeping-components-pure#local-mutation-your-components-little-secret)进行局部 mutation。非常方便，而且完全没问题！
 
 </DeepDive>
 
-## Copying objects with the spread syntax {/*copying-objects-with-the-spread-syntax*/}
+## 使用展开语法复制对象 {/*copying-objects-with-the-spread-syntax*/}
 
-In the previous example, the `position` object is always created fresh from the current cursor position. But often, you will want to include *existing* data as a part of the new object you're creating. For example, you may want to update *only one* field in a form, but keep the previous values for all other fields.
+在前面的示例中，`position` 对象总是根据当前光标位置重新创建。但很多时候，你会希望把*已有*数据作为你正在创建的新对象的一部分。例如，你可能只想更新表单中的*一个*字段，同时保留其他所有字段的先前值。
 
-These input fields don't work because the `onChange` handlers mutate the state:
+这些输入框无法工作，因为 `onChange` 处理函数修改了状态：
 
 <Sandpack>
 
@@ -234,21 +234,21 @@ export default function Form() {
   return (
     <>
       <label>
-        First name:
+        名字：
         <input
           value={person.firstName}
           onChange={handleFirstNameChange}
         />
       </label>
       <label>
-        Last name:
+        姓氏：
         <input
           value={person.lastName}
           onChange={handleLastNameChange}
         />
       </label>
       <label>
-        Email:
+        电子邮件：
         <input
           value={person.email}
           onChange={handleEmailChange}
@@ -271,34 +271,34 @@ input { margin-left: 5px; margin-bottom: 5px; }
 
 </Sandpack>
 
-For example, this line mutates the state from a past render:
+例如，这一行修改了来自过去某次渲染的状态：
 
 ```js
 person.firstName = e.target.value;
 ```
 
-The reliable way to get the behavior you're looking for is to create a new object and pass it to `setPerson`. But here, you want to also **copy the existing data into it** because only one of the fields has changed:
+要获得你想要的行为，可靠的方法是创建一个新对象并把它传给 `setPerson`。但在这里，你还想**把现有数据复制进去**，因为只有一个字段发生了变化：
 
 ```js
 setPerson({
-  firstName: e.target.value, // New first name from the input
+  firstName: e.target.value, // 输入框中的新名字
   lastName: person.lastName,
   email: person.email
 });
 ```
 
-You can use the `...` [object spread](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#spread_in_object_literals) syntax so that you don't need to copy every property separately.
+你可以使用 `...` [对象展开](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#spread_in_object_literals)语法，这样就不必分别复制每个属性。
 
 ```js
 setPerson({
-  ...person, // Copy the old fields
-  firstName: e.target.value // But override this one
+  ...person, // 复制旧字段
+  firstName: e.target.value // 但覆盖这一项
 });
 ```
 
-Now the form works!
+现在这个表单可以工作了！
 
-Notice how you didn't declare a separate state variable for each input field. For large forms, keeping all data grouped in an object is very convenient--as long as you update it correctly!
+注意你并没有为每个输入框都声明一个单独的状态变量。对于大型表单，把所有数据分组存放在一个对象里非常方便——只要你正确更新它就行！
 
 <Sandpack>
 
@@ -336,21 +336,21 @@ export default function Form() {
   return (
     <>
       <label>
-        First name:
+        名字：
         <input
           value={person.firstName}
           onChange={handleFirstNameChange}
         />
       </label>
       <label>
-        Last name:
+        姓氏：
         <input
           value={person.lastName}
           onChange={handleLastNameChange}
         />
       </label>
       <label>
-        Email:
+        电子邮件：
         <input
           value={person.email}
           onChange={handleEmailChange}
@@ -373,13 +373,13 @@ input { margin-left: 5px; margin-bottom: 5px; }
 
 </Sandpack>
 
-Note that the `...` spread syntax is "shallow"--it only copies things one level deep. This makes it fast, but it also means that if you want to update a nested property, you'll have to use it more than once.
+请注意，`...` 展开语法是“浅层”的——它只会复制一层内容。这使它很快，但也意味着如果你想更新嵌套属性，就必须多次使用它。
 
 <DeepDive>
 
-#### Using a single event handler for multiple fields {/*using-a-single-event-handler-for-multiple-fields*/}
+#### 对多个字段使用单个事件处理函数 {/*using-a-single-event-handler-for-multiple-fields*/}
 
-You can also use the `[` and `]` braces inside your object definition to specify a property with a dynamic name. Here is the same example, but with a single event handler instead of three different ones:
+你也可以在对象定义中使用 `[` 和 `]` 大括号来指定一个动态名称的属性。下面是同一个示例，但用一个事件处理函数代替了三个不同的处理函数：
 
 <Sandpack>
 
@@ -403,7 +403,7 @@ export default function Form() {
   return (
     <>
       <label>
-        First name:
+        名字：
         <input
           name="firstName"
           value={person.firstName}
@@ -411,7 +411,7 @@ export default function Form() {
         />
       </label>
       <label>
-        Last name:
+        姓氏：
         <input
           name="lastName"
           value={person.lastName}
@@ -419,7 +419,7 @@ export default function Form() {
         />
       </label>
       <label>
-        Email:
+        电子邮件：
         <input
           name="email"
           value={person.email}
@@ -443,13 +443,13 @@ input { margin-left: 5px; margin-bottom: 5px; }
 
 </Sandpack>
 
-Here, `e.target.name` refers to the `name` property given to the `<input>` DOM element.
+这里，`e.target.name` 指的是赋给 `<input>` DOM 元素的 `name` 属性。
 
 </DeepDive>
 
-## Updating a nested object {/*updating-a-nested-object*/}
+## 更新嵌套对象 {/*updating-a-nested-object*/}
 
-Consider a nested object structure like this:
+考虑一个这样的嵌套对象结构：
 
 ```js
 const [person, setPerson] = useState({
@@ -462,13 +462,13 @@ const [person, setPerson] = useState({
 });
 ```
 
-If you wanted to update `person.artwork.city`, it's clear how to do it with mutation:
+如果你想更新 `person.artwork.city`，用 mutation 的方式很容易做到：
 
 ```js
 person.artwork.city = 'New Delhi';
 ```
 
-But in React, you treat state as immutable! In order to change `city`, you would first need to produce the new `artwork` object (pre-populated with data from the previous one), and then produce the new `person` object which points at the new `artwork`:
+但在 React 中，你应该把 state 当作不可变的！为了改变 `city`，你首先需要生成新的 `artwork` 对象（预先填入前一个对象中的数据），然后再生成指向新 `artwork` 的新的 `person` 对象：
 
 ```js
 const nextArtwork = { ...person.artwork, city: 'New Delhi' };
@@ -476,19 +476,19 @@ const nextPerson = { ...person, artwork: nextArtwork };
 setPerson(nextPerson);
 ```
 
-Or, written as a single function call:
+或者，写成一次函数调用：
 
 ```js
 setPerson({
-  ...person, // Copy other fields
-  artwork: { // but replace the artwork
-    ...person.artwork, // with the same one
-    city: 'New Delhi' // but in New Delhi!
+  ...person, // 复制其他字段
+  artwork: { // 但替换 artwork
+    ...person.artwork, // 使用相同的那个
+    city: 'New Delhi' // 但城市改为 New Delhi！
   }
 });
 ```
 
-This gets a bit wordy, but it works fine for many cases:
+这会有点啰嗦，但在很多情况下都很好用：
 
 <Sandpack>
 
@@ -545,28 +545,28 @@ export default function Form() {
   return (
     <>
       <label>
-        Name:
+        名字：
         <input
           value={person.name}
           onChange={handleNameChange}
         />
       </label>
       <label>
-        Title:
+        标题：
         <input
           value={person.artwork.title}
           onChange={handleTitleChange}
         />
       </label>
       <label>
-        City:
+        城市：
         <input
           value={person.artwork.city}
           onChange={handleCityChange}
         />
       </label>
       <label>
-        Image:
+        图片：
         <input
           value={person.artwork.image}
           onChange={handleImageChange}
@@ -574,10 +574,10 @@ export default function Form() {
       </label>
       <p>
         <i>{person.artwork.title}</i>
-        {' by '}
+        {' 作者 '}
         {person.name}
         <br />
-        (located in {person.artwork.city})
+        （位于 {person.artwork.city}）
       </p>
       <img
         src={person.artwork.image}
@@ -598,9 +598,9 @@ img { width: 200px; height: 200px; }
 
 <DeepDive>
 
-#### Objects are not really nested {/*objects-are-not-really-nested*/}
+#### 对象其实并不是真的嵌套 {/*objects-are-not-really-nested*/}
 
-An object like this appears "nested" in code:
+像这样的对象在代码中看起来是“嵌套”的：
 
 ```js
 let obj = {
@@ -613,7 +613,7 @@ let obj = {
 };
 ```
 
-However, "nesting" is an inaccurate way to think about how objects behave. When the code executes, there is no such thing as a "nested" object. You are really looking at two different objects:
+然而，“嵌套”并不是理解对象行为的准确方式。当代码执行时，并不存在所谓“嵌套”的对象。你实际上看到的是两个不同的对象：
 
 ```js
 let obj1 = {
@@ -628,7 +628,7 @@ let obj2 = {
 };
 ```
 
-The `obj1` object is not "inside" `obj2`. For example, `obj3` could "point" at `obj1` too:
+`obj1` 并不“在” `obj2` 里面。比如，`obj3` 也可以“指向” `obj1`：
 
 ```js
 let obj1 = {
@@ -648,13 +648,13 @@ let obj3 = {
 };
 ```
 
-If you were to mutate `obj3.artwork.city`, it would affect both `obj2.artwork.city` and `obj1.city`. This is because `obj3.artwork`, `obj2.artwork`, and `obj1` are the same object. This is difficult to see when you think of objects as "nested". Instead, they are separate objects "pointing" at each other with properties.
+如果你去修改 `obj3.artwork.city`，它会同时影响 `obj2.artwork.city` 和 `obj1.city`。这是因为 `obj3.artwork`、`obj2.artwork` 和 `obj1` 是同一个对象。当你把对象想成“嵌套”的时候，这一点很难看出来。实际上，它们是彼此独立的对象，只是通过属性“指向”彼此。
 
 </DeepDive>
 
-### Write concise update logic with Immer {/*write-concise-update-logic-with-immer*/}
+### 使用 Immer 编写简洁的更新逻辑 {/*write-concise-update-logic-with-immer*/}
 
-If your state is deeply nested, you might want to consider [flattening it.](/learn/choosing-the-state-structure#avoid-deeply-nested-state) But, if you don't want to change your state structure, you might prefer a shortcut to nested spreads. [Immer](https://github.com/immerjs/use-immer) is a popular library that lets you write using the convenient but mutating syntax and takes care of producing the copies for you. With Immer, the code you write looks like you are "breaking the rules" and mutating an object:
+如果你的 state 嵌套很深，你可以考虑[把它扁平化。](/learn/choosing-the-state-structure#avoid-deeply-nested-state)但如果你不想改变 state 结构，你可能会更喜欢一个替代深层展开语法的快捷方式。[Immer](https://github.com/immerjs/use-immer) 是一个很受欢迎的库，它允许你使用方便但看起来像 mutation 的语法来编写代码，并负责为你生成副本。使用 Immer 时，你写出来的代码看起来像是在“违反规则”并修改对象：
 
 ```js
 updatePerson(draft => {
@@ -662,22 +662,22 @@ updatePerson(draft => {
 });
 ```
 
-But unlike a regular mutation, it doesn't overwrite the past state!
+但和普通的 mutation 不同，它不会覆盖过去的 state！
 
 <DeepDive>
 
-#### How does Immer work? {/*how-does-immer-work*/}
+#### Immer 是如何工作的？ {/*how-does-immer-work*/}
 
-The `draft` provided by Immer is a special type of object, called a [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy), that "records" what you do with it. This is why you can mutate it freely as much as you like! Under the hood, Immer figures out which parts of the `draft` have been changed, and produces a completely new object that contains your edits.
+Immer 提供的 `draft` 是一种特殊类型的对象，叫做 [Proxy](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy)，它会“记录”你对它所做的操作。这就是为什么你可以随心所欲地修改它！在内部，Immer 会找出 `draft` 中哪些部分发生了变化，并生成一个包含你修改内容的全新对象。
 
 </DeepDive>
 
-To try Immer:
+要试用 Immer：
 
-1. Run `npm install use-immer` to add Immer as a dependency
-2. Then replace `import { useState } from 'react'` with `import { useImmer } from 'use-immer'`
+1. 运行 `npm install use-immer` 将 Immer 添加为依赖
+2. 然后将 `import { useState } from 'react'` 替换为 `import { useImmer } from 'use-immer'`
 
-Here is the above example converted to Immer:
+下面是将上面的示例转换为 Immer 的版本：
 
 <Sandpack>
 
@@ -721,28 +721,28 @@ export default function Form() {
   return (
     <>
       <label>
-        Name:
+        名字：
         <input
           value={person.name}
           onChange={handleNameChange}
         />
       </label>
       <label>
-        Title:
+        标题：
         <input
           value={person.artwork.title}
           onChange={handleTitleChange}
         />
       </label>
       <label>
-        City:
+        城市：
         <input
           value={person.artwork.city}
           onChange={handleCityChange}
         />
       </label>
       <label>
-        Image:
+        图片：
         <input
           value={person.artwork.image}
           onChange={handleImageChange}
@@ -750,10 +750,10 @@ export default function Form() {
       </label>
       <p>
         <i>{person.artwork.title}</i>
-        {' by '}
+        {' 作者 '}
         {person.name}
         <br />
-        (located in {person.artwork.city})
+        （位于 {person.artwork.city}）
       </p>
       <img
         src={person.artwork.image}
@@ -790,33 +790,33 @@ img { width: 200px; height: 200px; }
 
 </Sandpack>
 
-Notice how much more concise the event handlers have become. You can mix and match `useState` and `useImmer` in a single component as much as you like. Immer is a great way to keep the update handlers concise, especially if there's nesting in your state, and copying objects leads to repetitive code.
+注意这些事件处理函数变得多么简洁了。你可以在同一个组件中随意混用 `useState` 和 `useImmer`。Immer 是保持更新处理函数简洁的绝佳方式，尤其是在 state 有嵌套、并且对象复制会导致重复代码时。
 
 <DeepDive>
 
-#### Why is mutating state not recommended in React? {/*why-is-mutating-state-not-recommended-in-react*/}
+#### 为什么不建议在 React 中直接修改 state？ {/*why-is-mutating-state-not-recommended-in-react*/}
 
-There are a few reasons:
+原因有几个：
 
-* **Debugging:** If you use `console.log` and don't mutate state, your past logs won't get clobbered by the more recent state changes. So you can clearly see how state has changed between renders.
-* **Optimizations:** Common React [optimization strategies](/reference/react/memo) rely on skipping work if previous props or state are the same as the next ones. If you never mutate state, it is very fast to check whether there were any changes. If `prevObj === obj`, you can be sure that nothing could have changed inside of it.
-* **New Features:** The new React features we're building rely on state being [treated like a snapshot.](/learn/state-as-a-snapshot) If you're mutating past versions of state, that may prevent you from using the new features.
-* **Requirement Changes:** Some application features, like implementing Undo/Redo, showing a history of changes, or letting the user reset a form to earlier values, are easier to do when nothing is mutated. This is because you can keep past copies of state in memory, and reuse them when appropriate. If you start with a mutative approach, features like this can be difficult to add later on.
-* **Simpler Implementation:** Because React does not rely on mutation, it does not need to do anything special with your objects. It does not need to hijack their properties, always wrap them into Proxies, or do other work at initialization as many "reactive" solutions do. This is also why React lets you put any object into state--no matter how large--without additional performance or correctness pitfalls.
+* **调试：** 如果你使用 `console.log` 且不修改 state，那么过去的日志不会被更新的 state 变化覆盖。这样你就可以清楚地看到两次渲染之间 state 是如何变化的。
+* **优化：** 常见的 React [优化策略](/reference/react/memo) 依赖于在前后 props 或 state 相同时跳过工作。如果你从不修改 state，就很容易检查是否发生了变化。如果 `prevObj === obj`，你就能确定它内部没有任何东西发生变化。
+* **新特性：** 我们正在构建的 React 新特性依赖于将 state [当作快照来处理。](/learn/state-as-a-snapshot)如果你在修改 state 的历史版本，这可能会阻止你使用这些新特性。
+* **需求变化：** 一些应用功能，比如实现撤销/重做、显示变更历史，或者让用户把表单重置为更早的值，在没有 mutation 的情况下更容易实现。这是因为你可以将过去的 state 副本保存在内存中，并在合适的时候重用它们。如果你一开始采用的是修改式写法，那么之后再添加这类功能会很困难。
+* **实现更简单：** 因为 React 不依赖 mutation，它不需要对你的对象做任何特殊处理。它不需要劫持它们的属性、总是把它们包装成 Proxy，或者像许多“响应式”方案那样在初始化时做其他工作。这也是为什么 React 允许你把任何对象放入 state——不管它有多大——而不会带来额外的性能或正确性陷阱。
 
-In practice, you can often "get away" with mutating state in React, but we strongly advise you not to do that so that you can use new React features developed with this approach in mind. Future contributors and perhaps even your future self will thank you!
+在实践中，你常常可以在 React 中“侥幸”直接修改 state，但我们强烈建议你不要这样做，这样你才能使用按照这种思路开发的新 React 特性。未来的贡献者，甚至未来的你自己，都会感谢你！
 
 </DeepDive>
 
 <Recap>
 
-* Treat all state in React as immutable.
-* When you store objects in state, mutating them will not trigger renders and will change the state in previous render "snapshots".
-* Instead of mutating an object, create a *new* version of it, and trigger a re-render by setting state to it.
-* You can use the `{...obj, something: 'newValue'}` object spread syntax to create copies of objects.
-* Spread syntax is shallow: it only copies one level deep.
-* To update a nested object, you need to create copies all the way up from the place you're updating.
-* To reduce repetitive copying code, use Immer.
+* 把 React 中的所有 state 都视为不可变的。
+* 当你把对象存入 state 时，修改它们不会触发重新渲染，而且会改变之前渲染“快照”中的 state。
+* 不要直接修改对象，而是创建它的一个*新*版本，并通过把 state 设置为它来触发重新渲染。
+* 你可以使用 `{...obj, something: 'newValue'}` 这种对象展开语法来创建对象副本。
+* 展开语法是浅拷贝：它只复制一层深度。
+* 要更新一个嵌套对象，你需要从你要更新的位置一路向上都创建副本。
+* 为了减少重复的复制代码，可以使用 Immer。
 
 </Recap>
 
@@ -824,11 +824,11 @@ In practice, you can often "get away" with mutating state in React, but we stron
 
 <Challenges>
 
-#### Fix incorrect state updates {/*fix-incorrect-state-updates*/}
+#### 修复错误的 state 更新 {/*fix-incorrect-state-updates*/}
 
-This form has a few bugs. Click the button that increases the score a few times. Notice that it does not increase. Then edit the first name, and notice that the score has suddenly "caught up" with your changes. Finally, edit the last name, and notice that the score has disappeared completely.
+这个表单有几个 bug。点击几次增加分数的按钮。注意分数并没有增加。然后编辑名字，注意分数突然“追上”了你的修改。最后，编辑姓氏，注意分数完全消失了。
 
-Your task is to fix all of these bugs. As you fix them, explain why each of them happens.
+你的任务是修复所有这些 bug。修复时，请解释每个 bug 发生的原因。
 
 <Sandpack>
 
@@ -862,21 +862,21 @@ export default function Scoreboard() {
   return (
     <>
       <label>
-        Score: <b>{player.score}</b>
+        分数：<b>{player.score}</b>
         {' '}
         <button onClick={handlePlusClick}>
           +1
         </button>
       </label>
       <label>
-        First name:
+        名字：
         <input
           value={player.firstName}
           onChange={handleFirstNameChange}
         />
       </label>
       <label>
-        Last name:
+        姓氏：
         <input
           value={player.lastName}
           onChange={handleLastNameChange}
@@ -896,7 +896,7 @@ input { margin-left: 5px; margin-bottom: 5px; }
 
 <Solution>
 
-Here is a version with both bugs fixed:
+下面是修复了这两个 bug 的版本：
 
 <Sandpack>
 
@@ -934,21 +934,21 @@ export default function Scoreboard() {
   return (
     <>
       <label>
-        Score: <b>{player.score}</b>
+        分数：<b>{player.score}</b>
         {' '}
         <button onClick={handlePlusClick}>
           +1
         </button>
       </label>
       <label>
-        First name:
+        名字：
         <input
           value={player.firstName}
           onChange={handleFirstNameChange}
         />
       </label>
       <label>
-        Last name:
+        姓氏：
         <input
           value={player.lastName}
           onChange={handleLastNameChange}
@@ -966,23 +966,23 @@ input { margin-left: 5px; margin-bottom: 5px; }
 
 </Sandpack>
 
-The problem with `handlePlusClick` was that it mutated the `player` object. As a result, React did not know that there's a reason to re-render, and did not update the score on the screen. This is why, when you edited the first name, the state got updated, triggering a re-render which _also_ updated the score on the screen.
+`handlePlusClick` 的问题在于它修改了 `player` 对象。因此，React 不知道有理由重新渲染，也就没有更新屏幕上的分数。这就是为什么当你编辑名字时，state 被更新了，触发了一次重新渲染，而这次重新渲染也顺带更新了屏幕上的分数。
 
-The problem with `handleLastNameChange` was that it did not copy the existing `...player` fields into the new object. This is why the score got lost after you edited the last name.
+`handleLastNameChange` 的问题在于，它没有把现有的 `...player` 字段复制到新对象中。这就是为什么你编辑姓氏后分数会丢失。
 
 </Solution>
 
-#### Find and fix the mutation {/*find-and-fix-the-mutation*/}
+#### 查找并修复 mutation {/*find-and-fix-the-mutation*/}
 
-There is a draggable box on a static background. You can change the box's color using the select input.
+有一个可拖动的盒子，背景是静态的。你可以通过选择框来改变盒子的颜色。
 
-But there is a bug. If you move the box first, and then change its color, the background (which isn't supposed to move!) will "jump" to the box position. But this should not happen: the `Background`'s `position` prop is set to `initialPosition`, which is `{ x: 0, y: 0 }`. Why is the background moving after the color change?
+但这里有一个 bug。如果你先移动盒子，然后再改变它的颜色，背景（本不应该移动！）会“跳”到盒子的位置。但这不应该发生：`Background` 的 `position` prop 被设置为 `initialPosition`，也就是 `{ x: 0, y: 0 }`。为什么更改颜色后背景会移动？
 
-Find the bug and fix it.
+找出 bug 并修复它。
 
 <Hint>
 
-If something unexpected changes, there is a mutation. Find the mutation in `App.js` and fix it.
+如果有东西发生了意外变化，那一定有 mutation。找到 `App.js` 中的 mutation 并修复它。
 
 </Hint>
 
@@ -1034,7 +1034,7 @@ export default function Canvas() {
         position={shape.position}
         onMove={handleMove}
       >
-        Drag me!
+        拖动我！
       </Box>
     </>
   );
@@ -1132,9 +1132,9 @@ select { margin-bottom: 10px; }
 
 <Solution>
 
-The problem was in the mutation inside `handleMove`. It mutated `shape.position`, but that's the same object that `initialPosition` points at. This is why both the shape and the background move. (It's a mutation, so the change doesn't reflect on the screen until an unrelated update--the color change--triggers a re-render.)
+问题出在 `handleMove` 里的 mutation。它修改了 `shape.position`，但那是 `initialPosition` 指向的同一个对象。这就是为什么形状和背景都会移动。（由于这是 mutation，变化不会立刻反映到屏幕上，直到某个无关的更新——颜色变化——触发重新渲染。）
 
-The fix is to remove the mutation from `handleMove`, and use the spread syntax to copy the shape. Note that `+=` is a mutation, so you need to rewrite it to use a regular `+` operation.
+修复方法是移除 `handleMove` 中的 mutation，并使用展开语法复制 shape。注意 `+=` 是 mutation，所以你需要把它改写成普通的 `+` 运算。
 
 <Sandpack>
 
@@ -1189,7 +1189,7 @@ export default function Canvas() {
         position={shape.position}
         onMove={handleMove}
       >
-        Drag me!
+        拖动我！
       </Box>
     </>
   );
@@ -1287,9 +1287,9 @@ select { margin-bottom: 10px; }
 
 </Solution>
 
-#### Update an object with Immer {/*update-an-object-with-immer*/}
+#### 使用 Immer 更新对象 {/*update-an-object-with-immer*/}
 
-This is the same buggy example as in the previous challenge. This time, fix the mutation by using Immer. For your convenience, `useImmer` is already imported, so you need to change the `shape` state variable to use it.
+这是前一个挑战中相同的有 bug 示例。这次，请使用 Immer 来修复 mutation。为方便起见，`useImmer` 已经被导入，所以你只需要把 `shape` state 变量改成使用它即可。
 
 <Sandpack>
 
@@ -1340,7 +1340,7 @@ export default function Canvas() {
         position={shape.position}
         onMove={handleMove}
       >
-        Drag me!
+        拖动我！
       </Box>
     </>
   );
@@ -1456,7 +1456,7 @@ select { margin-bottom: 10px; }
 
 <Solution>
 
-This is the solution rewritten with Immer. Notice how the event handlers are written in a mutating fashion, but the bug does not occur. This is because under the hood, Immer never mutates the existing objects.
+这是使用 Immer 重写后的解法。注意事件处理函数是以修改式风格编写的，但 bug 没有出现。这是因为在底层，Immer 从不修改现有对象。
 
 <Sandpack>
 
@@ -1507,7 +1507,7 @@ export default function Canvas() {
         position={shape.position}
         onMove={handleMove}
       >
-        Drag me!
+        拖动我！
       </Box>
     </>
   );

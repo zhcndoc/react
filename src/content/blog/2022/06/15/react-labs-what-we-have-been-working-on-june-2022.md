@@ -1,82 +1,82 @@
 ---
-title: "React Labs: What We've Been Working On – June 2022"
+title: "React Labs：我们一直在做的工作 – 2022 年 6 月"
 author:  Andrew Clark, Dan Abramov, Jan Kassens, Joseph Savona, Josh Story, Lauren Tan, Luna Ruan, Mengdi Chen, Rick Hanlon, Robert Zhang, Sathya Gunasekaran, Sebastian Markbage, and Xuan Huang
 date: 2022/06/15
-description: React 18 was years in the making, and with it brought valuable lessons for the React team. Its release was the result of many years of research and exploring many paths. Some of those paths were successful; many more were dead-ends that led to new insights. One lesson we’ve learned is that it’s frustrating for the community to wait for new features without having insight into these paths that we’re exploring.
+description: React 18 的诞生历经多年，也为 React 团队带来了宝贵的经验。它的发布是多年研究和探索众多路径的结果。其中一些路径取得了成功；更多的则是死胡同，但也带来了新的洞见。我们学到的一课是：社区在等待新功能时，如果不了解我们正在探索的这些路径，会感到沮丧。
 ---
 
-June 15, 2022 by [Andrew Clark](https://twitter.com/acdlite), [Dan Abramov](https://bsky.app/profile/danabra.mov), [Jan Kassens](https://twitter.com/kassens), [Joseph Savona](https://twitter.com/en_JS), [Josh Story](https://twitter.com/joshcstory), [Lauren Tan](https://twitter.com/potetotes), [Luna Ruan](https://twitter.com/lunaruan), [Mengdi Chen](https://twitter.com/mengdi_en), [Rick Hanlon](https://twitter.com/rickhanlonii), [Robert Zhang](https://twitter.com/jiaxuanzhang01), [Sathya Gunasekaran](https://twitter.com/_gsathya), [Sebastian Markbåge](https://twitter.com/sebmarkbage), and [Xuan Huang](https://twitter.com/Huxpro)
+2022 年 6 月 15 日，作者：[Andrew Clark](https://twitter.com/acdlite)、[Dan Abramov](https://bsky.app/profile/danabra.mov)、[Jan Kassens](https://twitter.com/kassens)、[Joseph Savona](https://twitter.com/en_JS)、[Josh Story](https://twitter.com/joshcstory)、[Lauren Tan](https://twitter.com/potetotes)、[Luna Ruan](https://twitter.com/lunaruan)、[Mengdi Chen](https://twitter.com/mengdi_en)、[Rick Hanlon](https://twitter.com/rickhanlonii)、[Robert Zhang](https://twitter.com/jiaxuanzhang01)、[Sathya Gunasekaran](https://twitter.com/_gsathya)、[Sebastian Markbåge](https://twitter.com/sebmarkbage) 和 [Xuan Huang](https://twitter.com/Huxpro)
 
 ---
 
 <Intro>
 
-[React 18](/blog/2022/03/29/react-v18) was years in the making, and with it brought valuable lessons for the React team. Its release was the result of many years of research and exploring many paths. Some of those paths were successful; many more were dead-ends that led to new insights. One lesson we’ve learned is that it’s frustrating for the community to wait for new features without having insight into these paths that we’re exploring.
+[React 18](/blog/2022/03/29/react-v18) 的诞生历经多年，也为 React 团队带来了宝贵的经验。它的发布是多年研究和探索众多路径的结果。其中一些路径取得了成功；更多的则是死胡同，但也带来了新的洞见。我们学到的一课是：社区在等待新功能时，如果不了解我们正在探索的这些路径，会感到沮丧。
 
 </Intro>
 
 ---
 
-We typically have a number of projects being worked on at any time, ranging from the more experimental to the clearly defined. Looking ahead, we’d like to start regularly sharing more about what we’ve been working on with the community across these projects.
+我们通常会同时推进许多项目，从更具实验性到定义明确的项目都有。展望未来，我们希望开始 नियमित地与社区分享我们在这些项目上正在做的更多工作。
 
-To set expectations, this is not a roadmap with clear timelines. Many of these projects are under active research and are difficult to put concrete ship dates on. They may possibly never even ship in their current iteration depending on what we learn. Instead, we want to share with you the problem spaces we’re actively thinking about, and what we’ve learned so far.
+先说明一下，这不是一份带有明确时间表的路线图。由于其中许多项目仍在积极研究中，很难给出具体的发布时间。根据我们所学到的内容，它们甚至有可能永远不会以当前版本发布。相反，我们想与你们分享我们正在积极思考的问题空间，以及目前为止的收获。
 
 ## Server Components {/*server-components*/}
 
-We announced an [experimental demo of React Server Components](https://legacy.reactjs.org/blog/2020/12/21/data-fetching-with-react-server-components.html) (RSC) in December 2020. Since then we’ve been finishing up its dependencies in React 18, and working on changes inspired by experimental feedback.
+我们在 2020 年 12 月宣布了 [React Server Components 的实验性演示](https://legacy.reactjs.org/blog/2020/12/21/data-fetching-with-react-server-components.html)（RSC）。从那时起，我们一直在完成 React 18 中的相关依赖，并根据实验反馈推进改动。
 
-In particular, we’re abandoning the idea of having forked I/O libraries (eg react-fetch), and instead adopting an async/await model for better compatibility. This doesn’t technically block RSC’s release because you can also use routers for data fetching. Another change is that we’re also moving away from the file extension approach in favor of [annotating boundaries](https://github.com/reactjs/rfcs/pull/189#issuecomment-1116482278).
+具体来说，我们正在放弃拥有分叉 I/O 库（例如 react-fetch）的想法，转而采用 async/await 模型，以获得更好的兼容性。严格来说，这并不会阻止 RSC 发布，因为你也可以使用路由器进行数据获取。另一个变化是，我们也在从文件扩展名方案转向[标注边界](https://github.com/reactjs/rfcs/pull/189#issuecomment-1116482278)。
 
-We’re working together with Vercel and Shopify to unify bundler support for shared semantics in both webpack and Vite. Before launch, we want to make sure that the semantics of RSCs are the same across the whole React ecosystem. This is the major blocker for reaching stable.
+我们正在与 Vercel 和 Shopify 合作，统一 webpack 和 Vite 中对共享语义的打包器支持。在发布之前，我们希望确保 RSC 在整个 React 生态系统中的语义一致。这是达到稳定版的主要阻碍。
 
 ## Asset Loading {/*asset-loading*/}
 
-Currently, assets like scripts, external styles, fonts, and images are typically preloaded and loaded using external systems. This can make it tricky to coordinate across new environments like streaming, Server Components, and more.
-We’re looking at adding APIs to preload and load deduplicated external assets through React APIs that work in all React environments.
+目前，脚本、外部样式、字体和图片等资源通常通过外部系统进行预加载和加载。这会让在流式传输、Server Components 等新环境之间进行协调变得棘手。
+我们正在研究通过 React API 添加预加载和加载去重后的外部资源的能力，并使其能在所有 React 环境中工作。
 
-We’re also looking at having these support Suspense so you can have images, CSS, and fonts that block display until they’re loaded but don’t block streaming and concurrent rendering. This can help avoid [“popcorning“](https://twitter.com/sebmarkbage/status/1516852731251724293) as the visuals pop and layout shifts.
+我们也在考虑让这些能力支持 Suspense，这样你就可以拥有图片、CSS 和字体，它们会阻塞显示，直到加载完成，但不会阻塞流式传输和并发渲染。这有助于避免 [“popcorning“](https://twitter.com/sebmarkbage/status/1516852731251724293)，即视觉内容一闪而过并引发布局偏移的情况。
 
 ## Static Server Rendering Optimizations {/*static-server-rendering-optimizations*/}
 
-Static Site Generation (SSG) and Incremental Static Regeneration (ISR) are great ways to get performance for cacheable pages, but we think we can add features to improve performance of dynamic Server Side Rendering (SSR) – especially when most but not all of the content is cacheable. We're exploring ways to optimize server rendering utilizing compilation and static passes.
+静态站点生成（SSG）和增量静态再生（ISR）是为可缓存页面提供性能的好方法，但我们认为还可以添加一些功能来提升动态服务端渲染（SSR）的性能——尤其是在内容大部分但并非全部都可缓存的时候。我们正在探索利用编译和静态遍历来优化服务端渲染的方法。
 
 ## React Optimizing Compiler {/*react-compiler*/}
 
-We gave an [early preview](https://www.youtube.com/watch?v=lGEMwh32soc) of React Forget at React Conf 2021. It’s a compiler that automatically generates the equivalent of `useMemo` and `useCallback` calls to minimize the cost of re-rendering, while retaining React’s programming model.
+我们在 React Conf 2021 上给出了 React Forget 的[早期预览](https://www.youtube.com/watch?v=lGEMwh32soc)。它是一个编译器，可以自动生成等价于 `useMemo` 和 `useCallback` 调用的代码，以尽量降低重新渲染的成本，同时保留 React 的编程模型。
 
-Recently, we finished a rewrite of the compiler to make it more reliable and capable. This new architecture allows us to analyze and memoize more complex patterns such as the use of [local mutations](/learn/keeping-components-pure#local-mutation-your-components-little-secret), and opens up many new compile-time optimization opportunities beyond just being on par with memoization Hooks.
+最近，我们完成了对这个编译器的重写，使其更加可靠且能力更强。这种新的架构使我们能够分析并记忆更复杂的模式，例如对[局部变更](/learn/keeping-components-pure#local-mutation-your-components-little-secret)的使用，并且除了与记忆化 Hooks 持平之外，还开启了许多新的编译期优化机会。
 
-We’re also working on a playground for exploring many aspects of the compiler. While the goal of the playground is to make development of the compiler easier, we think that it will make it easier to try it out and build intuition for what the compiler does. It reveals various insights into how it works under the hood, and live renders the compiler’s outputs as you type. This will be shipped together with the compiler when it’s released.
+我们也在为这个编译器制作一个 playground，用来探索其许多方面。虽然 playground 的目标是让编译器开发更容易，但我们认为它也会让人更容易上手尝试，并建立对编译器工作的直觉。它会揭示其底层工作方式的各种洞见，并在你输入时实时渲染编译器的输出。它将与编译器一起在发布时一并推出。
 
 ## Offscreen {/*offscreen*/}
 
-Today, if you want to hide and show a component, you have two options. One is to add or remove it from the tree completely. The problem with this approach is that the state of your UI is lost each time you unmount, including state stored in the DOM, like scroll position.
+如今，如果你想隐藏并显示一个组件，你有两种选择。一种是将其从树中彻底添加或移除。这种方法的问题在于，每次你卸载时，UI 的状态都会丢失，包括存储在 DOM 中的状态，比如滚动位置。
 
-The other option is to keep the component mounted and toggle the appearance visually using CSS. This preserves the state of your UI, but it comes at a performance cost, because React must keep rendering the hidden component and all of its children whenever it receives new updates.
+另一种选择是保持组件挂载，并使用 CSS 在视觉上切换其显示状态。这可以保留 UI 的状态，但会带来性能成本，因为 React 必须在收到新更新时继续渲染隐藏的组件及其所有子组件。
 
-Offscreen introduces a third option: hide the UI visually, but deprioritize its content. The idea is similar in spirit to the `content-visibility` CSS property: when content is hidden, it doesn't need to stay in sync with the rest of the UI. React can defer the rendering work until the rest of the app is idle, or until the content becomes visible again.
+Offscreen 引入了第三种选择：在视觉上隐藏 UI，但降低其内容的优先级。这个想法在精神上类似于 `content-visibility` CSS 属性：当内容被隐藏时，它不需要与 UI 的其他部分保持同步。React 可以将渲染工作推迟到应用其余部分空闲时，或直到内容再次变为可见时。
 
-Offscreen is a low level capability that unlocks high level features. Similar to React's other concurrent features like `startTransition`, in most cases you won't interact with the Offscreen API directly, but instead via an opinionated framework to implement patterns like:
+Offscreen 是一种低级能力，它解锁了高级特性。与 React 的其他并发特性类似，比如 `startTransition`，在大多数情况下你不会直接与 Offscreen API 交互，而是通过一个有明确意见的框架来实现如下模式：
 
-* **Instant transitions.** Some routing frameworks already prefetch data to speed up subsequent navigations, like when hovering over a link. With Offscreen, they'll also be able to prerender the next screen in the background.
-* **Reusable state.** Similarly, when navigating between routes or tabs, you can use Offscreen to preserve the state of the previous screen so you can switch back and pick up where you left off.
-* **Virtualized list rendering.** When displaying large lists of items, virtualized list frameworks will prerender more rows than are currently visible. You can use Offscreen to prerender the hidden rows at a lower priority than the visible items in the list.
-* **Backgrounded content.** We're also exploring a related feature for deprioritizing content in the background without hiding it, like when displaying a modal overlay.
+* **即时切换。** 一些路由框架已经会预取数据来加快后续导航，例如在悬停链接时。借助 Offscreen，它们还可以在后台预渲染下一个界面。
+* **可复用状态。** 同样地，在路由或标签页之间导航时，你可以使用 Offscreen 来保留上一个界面的状态，这样你就可以切回去并从离开的地方继续。
+* **虚拟化列表渲染。** 在显示大型项目列表时，虚拟化列表框架会预渲染比当前可见更多的行。你可以使用 Offscreen 以低于列表中可见项目的优先级来预渲染隐藏的行。
+* **后台内容。** 我们也在探索一种相关功能，用于在不隐藏内容的情况下，将后台内容降级处理，比如在显示模态层时。
 
 ## Transition Tracing {/*transition-tracing*/}
 
-Currently, React has two profiling tools. The [original Profiler](https://legacy.reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html) shows an overview of all the commits in a profiling session. For each commit, it also shows all components that rendered and the amount of time it took for them to render. We also have a beta version of a [Timeline Profiler](https://github.com/reactwg/react-18/discussions/76) introduced in React 18 that shows when components schedule updates and when React works on these updates. Both of these profilers help developers identify performance problems in their code.
+目前，React 有两个性能分析工具。[原始 Profiler](https://legacy.reactjs.org/blog/2018/09/10/introducing-the-react-profiler.html) 会显示一次分析会话中所有提交的概览。对于每次提交，它还会显示所有渲染的组件，以及它们各自渲染所花费的时间。我们在 React 18 中还引入了一个 beta 版本的 [Timeline Profiler](https://github.com/reactwg/react-18/discussions/76)，它会显示组件何时调度更新，以及 React 何时处理这些更新。这两个分析工具都能帮助开发者识别代码中的性能问题。
 
-We’ve realized that developers don’t find knowing about individual slow commits or components out of context that useful. It’s more useful to know about what actually causes the slow commits. And that developers want to be able to track specific interactions (eg a button click, an initial load, or a page navigation) to watch for performance regressions and to understand why an interaction was slow and how to fix it.
+我们意识到，开发者并不觉得了解单个缓慢提交或脱离上下文的组件有多大用处。更有用的是知道到底是什么导致了这些缓慢提交。而且开发者希望能够跟踪特定交互（例如按钮点击、初始加载或页面导航），以观察性能回退，并理解为什么某次交互变慢以及如何修复。
 
-We previously tried to solve this issue by creating an [Interaction Tracing API](https://gist.github.com/bvaughn/8de925562903afd2e7a12554adcdda16), but it had some fundamental design flaws that reduced the accuracy of tracking why an interaction was slow and sometimes resulted in interactions never ending. We ended up [removing this API](https://github.com/facebook/react/pull/20037) because of these issues.
+我们之前尝试通过创建一个 [Interaction Tracing API](https://gist.github.com/bvaughn/8de925562903afd2e7a12554adcdda16) 来解决这个问题，但它存在一些根本性的设计缺陷，降低了追踪某次交互为何变慢的准确性，并且有时会导致交互永远不会结束。由于这些问题，我们最终[移除了这个 API](https://github.com/facebook/react/pull/20037)。
 
-We are working on a new version for the Interaction Tracing API (tentatively called Transition Tracing because it is initiated via `startTransition`) that solves these problems.
+我们正在为 Interaction Tracing API 开发一个新版本（暂定名为 Transition Tracing，因为它是通过 `startTransition` 启动的），以解决这些问题。
 
 ## New React Docs {/*new-react-docs*/}
 
-Last year, we announced the beta version of the new React documentation website ([later shipped as react.dev](/blog/2023/03/16/introducing-react-dev)) of the new React documentation website. The new learning materials teach Hooks first and has new diagrams, illustrations, as well as many interactive examples and challenges. We took a break from that work to focus on the React 18 release, but now that React 18 is out, we’re actively working to finish and ship the new documentation.
+去年，我们宣布了新 React 文档网站的 beta 版本（[后来作为 react.dev 发布](/blog/2023/03/16/introducing-react-dev)）的新 React 文档网站。新的学习材料以 Hooks 为起点，配有新的图表、插图，以及许多交互式示例和练习。我们暂停了这项工作，去专注于 React 18 的发布，但现在 React 18 已经推出，我们正在积极完成并发布新的文档。
 
-We are currently writing a detailed section about effects, as we’ve heard that is one of the more challenging topics for both new and experienced React users. [Synchronizing with Effects](/learn/synchronizing-with-effects) is the first published page in the series, and there are more to come in the following weeks. When we first started writing a detailed section about effects, we’ve realized that many common effect patterns can be simplified by adding a new primitive to React. We’ve shared some initial thoughts on that in the [useEvent RFC](https://github.com/reactjs/rfcs/pull/220). It is currently in early research, and we are still iterating on the idea. We appreciate the community’s comments on the RFC so far, as well as the [feedback](https://github.com/reactjs/react.dev/issues/3308) and contributions to the ongoing documentation rewrite. We’d specifically like to thank [Harish Kumar](https://github.com/harish-sethuraman) for submitting and reviewing many improvements to the new website implementation.
+我们目前正在撰写关于 effects 的详细章节，因为我们听说这对新手和有经验的 React 用户来说，都是更具挑战性的主题之一。[使用 Effects 保持同步](/learn/synchronizing-with-effects) 是这一系列中首个发布的页面，未来几周还会有更多内容推出。当我们开始撰写关于 effects 的详细章节时，我们意识到许多常见的 effect 模式可以通过向 React 添加一个新的原语来简化。我们在 [useEvent RFC](https://github.com/reactjs/rfcs/pull/220) 中分享了对此的一些初步想法。它目前仍处于早期研究阶段，我们还在继续迭代这一想法。我们很感谢社区至今对该 RFC 的评论，以及对持续进行中的文档重写所提供的[反馈](https://github.com/reactjs/react.dev/issues/3308)和贡献。我们特别要感谢 [Harish Kumar](https://github.com/harish-sethuraman) 提交并审阅了新网站实现中的许多改进。
 
-*Thanks to [Sophie Alpert](https://twitter.com/sophiebits) for reviewing this blog post!*
+*感谢 [Sophie Alpert](https://twitter.com/sophiebits) 审阅这篇博文！*

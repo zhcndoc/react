@@ -4,7 +4,7 @@ title: captureOwnerStack
 
 <Intro>
 
-`captureOwnerStack` reads the current Owner Stack in development and returns it as a string if available.
+`captureOwnerStack` 在开发环境中读取当前的 Owner Stack，并在可用时将其作为字符串返回。
 
 ```js
 const stack = captureOwnerStack();
@@ -16,11 +16,11 @@ const stack = captureOwnerStack();
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `captureOwnerStack()` {/*captureownerstack*/}
 
-Call `captureOwnerStack` to get the current Owner Stack.
+调用 `captureOwnerStack` 以获取当前的 Owner Stack。
 
 ```js {5,5}
 import * as React from 'react';
@@ -33,33 +33,33 @@ function Component() {
 }
 ```
 
-#### Parameters {/*parameters*/}
+#### 参数 {/*parameters*/}
 
-`captureOwnerStack` does not take any parameters.
+`captureOwnerStack` 不接受任何参数。
 
-#### Returns {/*returns*/}
+#### 返回值 {/*returns*/}
 
-`captureOwnerStack` returns `string | null`.
+`captureOwnerStack` 返回 `string | null`。
 
-Owner Stacks are available in
-- Component render
-- Effects (e.g. `useEffect`)
-- React's event handlers (e.g. `<button onClick={...} />`)
-- React error handlers ([React Root options](/reference/react-dom/client/createRoot#parameters) `onCaughtError`, `onRecoverableError`, and `onUncaughtError`)
+Owner Stacks 可在以下场景中使用：
+- 组件渲染
+- Effects（例如 `useEffect`）
+- React 的事件处理器（例如 `<button onClick={...} />`）
+- React 错误处理器（[React Root options](/reference/react-dom/client/createRoot#parameters) 中的 `onCaughtError`、`onRecoverableError` 和 `onUncaughtError`）
 
-If no Owner Stack is available, `null` is returned (see [Troubleshooting: The Owner Stack is `null`](#the-owner-stack-is-null)).
+如果没有可用的 Owner Stack，则返回 `null`（参见 [故障排查：Owner Stack 为 `null`](#the-owner-stack-is-null)）。
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-- Owner Stacks are only available in development. `captureOwnerStack` will always return `null` outside of development.
+- Owner Stacks 仅在开发环境中可用。`captureOwnerStack` 在开发环境之外始终返回 `null`。
 
 <DeepDive>
 
-#### Owner Stack vs Component Stack {/*owner-stack-vs-component-stack*/}
+#### Owner Stack 与 Component Stack 的区别 {/*owner-stack-vs-component-stack*/}
 
-The Owner Stack is different from the Component Stack available in React error handlers like [`errorInfo.componentStack` in `onUncaughtError`](/reference/react-dom/client/hydrateRoot#error-logging-in-production).
+Owner Stack 与 React 错误处理器中可用的 Component Stack 不同，例如 [`onUncaughtError` 中的 `errorInfo.componentStack`](/reference/react-dom/client/hydrateRoot#error-logging-in-production)。
 
-For example, consider the following code:
+例如，考虑以下代码：
 
 <Sandpack>
 
@@ -105,11 +105,11 @@ import './styles.css';
 
 createRoot(document.createElement('div'), {
   onUncaughtError: (error, errorInfo) => {
-    // The stacks are logged instead of showing them in the UI directly to
-    // highlight that browsers will apply sourcemaps to the logged stacks.
-    // Note that sourcemapping is only applied in the real browser console not
-    // in the fake one displayed on this page.
-    // Press "fork" to be able to view the sourcemapped stack in a real console.
+    // 这里将堆栈信息记录到日志中，而不是直接在 UI 中显示，
+    // 以强调浏览器会对已记录的堆栈应用 sourcemap。
+    // 请注意，sourcemap 只会在真实的浏览器控制台中应用，
+    // 而不会在本页显示的虚假控制台中应用。
+    // 点击“fork”后，你就可以在真实控制台中查看经过 sourcemap 映射的堆栈。
     console.log(errorInfo.componentStack);
     console.log(captureOwnerStack());
   },
@@ -126,18 +126,18 @@ createRoot(document.createElement('div'), {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>文档</title>
   </head>
   <body>
-    <p>Check the console output.</p>
+    <p>检查控制台输出。</p>
   </body>
 </html>
 ```
 
 </Sandpack>
 
-`SubComponent` would throw an error.
-The Component Stack of that error would be
+`SubComponent` 会抛出错误。  
+该错误的 Component Stack 将为：
 
 ```
 at SubComponent
@@ -148,23 +148,23 @@ at React.Suspense
 at App
 ```
 
-However, the Owner Stack would only read
+然而，Owner Stack 只会显示：
 
 ```
 at Component
 ```
 
-Neither `App` nor the DOM components (e.g. `fieldset`) are considered Owners in this Stack since they didn't contribute to "creating" the node containing `SubComponent`. `App` and DOM components only forwarded the node. `App` just rendered the `children` node as opposed to `Component` which created a node containing `SubComponent` via `<SubComponent />`.
+在这个堆栈中，`App` 和 DOM 组件（例如 `fieldset`）都不被视为 Owner，因为它们并未参与“创建”包含 `SubComponent` 的节点。`App` 和 DOM 组件只是传递了该节点。`App` 只是渲染了 `children` 节点，而 `Component` 则通过 `<SubComponent />` 创建了一个包含 `SubComponent` 的节点。
 
-Neither `Navigation` nor `legend` are in the stack at all since it's only a sibling to a node containing `<SubComponent />`.
+`Navigation` 和 `legend` 根本不会出现在堆栈中，因为它们只是包含 `<SubComponent />` 的节点的兄弟节点。
 
-`SubComponent` is omitted because it's already part of the callstack.
+`SubComponent` 被省略了，因为它已经是调用栈的一部分。
 
 </DeepDive>
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Enhance a custom error overlay {/*enhance-a-custom-error-overlay*/}
+### 增强自定义错误覆盖层 {/*enhance-a-custom-error-overlay*/}
 
 ```js [[1, 5, "console.error"], [4, 7, "captureOwnerStack"]]
 import { captureOwnerStack } from "react";
@@ -175,15 +175,15 @@ console.error = function patchedConsoleError(...args) {
   originalConsoleError.apply(console, args);
   const ownerStack = captureOwnerStack();
   onConsoleError({
-    // Keep in mind that in a real application, console.error can be
-    // called with multiple arguments which you should account for.
+    // 请注意，在真实应用中，console.error 可能会传入多个参数，
+    // 你需要对此进行处理。
     consoleMessage: args[0],
     ownerStack,
   });
 };
 ```
 
-If you intercept <CodeStep step={1}>`console.error`</CodeStep> calls to highlight them in an error overlay, you can call <CodeStep step={2}>`captureOwnerStack`</CodeStep> to include the Owner Stack.
+如果你拦截 <CodeStep step={1}>`console.error`</CodeStep> 调用并在错误覆盖层中高亮它们，那么你可以调用 <CodeStep step={2}>`captureOwnerStack`</CodeStep> 来包含 Owner Stack。
 
 <Sandpack>
 
@@ -265,29 +265,29 @@ pre.nowrap {
 <!DOCTYPE html>
 <html>
 <head>
-  <title>My app</title>
+  <title>我的应用</title>
 </head>
 <body>
 <!--
-  Error dialog in raw HTML
-  since an error in the React app may crash.
+  原始 HTML 中的错误对话框
+  因为 React 应用中的错误可能会导致崩溃。
 -->
 <div id="error-dialog" class="hidden">
-  <h1 id="error-title" class="text-red">Error</h1>
+  <h1 id="error-title" class="text-red">错误</h1>
   <p>
     <pre id="error-body"></pre>
   </p>
-  <h2 class="-mb-20">Owner Stack:</h4>
+  <h2 class="-mb-20">Owner Stack：</h4>
   <pre id="error-owner-stack" class="nowrap"></pre>
   <button
     id="error-close"
     class="mb-10"
     onclick="document.getElementById('error-dialog').classList.add('hidden')"
   >
-    Close
+    关闭
   </button>
 </div>
-<!-- This is the DOM node -->
+<!-- 这是 DOM 节点 -->
 <div id="root"></div>
 </body>
 </html>
@@ -301,13 +301,13 @@ export function onConsoleError({ consoleMessage, ownerStack }) {
   const errorBody = document.getElementById("error-body");
   const errorOwnerStack = document.getElementById("error-owner-stack");
 
-  // Display console.error() message
+  // 显示 console.error() 消息
   errorBody.innerText = consoleMessage;
 
-  // Display owner stack
+  // 显示 owner stack
   errorOwnerStack.innerText = ownerStack;
 
-  // Show the dialog
+  // 显示对话框
   errorDialog.classList.remove("hidden");
 }
 ```
@@ -324,8 +324,8 @@ console.error = function patchedConsoleError(...args) {
   originalConsoleError.apply(console, args);
   const ownerStack = captureOwnerStack();
   onConsoleError({
-    // Keep in mind that in a real application, console.error can be
-    // called with multiple arguments which you should account for.
+    // 请注意，在真实应用中，console.error 可能会传入多个参数，
+    // 你需要对此进行处理。
     consoleMessage: args[0],
     ownerStack,
   });
@@ -337,7 +337,7 @@ createRoot(container).render(<App />);
 
 ```js src/App.js
 function Component() {
-  return <button onClick={() => console.error('Some console error')}>Trigger console.error()</button>;
+  return <button onClick={() => console.error('某个 console error')}>触发 console.error()</button>;
 }
 
 export default function App() {
@@ -347,13 +347,13 @@ export default function App() {
 
 </Sandpack>
 
-## Troubleshooting {/*troubleshooting*/}
+## 故障排查 {/*troubleshooting*/}
 
-### The Owner Stack is `null` {/*the-owner-stack-is-null*/}
+### Owner Stack 为 `null` {/*the-owner-stack-is-null*/}
 
-The call of `captureOwnerStack` happened outside of a React controlled function e.g. in a `setTimeout` callback, after a `fetch` call or in a custom DOM event handler. During render, Effects, React event handlers, and React error handlers (e.g. `hydrateRoot#options.onCaughtError`) Owner Stacks should be available.
+调用 `captureOwnerStack` 发生在 React 控制的函数之外，例如在 `setTimeout` 回调中、`fetch` 调用之后，或者在自定义 DOM 事件处理器中。在渲染、Effects、React 事件处理器以及 React 错误处理器（例如 `hydrateRoot#options.onCaughtError`）期间，Owner Stack 应该是可用的。
 
-In the example below, clicking the button will log an empty Owner Stack because `captureOwnerStack` was called during a custom DOM event handler. The Owner Stack must be captured earlier e.g. by moving the call of `captureOwnerStack` into the Effect body.
+在下面的示例中，点击按钮会记录一个空的 Owner Stack，因为 `captureOwnerStack` 是在自定义 DOM 事件处理器中调用的。必须更早地捕获 Owner Stack，例如将 `captureOwnerStack` 的调用移动到 Effect 主体中。
 <Sandpack>
 
 ```js
@@ -361,10 +361,10 @@ import {captureOwnerStack, useEffect} from 'react';
 
 export default function App() {
   useEffect(() => {
-    // Should call `captureOwnerStack` here.
+    // 应该在这里调用 `captureOwnerStack`。
     function handleEvent() {
-      // Calling it in a custom DOM event handler is too late.
-      // The Owner Stack will be `null` at this point.
+      // 在自定义 DOM 事件处理器中调用它已经太晚了。
+      // 此时 Owner Stack 将为 `null`。
       console.log('Owner Stack: ', captureOwnerStack());
     }
 
@@ -375,20 +375,20 @@ export default function App() {
     }
   })
 
-  return <button>Click me to see that Owner Stacks are not available in custom DOM event handlers</button>;
+  return <button>点击我以查看在自定义 DOM 事件处理器中不可用的 Owner Stack</button>;
 }
 ```
 
 </Sandpack>
 
-### `captureOwnerStack` is not available {/*captureownerstack-is-not-available*/}
+### `captureOwnerStack` 不可用 {/*captureownerstack-is-not-available*/}
 
-`captureOwnerStack` is only exported in development builds. It will be `undefined` in production builds. If `captureOwnerStack` is used in files that are bundled for production and development, you should conditionally access it from a namespace import.
+`captureOwnerStack` 只会在开发构建中导出。在生产构建中它将是 `undefined`。如果 `captureOwnerStack` 被用于同时会打包到生产和开发环境的文件中，你应该通过命名空间导入有条件地访问它。
 
 ```js
-// Don't use named imports of `captureOwnerStack` in files that are bundled for development and production.
+// 不要在同时会被打包用于开发和生产的文件中使用 `captureOwnerStack` 的命名导入。
 import {captureOwnerStack} from 'react';
-// Use a namespace import instead and access `captureOwnerStack` conditionally.
+// 而是改用命名空间导入，并有条件地访问 `captureOwnerStack`。
 import * as React from 'react';
 
 if (process.env.NODE_ENV !== 'production') {

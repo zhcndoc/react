@@ -4,23 +4,23 @@ title: set-state-in-render
 
 <Intro>
 
-Validates against unconditionally setting state during render, which can trigger additional renders and potential infinite render loops.
+验证在渲染期间无条件设置状态的情况，这可能会触发额外的渲染以及潜在的无限渲染循环。
 
 </Intro>
 
 ## Rule Details {/*rule-details*/}
 
-Calling `setState` during render unconditionally triggers another render before the current one finishes. This creates an infinite loop that crashes your app.
+在渲染期间无条件调用 `setState` 会在当前渲染完成之前触发另一次渲染。这会创建一个无限循环，导致你的应用崩溃。
 
 ## Common Violations {/*common-violations*/}
 
 ### Invalid {/*invalid*/}
 
 ```js {expectedErrors: {'react-compiler': [4]}}
-// ❌ Unconditional setState directly in render
+// ❌ 在 render 中直接无条件 setState
 function Component({value}) {
   const [count, setCount] = useState(0);
-  setCount(value); // Infinite loop!
+  setCount(value); // 无限循环！
   return <div>{count}</div>;
 }
 ```
@@ -28,13 +28,13 @@ function Component({value}) {
 ### Valid {/*valid*/}
 
 ```js
-// ✅ Derive during render
+// ✅ 在 render 期间派生
 function Component({items}) {
-  const sorted = [...items].sort(); // Just calculate it in render
+  const sorted = [...items].sort(); // 只需在 render 中计算它
   return <ul>{sorted.map(/*...*/)}</ul>;
 }
 
-// ✅ Set state in event handler
+// ✅ 在事件处理器中设置状态
 function Component() {
   const [count, setCount] = useState(0);
   return (
@@ -44,20 +44,20 @@ function Component() {
   );
 }
 
-// ✅ Derive from props instead of setting state
+// ✅ 从 props 派生，而不是设置状态
 function Component({user}) {
   const name = user?.name || '';
   const email = user?.email || '';
   return <div>{name}</div>;
 }
 
-// ✅ Conditionally derive state from props and state from previous renders
+// ✅ 根据 props 和来自先前渲染的 state 有条件地派生 state
 function Component({ items }) {
   const [isReverse, setIsReverse] = useState(false);
   const [selection, setSelection] = useState(null);
 
   const [prevItems, setPrevItems] = useState(items);
-  if (items !== prevItems) { // This condition makes it valid
+  if (items !== prevItems) { // 这个条件使其有效
     setPrevItems(items);
     setSelection(null);
   }
@@ -69,10 +69,10 @@ function Component({ items }) {
 
 ### I want to sync state to a prop {/*clamp-state-to-prop*/}
 
-A common problem is trying to "fix" state after it renders. Suppose you want to keep a counter from exceeding a `max` prop:
+一个常见问题是在渲染后尝试“修正”状态。假设你想防止计数器超过 `max` prop：
 
 ```js
-// ❌ Wrong: clamps during render
+// ❌ 错误：在 render 期间进行限制
 function Counter({max}) {
   const [count, setCount] = useState(0);
 
@@ -88,12 +88,12 @@ function Counter({max}) {
 }
 ```
 
-As soon as `count` exceeds `max`, an infinite loop is triggered.
+一旦 `count` 超过 `max`，就会触发无限循环。
 
-Instead, it's often better to move this logic to the event (the place where the state is first set). For example, you can enforce the maximum at the moment you update state:
+相反，通常更好的做法是把这段逻辑移到事件中（也就是首次设置状态的地方）。例如，你可以在更新状态时直接强制限制上限：
 
 ```js
-// ✅ Clamp when updating
+// ✅ 在更新时限制
 function Counter({max}) {
   const [count, setCount] = useState(0);
 
@@ -105,6 +105,6 @@ function Counter({max}) {
 }
 ```
 
-Now the setter only runs in response to the click, React finishes the render normally, and `count` never crosses `max`.
+现在，setter 只会在点击时运行，React 会正常完成渲染，而且 `count` 永远不会超过 `max`。
 
-In rare cases, you may need to adjust state based on information from previous renders. For those, follow [this pattern](https://react.dev/reference/react/useState#storing-information-from-previous-renders) of setting state conditionally.
+在少数情况下，你可能需要根据前一次渲染的信息来调整状态。对于这些情况，请遵循[此模式](https://react.dev/reference/react/useState#storing-information-from-previous-renders)来有条件地设置状态。

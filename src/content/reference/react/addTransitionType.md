@@ -5,15 +5,15 @@ version: canary
 
 <Canary>
 
-**The `addTransitionType` API is currently only available in React’s Canary and Experimental channels.**
+**`addTransitionType` API 目前仅在 React 的 Canary 和 Experimental 渠道中可用。**
 
-[Learn more about React’s release channels here.](/community/versioning-policy#all-release-channels)
+[在此了解更多关于 React 发布渠道的信息。](/community/versioning-policy#all-release-channels)
 
 </Canary>
 
 <Intro>
 
-`addTransitionType` lets you specify the cause of a transition.
+`addTransitionType` 让你可以指定一个过渡的原因。
 
 
 ```js
@@ -29,30 +29,30 @@ startTransition(() => {
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `addTransitionType` {/*addtransitiontype*/}
 
-#### Parameters {/*parameters*/}
+#### 参数 {/*parameters*/}
 
-- `type`: The type of transition to add. This can be any string.
+- `type`：要添加的过渡类型。可以是任意字符串。
 
-#### Returns {/*returns*/}
+#### 返回值 {/*returns*/}
 
-`addTransitionType` does not return anything.
+`addTransitionType` 不返回任何内容。
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-- If multiple transitions are combined, all Transition Types are collected. You can also add more than one type to a Transition.
-- Transition Types are reset after each commit. This means a `<Suspense>` fallback will associate the types after a `startTransition`, but revealing the content does not.
+- 如果组合了多个过渡，所有 Transition Types 都会被收集。你也可以向一个 Transition 添加多个类型。
+- Transition Types 会在每次提交后重置。这意味着 `<Suspense>` fallback 会关联到 `startTransition` 之后的类型，但显示内容本身不会。
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Adding the cause of a transition {/*adding-the-cause-of-a-transition*/}
+### 添加过渡的原因 {/*adding-the-cause-of-a-transition*/}
 
-Call `addTransitionType` inside of `startTransition` to indicate the cause of a transition:
+在 `startTransition` 内部调用 `addTransitionType`，以表明过渡的原因：
 
 ``` [[1, 6, "addTransitionType"], [2, 5, "startTransition", [3, 6, "'submit-click'"]]
 import { startTransition, addTransitionType } from 'react';
@@ -70,22 +70,22 @@ function Submit({action) {
 
 ```
 
-When you call <CodeStep step={1}>addTransitionType</CodeStep> inside the scope of <CodeStep step={2}>startTransition</CodeStep>, React will associate <CodeStep step={3}>submit-click</CodeStep> as one of the causes for the Transition.
+当你在 <CodeStep step={2}>startTransition</CodeStep> 的作用域内调用 <CodeStep step={1}>addTransitionType</CodeStep> 时，React 会将 <CodeStep step={3}>submit-click</CodeStep> 关联为该 Transition 的原因之一。
 
-Currently, Transition Types can be used to customize different animations based on what caused the Transition. You have three different ways to choose from for how to use them:
+目前，Transition Types 可用于根据导致 Transition 的原因来自定义不同的动画。你可以通过以下三种方式来使用它们：
 
-- [Customize animations using browser view transition types](#customize-animations-using-browser-view-transition-types)
-- [Customize animations using `View Transition` Class](#customize-animations-using-view-transition-class)
-- [Customize animations using `ViewTransition` events](#customize-animations-using-viewtransition-events)
+- [使用浏览器 view transition types 自定义动画](#customize-animations-using-browser-view-transition-types)
+- [使用 `View Transition` Class 自定义动画](#customize-animations-using-view-transition-class)
+- [使用 `ViewTransition` 事件自定义动画](#customize-animations-using-viewtransition-events)
 
-In the future, we plan to support more use cases for using the cause of a transition.
+未来，我们计划支持更多使用 Transition 原因的场景。
 
 ---
-### Customize animations using browser view transition types {/*customize-animations-using-browser-view-transition-types*/}
+### 使用浏览器 view transition types 自定义动画 {/*customize-animations-using-browser-view-transition-types*/}
 
-When a [`ViewTransition`](/reference/react/ViewTransition) activates from a transition, React adds all the Transition Types as browser [view transition types](https://www.w3.org/TR/css-view-transitions-2/#active-view-transition-pseudo-examples) to the element.
+当一个 [`ViewTransition`](/reference/react/ViewTransition) 由某个 transition 激活时，React 会把所有 Transition Types 作为浏览器的 [view transition types](https://www.w3.org/TR/css-view-transitions-2/#active-view-transition-pseudo-examples) 添加到该元素上。
 
-This allows you to customize different animations based on CSS scopes:
+这使你可以基于 CSS 作用域来自定义不同的动画：
 
 ```js [11]
 function Component() {
@@ -112,9 +112,9 @@ startTransition(() => {
 
 ---
 
-### Customize animations using `View Transition` Class {/*customize-animations-using-view-transition-class*/}
+### 使用 `View Transition` Class 自定义动画 {/*customize-animations-using-view-transition-class*/}
 
-You can customize animations for an activated `ViewTransition` based on type by passing an object to the View Transition Class:
+你可以通过向 View Transition Class 传入一个对象，基于类型来自定义已激活的 `ViewTransition` 动画：
 
 ```js
 function Component() {
@@ -134,9 +134,9 @@ startTransition(() => {
 });
 ```
 
-If multiple types match, then they're joined together. If no types match then the special "default" entry is used instead. If any type has the value "none" then that wins and the ViewTransition is disabled (not assigned a name).
+如果有多个类型匹配，那么它们会组合起来。如果没有任何类型匹配，则会改用特殊的 "default" 条目。如果某个类型的值为 "none"，那么它会优先生效，并且 `ViewTransition` 将被禁用（不会分配名称）。
 
-These can be combined with enter/exit/update/layout/share props to match based on kind of trigger and Transition Type.
+这些可以与 enter/exit/update/layout/share props 组合使用，以便根据触发类型和 Transition Type 进行匹配。
 
 ```js
 <ViewTransition enter={{
@@ -151,9 +151,9 @@ exit={{
 
 ---
 
-### Customize animations using `ViewTransition` events {/*customize-animations-using-viewtransition-events*/}
+### 使用 `ViewTransition` 事件自定义动画 {/*customize-animations-using-viewtransition-events*/}
 
-You can imperatively customize animations for an activated `ViewTransition` based on type using View Transition events:
+你可以使用 View Transition 事件，基于类型以命令式方式自定义已激活的 `ViewTransition` 动画：
 
 ```
 <ViewTransition onUpdate={(inst, types) => {
@@ -167,4 +167,4 @@ You can imperatively customize animations for an activated `ViewTransition` base
 }}>
 ```
 
-This allows you to pick different imperative Animations based on the cause.
+这使你可以根据原因选择不同的命令式动画。

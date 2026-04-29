@@ -1,62 +1,62 @@
 ---
-title: Editor Setup
+title: 编辑器设置
 ---
 
 <Intro>
 
-A properly configured editor can make code clearer to read and faster to write. It can even help you catch bugs as you write them! If this is your first time setting up an editor or you're looking to tune up your current editor, we have a few recommendations.
+正确配置的编辑器可以让代码更易读、书写更快。它甚至还能在你写代码时帮你发现 bug！如果这是你第一次设置编辑器，或者你想优化当前的编辑器，我们有一些推荐。
 
 </Intro>
 
 <YouWillLearn>
 
-* What the most popular editors are
-* How to format your code automatically
+* 最流行的编辑器有哪些
+* 如何自动格式化你的代码
 
 </YouWillLearn>
 
-## Your editor {/*your-editor*/}
+## 你的编辑器 {/*your-editor*/}
 
-[VS Code](https://code.visualstudio.com/) is one of the most popular editors in use today. It has a large marketplace of extensions and integrates well with popular services like GitHub. Most of the features listed below can be added to VS Code as extensions as well, making it highly configurable!
+[VS Code](https://code.visualstudio.com/) 是当今最流行的编辑器之一。它拥有庞大的扩展市场，并且能与 GitHub 之类的流行服务很好地集成。下面列出的许多功能也可以作为扩展添加到 VS Code 中，使它具有很强的可配置性！
 
-Other popular text editors used in the React community include:
+React 社区中使用的其他流行文本编辑器包括：
 
-* [WebStorm](https://www.jetbrains.com/webstorm/) is an integrated development environment designed specifically for JavaScript.
-* [Sublime Text](https://www.sublimetext.com/) has support for JSX and TypeScript, [syntax highlighting](https://stackoverflow.com/a/70960574/458193) and autocomplete built in.
-* [Vim](https://www.vim.org/) is a highly configurable text editor built to make creating and changing any kind of text very efficient. It is included as "vi" with most UNIX systems and with Apple OS X.
+* [WebStorm](https://www.jetbrains.com/webstorm/) 是一款专为 JavaScript 设计的集成开发环境。
+* [Sublime Text](https://www.sublimetext.com/) 内置支持 JSX 和 TypeScript、[语法高亮](https://stackoverflow.com/a/70960574/458193) 以及自动补全。
+* [Vim](https://www.vim.org/) 是一款高度可配置的文本编辑器，旨在高效地创建和修改各种文本。它在大多数 UNIX 系统以及 Apple OS X 中都以 "vi" 的形式包含。
 
-## Recommended text editor features {/*recommended-text-editor-features*/}
+## 推荐的文本编辑器功能 {/*recommended-text-editor-features*/}
 
-Some editors come with these features built in, but others might require adding an extension. Check to see what support your editor of choice provides to be sure!
+有些编辑器内置了这些功能，但其他编辑器可能需要添加扩展。请查看你所选编辑器提供哪些支持，以确保满足需求！
 
-### Linting {/*linting*/}
+### 代码检查 {/*linting*/}
 
-Code linters find problems in your code as you write, helping you fix them early. [ESLint](https://eslint.org/) is a popular, open source linter for JavaScript.
+代码检查工具会在你编写代码时发现问题，帮助你及早修复它们。[ESLint](https://eslint.org/) 是一个流行的、开源的 JavaScript 代码检查工具。
 
-* [Install ESLint with the recommended configuration for React](https://www.npmjs.com/package/eslint-config-react-app) (be sure you have [Node installed!](https://nodejs.org/en/download/current/))
-* [Integrate ESLint in VSCode with the official extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+* [使用适用于 React 的推荐配置安装 ESLint](https://www.npmjs.com/package/eslint-config-react-app)（请确保你已经[安装了 Node！](https://nodejs.org/en/download/current/)）
+* [通过官方扩展在 VSCode 中集成 ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
 
-**Make sure that you've enabled all the [`eslint-plugin-react-hooks`](https://www.npmjs.com/package/eslint-plugin-react-hooks) rules for your project.** They are essential and catch the most severe bugs early. The recommended [`eslint-config-react-app`](https://www.npmjs.com/package/eslint-config-react-app) preset already includes them.
+**请确保你已经为项目启用了 [`eslint-plugin-react-hooks`](https://www.npmjs.com/package/eslint-plugin-react-hooks) 的所有规则。** 它们至关重要，并且能尽早发现最严重的 bug。推荐的 [`eslint-config-react-app`](https://www.npmjs.com/package/eslint-config-react-app) 预设已经包含了它们。
 
-### Formatting {/*formatting*/}
+### 格式化 {/*formatting*/}
 
-The last thing you want to do when sharing your code with another contributor is get into a discussion about [tabs vs spaces](https://www.google.com/search?q=tabs+vs+spaces)! Fortunately, [Prettier](https://prettier.io/) will clean up your code by reformatting it to conform to preset, configurable rules. Run Prettier, and all your tabs will be converted to spaces—and your indentation, quotes, etc will also all be changed to conform to the configuration. In the ideal setup, Prettier will run when you save your file, quickly making these edits for you.
+当你与其他贡献者共享代码时，最不想做的事就是讨论 [制表符和空格哪个更好](https://www.google.com/search?q=tabs+vs+spaces)！幸运的是，[Prettier](https://prettier.io/) 会通过重新格式化你的代码来清理它，使其符合预设的、可配置的规则。运行 Prettier 后，所有制表符都会被转换为空格——同时你的缩进、引号等也都会被修改为符合配置。在理想设置中，Prettier 会在你保存文件时运行，快速为你完成这些编辑。
 
-You can install the [Prettier extension in VSCode](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) by following these steps:
+你可以按照以下步骤安装 [VSCode 中的 Prettier 扩展](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)：
 
-1. Launch VS Code
-2. Use Quick Open (press Ctrl/Cmd+P)
-3. Paste in `ext install esbenp.prettier-vscode`
-4. Press Enter
+1. 启动 VS Code
+2. 使用快速打开（按 Ctrl/Cmd+P）
+3. 粘贴 `ext install esbenp.prettier-vscode`
+4. 按 Enter
 
-#### Formatting on save {/*formatting-on-save*/}
+#### 保存时格式化 {/*formatting-on-save*/}
 
-Ideally, you should format your code on every save. VS Code has settings for this!
+理想情况下，你应该在每次保存时都格式化代码。VS Code 有相关设置！
 
-1. In VS Code, press `CTRL/CMD + SHIFT + P`.
-2. Type "settings"
-3. Hit Enter
-4. In the search bar, type "format on save"
-5. Be sure the "format on save" option is ticked!
+1. 在 VS Code 中，按 `CTRL/CMD + SHIFT + P`。
+2. 输入 "settings"
+3. 按 Enter
+4. 在搜索栏中输入 "format on save"
+5. 确保 "format on save" 选项已勾选！
 
-> If your ESLint preset has formatting rules, they may conflict with Prettier. We recommend disabling all formatting rules in your ESLint preset using [`eslint-config-prettier`](https://github.com/prettier/eslint-config-prettier) so that ESLint is *only* used for catching logical mistakes. If you want to enforce that files are formatted before a pull request is merged, use [`prettier --check`](https://prettier.io/docs/en/cli.html#--check) for your continuous integration.
+> 如果你的 ESLint 预设包含格式化规则，它们可能会与 Prettier 冲突。我们建议使用 [`eslint-config-prettier`](https://github.com/prettier/eslint-config-prettier) 禁用 ESLint 预设中的所有格式化规则，这样 ESLint 就*只*用于发现逻辑错误。如果你希望在 pull request 合并之前强制文件已完成格式化，请在持续集成中使用 [`prettier --check`](https://prettier.io/docs/en/cli.html#--check)。

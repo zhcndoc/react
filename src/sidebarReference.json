@@ -1,5 +1,5 @@
 {
-  "title": "API Reference",
+  "title": "API 参考",
   "path": "/reference/react",
   "routes": [
     {
@@ -7,7 +7,7 @@
       "sectionHeader": "react@{{version}}"
     },
     {
-      "title": "Overview",
+      "title": "概览",
       "path": "/reference/react"
     },
     {
@@ -89,7 +89,7 @@
       ]
     },
     {
-      "title": "Components",
+      "title": "组件",
       "path": "/reference/react/components",
       "routes": [
         {
@@ -120,7 +120,7 @@
       ]
     },
     {
-      "title": "APIs",
+      "title": "API",
       "path": "/reference/react/apis",
       "routes": [
         {
@@ -191,7 +191,7 @@
       ]
     },
     {
-      "title": "Components",
+      "title": "组件",
       "path": "/reference/react-dom/components",
       "routes": [
         {
@@ -245,7 +245,7 @@
       ]
     },
     {
-      "title": "APIs",
+      "title": "API",
       "path": "/reference/react-dom",
       "routes": [
         {
@@ -283,7 +283,7 @@
       ]
     },
     {
-      "title": "Client APIs",
+      "title": "客户端 API",
       "path": "/reference/react-dom/client",
       "routes": [
         {
@@ -297,7 +297,7 @@
       ]
     },
     {
-      "title": "Server APIs",
+      "title": "服务端 API",
       "path": "/reference/react-dom/server",
       "routes": [
         {
@@ -327,7 +327,7 @@
       ]
     },
     {
-      "title": "Static APIs",
+      "title": "静态 API",
       "path": "/reference/react-dom/static",
       "routes": [
         {
@@ -350,7 +350,7 @@
     },
     {
       "hasSectionHeader": true,
-      "sectionHeader": "React Compiler"
+      "sectionHeader": "React 编译器"
     },
     {
       "title": "Configuration",
@@ -398,10 +398,10 @@
     },
     {
       "hasSectionHeader": true,
-      "sectionHeader": "React DevTools"
+      "sectionHeader": "React 开发者工具"
     },
     {
-      "title": "React Performance tracks",
+      "title": "React 性能轨迹",
       "path": "/reference/dev-tools/react-performance-tracks"
     },
     {
@@ -486,36 +486,36 @@
     },
     {
       "hasSectionHeader": true,
-      "sectionHeader": "Rules of React"
+      "sectionHeader": "React 规则"
     },
     {
-      "title": "Overview",
+      "title": "概览",
       "path": "/reference/rules",
       "routes": [
         {
-          "title": "Components and Hooks must be pure",
+          "title": "组件和 Hooks 必须纯净",
           "path": "/reference/rules/components-and-hooks-must-be-pure"
         },
         {
-          "title": "React calls Components and Hooks",
+          "title": "React 调用组件和 Hooks",
           "path": "/reference/rules/react-calls-components-and-hooks"
         },
         {
-          "title": "Rules of Hooks",
+          "title": "Hooks 规则",
           "path": "/reference/rules/rules-of-hooks"
         }
       ]
     },
     {
       "hasSectionHeader": true,
-      "sectionHeader": "React Server Components"
+      "sectionHeader": "React 服务端组件"
     },
     {
-      "title": "Server Components",
+      "title": "服务端组件",
       "path": "/reference/rsc/server-components"
     },
     {
-      "title": "Server Functions",
+      "title": "服务端函数",
       "path": "/reference/rsc/server-functions"
     },
     {
@@ -534,10 +534,10 @@
     },
     {
       "hasSectionHeader": true,
-      "sectionHeader": "Legacy APIs"
+      "sectionHeader": "旧版 API"
     },
     {
-      "title": "Legacy React APIs",
+      "title": "旧版 React API",
       "path": "/reference/react/legacy",
       "routes": [
         {

@@ -1,70 +1,70 @@
 ---
-title: purity
+title: pure
 ---
 
 <Intro>
 
-Validates that [components/hooks are pure](/reference/rules/components-and-hooks-must-be-pure) by checking that they do not call known-impure functions.
+通过检查它们是否调用已知的不纯函数，来验证 [组件/Hook 是纯的](/reference/rules/components-and-hooks-must-be-pure)。
 
 </Intro>
 
-## Rule Details {/*rule-details*/}
+## 规则详情 {/*rule-details*/}
 
-React components must be pure functions - given the same props, they should always return the same JSX. When components use functions like `Math.random()` or `Date.now()` during render, they produce different output each time, breaking React's assumptions and causing bugs like hydration mismatches, incorrect memoization, and unpredictable behavior.
+React 组件必须是纯函数——在给定相同 props 的情况下，它们应始终返回相同的 JSX。当组件在渲染期间使用 `Math.random()` 或 `Date.now()` 之类的函数时，每次都会产生不同的输出，从而破坏 React 的假设，并导致诸如 hydration 不匹配、错误的 memoization 以及不可预测的行为等 bug。
 
-## Common Violations {/*common-violations*/}
+## 常见违规 {/*common-violations*/}
 
-In general, any API that returns a different value for the same inputs violates this rule. Usual examples include:
+一般来说，任何在相同输入下返回不同值的 API 都违反此规则。常见示例包括：
 
 - `Math.random()`
 - `Date.now()` / `new Date()`
 - `crypto.randomUUID()`
 - `performance.now()`
 
-### Invalid {/*invalid*/}
+### 无效 {/*invalid*/}
 
-Examples of incorrect code for this rule:
+以下是此规则的错误代码示例：
 
 ```js
-// ❌ Math.random() in render
+// ❌ 在渲染中使用 Math.random()
 function Component() {
-  const id = Math.random(); // Different every render
-  return <div key={id}>Content</div>;
+  const id = Math.random(); // 每次渲染都不同
+  return <div key={id}>内容</div>;
 }
 
-// ❌ Date.now() for values
+// ❌ 将 Date.now() 用于值
 function Component() {
-  const timestamp = Date.now(); // Changes every render
-  return <div>Created at: {timestamp}</div>;
+  const timestamp = Date.now(); // 每次渲染都会变化
+  return <div>创建于：{timestamp}</div>;
 }
 ```
 
-### Valid {/*valid*/}
+### 有效 {/*valid*/}
 
-Examples of correct code for this rule:
+以下是此规则的正确代码示例：
 
 ```js
-// ✅ Stable IDs from initial state
+// ✅ 来自初始 state 的稳定 ID
 function Component() {
   const [id] = useState(() => crypto.randomUUID());
-  return <div key={id}>Content</div>;
+  return <div key={id}>内容</div>;
 }
 ```
 
-## Troubleshooting {/*troubleshooting*/}
+## 故障排查 {/*troubleshooting*/}
 
-### I need to show the current time {/*current-time*/}
+### 我需要显示当前时间 {/*current-time*/}
 
-Calling `Date.now()` during render makes your component impure:
+在渲染期间调用 `Date.now()` 会使你的组件变得不纯：
 
 ```js {expectedErrors: {'react-compiler': [3]}}
-// ❌ Wrong: Time changes every render
+// ❌ 错误：时间每次渲染都会变化
 function Clock() {
-  return <div>Current time: {Date.now()}</div>;
+  return <div>当前时间：{Date.now()}</div>;
 }
 ```
 
-Instead, [move the impure function outside of render](/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent):
+相反，[将不纯函数移到渲染之外](/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent)：
 
 ```js
 function Clock() {
@@ -78,6 +78,6 @@ function Clock() {
     return () => clearInterval(interval);
   }, []);
 
-  return <div>Current time: {time}</div>;
+  return <div>当前时间：{time}</div>;
 }
 ```

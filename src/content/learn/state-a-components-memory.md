@@ -1,25 +1,25 @@
 ---
-title: "State: A Component's Memory"
+title: "状态：组件的记忆"
 ---
 
 <Intro>
 
-Components often need to change what's on the screen as a result of an interaction. Typing into the form should update the input field, clicking "next" on an image carousel should change which image is displayed, clicking "buy" should put a product in the shopping cart. Components need to "remember" things: the current input value, the current image, the shopping cart. In React, this kind of component-specific memory is called *state*.
+组件通常需要根据交互来改变屏幕上显示的内容。向表单中输入内容应该更新输入字段，在图片轮播中点击“下一张”应该切换显示的图片，点击“购买”应该把商品加入购物车。组件需要“记住”一些东西：当前的输入值、当前的图片、购物车。在 React 中，这种组件特有的记忆被称为 *state*。
 
 </Intro>
 
 <YouWillLearn>
 
-* How to add a state variable with the [`useState`](/reference/react/useState) Hook
-* What pair of values the `useState` Hook returns
-* How to add more than one state variable
-* Why state is called local
+* 如何使用 [`useState`](/reference/react/useState) Hook 添加状态变量
+* `useState` Hook 返回的是哪一对值
+* 如何添加一个以上的状态变量
+* 为什么 state 被称为局部状态
 
 </YouWillLearn>
 
-## When a regular variable isn’t enough {/*when-a-regular-variable-isnt-enough*/}
+## 当普通变量不够用时 {/*when-a-regular-variable-isnt-enough*/}
 
-Here's a component that renders a sculpture image. Clicking the "Next" button should show the next sculpture by changing the `index` to `1`, then `2`, and so on. However, this **won't work** (you can try it!):
+这里有一个渲染雕塑图片的组件。点击“Next”按钮应该通过将 `index` 改为 `1`、然后 `2`，依此类推，来显示下一个雕塑。不过，这**不会起作用**（你可以试试看！）：
 
 <Sandpack>
 
@@ -62,75 +62,75 @@ export default function Gallery() {
 export const sculptureList = [{
   name: 'Homenaje a la Neurocirugía',
   artist: 'Marta Colvin Andrade',
-  description: 'Although Colvin is predominantly known for abstract themes that allude to pre-Hispanic symbols, this gigantic sculpture, an homage to neurosurgery, is one of her most recognizable public art pieces.',
+  description: '虽然 Colvin 主要因那些暗示前西班牙时期符号的抽象主题而闻名，但这座巨大的雕塑——向神经外科致敬——是她最具辨识度的公共艺术作品之一。',
   url: 'https://react.dev/images/docs/scientists/Mx7dA2Y.jpg',
-  alt: 'A bronze statue of two crossed hands delicately holding a human brain in their fingertips.'
+  alt: '一尊青铜雕像，两个交叉的手轻柔地用指尖托着一颗人脑。'
 }, {
   name: 'Floralis Genérica',
   artist: 'Eduardo Catalano',
-  description: 'This enormous (75 ft. or 23m) silver flower is located in Buenos Aires. It is designed to move, closing its petals in the evening or when strong winds blow and opening them in the morning.',
+  description: '这朵巨大的（75 英尺或 23 米）银色花朵位于布宜诺斯艾利斯。它被设计成可以移动，在傍晚或强风吹拂时合拢花瓣，并在早晨打开。',
   url: 'https://react.dev/images/docs/scientists/ZF6s192m.jpg',
-  alt: 'A gigantic metallic flower sculpture with reflective mirror-like petals and strong stamens.'
+  alt: '一座巨大的金属花朵雕塑，带有反射镜面般的花瓣和粗壮的花蕊。'
 }, {
   name: 'Eternal Presence',
   artist: 'John Woodrow Wilson',
-  description: 'Wilson was known for his preoccupation with equality, social justice, as well as the essential and spiritual qualities of humankind. This massive (7ft. or 2,13m) bronze represents what he described as "a symbolic Black presence infused with a sense of universal humanity."',
+  description: 'Wilson 以他对平等、社会正义以及人类本质与精神品质的关注而闻名。这座巨大的（7 英尺或 2.13 米）青铜作品，代表了他所说的“注入了普世人类意识的象征性黑人存在”。',
   url: 'https://react.dev/images/docs/scientists/aTtVpES.jpg',
-  alt: 'The sculpture depicting a human head seems ever-present and solemn. It radiates calm and serenity.'
+  alt: '这座描绘人类头部的雕塑似乎始终存在，庄严肃穆。它散发着平静与安宁。'
 }, {
   name: 'Moai',
   artist: 'Unknown Artist',
-  description: 'Located on the Easter Island, there are 1,000 moai, or extant monumental statues, created by the early Rapa Nui people, which some believe represented deified ancestors.',
+  description: '位于复活节岛上，有 1,000 尊摩艾石像，或现存的纪念性雕像，由早期拉帕努伊人创造，有些人认为它们代表了被神化的祖先。',
   url: 'https://react.dev/images/docs/scientists/RCwLEoQm.jpg',
-  alt: 'Three monumental stone busts with the heads that are disproportionately large with somber faces.'
+  alt: '三尊纪念性石质半身像，头部比例异常大，面容严肃。'
 }, {
   name: 'Blue Nana',
   artist: 'Niki de Saint Phalle',
-  description: 'The Nanas are triumphant creatures, symbols of femininity and maternity. Initially, Saint Phalle used fabric and found objects for the Nanas, and later on introduced polyester to achieve a more vibrant effect.',
+  description: 'Nanas 是象征女性气质与母性的胜利生灵。最初，Saint Phalle 为 Nanas 使用布料和现成物品，后来又引入聚酯材料以获得更鲜艳的效果。',
   url: 'https://react.dev/images/docs/scientists/Sd1AgUOm.jpg',
-  alt: 'A large mosaic sculpture of a whimsical dancing female figure in a colorful costume emanating joy.'
+  alt: '一座大型马赛克雕塑，展现一个充满奇想、翩翩起舞的女性形象，身着色彩鲜艳的服装，洋溢着喜悦。'
 }, {
   name: 'Ultimate Form',
   artist: 'Barbara Hepworth',
-  description: 'This abstract bronze sculpture is a part of The Family of Man series located at Yorkshire Sculpture Park. Hepworth chose not to create literal representations of the world but developed abstract forms inspired by people and landscapes.',
+  description: '这座抽象青铜雕塑是位于约克郡雕塑公园的《人类家族》系列的一部分。Hepworth 选择不去创作对世界的写实再现，而是发展出受人和风景启发的抽象形式。',
   url: 'https://react.dev/images/docs/scientists/2heNQDcm.jpg',
-  alt: 'A tall sculpture made of three elements stacked on each other reminding of a human figure.'
+  alt: '一座由三个元素堆叠而成的高大雕塑，让人联想到人形。'
 }, {
   name: 'Cavaliere',
   artist: 'Lamidi Olonade Fakeye',
-  description: "Descended from four generations of woodcarvers, Fakeye's work blended traditional and contemporary Yoruba themes.",
+  description: 'Fakeye 出身于四代木雕世家，他的作品融合了传统与当代的约鲁巴主题。',
   url: 'https://react.dev/images/docs/scientists/wIdGuZwm.png',
-  alt: 'An intricate wood sculpture of a warrior with a focused face on a horse adorned with patterns.'
+  alt: '一座精致的木雕武士骑在马上，神情专注，马身装饰着纹样。'
 }, {
   name: 'Big Bellies',
   artist: 'Alina Szapocznikow',
-  description: "Szapocznikow is known for her sculptures of the fragmented body as a metaphor for the fragility and impermanence of youth and beauty. This sculpture depicts two very realistic large bellies stacked on top of each other, each around five feet (1,5m) tall.",
+  description: 'Szapocznikow 以其碎片化身体雕塑而闻名，这些作品将其作为青春与美丽脆弱和短暂的隐喻。这座雕塑描绘了两个非常逼真的大肚子彼此叠放，每个高约五英尺（1.5 米）。',
   url: 'https://react.dev/images/docs/scientists/AlHTAdDm.jpg',
-  alt: 'The sculpture reminds a cascade of folds, quite different from bellies in classical sculptures.'
+  alt: '这座雕塑让人联想到一层层褶皱，与古典雕塑中的肚子截然不同。'
 }, {
   name: 'Terracotta Army',
   artist: 'Unknown Artist',
-  description: 'The Terracotta Army is a collection of terracotta sculptures depicting the armies of Qin Shi Huang, the first Emperor of China. The army consisted of more than 8,000 soldiers, 130 chariots with 520 horses, and 150 cavalry horses.',
+  description: '兵马俑是一个由陶俑组成的收藏，描绘了秦始皇的军队。这支军队由 8,000 多名士兵、130 辆战车和 520 匹战马、以及 150 匹骑兵马组成。',
   url: 'https://react.dev/images/docs/scientists/HMFmH6m.jpg',
-  alt: '12 terracotta sculptures of solemn warriors, each with a unique facial expression and armor.'
+  alt: '12 尊陶俑形态的庄严武士雕塑，每尊都有独特的面部表情和盔甲。'
 }, {
   name: 'Lunar Landscape',
   artist: 'Louise Nevelson',
-  description: 'Nevelson was known for scavenging objects from New York City debris, which she would later assemble into monumental constructions. In this one, she used disparate parts like a bedpost, juggling pin, and seat fragment, nailing and gluing them into boxes that reflect the influence of Cubism’s geometric abstraction of space and form.',
+  description: 'Nevelson 以从纽约市废弃物中搜集物件而闻名，随后将其组装成纪念性构筑物。在这件作品中，她使用了床柱、杂耍球棒和座椅碎片等不同部分，将它们钉合并粘接到盒子里，体现了立体主义对空间与形式的几何抽象所带来的影响。',
   url: 'https://react.dev/images/docs/scientists/rN7hY6om.jpg',
-  alt: 'A black matte sculpture where the individual elements are initially indistinguishable.'
+  alt: '一座哑光黑色雕塑，各个元素最初难以区分。'
 }, {
   name: 'Aureole',
   artist: 'Ranjani Shettar',
-  description: 'Shettar merges the traditional and the modern, the natural and the industrial. Her art focuses on the relationship between man and nature. Her work was described as compelling both abstractly and figuratively, gravity defying, and a "fine synthesis of unlikely materials."',
+  description: 'Shettar 将传统与现代、自然与工业相融合。她的艺术专注于人与自然之间的关系。她的作品被形容为抽象与具象皆引人注目、违背重力，以及“一种对不太可能材料的精妙综合”。',
   url: 'https://react.dev/images/docs/scientists/okTpbHhm.jpg',
-  alt: 'A pale wire-like sculpture mounted on concrete wall and descending on the floor. It appears light.'
+  alt: '一座浅色、如金属丝般的雕塑安装在混凝土墙上并垂落到地面，看起来很轻盈。'
 }, {
   name: 'Hippos',
   artist: 'Taipei Zoo',
-  description: 'The Taipei Zoo commissioned a Hippo Square featuring submerged hippos at play.',
+  description: '台北动物园委托创作了一个河马广场，展示了一群在水中嬉戏的半 submerged 河马。',
   url: 'https://react.dev/images/docs/scientists/6o5Vuyu.jpg',
-  alt: 'A group of bronze hippo sculptures emerging from the sett sidewalk as if they were swimming.'
+  alt: '一组青铜河马雕塑从铺石人行道中冒出，仿佛它们正在游泳。'
 }];
 ```
 
@@ -151,46 +151,46 @@ button {
 
 </Sandpack>
 
-The `handleClick` event handler is updating a local variable, `index`. But two things prevent that change from being visible:
+`handleClick` 事件处理函数正在更新一个局部变量 `index`。但有两个原因导致这个变化不会显示出来：
 
-1. **Local variables don't persist between renders.** When React renders this component a second time, it renders it from scratch—it doesn't consider any changes to the local variables.
-2. **Changes to local variables won't trigger renders.** React doesn't realize it needs to render the component again with the new data.
+1. **局部变量不会在渲染之间保留。** 当 React 第二次渲染这个组件时，它会从头开始渲染——不会考虑任何对局部变量所做的更改。
+2. **对局部变量的更改不会触发渲染。** React 不会意识到它需要使用新数据再次渲染该组件。
 
-To update a component with new data, two things need to happen:
+要用新数据更新组件，需要发生两件事：
 
-1. **Retain** the data between renders.
-2. **Trigger** React to render the component with new data (re-rendering).
+1. **在渲染之间保留** 数据。
+2. **触发** React 使用新数据渲染组件（重新渲染）。
 
-The [`useState`](/reference/react/useState) Hook provides those two things:
+[`useState`](/reference/react/useState) Hook 提供了这两件事：
 
-1. A **state variable** to retain the data between renders.
-2. A **state setter function** to update the variable and trigger React to render the component again.
+1. 一个用于在渲染之间保留数据的**状态变量**。
+2. 一个用于更新该变量并触发 React 再次渲染组件的**状态设置函数**。
 
-## Adding a state variable {/*adding-a-state-variable*/}
+## 添加状态变量 {/*adding-a-state-variable*/}
 
-To add a state variable, import `useState` from React at the top of the file:
+要添加一个状态变量，请先在文件顶部从 React 导入 `useState`：
 
 ```js
 import { useState } from 'react';
 ```
 
-Then, replace this line:
+然后，将这一行：
 
 ```js
 let index = 0;
 ```
 
-with
+替换为
 
 ```js
 const [index, setIndex] = useState(0);
 ```
 
-`index` is a state variable and `setIndex` is the setter function.
+`index` 是状态变量，`setIndex` 是设置函数。
 
-> The `[` and `]` syntax here is called [array destructuring](https://javascript.info/destructuring-assignment) and it lets you read values from an array. The array returned by `useState` always has exactly two items.
+> 这里的 `[` 和 `]` 语法称为 [数组解构](https://javascript.info/destructuring-assignment)，它让你可以从数组中读取值。`useState` 返回的数组始终正好有两个项目。
 
-This is how they work together in `handleClick`:
+它们在 `handleClick` 中是这样协同工作的：
 
 ```js
 function handleClick() {
@@ -198,7 +198,7 @@ function handleClick() {
 }
 ```
 
-Now clicking the "Next" button switches the current sculpture:
+现在点击“Next”按钮会切换当前的雕塑：
 
 <Sandpack>
 
@@ -242,75 +242,75 @@ export default function Gallery() {
 export const sculptureList = [{
   name: 'Homenaje a la Neurocirugía',
   artist: 'Marta Colvin Andrade',
-  description: 'Although Colvin is predominantly known for abstract themes that allude to pre-Hispanic symbols, this gigantic sculpture, an homage to neurosurgery, is one of her most recognizable public art pieces.',
+  description: '虽然 Colvin 主要因那些暗示前西班牙时期符号的抽象主题而闻名，但这座巨大的雕塑——向神经外科致敬——是她最具辨识度的公共艺术作品之一。',
   url: 'https://react.dev/images/docs/scientists/Mx7dA2Y.jpg',
-  alt: 'A bronze statue of two crossed hands delicately holding a human brain in their fingertips.'
+  alt: '一尊青铜雕像，两个交叉的手轻柔地用指尖托着一颗人脑。'
 }, {
   name: 'Floralis Genérica',
   artist: 'Eduardo Catalano',
-  description: 'This enormous (75 ft. or 23m) silver flower is located in Buenos Aires. It is designed to move, closing its petals in the evening or when strong winds blow and opening them in the morning.',
+  description: '这朵巨大的（75 英尺或 23 米）银色花朵位于布宜诺斯艾利斯。它被设计成可以移动，在傍晚或强风吹拂时合拢花瓣，并在早晨打开。',
   url: 'https://react.dev/images/docs/scientists/ZF6s192m.jpg',
-  alt: 'A gigantic metallic flower sculpture with reflective mirror-like petals and strong stamens.'
+  alt: '一座巨大的金属花朵雕塑，带有反射镜面般的花瓣和粗壮的花蕊。'
 }, {
   name: 'Eternal Presence',
   artist: 'John Woodrow Wilson',
-  description: 'Wilson was known for his preoccupation with equality, social justice, as well as the essential and spiritual qualities of humankind. This massive (7ft. or 2,13m) bronze represents what he described as "a symbolic Black presence infused with a sense of universal humanity."',
+  description: 'Wilson 以他对平等、社会正义以及人类本质与精神品质的关注而闻名。这座巨大的（7 英尺或 2.13 米）青铜作品，代表了他所说的“注入了普世人类意识的象征性黑人存在”。',
   url: 'https://react.dev/images/docs/scientists/aTtVpES.jpg',
-  alt: 'The sculpture depicting a human head seems ever-present and solemn. It radiates calm and serenity.'
+  alt: '这座描绘人类头部的雕塑似乎始终存在，庄严肃穆。它散发着平静与安宁。'
 }, {
   name: 'Moai',
   artist: 'Unknown Artist',
-  description: 'Located on the Easter Island, there are 1,000 moai, or extant monumental statues, created by the early Rapa Nui people, which some believe represented deified ancestors.',
+  description: '位于复活节岛上，有 1,000 尊摩艾石像，或现存的纪念性雕像，由早期拉帕努伊人创造，有些人认为它们代表了被神化的祖先。',
   url: 'https://react.dev/images/docs/scientists/RCwLEoQm.jpg',
-  alt: 'Three monumental stone busts with the heads that are disproportionately large with somber faces.'
+  alt: '三尊纪念性石质半身像，头部比例异常大，面容严肃。'
 }, {
   name: 'Blue Nana',
   artist: 'Niki de Saint Phalle',
-  description: 'The Nanas are triumphant creatures, symbols of femininity and maternity. Initially, Saint Phalle used fabric and found objects for the Nanas, and later on introduced polyester to achieve a more vibrant effect.',
+  description: 'Nanas 是象征女性气质与母性的胜利生灵。最初，Saint Phalle 为 Nanas 使用布料和现成物品，后来又引入聚酯材料以获得更鲜艳的效果。',
   url: 'https://react.dev/images/docs/scientists/Sd1AgUOm.jpg',
-  alt: 'A large mosaic sculpture of a whimsical dancing female figure in a colorful costume emanating joy.'
+  alt: '一座大型马赛克雕塑，展现一个充满奇想、翩翩起舞的女性形象，身着色彩鲜艳的服装，洋溢着喜悦。'
 }, {
   name: 'Ultimate Form',
   artist: 'Barbara Hepworth',
-  description: 'This abstract bronze sculpture is a part of The Family of Man series located at Yorkshire Sculpture Park. Hepworth chose not to create literal representations of the world but developed abstract forms inspired by people and landscapes.',
+  description: '这座抽象青铜雕塑是位于约克郡雕塑公园的《人类家族》系列的一部分。Hepworth 选择不去创作对世界的写实再现，而是发展出受人和风景启发的抽象形式。',
   url: 'https://react.dev/images/docs/scientists/2heNQDcm.jpg',
-  alt: 'A tall sculpture made of three elements stacked on each other reminding of a human figure.'
+  alt: '一座由三个元素堆叠而成的高大雕塑，让人联想到人形。'
 }, {
   name: 'Cavaliere',
   artist: 'Lamidi Olonade Fakeye',
-  description: "Descended from four generations of woodcarvers, Fakeye's work blended traditional and contemporary Yoruba themes.",
+  description: 'Fakeye 出身于四代木雕世家，他的作品融合了传统与当代的约鲁巴主题。',
   url: 'https://react.dev/images/docs/scientists/wIdGuZwm.png',
-  alt: 'An intricate wood sculpture of a warrior with a focused face on a horse adorned with patterns.'
+  alt: '一座精致的木雕武士骑在马上，神情专注，马身装饰着纹样。'
 }, {
   name: 'Big Bellies',
   artist: 'Alina Szapocznikow',
-  description: "Szapocznikow is known for her sculptures of the fragmented body as a metaphor for the fragility and impermanence of youth and beauty. This sculpture depicts two very realistic large bellies stacked on top of each other, each around five feet (1,5m) tall.",
+  description: 'Szapocznikow 以其碎片化身体雕塑而闻名，这些作品将其作为青春与美丽脆弱和短暂的隐喻。这座雕塑描绘了两个非常逼真的大肚子彼此叠放，每个高约五英尺（1.5 米）。',
   url: 'https://react.dev/images/docs/scientists/AlHTAdDm.jpg',
-  alt: 'The sculpture reminds a cascade of folds, quite different from bellies in classical sculptures.'
+  alt: '这座雕塑让人联想到一层层褶皱，与古典雕塑中的肚子截然不同。'
 }, {
   name: 'Terracotta Army',
   artist: 'Unknown Artist',
-  description: 'The Terracotta Army is a collection of terracotta sculptures depicting the armies of Qin Shi Huang, the first Emperor of China. The army consisted of more than 8,000 soldiers, 130 chariots with 520 horses, and 150 cavalry horses.',
+  description: '兵马俑是一个由陶俑组成的收藏，描绘了秦始皇的军队。这支军队由 8,000 多名士兵、130 辆战车和 520 匹战马、以及 150 匹骑兵马组成。',
   url: 'https://react.dev/images/docs/scientists/HMFmH6m.jpg',
-  alt: '12 terracotta sculptures of solemn warriors, each with a unique facial expression and armor.'
+  alt: '12 尊陶俑形态的庄严武士雕塑，每尊都有独特的面部表情和盔甲。'
 }, {
   name: 'Lunar Landscape',
   artist: 'Louise Nevelson',
-  description: 'Nevelson was known for scavenging objects from New York City debris, which she would later assemble into monumental constructions. In this one, she used disparate parts like a bedpost, juggling pin, and seat fragment, nailing and gluing them into boxes that reflect the influence of Cubism’s geometric abstraction of space and form.',
+  description: 'Nevelson 以从纽约市废弃物中搜集物件而闻名，随后将其组装成纪念性构筑物。在这件作品中，她使用了床柱、杂耍球棒和座椅碎片等不同部分，将它们钉合并粘接到盒子里，体现了立体主义对空间与形式的几何抽象所带来的影响。',
   url: 'https://react.dev/images/docs/scientists/rN7hY6om.jpg',
-  alt: 'A black matte sculpture where the individual elements are initially indistinguishable.'
+  alt: '一座哑光黑色雕塑，各个元素最初难以区分。'
 }, {
   name: 'Aureole',
   artist: 'Ranjani Shettar',
-  description: 'Shettar merges the traditional and the modern, the natural and the industrial. Her art focuses on the relationship between man and nature. Her work was described as compelling both abstractly and figuratively, gravity defying, and a "fine synthesis of unlikely materials."',
+  description: 'Shettar 将传统与现代、自然与工业相融合。她的艺术专注于人与自然之间的关系。她的作品被形容为抽象与具象皆引人注目、违背重力，以及“一种对不太可能材料的精妙综合”。',
   url: 'https://react.dev/images/docs/scientists/okTpbHhm.jpg',
-  alt: 'A pale wire-like sculpture mounted on concrete wall and descending on the floor. It appears light.'
+  alt: '一座浅色、如金属丝般的雕塑安装在混凝土墙上并垂落到地面，看起来很轻盈。'
 }, {
   name: 'Hippos',
   artist: 'Taipei Zoo',
-  description: 'The Taipei Zoo commissioned a Hippo Square featuring submerged hippos at play.',
+  description: '台北动物园委托创作了一个河马广场，展示了一群在水中嬉戏的半 submerged 河马。',
   url: 'https://react.dev/images/docs/scientists/6o5Vuyu.jpg',
-  alt: 'A group of bronze hippo sculptures emerging from the sett sidewalk as if they were swimming.'
+  alt: '一组青铜河马雕塑从铺石人行道中冒出，仿佛它们正在游泳。'
 }];
 ```
 
@@ -331,57 +331,57 @@ button {
 
 </Sandpack>
 
-### Meet your first Hook {/*meet-your-first-hook*/}
+### 认识你的第一个 Hook {/*meet-your-first-hook*/}
 
-In React, `useState`, as well as any other function starting with "`use`", is called a Hook.
+在 React 中，`useState`，以及任何以 "`use`" 开头的其他函数，都被称为 Hook。
 
-*Hooks* are special functions that are only available while React is [rendering](/learn/render-and-commit#step-1-trigger-a-render) (which we'll get into in more detail on the next page). They let you "hook into" different React features.
+*Hook* 是特殊的函数，只能在 React [渲染](/learn/render-and-commit#step-1-trigger-a-render) 时使用（我们会在下一页更详细地讨论这一点）。它们让你“挂接”到不同的 React 特性上。
 
-State is just one of those features, but you will meet the other Hooks later.
+State 只是这些特性之一，不过你稍后还会认识其他 Hook。
 
 <Pitfall>
 
-**Hooks—functions starting with `use`—can only be called at the top level of your components or [your own Hooks.](/learn/reusing-logic-with-custom-hooks)** You can't call Hooks inside conditions, loops, or other nested functions. Hooks are functions, but it's helpful to think of them as unconditional declarations about your component's needs. You "use" React features at the top of your component similar to how you "import" modules at the top of your file.
+**Hook——以 `use` 开头的函数——只能在组件顶层或[你自己的 Hook](/learn/reusing-logic-with-custom-hooks) 顶层调用。** 你不能在条件语句、循环或其他嵌套函数中调用 Hook。Hook 是函数，但把它们看作关于组件需求的无条件声明会更有帮助。你在组件顶部“使用” React 特性的方式，类似于你在文件顶部“导入”模块的方式。
 
 </Pitfall>
 
-### Anatomy of `useState` {/*anatomy-of-usestate*/}
+### `useState` 的结构 {/*anatomy-of-usestate*/}
 
-When you call [`useState`](/reference/react/useState), you are telling React that you want this component to remember something:
+当你调用 [`useState`](/reference/react/useState) 时，你是在告诉 React，你希望这个组件记住一些东西：
 
 ```js
 const [index, setIndex] = useState(0);
 ```
 
-In this case, you want React to remember `index`.
+在这个例子中，你希望 React 记住 `index`。
 
 <Note>
 
-The convention is to name this pair like `const [something, setSomething]`. You could name it anything you like, but conventions make things easier to understand across projects.
+惯例是把这一对命名为 `const [something, setSomething]`。你当然可以随意命名，但遵循惯例会让不同项目之间更容易理解。
 
 </Note>
 
-The only argument to `useState` is the **initial value** of your state variable. In this example, the `index`'s initial value is set to `0` with `useState(0)`.
+`useState` 唯一的参数是你的状态变量的**初始值**。在这个例子中，`index` 的初始值通过 `useState(0)` 被设为 `0`。
 
-Every time your component renders, `useState` gives you an array containing two values:
+每次组件渲染时，`useState` 都会给你一个包含两个值的数组：
 
-1. The **state variable** (`index`) with the value you stored.
-2. The **state setter function** (`setIndex`) which can update the state variable and trigger React to render the component again.
+1. **状态变量**（`index`），其值就是你存储的值。
+2. **状态设置函数**（`setIndex`），它可以更新状态变量并触发 React 再次渲染组件。
 
-Here's how that happens in action:
+下面是它在实际中的工作方式：
 
 ```js
 const [index, setIndex] = useState(0);
 ```
 
-1. **Your component renders the first time.** Because you passed `0` to `useState` as the initial value for `index`, it will return `[0, setIndex]`. React remembers `0` is the latest state value.
-2. **You update the state.** When a user clicks the button, it calls `setIndex(index + 1)`. `index` is `0`, so it's `setIndex(1)`. This tells React to remember `index` is `1` now and triggers another render.
-3. **Your component's second render.** React still sees `useState(0)`, but because React *remembers* that you set `index` to `1`, it returns `[1, setIndex]` instead.
-4. And so on!
+1. **你的组件第一次渲染。** 因为你把 `0` 作为 `index` 的初始值传给了 `useState`，它会返回 `[0, setIndex]`。React 记住 `0` 是最新的状态值。
+2. **你更新状态。** 当用户点击按钮时，会调用 `setIndex(index + 1)`。`index` 是 `0`，所以这就是 `setIndex(1)`。这告诉 React 现在要记住 `index` 是 `1`，并触发另一次渲染。
+3. **组件的第二次渲染。** React 仍然看到的是 `useState(0)`，但因为 React *记住* 了你把 `index` 设为 `1`，所以它返回的是 `[1, setIndex]`。
+4. 以此类推！
 
-## Giving a component multiple state variables {/*giving-a-component-multiple-state-variables*/}
+## 为组件设置多个状态变量 {/*giving-a-component-multiple-state-variables*/}
 
-You can have as many state variables of as many types as you like in one component. This component has two state variables, a number `index` and a boolean `showMore` that's toggled when you click "Show details":
+你可以在一个组件中拥有任意数量、任意类型的状态变量。这个组件有两个状态变量，一个数字 `index` 和一个布尔值 `showMore`，当你点击“显示详情”时它会切换：
 
 <Sandpack>
 
@@ -405,17 +405,17 @@ export default function Gallery() {
   return (
     <>
       <button onClick={handleNextClick}>
-        Next
+        下一个
       </button>
       <h2>
         <i>{sculpture.name} </i>
-        by {sculpture.artist}
+        作者：{sculpture.artist}
       </h2>
       <h3>
-        ({index + 1} of {sculptureList.length})
+        （{index + 1} / {sculptureList.length}）
       </h3>
       <button onClick={handleMoreClick}>
-        {showMore ? 'Hide' : 'Show'} details
+        {showMore ? '隐藏' : '显示'}详情
       </button>
       {showMore && <p>{sculpture.description}</p>}
       <img
@@ -431,75 +431,75 @@ export default function Gallery() {
 export const sculptureList = [{
   name: 'Homenaje a la Neurocirugía',
   artist: 'Marta Colvin Andrade',
-  description: 'Although Colvin is predominantly known for abstract themes that allude to pre-Hispanic symbols, this gigantic sculpture, an homage to neurosurgery, is one of her most recognizable public art pieces.',
+  description: '虽然 Colvin 主要以暗指前西班牙时期符号的抽象主题而闻名，但这座巨大的雕塑——对神经外科的致敬——是她最具辨识度的公共艺术作品之一。',
   url: 'https://react.dev/images/docs/scientists/Mx7dA2Y.jpg',
-  alt: 'A bronze statue of two crossed hands delicately holding a human brain in their fingertips.'
+  alt: '一尊青铜雕像，两个交叉的手指尖轻柔地托着一颗人脑。'
 }, {
   name: 'Floralis Genérica',
   artist: 'Eduardo Catalano',
-  description: 'This enormous (75 ft. or 23m) silver flower is located in Buenos Aires. It is designed to move, closing its petals in the evening or when strong winds blow and opening them in the morning.',
+  description: '这朵巨大的（75 英尺，约 23 米）银色花朵位于布宜诺斯艾利斯。它被设计成会移动，傍晚或强风吹拂时会闭合花瓣，清晨则会重新开放。',
   url: 'https://react.dev/images/docs/scientists/ZF6s192m.jpg',
-  alt: 'A gigantic metallic flower sculpture with reflective mirror-like petals and strong stamens.'
+  alt: '一座巨大的金属花朵雕塑，带有反光、镜面般的花瓣和粗壮的花蕊。'
 }, {
   name: 'Eternal Presence',
   artist: 'John Woodrow Wilson',
-  description: 'Wilson was known for his preoccupation with equality, social justice, as well as the essential and spiritual qualities of humankind. This massive (7ft. or 2,13m) bronze represents what he described as "a symbolic Black presence infused with a sense of universal humanity."',
+  description: 'Wilson 以其对平等、社会正义以及人类本质和精神特质的关注而闻名。这件巨大的青铜雕塑（7 英尺，约 2.13 米）代表了他所描述的“被赋予普遍人性意识的象征性黑人存在”。',
   url: 'https://react.dev/images/docs/scientists/aTtVpES.jpg',
-  alt: 'The sculpture depicting a human head seems ever-present and solemn. It radiates calm and serenity.'
+  alt: '这座描绘人头的雕塑似乎无处不在且庄严肃穆，散发着平静与安宁。'
 }, {
   name: 'Moai',
   artist: 'Unknown Artist',
-  description: 'Located on the Easter Island, there are 1,000 moai, or extant monumental statues, created by the early Rapa Nui people, which some believe represented deified ancestors.',
+  description: '位于复活节岛的摩艾石像共有 1,000 尊，或者说是现存的纪念性雕像，由早期的拉帕努伊人创造，一些人认为它们代表着神化的祖先。',
   url: 'https://react.dev/images/docs/scientists/RCwLEoQm.jpg',
-  alt: 'Three monumental stone busts with the heads that are disproportionately large with somber faces.'
+  alt: '三尊纪念性的石质半身像，头部异常巨大，表情忧郁。'
 }, {
   name: 'Blue Nana',
   artist: 'Niki de Saint Phalle',
-  description: 'The Nanas are triumphant creatures, symbols of femininity and maternity. Initially, Saint Phalle used fabric and found objects for the Nanas, and later on introduced polyester to achieve a more vibrant effect.',
+  description: 'Nana 是欢欣鼓舞的生灵，象征着女性气质与母性。起初，Saint Phalle 为 Nana 使用织物和现成物件，后来又引入聚酯材料，以获得更鲜艳的效果。',
   url: 'https://react.dev/images/docs/scientists/Sd1AgUOm.jpg',
-  alt: 'A large mosaic sculpture of a whimsical dancing female figure in a colorful costume emanating joy.'
+  alt: '一座大型马赛克雕塑，描绘了一个穿着彩色服装、跳舞的奇幻女性形象，洋溢着欢乐。'
 }, {
   name: 'Ultimate Form',
   artist: 'Barbara Hepworth',
-  description: 'This abstract bronze sculpture is a part of The Family of Man series located at Yorkshire Sculpture Park. Hepworth chose not to create literal representations of the world but developed abstract forms inspired by people and landscapes.',
+  description: '这座抽象青铜雕塑是位于约克郡雕塑公园的《人类大家庭》系列的一部分。Hepworth 选择不去创作世界的写实再现，而是发展出受人物与风景启发的抽象形式。',
   url: 'https://react.dev/images/docs/scientists/2heNQDcm.jpg',
-  alt: 'A tall sculpture made of three elements stacked on each other reminding of a human figure.'
+  alt: '一座由三个元素堆叠而成的高耸雕塑，让人联想到人体轮廓。'
 }, {
   name: 'Cavaliere',
   artist: 'Lamidi Olonade Fakeye',
-  description: "Descended from four generations of woodcarvers, Fakeye's work blended traditional and contemporary Yoruba themes.",
+  description: 'Fakeye 的作品传承自四代木雕匠人，融合了传统与当代约鲁巴主题。',
   url: 'https://react.dev/images/docs/scientists/wIdGuZwm.png',
-  alt: 'An intricate wood sculpture of a warrior with a focused face on a horse adorned with patterns.'
+  alt: '一座精致的木雕，描绘了一位面容专注的骑马战士，身上装饰着纹样。'
 }, {
   name: 'Big Bellies',
   artist: 'Alina Szapocznikow',
-  description: "Szapocznikow is known for her sculptures of the fragmented body as a metaphor for the fragility and impermanence of youth and beauty. This sculpture depicts two very realistic large bellies stacked on top of each other, each around five feet (1,5m) tall.",
+  description: 'Szapocznikow 以其碎片化身体雕塑而闻名，这些作品将身体作为青春与美丽脆弱和短暂的隐喻。这座雕塑描绘了两个非常逼真的大肚子，一个叠在另一个上面，每个大约五英尺（1.5 米）高。',
   url: 'https://react.dev/images/docs/scientists/AlHTAdDm.jpg',
-  alt: 'The sculpture reminds a cascade of folds, quite different from bellies in classical sculptures.'
+  alt: '这座雕塑让人联想到一层层褶皱，与古典雕塑中的腹部形象大不相同。'
 }, {
   name: 'Terracotta Army',
   artist: 'Unknown Artist',
-  description: 'The Terracotta Army is a collection of terracotta sculptures depicting the armies of Qin Shi Huang, the first Emperor of China. The army consisted of more than 8,000 soldiers, 130 chariots with 520 horses, and 150 cavalry horses.',
+  description: '兵马俑是描绘秦始皇军队的陶俑雕塑集合。这支军队由 8,000 多名士兵、130 辆战车和 520 匹马，以及 150 匹骑兵马组成。',
   url: 'https://react.dev/images/docs/scientists/HMFmH6m.jpg',
-  alt: '12 terracotta sculptures of solemn warriors, each with a unique facial expression and armor.'
+  alt: '12 尊陶俑战士雕塑，每一尊都有独特的面部表情和盔甲。'
 }, {
   name: 'Lunar Landscape',
   artist: 'Louise Nevelson',
-  description: 'Nevelson was known for scavenging objects from New York City debris, which she would later assemble into monumental constructions. In this one, she used disparate parts like a bedpost, juggling pin, and seat fragment, nailing and gluing them into boxes that reflect the influence of Cubism’s geometric abstraction of space and form.',
+  description: 'Nevelson 以从纽约市废弃物中搜集物件而闻名，随后她会将它们组装成纪念性构筑物。在这件作品中，她使用了床柱、杂耍棒和座椅碎片等互不相同的部件，将它们钉上并粘进盒子里，体现了立体主义对空间与形式几何抽象的影响。',
   url: 'https://react.dev/images/docs/scientists/rN7hY6om.jpg',
-  alt: 'A black matte sculpture where the individual elements are initially indistinguishable.'
+  alt: '一座哑光黑色雕塑，单个元素起初难以分辨。'
 }, {
   name: 'Aureole',
   artist: 'Ranjani Shettar',
-  description: 'Shettar merges the traditional and the modern, the natural and the industrial. Her art focuses on the relationship between man and nature. Her work was described as compelling both abstractly and figuratively, gravity defying, and a "fine synthesis of unlikely materials."',
+  description: 'Shettar 融合了传统与现代、自然与工业。她的艺术聚焦于人与自然之间的关系。她的作品被形容为在抽象和具象层面都引人入胜、违背重力，以及“对不太可能材料的精妙综合”。',
   url: 'https://react.dev/images/docs/scientists/okTpbHhm.jpg',
-  alt: 'A pale wire-like sculpture mounted on concrete wall and descending on the floor. It appears light.'
+  alt: '一座浅色、类似金属丝的雕塑安装在混凝土墙上并向地面垂下，看起来很轻盈。'
 }, {
   name: 'Hippos',
   artist: 'Taipei Zoo',
-  description: 'The Taipei Zoo commissioned a Hippo Square featuring submerged hippos at play.',
+  description: '台北动物园委托创作了一个河马广场，展示了半浸没在水中的河马嬉戏场景。',
   url: 'https://react.dev/images/docs/scientists/6o5Vuyu.jpg',
-  alt: 'A group of bronze hippo sculptures emerging from the sett sidewalk as if they were swimming.'
+  alt: '一组青铜河马雕塑从人行道的缝隙中冒出，仿佛它们正在游泳。'
 }];
 ```
 
@@ -520,19 +520,19 @@ button {
 
 </Sandpack>
 
-It is a good idea to have multiple state variables if their state is unrelated, like `index` and `showMore` in this example. But if you find that you often change two state variables together, it might be easier to combine them into one. For example, if you have a form with many fields, it's more convenient to have a single state variable that holds an object than state variable per field. Read [Choosing the State Structure](/learn/choosing-the-state-structure) for more tips.
+如果某些状态彼此无关，比如这个例子中的 `index` 和 `showMore`，那么拥有多个状态变量是个好主意。但如果你发现自己经常需要同时修改两个状态变量，那么把它们合并成一个可能会更容易。例如，如果你有一个包含许多字段的表单，那么拥有一个保存对象的单一状态变量，比为每个字段分别设置状态变量更方便。阅读 [选择状态结构](/learn/choosing-the-state-structure) 以获取更多提示。
 
 <DeepDive>
 
-#### How does React know which state to return? {/*how-does-react-know-which-state-to-return*/}
+#### React 如何知道要返回哪个状态？ {/*how-does-react-know-which-state-to-return*/}
 
-You might have noticed that the `useState` call does not receive any information about *which* state variable it refers to. There is no "identifier" that is passed to `useState`, so how does it know which of the state variables to return? Does it rely on some magic like parsing your functions? The answer is no.
+你可能已经注意到，`useState` 调用并没有接收任何关于它所引用的是*哪个*状态变量的信息。传给 `useState` 的并没有“标识符”，那它是怎么知道要返回哪个状态变量的呢？它依赖于解析你的函数之类的魔法吗？答案是否定的。
 
-Instead, to enable their concise syntax, Hooks **rely on a stable call order on every render of the same component.** This works well in practice because if you follow the rule above ("only call Hooks at the top level"), Hooks will always be called in the same order. Additionally, a [linter plugin](https://www.npmjs.com/package/eslint-plugin-react-hooks) catches most mistakes.
+相反，为了保持其简洁的语法，Hooks **依赖于同一个组件每次渲染时稳定的调用顺序。** 这在实践中非常有效，因为如果你遵循上面的规则（“只在顶层调用 Hooks”），Hooks 总会以相同的顺序被调用。此外，[linter 插件](https://www.npmjs.com/package/eslint-plugin-react-hooks) 可以捕获大多数错误。
 
-Internally, React holds an array of state pairs for every component. It also maintains the current pair index, which is set to `0` before rendering. Each time you call `useState`, React gives you the next state pair and increments the index. You can read more about this mechanism in [React Hooks: Not Magic, Just Arrays.](https://medium.com/@ryardley/react-hooks-not-magic-just-arrays-cd4f1857236e)
+在内部，React 为每个组件维护一个状态对数组。它还维护当前的配对索引，在渲染前该索引被设置为 `0`。每次你调用 `useState`，React 都会给你下一个状态对并递增索引。你可以在 [React Hooks：不是魔法，只是数组。](https://medium.com/@ryardley/react-hooks-not-magic-just-arrays-cd4f1857236e) 中了解更多关于这一机制的内容。
 
-This example **doesn't use React** but it gives you an idea of how `useState` works internally:
+这个例子**没有使用 React**，但它能让你对 `useState` 的内部工作方式有一个概念：
 
 <Sandpack>
 
@@ -540,37 +540,37 @@ This example **doesn't use React** but it gives you an idea of how `useState` wo
 let componentHooks = [];
 let currentHookIndex = 0;
 
-// How useState works inside React (simplified).
+// useState 在 React 内部是如何工作的（简化版）。
 function useState(initialState) {
   let pair = componentHooks[currentHookIndex];
   if (pair) {
-    // This is not the first render,
-    // so the state pair already exists.
-    // Return it and prepare for next Hook call.
+    // 这不是第一次渲染，
+    // 所以状态对已经存在。
+    // 返回它并为下一次 Hook 调用做准备。
     currentHookIndex++;
     return pair;
   }
 
-  // This is the first time we're rendering,
-  // so create a state pair and store it.
+  // 这是我们第一次渲染，
+  // 所以创建一个状态对并存储它。
   pair = [initialState, setState];
 
   function setState(nextState) {
-    // When the user requests a state change,
-    // put the new value into the pair.
+    // 当用户请求更改状态时，
+    // 将新值放入该状态对中。
     pair[0] = nextState;
     updateDOM();
   }
 
-  // Store the pair for future renders
-  // and prepare for the next Hook call.
+  // 为将来的渲染保存这个状态对
+  // 并为下一次 Hook 调用做准备。
   componentHooks[currentHookIndex] = pair;
   currentHookIndex++;
   return pair;
 }
 
 function Gallery() {
-  // Each useState() call will get the next pair.
+  // 每次 useState() 调用都会获得下一个状态对。
   const [index, setIndex] = useState(0);
   const [showMore, setShowMore] = useState(false);
 
@@ -583,8 +583,8 @@ function Gallery() {
   }
 
   let sculpture = sculptureList[index];
-  // This example doesn't use React, so
-  // return an output object instead of JSX.
+  // 这个例子没有使用 React，所以
+  // 返回一个输出对象而不是 JSX。
   return {
     onNextClick: handleNextClick,
     onMoreClick: handleMoreClick,
@@ -598,13 +598,13 @@ function Gallery() {
 }
 
 function updateDOM() {
-  // Reset the current Hook index
-  // before rendering the component.
+  // 在渲染组件之前，
+  // 重置当前 Hook 索引。
   currentHookIndex = 0;
   let output = Gallery();
 
-  // Update the DOM to match the output.
-  // This is the part React does for you.
+  // 更新 DOM 以匹配输出。
+  // 这是 React 为你完成的部分。
   nextButton.onclick = output.onNextClick;
   header.textContent = output.header;
   moreButton.onclick = output.onMoreClick;
@@ -627,84 +627,84 @@ let image = document.getElementById('image');
 let sculptureList = [{
   name: 'Homenaje a la Neurocirugía',
   artist: 'Marta Colvin Andrade',
-  description: 'Although Colvin is predominantly known for abstract themes that allude to pre-Hispanic symbols, this gigantic sculpture, an homage to neurosurgery, is one of her most recognizable public art pieces.',
+  description: '虽然 Colvin 主要以暗指前西班牙时期符号的抽象主题而闻名，但这座巨大的雕塑——对神经外科的致敬——是她最具辨识度的公共艺术作品之一。',
   url: 'https://react.dev/images/docs/scientists/Mx7dA2Y.jpg',
-  alt: 'A bronze statue of two crossed hands delicately holding a human brain in their fingertips.'
+  alt: '一尊青铜雕像，两个交叉的手指尖轻柔地托着一颗人脑。'
 }, {
   name: 'Floralis Genérica',
   artist: 'Eduardo Catalano',
-  description: 'This enormous (75 ft. or 23m) silver flower is located in Buenos Aires. It is designed to move, closing its petals in the evening or when strong winds blow and opening them in the morning.',
+  description: '这朵巨大的（75 英尺，约 23 米）银色花朵位于布宜诺斯艾利斯。它被设计成会移动，傍晚或强风吹拂时会闭合花瓣，清晨则会重新开放。',
   url: 'https://react.dev/images/docs/scientists/ZF6s192m.jpg',
-  alt: 'A gigantic metallic flower sculpture with reflective mirror-like petals and strong stamens.'
+  alt: '一座巨大的金属花朵雕塑，带有反光、镜面般的花瓣和粗壮的花蕊。'
 }, {
   name: 'Eternal Presence',
   artist: 'John Woodrow Wilson',
-  description: 'Wilson was known for his preoccupation with equality, social justice, as well as the essential and spiritual qualities of humankind. This massive (7ft. or 2,13m) bronze represents what he described as "a symbolic Black presence infused with a sense of universal humanity."',
+  description: 'Wilson 以其对平等、社会正义以及人类本质和精神特质的关注而闻名。这件巨大的青铜雕塑（7 英尺，约 2.13 米）代表了他所描述的“被赋予普遍人性意识的象征性黑人存在”。',
   url: 'https://react.dev/images/docs/scientists/aTtVpES.jpg',
-  alt: 'The sculpture depicting a human head seems ever-present and solemn. It radiates calm and serenity.'
+  alt: '这座描绘人头的雕塑似乎无处不在且庄严肃穆，散发着平静与安宁。'
 }, {
   name: 'Moai',
   artist: 'Unknown Artist',
-  description: 'Located on the Easter Island, there are 1,000 moai, or extant monumental statues, created by the early Rapa Nui people, which some believe represented deified ancestors.',
+  description: '位于复活节岛的摩艾石像共有 1,000 尊，或者说是现存的纪念性雕像，由早期的拉帕努伊人创造，一些人认为它们代表着神化的祖先。',
   url: 'https://react.dev/images/docs/scientists/RCwLEoQm.jpg',
-  alt: 'Three monumental stone busts with the heads that are disproportionately large with somber faces.'
+  alt: '三尊纪念性的石质半身像，头部异常巨大，表情忧郁。'
 }, {
   name: 'Blue Nana',
   artist: 'Niki de Saint Phalle',
-  description: 'The Nanas are triumphant creatures, symbols of femininity and maternity. Initially, Saint Phalle used fabric and found objects for the Nanas, and later on introduced polyester to achieve a more vibrant effect.',
+  description: 'Nana 是欢欣鼓舞的生灵，象征着女性气质与母性。起初，Saint Phalle 为 Nana 使用织物和现成物件，后来又引入聚酯材料，以获得更鲜艳的效果。',
   url: 'https://react.dev/images/docs/scientists/Sd1AgUOm.jpg',
-  alt: 'A large mosaic sculpture of a whimsical dancing female figure in a colorful costume emanating joy.'
+  alt: '一座大型马赛克雕塑，描绘了一个穿着彩色服装、跳舞的奇幻女性形象，洋溢着欢乐。'
 }, {
   name: 'Ultimate Form',
   artist: 'Barbara Hepworth',
-  description: 'This abstract bronze sculpture is a part of The Family of Man series located at Yorkshire Sculpture Park. Hepworth chose not to create literal representations of the world but developed abstract forms inspired by people and landscapes.',
+  description: '这座抽象青铜雕塑是位于约克郡雕塑公园的《人类大家庭》系列的一部分。Hepworth 选择不去创作世界的写实再现，而是发展出受人物与风景启发的抽象形式。',
   url: 'https://react.dev/images/docs/scientists/2heNQDcm.jpg',
-  alt: 'A tall sculpture made of three elements stacked on each other reminding of a human figure.'
+  alt: '一座由三个元素堆叠而成的高耸雕塑，让人联想到人体轮廓。'
 }, {
   name: 'Cavaliere',
   artist: 'Lamidi Olonade Fakeye',
-  description: "Descended from four generations of woodcarvers, Fakeye's work blended traditional and contemporary Yoruba themes.",
+  description: 'Fakeye 的作品传承自四代木雕匠人，融合了传统与当代约鲁巴主题。',
   url: 'https://react.dev/images/docs/scientists/wIdGuZwm.png',
-  alt: 'An intricate wood sculpture of a warrior with a focused face on a horse adorned with patterns.'
+  alt: '一座精致的木雕，描绘了一位面容专注的骑马战士，身上装饰着纹样。'
 }, {
   name: 'Big Bellies',
   artist: 'Alina Szapocznikow',
-  description: "Szapocznikow is known for her sculptures of the fragmented body as a metaphor for the fragility and impermanence of youth and beauty. This sculpture depicts two very realistic large bellies stacked on top of each other, each around five feet (1,5m) tall.",
+  description: 'Szapocznikow 以其碎片化身体雕塑而闻名，这些作品将身体作为青春与美丽脆弱和短暂的隐喻。这座雕塑描绘了两个非常逼真的大肚子，一个叠在另一个上面，每个大约五英尺（1.5 米）高。',
   url: 'https://react.dev/images/docs/scientists/AlHTAdDm.jpg',
-  alt: 'The sculpture reminds a cascade of folds, quite different from bellies in classical sculptures.'
+  alt: '这座雕塑让人联想到一层层褶皱，与古典雕塑中的腹部形象大不相同。'
 }, {
   name: 'Terracotta Army',
   artist: 'Unknown Artist',
-  description: 'The Terracotta Army is a collection of terracotta sculptures depicting the armies of Qin Shi Huang, the first Emperor of China. The army consisted of more than 8,000 soldiers, 130 chariots with 520 horses, and 150 cavalry horses.',
+  description: '兵马俑是描绘秦始皇军队的陶俑雕塑集合。这支军队由 8,000 多名士兵、130 辆战车和 520 匹马，以及 150 匹骑兵马组成。',
   url: 'https://react.dev/images/docs/scientists/HMFmH6m.jpg',
-  alt: '12 terracotta sculptures of solemn warriors, each with a unique facial expression and armor.'
+  alt: '12 尊陶俑战士雕塑，每一尊都有独特的面部表情和盔甲。'
 }, {
   name: 'Lunar Landscape',
   artist: 'Louise Nevelson',
-  description: 'Nevelson was known for scavenging objects from New York City debris, which she would later assemble into monumental constructions. In this one, she used disparate parts like a bedpost, juggling pin, and seat fragment, nailing and gluing them into boxes that reflect the influence of Cubism’s geometric abstraction of space and form.',
+  description: 'Nevelson 以从纽约市废弃物中搜集物件而闻名，随后她会将它们组装成纪念性构筑物。在这件作品中，她使用了床柱、杂耍棒和座椅碎片等互不相同的部件，将它们钉上并粘进盒子里，体现了立体主义对空间与形式几何抽象的影响。',
   url: 'https://react.dev/images/docs/scientists/rN7hY6om.jpg',
-  alt: 'A black matte sculpture where the individual elements are initially indistinguishable.'
+  alt: '一座哑光黑色雕塑，单个元素起初难以分辨。'
 }, {
   name: 'Aureole',
   artist: 'Ranjani Shettar',
-  description: 'Shettar merges the traditional and the modern, the natural and the industrial. Her art focuses on the relationship between man and nature. Her work was described as compelling both abstractly and figuratively, gravity defying, and a "fine synthesis of unlikely materials."',
+  description: 'Shettar 融合了传统与现代、自然与工业。她的艺术聚焦于人与自然之间的关系。她的作品被形容为在抽象和具象层面都引人入胜、违背重力，以及“对不太可能材料的精妙综合”。',
   url: 'https://react.dev/images/docs/scientists/okTpbHhm.jpg',
-  alt: 'A pale wire-like sculpture mounted on concrete wall and descending on the floor. It appears light.'
+  alt: '一座浅色、类似金属丝的雕塑安装在混凝土墙上并向地面垂下，看起来很轻盈。'
 }, {
   name: 'Hippos',
   artist: 'Taipei Zoo',
-  description: 'The Taipei Zoo commissioned a Hippo Square featuring submerged hippos at play.',
+  description: '台北动物园委托创作了一个河马广场，展示了半浸没在水中的河马嬉戏场景。',
   url: 'https://react.dev/images/docs/scientists/6o5Vuyu.jpg',
-  alt: 'A group of bronze hippo sculptures emerging from the sett sidewalk as if they were swimming.'
+  alt: '一组青铜河马雕塑从人行道的缝隙中冒出，仿佛它们正在游泳。'
 }];
 
-// Make UI match the initial state.
+// 使 UI 与初始状态保持一致。
 updateDOM();
 ```
 
 ```html public/index.html
 <button id="nextButton">
-  Next
+  下一个
 </button>
 <h3 id="header"></h3>
 <button id="moreButton"></button>
@@ -724,15 +724,15 @@ button { display: block; margin-bottom: 10px; }
 
 </Sandpack>
 
-You don't have to understand it to use React, but you might find this a helpful mental model.
+你不必理解它也能使用 React，但你可能会发现这是一种有帮助的心智模型。
 
 </DeepDive>
 
-## State is isolated and private {/*state-is-isolated-and-private*/}
+## 状态是隔离且私有的 {/*state-is-isolated-and-private*/}
 
-State is local to a component instance on the screen. In other words, **if you render the same component twice, each copy will have completely isolated state!** Changing one of them will not affect the other.
+状态只属于屏幕上某个组件实例。换句话说，**如果你把同一个组件渲染两次，那么每个副本都会拥有完全隔离的状态！** 修改其中一个不会影响另一个。
 
-In this example, the `Gallery` component from earlier is rendered twice with no changes to its logic. Try clicking the buttons inside each of the galleries. Notice that their state is independent:
+在这个示例中，前面提到的 `Gallery` 组件被渲染了两次，但其逻辑没有任何变化。试着点击每个画廊里的按钮。注意它们的状态是彼此独立的：
 
 <Sandpack>
 
@@ -770,17 +770,17 @@ export default function Gallery() {
   return (
     <section>
       <button onClick={handleNextClick}>
-        Next
+        下一张
       </button>
       <h2>
         <i>{sculpture.name} </i>
-        by {sculpture.artist}
+        作者：{sculpture.artist}
       </h2>
       <h3>
-        ({index + 1} of {sculptureList.length})
+        （{index + 1} / {sculptureList.length}）
       </h3>
       <button onClick={handleMoreClick}>
-        {showMore ? 'Hide' : 'Show'} details
+        {showMore ? '隐藏' : '显示'}详情
       </button>
       {showMore && <p>{sculpture.description}</p>}
       <img
@@ -796,75 +796,75 @@ export default function Gallery() {
 export const sculptureList = [{
   name: 'Homenaje a la Neurocirugía',
   artist: 'Marta Colvin Andrade',
-  description: 'Although Colvin is predominantly known for abstract themes that allude to pre-Hispanic symbols, this gigantic sculpture, an homage to neurosurgery, is one of her most recognizable public art pieces.',
+  description: '虽然 Colvin 主要以暗示前西班牙时期符号的抽象主题而闻名，但这件巨大的雕塑是对神经外科的致敬，是她最具辨识度的公共艺术作品之一。',
   url: 'https://react.dev/images/docs/scientists/Mx7dA2Y.jpg',
-  alt: 'A bronze statue of two crossed hands delicately holding a human brain in their fingertips.'
+  alt: '一尊青铜雕像，两个交叉的手指尖轻柔地托着一颗人脑。'
 }, {
   name: 'Floralis Genérica',
   artist: 'Eduardo Catalano',
-  description: 'This enormous (75 ft. or 23m) silver flower is located in Buenos Aires. It is designed to move, closing its petals in the evening or when strong winds blow and opening them in the morning.',
+  description: '这朵巨大的银色花朵（75 英尺，约 23 米）位于布宜诺斯艾利斯。它会活动：在傍晚或强风时闭合花瓣，在早晨开放。',
   url: 'https://react.dev/images/docs/scientists/ZF6s192m.jpg',
-  alt: 'A gigantic metallic flower sculpture with reflective mirror-like petals and strong stamens.'
+  alt: '一座巨大的金属花朵雕塑，带有反光镜面般的花瓣和粗壮的花蕊。'
 }, {
   name: 'Eternal Presence',
   artist: 'John Woodrow Wilson',
-  description: 'Wilson was known for his preoccupation with equality, social justice, as well as the essential and spiritual qualities of humankind. This massive (7ft. or 2,13m) bronze represents what he described as "a symbolic Black presence infused with a sense of universal humanity."',
+  description: 'Wilson 以关注平等、社会正义，以及人类本质与精神品质而闻名。这座巨大的青铜雕塑（7 英尺，约 2.13 米）体现了他所描述的“被赋予普遍人性意识的象征性黑人形象”。',
   url: 'https://react.dev/images/docs/scientists/aTtVpES.jpg',
-  alt: 'The sculpture depicting a human head seems ever-present and solemn. It radiates calm and serenity.'
+  alt: '这座描绘人头的雕塑仿佛始终存在，庄严肃穆。它散发着平静与安宁。'
 }, {
   name: 'Moai',
   artist: 'Unknown Artist',
-  description: 'Located on the Easter Island, there are 1,000 moai, or extant monumental statues, created by the early Rapa Nui people, which some believe represented deified ancestors.',
+  description: '位于复活节岛上，共有 1,000 尊摩艾石像，即现存的纪念性雕像，由早期拉帕努伊人创造，一些人认为它们代表着神化的祖先。',
   url: 'https://react.dev/images/docs/scientists/RCwLEoQm.jpg',
-  alt: 'Three monumental stone busts with the heads that are disproportionately large with somber faces.'
+  alt: '三座纪念性石质半身像，头部比例极大，面容凝重。'
 }, {
   name: 'Blue Nana',
   artist: 'Niki de Saint Phalle',
-  description: 'The Nanas are triumphant creatures, symbols of femininity and maternity. Initially, Saint Phalle used fabric and found objects for the Nanas, and later on introduced polyester to achieve a more vibrant effect.',
+  description: 'Nana 是象征女性气质与母性的胜利生物。起初，Saint Phalle 为 Nana 使用布料和现成物品，后来又引入聚酯材料以获得更鲜活的效果。',
   url: 'https://react.dev/images/docs/scientists/Sd1AgUOm.jpg',
-  alt: 'A large mosaic sculpture of a whimsical dancing female figure in a colorful costume emanating joy.'
+  alt: '一座大型马赛克雕塑，描绘一个穿着彩色服装、充满奇思妙想的舞动女性形象，洋溢着喜悦。'
 }, {
   name: 'Ultimate Form',
   artist: 'Barbara Hepworth',
-  description: 'This abstract bronze sculpture is a part of The Family of Man series located at Yorkshire Sculpture Park. Hepworth chose not to create literal representations of the world but developed abstract forms inspired by people and landscapes.',
+  description: '这件抽象青铜雕塑是位于约克郡雕塑公园的《人类大家庭》系列的一部分。Hepworth 并未选择创作世界的写实再现，而是发展出受人和风景启发的抽象形式。',
   url: 'https://react.dev/images/docs/scientists/2heNQDcm.jpg',
-  alt: 'A tall sculpture made of three elements stacked on each other reminding of a human figure.'
+  alt: '一座由三个元素堆叠而成的高挑雕塑，让人联想到人体形象。'
 }, {
   name: 'Cavaliere',
   artist: 'Lamidi Olonade Fakeye',
-  description: "Descended from four generations of woodcarvers, Fakeye's work blended traditional and contemporary Yoruba themes.",
+  description: 'Fakeye 来自四代木雕世家，他的作品融合了传统与当代约鲁巴主题。',
   url: 'https://react.dev/images/docs/scientists/wIdGuZwm.png',
-  alt: 'An intricate wood sculpture of a warrior with a focused face on a horse adorned with patterns.'
+  alt: '一座精致的木雕，表现一名神情专注的武士骑在装饰着纹样的马上。'
 }, {
   name: 'Big Bellies',
   artist: 'Alina Szapocznikow',
-  description: "Szapocznikow is known for her sculptures of the fragmented body as a metaphor for the fragility and impermanence of youth and beauty. This sculpture depicts two very realistic large bellies stacked on top of each other, each around five feet (1,5m) tall.",
+  description: 'Szapocznikow 以人体碎片化雕塑著称，将其作为青春与美丽脆弱和短暂的隐喻。这件雕塑展示了两个非常逼真的大肚子上下堆叠在一起，每个大约五英尺（1.5 米）高。',
   url: 'https://react.dev/images/docs/scientists/AlHTAdDm.jpg',
-  alt: 'The sculpture reminds a cascade of folds, quite different from bellies in classical sculptures.'
+  alt: '这件雕塑让人联想到一连串褶皱，与古典雕塑中的腹部形象截然不同。'
 }, {
   name: 'Terracotta Army',
   artist: 'Unknown Artist',
-  description: 'The Terracotta Army is a collection of terracotta sculptures depicting the armies of Qin Shi Huang, the first Emperor of China. The army consisted of more than 8,000 soldiers, 130 chariots with 520 horses, and 150 cavalry horses.',
+  description: '兵马俑是一组描绘秦始皇军队的陶俑雕塑。军队由 8,000 多名士兵、130 辆战车和 520 匹战马以及 150 匹骑兵马组成。',
   url: 'https://react.dev/images/docs/scientists/HMFmH6m.jpg',
-  alt: '12 terracotta sculptures of solemn warriors, each with a unique facial expression and armor.'
+  alt: '12 尊陶俑武士雕塑，每一尊都有独特的面部表情和盔甲。'
 }, {
   name: 'Lunar Landscape',
   artist: 'Louise Nevelson',
-  description: 'Nevelson was known for scavenging objects from New York City debris, which she would later assemble into monumental constructions. In this one, she used disparate parts like a bedpost, juggling pin, and seat fragment, nailing and gluing them into boxes that reflect the influence of Cubism’s geometric abstraction of space and form.',
+  description: 'Nevelson 以从纽约市废墟中搜集物件而闻名，她后来将这些物件组装成纪念性构筑物。在这件作品中，她使用了床柱、杂耍棒、座椅碎片等不同部件，并将它们钉接和粘合到盒子中，体现了立体主义对空间与形式的几何抽象影响。',
   url: 'https://react.dev/images/docs/scientists/rN7hY6om.jpg',
-  alt: 'A black matte sculpture where the individual elements are initially indistinguishable.'
+  alt: '一座黑色哑光雕塑，各个元素最初难以分辨。'
 }, {
   name: 'Aureole',
   artist: 'Ranjani Shettar',
-  description: 'Shettar merges the traditional and the modern, the natural and the industrial. Her art focuses on the relationship between man and nature. Her work was described as compelling both abstractly and figuratively, gravity defying, and a "fine synthesis of unlikely materials."',
+  description: 'Shettar 融合了传统与现代、自然与工业。她的艺术聚焦于人与自然的关系。她的作品被描述为在抽象和具象层面都引人注目、违背重力，以及“对不太可能的材料的精妙综合”。',
   url: 'https://react.dev/images/docs/scientists/okTpbHhm.jpg',
-  alt: 'A pale wire-like sculpture mounted on concrete wall and descending on the floor. It appears light.'
+  alt: '一座浅色、像细线一样的雕塑安装在混凝土墙上并垂落到地面，看起来很轻盈。'
 }, {
   name: 'Hippos',
   artist: 'Taipei Zoo',
-  description: 'The Taipei Zoo commissioned a Hippo Square featuring submerged hippos at play.',
+  description: '台北动物园委托创作了一个河马广场，展示了半 submerged 的河马在玩耍。',
   url: 'https://react.dev/images/docs/scientists/6o5Vuyu.jpg',
-  alt: 'A group of bronze hippo sculptures emerging from the sett sidewalk as if they were swimming.'
+  alt: '一组青铜河马雕塑从铺装人行道中冒出，仿佛正在游泳。'
 }];
 ```
 
@@ -891,21 +891,21 @@ button {
 
 </Sandpack>
 
-This is what makes state different from regular variables that you might declare at the top of your module. State is not tied to a particular function call or a place in the code, but it's "local" to the specific place on the screen. You rendered two `<Gallery />` components, so their state is stored separately.
+这就是为什么状态不同于你可能在模块顶部声明的普通变量。状态并不绑定到某个特定函数调用或代码中的某个位置，而是“局部”于屏幕上的特定位置。你渲染了两个 `<Gallery />` 组件，所以它们的状态是分别存储的。
 
-Also notice how the `Page` component doesn't "know" anything about the `Gallery` state or even whether it has any. Unlike props, **state is fully private to the component declaring it.** The parent component can't change it. This lets you add state to any component or remove it without impacting the rest of the components.
+还要注意，`Page` 组件并不知道任何关于 `Gallery` 状态的事情，甚至不知道它是否有状态。不同于 props，**状态对声明它的组件来说是完全私有的。** 父组件不能修改它。这让你可以给任意组件添加状态，或者移除状态，而不会影响其他组件。
 
-What if you wanted both galleries to keep their states in sync? The right way to do it in React is to *remove* state from child components and add it to their closest shared parent. The next few pages will focus on organizing state of a single component, but we will return to this topic in [Sharing State Between Components.](/learn/sharing-state-between-components)
+如果你希望两个画廊保持同步，该怎么做？在 React 中正确的做法是从子组件中*移除*状态，并将其提升到最近的共享父组件中。接下来的几页将聚焦于如何组织单个组件的状态，但我们会在[组件间共享状态。](/learn/sharing-state-between-components)中回到这个话题
 
 <Recap>
 
-* Use a state variable when a component needs to "remember" some information between renders.
-* State variables are declared by calling the `useState` Hook.
-* Hooks are special functions that start with `use`. They let you "hook into" React features like state.
-* Hooks might remind you of imports: they need to be called unconditionally. Calling Hooks, including `useState`, is only valid at the top level of a component or another Hook.
-* The `useState` Hook returns a pair of values: the current state and the function to update it.
-* You can have more than one state variable. Internally, React matches them up by their order.
-* State is private to the component. If you render it in two places, each copy gets its own state.
+* 当组件需要在多次渲染之间“记住”某些信息时，使用状态变量。
+* 状态变量通过调用 `useState` Hook 来声明。
+* Hook 是以 `use` 开头的特殊函数。它们让你能够“接入” React 的特性，比如状态。
+* Hook 可能会让你联想到导入：它们必须无条件地调用。调用 Hook，包括 `useState`，只在组件或另一个 Hook 的顶层有效。
+* `useState` Hook 返回一对值：当前状态和更新它的函数。
+* 你可以有多个状态变量。React 在内部根据它们的顺序来匹配它们。
+* 状态对组件是私有的。如果你在两个地方渲染它，每个副本都会获得自己的状态。
 
 </Recap>
 
@@ -913,11 +913,11 @@ What if you wanted both galleries to keep their states in sync? The right way to
 
 <Challenges>
 
-#### Complete the gallery {/*complete-the-gallery*/}
+#### 完成画廊 {/*complete-the-gallery*/}
 
-When you press "Next" on the last sculpture, the code crashes. Fix the logic to prevent the crash. You may do this by adding extra logic to event handler or by disabling the button when the action is not possible.
+当你按下最后一件雕塑上的“下一张”时，代码会崩溃。修复逻辑以防止崩溃。你可以通过在事件处理器中添加额外逻辑来实现，或者在动作不可用时禁用按钮。
 
-After fixing the crash, add a "Previous" button that shows the previous sculpture. It shouldn't crash on the first sculpture.
+修复崩溃后，再添加一个“上一张”按钮来显示上一件雕塑。它不应该在第一件雕塑上崩溃。
 
 <Sandpack>
 
@@ -941,17 +941,17 @@ export default function Gallery() {
   return (
     <>
       <button onClick={handleNextClick}>
-        Next
+        下一张
       </button>
       <h2>
         <i>{sculpture.name} </i>
-        by {sculpture.artist}
+        作者：{sculpture.artist}
       </h2>
       <h3>
-        ({index + 1} of {sculptureList.length})
+        （{index + 1} / {sculptureList.length}）
       </h3>
       <button onClick={handleMoreClick}>
-        {showMore ? 'Hide' : 'Show'} details
+        {showMore ? '隐藏' : '显示'}详情
       </button>
       {showMore && <p>{sculpture.description}</p>}
       <img
@@ -967,75 +967,75 @@ export default function Gallery() {
 export const sculptureList = [{
   name: 'Homenaje a la Neurocirugía',
   artist: 'Marta Colvin Andrade',
-  description: 'Although Colvin is predominantly known for abstract themes that allude to pre-Hispanic symbols, this gigantic sculpture, an homage to neurosurgery, is one of her most recognizable public art pieces.',
+  description: '虽然 Colvin 主要以暗示前西班牙时期符号的抽象主题而闻名，但这件巨大的雕塑是对神经外科的致敬，是她最具辨识度的公共艺术作品之一。',
   url: 'https://react.dev/images/docs/scientists/Mx7dA2Y.jpg',
-  alt: 'A bronze statue of two crossed hands delicately holding a human brain in their fingertips.'
+  alt: '一尊青铜雕像，两个交叉的手指尖轻柔地托着一颗人脑。'
 }, {
   name: 'Floralis Genérica',
   artist: 'Eduardo Catalano',
-  description: 'This enormous (75 ft. or 23m) silver flower is located in Buenos Aires. It is designed to move, closing its petals in the evening or when strong winds blow and opening them in the morning.',
+  description: '这朵巨大的银色花朵（75 英尺，约 23 米）位于布宜诺斯艾利斯。它会活动：在傍晚或强风时闭合花瓣，在早晨开放。',
   url: 'https://react.dev/images/docs/scientists/ZF6s192m.jpg',
-  alt: 'A gigantic metallic flower sculpture with reflective mirror-like petals and strong stamens.'
+  alt: '一座巨大的金属花朵雕塑，带有反光镜面般的花瓣和粗壮的花蕊。'
 }, {
   name: 'Eternal Presence',
   artist: 'John Woodrow Wilson',
-  description: 'Wilson was known for his preoccupation with equality, social justice, as well as the essential and spiritual qualities of humankind. This massive (7ft. or 2,13m) bronze represents what he described as "a symbolic Black presence infused with a sense of universal humanity."',
+  description: 'Wilson 以关注平等、社会正义，以及人类本质与精神品质而闻名。这座巨大的青铜雕塑（7 英尺，约 2.13 米）体现了他所描述的“被赋予普遍人性意识的象征性黑人形象”。',
   url: 'https://react.dev/images/docs/scientists/aTtVpES.jpg',
-  alt: 'The sculpture depicting a human head seems ever-present and solemn. It radiates calm and serenity.'
+  alt: '这座描绘人头的雕塑仿佛始终存在，庄严肃穆。它散发着平静与安宁。'
 }, {
   name: 'Moai',
   artist: 'Unknown Artist',
-  description: 'Located on the Easter Island, there are 1,000 moai, or extant monumental statues, created by the early Rapa Nui people, which some believe represented deified ancestors.',
+  description: '位于复活节岛上，共有 1,000 尊摩艾石像，即现存的纪念性雕像，由早期拉帕努伊人创造，一些人认为它们代表着神化的祖先。',
   url: 'https://react.dev/images/docs/scientists/RCwLEoQm.jpg',
-  alt: 'Three monumental stone busts with the heads that are disproportionately large with somber faces.'
+  alt: '三座纪念性石质半身像，头部比例极大，面容凝重。'
 }, {
   name: 'Blue Nana',
   artist: 'Niki de Saint Phalle',
-  description: 'The Nanas are triumphant creatures, symbols of femininity and maternity. Initially, Saint Phalle used fabric and found objects for the Nanas, and later on introduced polyester to achieve a more vibrant effect.',
+  description: 'Nana 是象征女性气质与母性的胜利生物。起初，Saint Phalle 为 Nana 使用布料和现成物品，后来又引入聚酯材料以获得更鲜活的效果。',
   url: 'https://react.dev/images/docs/scientists/Sd1AgUOm.jpg',
-  alt: 'A large mosaic sculpture of a whimsical dancing female figure in a colorful costume emanating joy.'
+  alt: '一座大型马赛克雕塑，描绘一个穿着彩色服装、充满奇思妙想的舞动女性形象，洋溢着喜悦。'
 }, {
   name: 'Ultimate Form',
   artist: 'Barbara Hepworth',
-  description: 'This abstract bronze sculpture is a part of The Family of Man series located at Yorkshire Sculpture Park. Hepworth chose not to create literal representations of the world but developed abstract forms inspired by people and landscapes.',
+  description: '这件抽象青铜雕塑是位于约克郡雕塑公园的《人类大家庭》系列的一部分。Hepworth 并未选择创作世界的写实再现，而是发展出受人和风景启发的抽象形式。',
   url: 'https://react.dev/images/docs/scientists/2heNQDcm.jpg',
-  alt: 'A tall sculpture made of three elements stacked on each other reminding of a human figure.'
+  alt: '一座由三个元素堆叠而成的高挑雕塑，让人联想到人体形象。'
 }, {
   name: 'Cavaliere',
   artist: 'Lamidi Olonade Fakeye',
-  description: "Descended from four generations of woodcarvers, Fakeye's work blended traditional and contemporary Yoruba themes.",
+  description: 'Fakeye 来自四代木雕世家，他的作品融合了传统与当代约鲁巴主题。',
   url: 'https://react.dev/images/docs/scientists/wIdGuZwm.png',
-  alt: 'An intricate wood sculpture of a warrior with a focused face on a horse adorned with patterns.'
+  alt: '一座精致的木雕，表现一名神情专注的武士骑在装饰着纹样的马上。'
 }, {
   name: 'Big Bellies',
   artist: 'Alina Szapocznikow',
-  description: "Szapocznikow is known for her sculptures of the fragmented body as a metaphor for the fragility and impermanence of youth and beauty. This sculpture depicts two very realistic large bellies stacked on top of each other, each around five feet (1,5m) tall.",
+  description: 'Szapocznikow 以人体碎片化雕塑著称，将其作为青春与美丽脆弱和短暂的隐喻。这件雕塑展示了两个非常逼真的大肚子上下堆叠在一起，每个大约五英尺（1.5 米）高。',
   url: 'https://react.dev/images/docs/scientists/AlHTAdDm.jpg',
-  alt: 'The sculpture reminds a cascade of folds, quite different from bellies in classical sculptures.'
+  alt: '这件雕塑让人联想到一连串褶皱，与古典雕塑中的腹部形象截然不同。'
 }, {
   name: 'Terracotta Army',
   artist: 'Unknown Artist',
-  description: 'The Terracotta Army is a collection of terracotta sculptures depicting the armies of Qin Shi Huang, the first Emperor of China. The army consisted of more than 8,000 soldiers, 130 chariots with 520 horses, and 150 cavalry horses.',
+  description: '兵马俑是一组描绘秦始皇军队的陶俑雕塑。军队由 8,000 多名士兵、130 辆战车和 520 匹战马以及 150 匹骑兵马组成。',
   url: 'https://react.dev/images/docs/scientists/HMFmH6m.jpg',
-  alt: '12 terracotta sculptures of solemn warriors, each with a unique facial expression and armor.'
+  alt: '12 尊陶俑武士雕塑，每一尊都有独特的面部表情和盔甲。'
 }, {
   name: 'Lunar Landscape',
   artist: 'Louise Nevelson',
-  description: 'Nevelson was known for scavenging objects from New York City debris, which she would later assemble into monumental constructions. In this one, she used disparate parts like a bedpost, juggling pin, and seat fragment, nailing and gluing them into boxes that reflect the influence of Cubism’s geometric abstraction of space and form.',
+  description: 'Nevelson 以从纽约市废墟中搜集物件而闻名，她后来将这些物件组装成纪念性构筑物。在这件作品中，她使用了床柱、杂耍棒、座椅碎片等不同部件，并将它们钉接和粘合到盒子中，体现了立体主义对空间与形式的几何抽象影响。',
   url: 'https://react.dev/images/docs/scientists/rN7hY6om.jpg',
-  alt: 'A black matte sculpture where the individual elements are initially indistinguishable.'
+  alt: '一座黑色哑光雕塑，各个元素最初难以分辨。'
 }, {
   name: 'Aureole',
   artist: 'Ranjani Shettar',
-  description: 'Shettar merges the traditional and the modern, the natural and the industrial. Her art focuses on the relationship between man and nature. Her work was described as compelling both abstractly and figuratively, gravity defying, and a "fine synthesis of unlikely materials."',
+  description: 'Shettar 融合了传统与现代、自然与工业。她的艺术聚焦于人与自然的关系。她的作品被描述为在抽象和具象层面都引人注目、违背重力，以及“对不太可能的材料的精妙综合”。',
   url: 'https://react.dev/images/docs/scientists/okTpbHhm.jpg',
-  alt: 'A pale wire-like sculpture mounted on concrete wall and descending on the floor. It appears light.'
+  alt: '一座浅色、像细线一样的雕塑安装在混凝土墙上并垂落到地面，看起来很轻盈。'
 }, {
   name: 'Hippos',
   artist: 'Taipei Zoo',
-  description: 'The Taipei Zoo commissioned a Hippo Square featuring submerged hippos at play.',
+  description: '台北动物园委托创作了一个河马广场，展示了半 submerged 的河马在玩耍。',
   url: 'https://react.dev/images/docs/scientists/6o5Vuyu.jpg',
-  alt: 'A group of bronze hippo sculptures emerging from the sett sidewalk as if they were swimming.'
+  alt: '一组青铜河马雕塑从铺装人行道中冒出，仿佛正在游泳。'
 }];
 ```
 
@@ -1059,7 +1059,7 @@ img { width: 120px; height: 120px; }
 
 <Solution>
 
-This adds a guarding condition inside both event handlers and disables the buttons when needed:
+这会在两个事件处理器中都添加保护条件，并在需要时禁用按钮：
 
 <Sandpack>
 
@@ -1097,23 +1097,23 @@ export default function Gallery() {
         onClick={handlePrevClick}
         disabled={!hasPrev}
       >
-        Previous
+        上一张
       </button>
       <button
         onClick={handleNextClick}
         disabled={!hasNext}
       >
-        Next
+        下一张
       </button>
       <h2>
         <i>{sculpture.name} </i>
-        by {sculpture.artist}
+        作者：{sculpture.artist}
       </h2>
       <h3>
-        ({index + 1} of {sculptureList.length})
+        （{index + 1} / {sculptureList.length}）
       </h3>
       <button onClick={handleMoreClick}>
-        {showMore ? 'Hide' : 'Show'} details
+        {showMore ? '隐藏' : '显示'}详情
       </button>
       {showMore && <p>{sculpture.description}</p>}
       <img
@@ -1129,75 +1129,75 @@ export default function Gallery() {
 export const sculptureList = [{
   name: 'Homenaje a la Neurocirugía',
   artist: 'Marta Colvin Andrade',
-  description: 'Although Colvin is predominantly known for abstract themes that allude to pre-Hispanic symbols, this gigantic sculpture, an homage to neurosurgery, is one of her most recognizable public art pieces.',
+  description: '虽然 Colvin 主要以暗示前西班牙时期符号的抽象主题而闻名，但这件巨大的雕塑是对神经外科的致敬，是她最具辨识度的公共艺术作品之一。',
   url: 'https://react.dev/images/docs/scientists/Mx7dA2Y.jpg',
-  alt: 'A bronze statue of two crossed hands delicately holding a human brain in their fingertips.'
+  alt: '一尊青铜雕像，两个交叉的手指尖轻柔地托着一颗人脑。'
 }, {
   name: 'Floralis Genérica',
   artist: 'Eduardo Catalano',
-  description: 'This enormous (75 ft. or 23m) silver flower is located in Buenos Aires. It is designed to move, closing its petals in the evening or when strong winds blow and opening them in the morning.',
+  description: '这朵巨大的银色花朵（75 英尺，约 23 米）位于布宜诺斯艾利斯。它会活动：在傍晚或强风时闭合花瓣，在早晨开放。',
   url: 'https://react.dev/images/docs/scientists/ZF6s192m.jpg',
-  alt: 'A gigantic metallic flower sculpture with reflective mirror-like petals and strong stamens.'
+  alt: '一座巨大的金属花朵雕塑，带有反光镜面般的花瓣和粗壮的花蕊。'
 }, {
   name: 'Eternal Presence',
   artist: 'John Woodrow Wilson',
-  description: 'Wilson was known for his preoccupation with equality, social justice, as well as the essential and spiritual qualities of humankind. This massive (7ft. or 2,13m) bronze represents what he described as "a symbolic Black presence infused with a sense of universal humanity."',
+  description: 'Wilson 以关注平等、社会正义，以及人类本质与精神品质而闻名。这座巨大的青铜雕塑（7 英尺，约 2.13 米）体现了他所描述的“被赋予普遍人性意识的象征性黑人形象”。',
   url: 'https://react.dev/images/docs/scientists/aTtVpES.jpg',
-  alt: 'The sculpture depicting a human head seems ever-present and solemn. It radiates calm and serenity.'
+  alt: '这座描绘人头的雕塑仿佛始终存在，庄严肃穆。它散发着平静与安宁。'
 }, {
   name: 'Moai',
   artist: 'Unknown Artist',
-  description: 'Located on the Easter Island, there are 1,000 moai, or extant monumental statues, created by the early Rapa Nui people, which some believe represented deified ancestors.',
+  description: '位于复活节岛上，共有 1,000 尊摩艾石像，即现存的纪念性雕像，由早期拉帕努伊人创造，一些人认为它们代表着神化的祖先。',
   url: 'https://react.dev/images/docs/scientists/RCwLEoQm.jpg',
-  alt: 'Three monumental stone busts with the heads that are disproportionately large with somber faces.'
+  alt: '三座纪念性石质半身像，头部比例极大，面容凝重。'
 }, {
   name: 'Blue Nana',
   artist: 'Niki de Saint Phalle',
-  description: 'The Nanas are triumphant creatures, symbols of femininity and maternity. Initially, Saint Phalle used fabric and found objects for the Nanas, and later on introduced polyester to achieve a more vibrant effect.',
+  description: 'Nana 是象征女性气质与母性的胜利生物。起初，Saint Phalle 为 Nana 使用布料和现成物品，后来又引入聚酯材料以获得更鲜活的效果。',
   url: 'https://react.dev/images/docs/scientists/Sd1AgUOm.jpg',
-  alt: 'A large mosaic sculpture of a whimsical dancing female figure in a colorful costume emanating joy.'
+  alt: '一座大型马赛克雕塑，描绘一个穿着彩色服装、充满奇思妙想的舞动女性形象，洋溢着喜悦。'
 }, {
   name: 'Ultimate Form',
   artist: 'Barbara Hepworth',
-  description: 'This abstract bronze sculpture is a part of The Family of Man series located at Yorkshire Sculpture Park. Hepworth chose not to create literal representations of the world but developed abstract forms inspired by people and landscapes.',
+  description: '这件抽象青铜雕塑是位于约克郡雕塑公园的《人类大家庭》系列的一部分。Hepworth 并未选择创作世界的写实再现，而是发展出受人和风景启发的抽象形式。',
   url: 'https://react.dev/images/docs/scientists/2heNQDcm.jpg',
-  alt: 'A tall sculpture made of three elements stacked on each other reminding of a human figure.'
+  alt: '一座由三个元素堆叠而成的高挑雕塑，让人联想到人体形象。'
 }, {
   name: 'Cavaliere',
   artist: 'Lamidi Olonade Fakeye',
-  description: "Descended from four generations of woodcarvers, Fakeye's work blended traditional and contemporary Yoruba themes.",
+  description: 'Fakeye 来自四代木雕世家，他的作品融合了传统与当代约鲁巴主题。',
   url: 'https://react.dev/images/docs/scientists/wIdGuZwm.png',
-  alt: 'An intricate wood sculpture of a warrior with a focused face on a horse adorned with patterns.'
+  alt: '一座精致的木雕，表现一名神情专注的武士骑在装饰着纹样的马上。'
 }, {
   name: 'Big Bellies',
   artist: 'Alina Szapocznikow',
-  description: "Szapocznikow is known for her sculptures of the fragmented body as a metaphor for the fragility and impermanence of youth and beauty. This sculpture depicts two very realistic large bellies stacked on top of each other, each around five feet (1,5m) tall.",
+  description: 'Szapocznikow 以人体碎片化雕塑著称，将其作为青春与美丽脆弱和短暂的隐喻。这件雕塑展示了两个非常逼真的大肚子上下堆叠在一起，每个大约五英尺（1.5 米）高。',
   url: 'https://react.dev/images/docs/scientists/AlHTAdDm.jpg',
-  alt: 'The sculpture reminds a cascade of folds, quite different from bellies in classical sculptures.'
+  alt: '这件雕塑让人联想到一连串褶皱，与古典雕塑中的腹部形象截然不同。'
 }, {
   name: 'Terracotta Army',
   artist: 'Unknown Artist',
-  description: 'The Terracotta Army is a collection of terracotta sculptures depicting the armies of Qin Shi Huang, the first Emperor of China. The army consisted of more than 8,000 soldiers, 130 chariots with 520 horses, and 150 cavalry horses.',
+  description: '兵马俑是一组描绘秦始皇军队的陶俑雕塑。军队由 8,000 多名士兵、130 辆战车和 520 匹战马以及 150 匹骑兵马组成。',
   url: 'https://react.dev/images/docs/scientists/HMFmH6m.jpg',
-  alt: '12 terracotta sculptures of solemn warriors, each with a unique facial expression and armor.'
+  alt: '12 尊陶俑武士雕塑，每一尊都有独特的面部表情和盔甲。'
 }, {
   name: 'Lunar Landscape',
   artist: 'Louise Nevelson',
-  description: 'Nevelson was known for scavenging objects from New York City debris, which she would later assemble into monumental constructions. In this one, she used disparate parts like a bedpost, juggling pin, and seat fragment, nailing and gluing them into boxes that reflect the influence of Cubism’s geometric abstraction of space and form.',
+  description: 'Nevelson 以从纽约市废墟中搜集物件而闻名，她后来将这些物件组装成纪念性构筑物。在这件作品中，她使用了床柱、杂耍棒、座椅碎片等不同部件，并将它们钉接和粘合到盒子中，体现了立体主义对空间与形式的几何抽象影响。',
   url: 'https://react.dev/images/docs/scientists/rN7hY6om.jpg',
-  alt: 'A black matte sculpture where the individual elements are initially indistinguishable.'
+  alt: '一座黑色哑光雕塑，各个元素最初难以分辨。'
 }, {
   name: 'Aureole',
   artist: 'Ranjani Shettar',
-  description: 'Shettar merges the traditional and the modern, the natural and the industrial. Her art focuses on the relationship between man and nature. Her work was described as compelling both abstractly and figuratively, gravity defying, and a "fine synthesis of unlikely materials."',
+  description: 'Shettar 融合了传统与现代、自然与工业。她的艺术聚焦于人与自然的关系。她的作品被描述为在抽象和具象层面都引人注目、违背重力，以及“对不太可能的材料的精妙综合”。',
   url: 'https://react.dev/images/docs/scientists/okTpbHhm.jpg',
-  alt: 'A pale wire-like sculpture mounted on concrete wall and descending on the floor. It appears light.'
+  alt: '一座浅色、像细线一样的雕塑安装在混凝土墙上并垂落到地面，看起来很轻盈。'
 }, {
   name: 'Hippos',
   artist: 'Taipei Zoo',
-  description: 'The Taipei Zoo commissioned a Hippo Square featuring submerged hippos at play.',
+  description: '台北动物园委托创作了一个河马广场，展示了半 submerged 的河马在玩耍。',
   url: 'https://react.dev/images/docs/scientists/6o5Vuyu.jpg',
-  alt: 'A group of bronze hippo sculptures emerging from the sett sidewalk as if they were swimming.'
+  alt: '一组青铜河马雕塑从铺装人行道中冒出，仿佛正在游泳。'
 }];
 ```
 
@@ -1219,13 +1219,13 @@ img { width: 120px; height: 120px; }
 
 </Sandpack>
 
-Notice how `hasPrev` and `hasNext` are used *both* for the returned JSX and inside the event handlers! This handy pattern works because event handler functions ["close over"](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures) any variables declared while rendering.
+注意 `hasPrev` 和 `hasNext` 既用于返回的 JSX 中，也用于事件处理器内部！这种巧妙的模式之所以可行，是因为事件处理函数会对渲染期间声明的任何变量形成“闭包”。
 
 </Solution>
 
-#### Fix stuck form inputs {/*fix-stuck-form-inputs*/}
+#### 修复卡住的表单输入 {/*fix-stuck-form-inputs*/}
 
-When you type into the input fields, nothing appears. It's like the input values are "stuck" with empty strings. The `value` of the first `<input>` is set to always match the `firstName` variable, and the `value` for the second `<input>` is set to always match the `lastName` variable. This is correct. Both inputs have `onChange` event handlers, which try to update the variables based on the latest user input (`e.target.value`). However, the variables don't seem to "remember" their values between re-renders. Fix this by using state variables instead.
+当你在输入框中键入时，什么也不会出现。就好像输入值被“卡”在空字符串里。第一个 `<input>` 的 `value` 被设置为始终匹配 `firstName` 变量，而第二个 `<input>` 的 `value` 被设置为始终匹配 `lastName` 变量。这是正确的。两个输入框都有 `onChange` 事件处理器，它们试图基于最新的用户输入（`e.target.value`）更新变量。然而，这些变量似乎不会在重新渲染之间“记住”自己的值。请改用状态变量来修复这个问题。
 
 <Sandpack>
 
@@ -1250,17 +1250,17 @@ export default function Form() {
   return (
     <form onSubmit={e => e.preventDefault()}>
       <input
-        placeholder="First name"
+        placeholder="名字"
         value={firstName}
         onChange={handleFirstNameChange}
       />
       <input
-        placeholder="Last name"
+        placeholder="姓氏"
         value={lastName}
         onChange={handleLastNameChange}
       />
-      <h1>Hi, {firstName} {lastName}</h1>
-      <button onClick={handleReset}>Reset</button>
+      <h1>你好，{firstName} {lastName}</h1>
+      <button onClick={handleReset}>重置</button>
     </form>
   );
 }
@@ -1274,7 +1274,7 @@ h1 { margin-top: 10px; }
 
 <Solution>
 
-First, import `useState` from React. Then replace `firstName` and `lastName` with state variables declared by calling `useState`. Finally, replace every `firstName = ...` assignment with `setFirstName(...)`, and do the same for `lastName`. Don't forget to update `handleReset` too so that the reset button works.
+首先，从 React 中导入 `useState`。然后用通过调用 `useState` 声明的状态变量替换 `firstName` 和 `lastName`。最后，把每一处 `firstName = ...` 赋值改成 `setFirstName(...)`，`lastName` 也同样处理。别忘了更新 `handleReset`，这样重置按钮才能正常工作。
 
 <Sandpack>
 
@@ -1301,17 +1301,17 @@ export default function Form() {
   return (
     <form onSubmit={e => e.preventDefault()}>
       <input
-        placeholder="First name"
+        placeholder="名字"
         value={firstName}
         onChange={handleFirstNameChange}
       />
       <input
-        placeholder="Last name"
+        placeholder="姓氏"
         value={lastName}
         onChange={handleLastNameChange}
       />
-      <h1>Hi, {firstName} {lastName}</h1>
-      <button onClick={handleReset}>Reset</button>
+      <h1>你好，{firstName} {lastName}</h1>
+      <button onClick={handleReset}>重置</button>
     </form>
   );
 }
@@ -1325,13 +1325,13 @@ h1 { margin-top: 10px; }
 
 </Solution>
 
-#### Fix a crash {/*fix-a-crash*/}
+#### 修复崩溃 {/*fix-a-crash*/}
 
-Here is a small form that is supposed to let the user leave some feedback. When the feedback is submitted, it's supposed to display a thank-you message. However, it crashes with an error message saying "Rendered fewer hooks than expected". Can you spot the mistake and fix it?
+下面是一个小表单，本来应该让用户留下反馈。当反馈提交后，它应该显示一条感谢消息。然而，它会崩溃，并显示一条错误信息：“Rendered fewer hooks than expected”。你能找出错误并修复它吗？
 
 <Hint>
 
-Are there any limitations on _where_ Hooks may be called? Does this component break any rules? Check if there are any comments disabling the linter checks--this is where the bugs often hide!
+Hook 的调用位置有任何限制吗？这个组件是否违反了任何规则？检查一下是否有禁用 lint 检查的注释——这类 bug 往往就藏在这里！
 
 </Hint>
 
@@ -1370,9 +1370,9 @@ export default function FeedbackForm() {
 
 <Solution>
 
-Hooks can only be called at the top level of the component function. Here, the first `isSent` definition follows this rule, but the `message` definition is nested in a condition.
+Hook 只能在组件函数的顶层调用。这里，`isSent` 的定义符合这个规则，但 `message` 的定义被嵌套在一个条件语句里了。
 
-Move it out of the condition to fix the issue:
+把它移出条件语句就能修复问题：
 
 <Sandpack>
 
@@ -1407,9 +1407,9 @@ export default function FeedbackForm() {
 
 </Sandpack>
 
-Remember, Hooks must be called unconditionally and always in the same order!
+请记住，Hook 必须无条件地调用，并且始终按相同顺序调用！
 
-You could also remove the unnecessary `else` branch to reduce the nesting. However, it's still important that all calls to Hooks happen *before* the first `return`.
+你也可以移除不必要的 `else` 分支来减少嵌套。不过，所有 Hook 调用仍然必须发生在第一个 `return` 之前，这一点依然很重要。
 
 <Sandpack>
 
@@ -1444,19 +1444,19 @@ export default function FeedbackForm() {
 
 </Sandpack>
 
-Try moving the second `useState` call after the `if` condition and notice how this breaks it again.
+试着把第二个 `useState` 调用移到 `if` 条件之后，看看它又是如何再次被破坏的。
 
-If your linter is [configured for React](/learn/editor-setup#linting), you should see a lint error when you make a mistake like this. If you don't see an error when you try the faulty code locally, you need to set up linting for your project.
+如果你的 lint 工具已为 [React 配置](/learn/editor-setup#linting)，当你犯这样的错误时应该会看到 lint 错误。如果你在本地尝试有问题的代码时没有看到错误，那么你需要为你的项目设置 lint 检查。
 
 </Solution>
 
-#### Remove unnecessary state {/*remove-unnecessary-state*/}
+#### 移除不必要的状态 {/*remove-unnecessary-state*/}
 
-When the button is clicked, this example should ask for the user's name and then display an alert greeting them. You tried to use state to keep the name, but for some reason the first time it shows "Hello, !", and then "Hello, [name]!" with the previous input every time after.
+当按钮被点击时，这个示例应该请求用户输入姓名，然后显示一条问候提示。你尝试使用状态来保存名字，但不知为何，第一次显示的是“Hello, !”，之后每次都显示带有上一次输入的“Hello, [name]!”。
 
-To fix this code, remove the unnecessary state variable. (We will discuss about [why this didn't work](/learn/state-as-a-snapshot) later.)
+要修复这段代码，请移除不必要的状态变量。（我们稍后会讨论[为什么这不起作用](/learn/state-as-a-snapshot)。）
 
-Can you explain why this state variable was unnecessary?
+你能解释为什么这个状态变量是不必要的吗？
 
 <Sandpack>
 
@@ -1467,13 +1467,13 @@ export default function FeedbackForm() {
   const [name, setName] = useState('');
 
   function handleClick() {
-    setName(prompt('What is your name?'));
+    setName(prompt('你叫什么名字？'));
     alert(`Hello, ${name}!`);
   }
 
   return (
     <button onClick={handleClick}>
-      Greet
+      打招呼
     </button>
   );
 }
@@ -1483,20 +1483,20 @@ export default function FeedbackForm() {
 
 <Solution>
 
-Here is a fixed version that uses a regular `name` variable declared in the function that needs it:
+下面是一个修复后的版本，它在需要的函数中声明一个普通的 `name` 变量：
 
 <Sandpack>
 
 ```js
 export default function FeedbackForm() {
   function handleClick() {
-    const name = prompt('What is your name?');
+    const name = prompt('你叫什么名字？');
     alert(`Hello, ${name}!`);
   }
 
   return (
     <button onClick={handleClick}>
-      Greet
+      打招呼
     </button>
   );
 }
@@ -1504,7 +1504,7 @@ export default function FeedbackForm() {
 
 </Sandpack>
 
-A state variable is only necessary to keep information between re-renders of a component. Within a single event handler, a regular variable will do fine. Don't introduce state variables when a regular variable works well.
+状态变量只在需要在组件多次重新渲染之间保留信息时才有必要。在单个事件处理器内部，普通变量就足够了。如果普通变量能很好地工作，就不要引入状态变量。
 
 </Solution>
 

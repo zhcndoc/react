@@ -1,30 +1,30 @@
 ---
-title: 'Reusing Logic with Custom Hooks'
+title: '通过自定义 Hook 重用逻辑'
 ---
 
 <Intro>
 
-React comes with several built-in Hooks like `useState`, `useContext`, and `useEffect`. Sometimes, you'll wish that there was a Hook for some more specific purpose: for example, to fetch data, to keep track of whether the user is online, or to connect to a chat room. You might not find these Hooks in React, but you can create your own Hooks for your application's needs.
+React 自带了一些内置 Hook，比如 `useState`、`useContext` 和 `useEffect`。有时候，你会希望针对某个更具体的用途也有一个 Hook：例如，用来获取数据、跟踪用户是否在线，或者连接到聊天房间。你也许不会在 React 中找到这些 Hook，但你可以为应用的需要创建自己的 Hook。
 
 </Intro>
 
 <YouWillLearn>
 
-- What custom Hooks are, and how to write your own
-- How to reuse logic between components
-- How to name and structure your custom Hooks
-- When and why to extract custom Hooks
+- 什么是自定义 Hook，以及如何编写自己的 Hook
+- 如何在组件之间重用逻辑
+- 如何命名和组织你的自定义 Hook
+- 何时以及为何提取自定义 Hook
 
 </YouWillLearn>
 
-## Custom Hooks: Sharing logic between components {/*custom-hooks-sharing-logic-between-components*/}
+## 自定义 Hook：在组件之间共享逻辑 {/*custom-hooks-sharing-logic-between-components*/}
 
-Imagine you're developing an app that heavily relies on the network (as most apps do). You want to warn the user if their network connection has accidentally gone off while they were using your app. How would you go about it? It seems like you'll need two things in your component:
+想象一下，你正在开发一个高度依赖网络的应用（就像大多数应用一样）。你希望在用户使用应用时，如果网络连接意外断开，就提醒用户。你会怎么做？看起来你在组件里需要两样东西：
 
-1. A piece of state that tracks whether the network is online.
-2. An Effect that subscribes to the global [`online`](https://developer.mozilla.org/en-US/docs/Web/API/Window/online_event) and [`offline`](https://developer.mozilla.org/en-US/docs/Web/API/Window/offline_event) events, and updates that state.
+1. 一个用于跟踪网络是否在线的状态。
+2. 一个订阅全局 [`online`](https://developer.mozilla.org/en-US/docs/Web/API/Window/online_event) 和 [`offline`](https://developer.mozilla.org/en-US/docs/Web/API/Window/offline_event) 事件，并更新该状态的 Effect。
 
-This will keep your component [synchronized](/learn/synchronizing-with-effects) with the network status. You might start with something like this:
+这会让你的组件与网络状态保持[同步](/learn/synchronizing-with-effects)。你可能会从下面这样的代码开始：
 
 <Sandpack>
 
@@ -48,17 +48,17 @@ export default function StatusBar() {
     };
   }, []);
 
-  return <h1>{isOnline ? '✅ Online' : '❌ Disconnected'}</h1>;
+  return <h1>{isOnline ? '✅ 在线' : '❌ 已断开连接'}</h1>;
 }
 ```
 
 </Sandpack>
 
-Try turning your network on and off, and notice how this `StatusBar` updates in response to your actions.
+试着把网络打开和关闭，看看这个 `StatusBar` 是如何根据你的操作更新的。
 
-Now imagine you *also* want to use the same logic in a different component. You want to implement a Save button that will become disabled and show "Reconnecting..." instead of "Save" while the network is off.
+现在假设你*也*想在另一个组件中使用同样的逻辑。你想实现一个保存按钮：当网络断开时，它会被禁用，并显示“正在重新连接...”，而不是“保存”。
 
-To start, you can copy and paste the `isOnline` state and the Effect into `SaveButton`:
+首先，你可以把 `isOnline` 状态和 Effect 复制到 `SaveButton` 中：
 
 <Sandpack>
 
@@ -83,12 +83,12 @@ export default function SaveButton() {
   }, []);
 
   function handleSaveClick() {
-    console.log('✅ Progress saved');
+    console.log('✅ 进度已保存');
   }
 
   return (
     <button disabled={!isOnline} onClick={handleSaveClick}>
-      {isOnline ? 'Save progress' : 'Reconnecting...'}
+      {isOnline ? '保存进度' : '正在重新连接...'}
     </button>
   );
 }
@@ -96,36 +96,36 @@ export default function SaveButton() {
 
 </Sandpack>
 
-Verify that, if you turn off the network, the button will change its appearance.
+确认一下，如果你关闭网络，按钮会改变外观。
 
-These two components work fine, but the duplication in logic between them is unfortunate. It seems like even though they have different *visual appearance,* you want to reuse the logic between them.
+这两个组件都能正常工作，但它们之间逻辑的重复并不理想。看起来虽然它们有不同的*视觉外观*，但你希望在它们之间重用逻辑。
 
-### Extracting your own custom Hook from a component {/*extracting-your-own-custom-hook-from-a-component*/}
+### 从组件中提取你自己的自定义 Hook {/*extracting-your-own-custom-hook-from-a-component*/}
 
-Imagine for a moment that, similar to [`useState`](/reference/react/useState) and [`useEffect`](/reference/react/useEffect), there was a built-in `useOnlineStatus` Hook. Then both of these components could be simplified and you could remove the duplication between them:
+想象一下，类似于 [`useState`](/reference/react/useState) 和 [`useEffect`](/reference/react/useEffect)，有一个内置的 `useOnlineStatus` Hook。那么这两个组件就可以简化，并且你可以去掉它们之间的重复代码：
 
 ```js {2,7}
 function StatusBar() {
   const isOnline = useOnlineStatus();
-  return <h1>{isOnline ? '✅ Online' : '❌ Disconnected'}</h1>;
+  return <h1>{isOnline ? '✅ 在线' : '❌ 已断开连接'}</h1>;
 }
 
 function SaveButton() {
   const isOnline = useOnlineStatus();
 
   function handleSaveClick() {
-    console.log('✅ Progress saved');
+    console.log('✅ 进度已保存');
   }
 
   return (
     <button disabled={!isOnline} onClick={handleSaveClick}>
-      {isOnline ? 'Save progress' : 'Reconnecting...'}
+      {isOnline ? '保存进度' : '正在重新连接...'}
     </button>
   );
 }
 ```
 
-Although there is no such built-in Hook, you can write it yourself. Declare a function called `useOnlineStatus` and move all the duplicated code into it from the components you wrote earlier:
+虽然并没有这样的内置 Hook，但你可以自己编写它。声明一个名为 `useOnlineStatus` 的函数，并把你之前编写的组件中的所有重复代码移动进去：
 
 ```js {2-16}
 function useOnlineStatus() {
@@ -148,7 +148,7 @@ function useOnlineStatus() {
 }
 ```
 
-At the end of the function, return `isOnline`. This lets your components read that value:
+在函数末尾，返回 `isOnline`。这样你的组件就可以读取这个值：
 
 <Sandpack>
 
@@ -157,19 +157,19 @@ import { useOnlineStatus } from './useOnlineStatus.js';
 
 function StatusBar() {
   const isOnline = useOnlineStatus();
-  return <h1>{isOnline ? '✅ Online' : '❌ Disconnected'}</h1>;
+  return <h1>{isOnline ? '✅ 在线' : '❌ 已断开连接'}</h1>;
 }
 
 function SaveButton() {
   const isOnline = useOnlineStatus();
 
   function handleSaveClick() {
-    console.log('✅ Progress saved');
+    console.log('✅ 进度已保存');
   }
 
   return (
     <button disabled={!isOnline} onClick={handleSaveClick}>
-      {isOnline ? 'Save progress' : 'Reconnecting...'}
+      {isOnline ? '保存进度' : '正在重新连接...'}
     </button>
   );
 }
@@ -209,89 +209,89 @@ export function useOnlineStatus() {
 
 </Sandpack>
 
-Verify that switching the network on and off updates both components.
+确认切换网络的开关会同时更新这两个组件。
 
-Now your components don't have as much repetitive logic. **More importantly, the code inside them describes *what they want to do* (use the online status!) rather than *how to do it* (by subscribing to the browser events).**
+现在你的组件就没有那么多重复逻辑了。**更重要的是，它们内部的代码描述的是*它们想做什么*（使用在线状态！），而不是*如何去做*（通过订阅浏览器事件）。**
 
-When you extract logic into custom Hooks, you can hide the gnarly details of how you deal with some external system or a browser API. The code of your components expresses your intent, not the implementation.
+当你把逻辑提取到自定义 Hook 中时，你可以隐藏你与某些外部系统或浏览器 API 打交道时那些复杂的细节。组件的代码表达的是你的意图，而不是实现方式。
 
-### Hook names always start with `use` {/*hook-names-always-start-with-use*/}
+### Hook 名称总是以 `use` 开头 {/*hook-names-always-start-with-use*/}
 
-React applications are built from components. Components are built from Hooks, whether built-in or custom. You'll likely often use custom Hooks created by others, but occasionally you might write one yourself!
+React 应用由组件构成。组件由 Hook 构成，无论是内置的还是自定义的。你很可能经常会使用别人创建的自定义 Hook，但偶尔你也可能会自己编写一个！
 
-You must follow these naming conventions:
+你必须遵循以下命名规范：
 
-1. **React component names must start with a capital letter,** like `StatusBar` and `SaveButton`. React components also need to return something that React knows how to display, like a piece of JSX.
-2. **Hook names must start with `use` followed by a capital letter,** like [`useState`](/reference/react/useState) (built-in) or `useOnlineStatus` (custom, like earlier on the page). Hooks may return arbitrary values.
+1. **React 组件名必须以大写字母开头，**比如 `StatusBar` 和 `SaveButton`。React 组件还需要返回 React 知道如何展示的内容，比如一段 JSX。
+2. **Hook 名称必须以 `use` 开头，后面跟一个大写字母，**比如 [`useState`](/reference/react/useState)（内置的）或 `useOnlineStatus`（像本页前面那样的自定义 Hook）。Hook 可以返回任意值。
 
-This convention guarantees that you can always look at a component and know where its state, Effects, and other React features might "hide". For example, if you see a `getColor()` function call inside your component, you can be sure that it can't possibly contain React state inside because its name doesn't start with `use`. However, a function call like `useOnlineStatus()` will most likely contain calls to other Hooks inside!
+这个约定保证了你总能查看某个组件，并知道它的状态、Effects 以及其他 React 特性可能“藏”在哪里。例如，如果你在组件内部看到一个 `getColor()` 函数调用，你可以确信它不可能在内部包含 React 状态，因为它的名字并不是以 `use` 开头的。然而，像 `useOnlineStatus()` 这样的函数调用，很可能内部还会调用其他 Hook！
 
 <Note>
 
-If your linter is [configured for React,](/learn/editor-setup#linting) it will enforce this naming convention. Scroll up to the sandbox above and rename `useOnlineStatus` to `getOnlineStatus`. Notice that the linter won't allow you to call `useState` or `useEffect` inside of it anymore. Only Hooks and components can call other Hooks!
+如果你的 linter 已为 [React 配置，](/learn/editor-setup#linting)它会强制执行这个命名约定。向上滚动到上面的 sandbox，把 `useOnlineStatus` 重命名为 `getOnlineStatus`。注意，linter 将不再允许你在其中调用 `useState` 或 `useEffect`。只有 Hook 和组件才能调用其他 Hook！
 
 </Note>
 
 <DeepDive>
 
-#### Should all functions called during rendering start with the use prefix? {/*should-all-functions-called-during-rendering-start-with-the-use-prefix*/}
+#### 在渲染期间调用的所有函数都应该以 use 前缀开头吗？ {/*should-all-functions-called-during-rendering-start-with-the-use-prefix*/}
 
-No. Functions that don't *call* Hooks don't need to *be* Hooks.
+不是。那些不*调用* Hook 的函数不需要*成为* Hook。
 
-If your function doesn't call any Hooks, avoid the `use` prefix. Instead, write it as a regular function *without* the `use` prefix. For example, `useSorted` below doesn't call Hooks, so call it `getSorted` instead:
+如果你的函数不调用任何 Hook，就不要使用 `use` 前缀。相反，把它写成一个不带 `use` 前缀的普通函数。例如，下面的 `useSorted` 不会调用 Hook，所以应该把它叫做 `getSorted`：
 
 ```js
-// 🔴 Avoid: A Hook that doesn't use Hooks
+// 🔴 避免：一个不使用 Hook 的 Hook
 function useSorted(items) {
   return items.slice().sort();
 }
 
-// ✅ Good: A regular function that doesn't use Hooks
+// ✅ 好的：一个不使用 Hook 的普通函数
 function getSorted(items) {
   return items.slice().sort();
 }
 ```
 
-This ensures that your code can call this regular function anywhere, including conditions:
+这样可以确保你的代码可以在任何地方调用这个普通函数，包括条件语句中：
 
 ```js
 function List({ items, shouldSort }) {
   let displayedItems = items;
   if (shouldSort) {
-    // ✅ It's ok to call getSorted() conditionally because it's not a Hook
+    // ✅ 在条件中调用 getSorted() 没问题，因为它不是 Hook
     displayedItems = getSorted(items);
   }
   // ...
 }
 ```
 
-You should give `use` prefix to a function (and thus make it a Hook) if it uses at least one Hook inside of it:
+如果一个函数内部至少使用了一个 Hook，你就应该给它加上 `use` 前缀（从而把它变成一个 Hook）：
 
 ```js
-// ✅ Good: A Hook that uses other Hooks
+// ✅ 好的：一个使用了其他 Hook 的 Hook
 function useAuth() {
   return useContext(Auth);
 }
 ```
 
-Technically, this isn't enforced by React. In principle, you could make a Hook that doesn't call other Hooks. This is often confusing and limiting so it's best to avoid that pattern. However, there may be rare cases where it is helpful. For example, maybe your function doesn't use any Hooks right now, but you plan to add some Hook calls to it in the future. Then it makes sense to name it with the `use` prefix:
+从技术上讲，React 并不会强制这一点。原则上，你可以创建一个不调用其他 Hook 的 Hook。这通常会让人困惑并造成限制，所以最好避免这种模式。不过，某些罕见情况下它可能会有帮助。例如，也许你的函数现在还没有使用任何 Hook，但你计划将来为它添加一些 Hook 调用。那么，用 `use` 前缀来命名它就很合理：
 
 ```js {3-4}
-// ✅ Good: A Hook that will likely use some other Hooks later
+// ✅ 好的：一个将来很可能会使用其他 Hook 的 Hook
 function useAuth() {
-  // TODO: Replace with this line when authentication is implemented:
+  // TODO：在实现身份验证时用这一行替换：
   // return useContext(Auth);
   return TEST_USER;
 }
 ```
 
-Then components won't be able to call it conditionally. This will become important when you actually add Hook calls inside. If you don't plan to use Hooks inside it (now or later), don't make it a Hook.
+这样，组件就不能条件式地调用它了。当你以后真的在其中加入 Hook 调用时，这一点会变得很重要。如果你不打算在其中使用 Hook（现在或以后都不打算），那就不要把它做成 Hook。
 
 </DeepDive>
 
-### Custom Hooks let you share stateful logic, not state itself {/*custom-hooks-let-you-share-stateful-logic-not-state-itself*/}
+### 自定义 Hook 让你共享有状态逻辑，而不是状态本身 {/*custom-hooks-let-you-share-stateful-logic-not-state-itself*/}
 
-In the earlier example, when you turned the network on and off, both components updated together. However, it's wrong to think that a single `isOnline` state variable is shared between them. Look at this code:
+在前面的例子中，当你打开和关闭网络时，这两个组件会一起更新。不过，认为它们共享同一个 `isOnline` 状态变量是错误的。看这段代码：
 
 ```js {2,7}
 function StatusBar() {
@@ -305,7 +305,7 @@ function SaveButton() {
 }
 ```
 
-It works the same way as before you extracted the duplication:
+它的工作方式与提取重复代码之前一样：
 
 ```js {2-5,10-13}
 function StatusBar() {
@@ -325,9 +325,9 @@ function SaveButton() {
 }
 ```
 
-These are two completely independent state variables and Effects! They happened to have the same value at the same time because you synchronized them with the same external value (whether the network is on).
+这其实是两个完全独立的状态变量和 Effects！它们之所以会在同一时间拥有相同的值，只是因为你把它们与同一个外部值（网络是否开启）同步了。
 
-To better illustrate this, we'll need a different example. Consider this `Form` component:
+为了更好地说明这一点，我们需要另一个例子。来看这个 `Form` 组件：
 
 <Sandpack>
 
@@ -349,14 +349,14 @@ export default function Form() {
   return (
     <>
       <label>
-        First name:
+        名字：
         <input value={firstName} onChange={handleFirstNameChange} />
       </label>
       <label>
-        Last name:
+        姓氏：
         <input value={lastName} onChange={handleLastNameChange} />
       </label>
-      <p><b>Good morning, {firstName} {lastName}.</b></p>
+      <p><b>早上好，{firstName} {lastName}。</b></p>
     </>
   );
 }
@@ -369,13 +369,13 @@ input { margin-left: 10px; }
 
 </Sandpack>
 
-There's some repetitive logic for each form field:
+每个表单字段都有一些重复逻辑：
 
-1. There's a piece of state (`firstName` and `lastName`).
-1. There's a change handler (`handleFirstNameChange` and `handleLastNameChange`).
-1. There's a piece of JSX that specifies the `value` and `onChange` attributes for that input.
+1. 有一个状态（`firstName` 和 `lastName`）。
+1. 有一个变更处理函数（`handleFirstNameChange` 和 `handleLastNameChange`）。
+1. 有一段 JSX，用来为该输入框指定 `value` 和 `onChange` 属性。
 
-You can extract the repetitive logic into this `useFormInput` custom Hook:
+你可以把这些重复逻辑提取到这个 `useFormInput` 自定义 Hook 中：
 
 <Sandpack>
 
@@ -389,14 +389,14 @@ export default function Form() {
   return (
     <>
       <label>
-        First name:
+        名字：
         <input {...firstNameProps} />
       </label>
       <label>
-        Last name:
+        姓氏：
         <input {...lastNameProps} />
       </label>
-      <p><b>Good morning, {firstNameProps.value} {lastNameProps.value}.</b></p>
+      <p><b>早上好，{firstNameProps.value} {lastNameProps.value}。</b></p>
     </>
   );
 }
@@ -428,9 +428,9 @@ input { margin-left: 10px; }
 
 </Sandpack>
 
-Notice that it only declares *one* state variable called `value`.
+注意，它只声明了一个名为 `value` 的状态变量。
 
-However, the `Form` component calls `useFormInput` *two times:*
+然而，`Form` 组件*两次*调用了 `useFormInput`：
 
 ```js
 function Form() {
@@ -439,17 +439,17 @@ function Form() {
   // ...
 ```
 
-This is why it works like declaring two separate state variables!
+这就是为什么它的工作方式就像声明了两个独立的状态变量一样！
 
-**Custom Hooks let you share *stateful logic* but not *state itself.* Each call to a Hook is completely independent from every other call to the same Hook.** This is why the two sandboxes above are completely equivalent. If you'd like, scroll back up and compare them. The behavior before and after extracting a custom Hook is identical.
+**自定义 Hook 让你共享*有状态逻辑*，但不能共享*状态本身*。每次调用 Hook 都与对同一个 Hook 的其他调用完全独立。** 这就是为什么上面两个 sandbox 是完全等价的。如果你愿意，可以向上滚动并比较它们。提取自定义 Hook 前后的行为是完全相同的。
 
-When you need to share the state itself between multiple components, [lift it up and pass it down](/learn/sharing-state-between-components) instead.
+当你需要在多个组件之间共享状态本身时，请改为[提升状态并向下传递](/learn/sharing-state-between-components)。
 
-## Passing reactive values between Hooks {/*passing-reactive-values-between-hooks*/}
+## 在 Hooks 之间传递响应式值 {/*passing-reactive-values-between-hooks*/}
 
-The code inside your custom Hooks will re-run during every re-render of your component. This is why, like components, custom Hooks [need to be pure.](/learn/keeping-components-pure) Think of custom Hooks' code as part of your component's body!
+你自定义 Hook 内部的代码会在组件每次重新渲染时重新运行。这就是为什么像组件一样，自定义 Hook [也需要保持纯净。](/learn/keeping-components-pure) 可以把自定义 Hook 的代码看作是组件主体的一部分！
 
-Because custom Hooks re-render together with your component, they always receive the latest props and state. To see what this means, consider this chat room example. Change the server URL or the chat room:
+因为自定义 Hook 会和组件一起重新渲染，所以它们总能接收到最新的 props 和 state。为了理解这意味着什么，来看这个聊天室示例。更改服务器 URL 或聊天室：
 
 <Sandpack>
 
@@ -462,7 +462,7 @@ export default function App() {
   return (
     <>
       <label>
-        Choose the chat room:{' '}
+        选择聊天室：{' '}
         <select
           value={roomId}
           onChange={e => setRoomId(e.target.value)}
@@ -496,7 +496,7 @@ export default function ChatRoom({ roomId }) {
     };
     const connection = createConnection(options);
     connection.on('message', (msg) => {
-      showNotification('New message: ' + msg);
+      showNotification('新消息：' + msg);
     });
     connection.connect();
     return () => connection.disconnect();
@@ -505,10 +505,10 @@ export default function ChatRoom({ roomId }) {
   return (
     <>
       <label>
-        Server URL:
+        服务器 URL：
         <input value={serverUrl} onChange={e => setServerUrl(e.target.value)} />
       </label>
-      <h1>Welcome to the {roomId} room!</h1>
+      <h1>欢迎来到 {roomId} 房间！</h1>
     </>
   );
 }
@@ -516,7 +516,7 @@ export default function ChatRoom({ roomId }) {
 
 ```js src/chat.js
 export function createConnection({ serverUrl, roomId }) {
-  // A real implementation would actually connect to the server
+  // 真实实现会实际连接到服务器
   if (typeof serverUrl !== 'string') {
     throw Error('Expected serverUrl to be a string. Received: ' + serverUrl);
   }
@@ -527,7 +527,7 @@ export function createConnection({ serverUrl, roomId }) {
   let messageCallback;
   return {
     connect() {
-      console.log('✅ Connecting to "' + roomId + '" room at ' + serverUrl + '...');
+      console.log('✅ 正在连接到位于 ' + serverUrl + ' 的 "' + roomId + '" 房间...');
       clearInterval(intervalId);
       intervalId = setInterval(() => {
         if (messageCallback) {
@@ -542,7 +542,7 @@ export function createConnection({ serverUrl, roomId }) {
     disconnect() {
       clearInterval(intervalId);
       messageCallback = null;
-      console.log('❌ Disconnected from "' + roomId + '" room at ' + serverUrl + '');
+      console.log('❌ 已从位于 ' + serverUrl + ' 的 "' + roomId + '" 房间断开连接');
     },
     on(event, callback) {
       if (messageCallback) {
@@ -599,9 +599,9 @@ button { margin-left: 10px; }
 
 </Sandpack>
 
-When you change `serverUrl` or `roomId`, the Effect ["reacts" to your changes](/learn/lifecycle-of-reactive-effects#effects-react-to-reactive-values) and re-synchronizes. You can tell by the console messages that the chat re-connects every time that you change your Effect's dependencies.
+当你更改 `serverUrl` 或 `roomId` 时，Effect 会[“响应”这些变化](/learn/lifecycle-of-reactive-effects#effects-react-to-reactive-values)并重新同步。你可以从控制台消息中看出，每次更改 Effect 的依赖项时，聊天室都会重新连接。
 
-Now move the Effect's code into a custom Hook:
+现在把 Effect 的代码移到一个自定义 Hook 中：
 
 ```js {2-13}
 export function useChatRoom({ serverUrl, roomId }) {
@@ -613,14 +613,14 @@ export function useChatRoom({ serverUrl, roomId }) {
     const connection = createConnection(options);
     connection.connect();
     connection.on('message', (msg) => {
-      showNotification('New message: ' + msg);
+      showNotification('新消息：' + msg);
     });
     return () => connection.disconnect();
   }, [roomId, serverUrl]);
 }
 ```
 
-This lets your `ChatRoom` component call your custom Hook without worrying about how it works inside:
+这样你的 `ChatRoom` 组件就可以调用你的自定义 Hook，而不必关心它内部是如何工作的：
 
 ```js {4-7}
 export default function ChatRoom({ roomId }) {
@@ -634,18 +634,18 @@ export default function ChatRoom({ roomId }) {
   return (
     <>
       <label>
-        Server URL:
+        服务器 URL：
         <input value={serverUrl} onChange={e => setServerUrl(e.target.value)} />
       </label>
-      <h1>Welcome to the {roomId} room!</h1>
+      <h1>欢迎来到 {roomId} 房间！</h1>
     </>
   );
 }
 ```
 
-This looks much simpler! (But it does the same thing.)
+这样看起来简单多了！（但做的是同样的事情。）
 
-Notice that the logic *still responds* to prop and state changes. Try editing the server URL or the selected room:
+注意逻辑 *仍然会响应* prop 和 state 的变化。试着编辑服务器 URL 或选中的房间：
 
 <Sandpack>
 
@@ -658,7 +658,7 @@ export default function App() {
   return (
     <>
       <label>
-        Choose the chat room:{' '}
+        选择聊天室：{' '}
         <select
           value={roomId}
           onChange={e => setRoomId(e.target.value)}
@@ -692,10 +692,10 @@ export default function ChatRoom({ roomId }) {
   return (
     <>
       <label>
-        Server URL:
+        服务器 URL：
         <input value={serverUrl} onChange={e => setServerUrl(e.target.value)} />
       </label>
-      <h1>Welcome to the {roomId} room!</h1>
+      <h1>欢迎来到 {roomId} 房间！</h1>
     </>
   );
 }
@@ -715,7 +715,7 @@ export function useChatRoom({ serverUrl, roomId }) {
     const connection = createConnection(options);
     connection.connect();
     connection.on('message', (msg) => {
-      showNotification('New message: ' + msg);
+      showNotification('新消息：' + msg);
     });
     return () => connection.disconnect();
   }, [roomId, serverUrl]);
@@ -724,7 +724,7 @@ export function useChatRoom({ serverUrl, roomId }) {
 
 ```js src/chat.js
 export function createConnection({ serverUrl, roomId }) {
-  // A real implementation would actually connect to the server
+  // 真实实现会实际连接到服务器
   if (typeof serverUrl !== 'string') {
     throw Error('Expected serverUrl to be a string. Received: ' + serverUrl);
   }
@@ -735,7 +735,7 @@ export function createConnection({ serverUrl, roomId }) {
   let messageCallback;
   return {
     connect() {
-      console.log('✅ Connecting to "' + roomId + '" room at ' + serverUrl + '...');
+      console.log('✅ 正在连接到位于 ' + serverUrl + ' 的 "' + roomId + '" 房间...');
       clearInterval(intervalId);
       intervalId = setInterval(() => {
         if (messageCallback) {
@@ -750,7 +750,7 @@ export function createConnection({ serverUrl, roomId }) {
     disconnect() {
       clearInterval(intervalId);
       messageCallback = null;
-      console.log('❌ Disconnected from "' + roomId + '" room at ' + serverUrl + '');
+      console.log('❌ 已从位于 ' + serverUrl + ' 的 "' + roomId + '" 房间断开连接');
     },
     on(event, callback) {
       if (messageCallback) {
@@ -807,7 +807,7 @@ button { margin-left: 10px; }
 
 </Sandpack>
 
-Notice how you're taking the return value of one Hook:
+注意你是如何取出一个 Hook 的返回值：
 
 ```js {2}
 export default function ChatRoom({ roomId }) {
@@ -820,7 +820,7 @@ export default function ChatRoom({ roomId }) {
   // ...
 ```
 
-and passing it as an input to another Hook:
+并把它作为输入传给另一个 Hook 的：
 
 ```js {6}
 export default function ChatRoom({ roomId }) {
@@ -833,11 +833,11 @@ export default function ChatRoom({ roomId }) {
   // ...
 ```
 
-Every time your `ChatRoom` component re-renders, it passes the latest `roomId` and `serverUrl` to your Hook. This is why your Effect re-connects to the chat whenever their values are different after a re-render. (If you ever worked with audio or video processing software, chaining Hooks like this might remind you of chaining visual or audio effects. It's as if the output of `useState` "feeds into" the input of the `useChatRoom`.)
+每次 `ChatRoom` 组件重新渲染时，它都会把最新的 `roomId` 和 `serverUrl` 传给你的 Hook。这就是为什么在重新渲染后，只要它们的值发生变化，你的 Effect 就会重新连接聊天室。（如果你曾经使用过音频或视频处理软件，像这样串联 Hooks 可能会让你联想到串联视觉或音频效果。就好像 `useState` 的输出“流入”了 `useChatRoom` 的输入一样。）
 
-### Passing event handlers to custom Hooks {/*passing-event-handlers-to-custom-hooks*/}
+### 将事件处理函数传给自定义 Hooks {/*passing-event-handlers-to-custom-hooks*/}
 
-As you start using `useChatRoom` in more components, you might want to let components customize its behavior. For example, currently, the logic for what to do when a message arrives is hardcoded inside the Hook:
+当你开始在更多组件中使用 `useChatRoom` 时，你可能希望让组件自定义它的行为。例如，目前，当消息到达时该怎么做的逻辑是直接硬编码在 Hook 里的：
 
 ```js {9-11}
 export function useChatRoom({ serverUrl, roomId }) {
@@ -849,14 +849,14 @@ export function useChatRoom({ serverUrl, roomId }) {
     const connection = createConnection(options);
     connection.connect();
     connection.on('message', (msg) => {
-      showNotification('New message: ' + msg);
+      showNotification('新消息：' + msg);
     });
     return () => connection.disconnect();
   }, [roomId, serverUrl]);
 }
 ```
 
-Let's say you want to move this logic back to your component:
+假设你想把这部分逻辑移回组件中：
 
 ```js {7-9}
 export default function ChatRoom({ roomId }) {
@@ -866,13 +866,13 @@ export default function ChatRoom({ roomId }) {
     roomId: roomId,
     serverUrl: serverUrl,
     onReceiveMessage(msg) {
-      showNotification('New message: ' + msg);
+      showNotification('新消息：' + msg);
     }
   });
   // ...
 ```
 
-To make this work, change your custom Hook to take `onReceiveMessage` as one of its named options:
+要实现这一点，请修改你的自定义 Hook，让它把 `onReceiveMessage` 作为一个命名选项接收：
 
 ```js {1,10,13}
 export function useChatRoom({ serverUrl, roomId, onReceiveMessage }) {
@@ -887,13 +887,13 @@ export function useChatRoom({ serverUrl, roomId, onReceiveMessage }) {
       onReceiveMessage(msg);
     });
     return () => connection.disconnect();
-  }, [roomId, serverUrl, onReceiveMessage]); // ✅ All dependencies declared
+  }, [roomId, serverUrl, onReceiveMessage]); // ✅ 已声明所有依赖项
 }
 ```
 
-This will work, but there's one more improvement you can do when your custom Hook accepts event handlers.
+这样可以工作，但如果你的自定义 Hook 接受事件处理函数，还有一个可以进一步改进的地方。
 
-Adding a dependency on `onReceiveMessage` is not ideal because it will cause the chat to re-connect every time the component re-renders. [Wrap this event handler into an Effect Event to remove it from the dependencies:](/learn/removing-effect-dependencies#wrapping-an-event-handler-from-the-props)
+为 `onReceiveMessage` 添加依赖并不理想，因为这会导致组件每次重新渲染时聊天室都重新连接。[把这个事件处理函数包装进 Effect Event，以将它从依赖项中移除：](/learn/removing-effect-dependencies#wrapping-an-event-handler-from-the-props)
 
 ```js {1,4,5,15,18}
 import { useEffect, useEffectEvent } from 'react';
@@ -913,11 +913,11 @@ export function useChatRoom({ serverUrl, roomId, onReceiveMessage }) {
       onMessage(msg);
     });
     return () => connection.disconnect();
-  }, [roomId, serverUrl]); // ✅ All dependencies declared
+  }, [roomId, serverUrl]); // ✅ 已声明所有依赖项
 }
 ```
 
-Now the chat won't re-connect every time that the `ChatRoom` component re-renders. Here is a fully working demo of passing an event handler to a custom Hook that you can play with:
+现在，聊天室不会在 `ChatRoom` 组件每次重新渲染时都重新连接了。下面是一个完整可运行的示例，演示如何把事件处理函数传给自定义 Hook，你可以自己试试：
 
 <Sandpack>
 
@@ -930,7 +930,7 @@ export default function App() {
   return (
     <>
       <label>
-        Choose the chat room:{' '}
+        选择聊天室：{' '}
         <select
           value={roomId}
           onChange={e => setRoomId(e.target.value)}
@@ -961,17 +961,17 @@ export default function ChatRoom({ roomId }) {
     roomId: roomId,
     serverUrl: serverUrl,
     onReceiveMessage(msg) {
-      showNotification('New message: ' + msg);
+      showNotification('新消息：' + msg);
     }
   });
 
   return (
     <>
       <label>
-        Server URL:
+        服务器 URL：
         <input value={serverUrl} onChange={e => setServerUrl(e.target.value)} />
       </label>
-      <h1>Welcome to the {roomId} room!</h1>
+      <h1>欢迎来到 {roomId} 房间！</h1>
     </>
   );
 }
@@ -1002,7 +1002,7 @@ export function useChatRoom({ serverUrl, roomId, onReceiveMessage }) {
 
 ```js src/chat.js
 export function createConnection({ serverUrl, roomId }) {
-  // A real implementation would actually connect to the server
+  // 真实实现会实际连接到服务器
   if (typeof serverUrl !== 'string') {
     throw Error('Expected serverUrl to be a string. Received: ' + serverUrl);
   }
@@ -1013,7 +1013,7 @@ export function createConnection({ serverUrl, roomId }) {
   let messageCallback;
   return {
     connect() {
-      console.log('✅ Connecting to "' + roomId + '" room at ' + serverUrl + '...');
+      console.log('✅ 正在连接到位于 ' + serverUrl + ' 的 "' + roomId + '" 房间...');
       clearInterval(intervalId);
       intervalId = setInterval(() => {
         if (messageCallback) {
@@ -1028,7 +1028,7 @@ export function createConnection({ serverUrl, roomId }) {
     disconnect() {
       clearInterval(intervalId);
       messageCallback = null;
-      console.log('❌ Disconnected from "' + roomId + '" room at ' + serverUrl + '');
+      console.log('❌ 已从位于 ' + serverUrl + ' 的 "' + roomId + '" 房间断开连接');
     },
     on(event, callback) {
       if (messageCallback) {
@@ -1085,20 +1085,20 @@ button { margin-left: 10px; }
 
 </Sandpack>
 
-Notice how you no longer need to know *how* `useChatRoom` works in order to use it. You could add it to any other component, pass any other options, and it would work the same way. That's the power of custom Hooks.
+注意，当你使用它时，不再需要知道 `useChatRoom` 是如何工作的。你可以把它加到任何其他组件中，传入任何其他选项，它的工作方式都一样。这就是自定义 Hook 的力量。
 
-## When to use custom Hooks {/*when-to-use-custom-hooks*/}
+## 何时使用自定义 Hook {/*when-to-use-custom-hooks*/}
 
-You don't need to extract a custom Hook for every little duplicated bit of code. Some duplication is fine. For example, extracting a `useFormInput` Hook to wrap a single `useState` call like earlier is probably unnecessary.
+你不需要为每一小段重复代码都提取一个自定义 Hook。有一些重复是完全可以接受的。例如，像前面那样抽取一个 `useFormInput` Hook 来包装单独一次 `useState` 调用，可能并没有必要。
 
-However, whenever you write an Effect, consider whether it would be clearer to also wrap it in a custom Hook. [You shouldn't need Effects very often,](/learn/you-might-not-need-an-effect) so if you're writing one, it means that you need to "step outside React" to synchronize with some external system or to do something that React doesn't have a built-in API for. Wrapping it into a custom Hook lets you precisely communicate your intent and how the data flows through it.
+不过，每当你编写一个 Effect 时，都可以考虑是否把它也封装进一个自定义 Hook 里会更清晰。[你应该不会经常需要 Effects，](/learn/you-might-not-need-an-effect)所以如果你正在写一个 Effect，这意味着你需要“跳出 React”去和某个外部系统同步，或者去做某些 React 没有内置 API 的事情。把它封装成自定义 Hook 可以让你精确表达你的意图，以及数据如何在其中流动。
 
-For example, consider a `ShippingForm` component that displays two dropdowns: one shows the list of cities, and another shows the list of areas in the selected city. You might start with some code that looks like this:
+例如，考虑一个 `ShippingForm` 组件，它显示两个下拉框：一个显示城市列表，另一个显示所选城市中的区域列表。你可能会先写出如下代码：
 
 ```js {3-16,20-35}
 function ShippingForm({ country }) {
   const [cities, setCities] = useState(null);
-  // This Effect fetches cities for a country
+  // 这个 Effect 会为某个国家获取城市列表
   useEffect(() => {
     let ignore = false;
     fetch(`/api/cities?country=${country}`)
@@ -1115,7 +1115,7 @@ function ShippingForm({ country }) {
 
   const [city, setCity] = useState(null);
   const [areas, setAreas] = useState(null);
-  // This Effect fetches areas for the selected city
+  // 这个 Effect 会为所选城市获取区域列表
   useEffect(() => {
     if (city) {
       let ignore = false;
@@ -1135,7 +1135,7 @@ function ShippingForm({ country }) {
   // ...
 ```
 
-Although this code is quite repetitive, [it's correct to keep these Effects separate from each other.](/learn/removing-effect-dependencies#is-your-effect-doing-several-unrelated-things) They synchronize two different things, so you shouldn't merge them into one Effect. Instead, you can simplify the `ShippingForm` component above by extracting the common logic between them into your own `useData` Hook:
+尽管这段代码相当重复，[但把这些 Effects 分开是正确的。](/learn/removing-effect-dependencies#is-your-effect-doing-several-unrelated-things)它们同步的是两件不同的事情，所以你不应该把它们合并成一个 Effect。相反，你可以通过把它们之间的通用逻辑提取到你自己的 `useData` Hook 中，来简化上面的 `ShippingForm` 组件：
 
 ```js {2-18}
 function useData(url) {
@@ -1159,7 +1159,7 @@ function useData(url) {
 }
 ```
 
-Now you can replace both Effects in the `ShippingForm` components with calls to `useData`:
+现在你可以用对 `useData` 的调用来替换 `ShippingForm` 组件中的两个 Effects：
 
 ```js {2,4}
 function ShippingForm({ country }) {
@@ -1169,39 +1169,39 @@ function ShippingForm({ country }) {
   // ...
 ```
 
-Extracting a custom Hook makes the data flow explicit. You feed the `url` in and you get the `data` out. By "hiding" your Effect inside `useData`, you also prevent someone working on the `ShippingForm` component from adding [unnecessary dependencies](/learn/removing-effect-dependencies) to it. With time, most of your app's Effects will be in custom Hooks.
+提取自定义 Hook 会让数据流变得更明确。你传入 `url`，然后得到 `data`。通过把 Effect “隐藏”在 `useData` 里面，你还可以防止在 `ShippingForm` 组件中工作的其他人给它添加[不必要的依赖项](/learn/removing-effect-dependencies)。随着时间推移，你应用中的大多数 Effects 都会位于自定义 Hooks 中。
 
 <DeepDive>
 
-#### Keep your custom Hooks focused on concrete high-level use cases {/*keep-your-custom-hooks-focused-on-concrete-high-level-use-cases*/}
+#### 让你的自定义 Hook 聚焦于具体的高层用例 {/*keep-your-custom-hooks-focused-on-concrete-high-level-use-cases*/}
 
-Start by choosing your custom Hook's name. If you struggle to pick a clear name, it might mean that your Effect is too coupled to the rest of your component's logic, and is not yet ready to be extracted.
+先从给你的自定义 Hook 命名开始。如果你很难想出一个清晰的名字，这可能意味着你的 Effect 与组件其余逻辑耦合得太紧，还不适合被提取出来。
 
-Ideally, your custom Hook's name should be clear enough that even a person who doesn't write code often could have a good guess about what your custom Hook does, what it takes, and what it returns:
+理想情况下，你的自定义 Hook 名称应该足够清晰，以至于即使是很少写代码的人，也能大致猜到你的自定义 Hook 做什么、接收什么、返回什么：
 
 * ✅ `useData(url)`
 * ✅ `useImpressionLog(eventName, extraData)`
 * ✅ `useChatRoom(options)`
 
-When you synchronize with an external system, your custom Hook name may be more technical and use jargon specific to that system. It's good as long as it would be clear to a person familiar with that system:
+当你与外部系统同步时，自定义 Hook 的名字可能会更偏技术性，并使用该系统特有的术语。只要对熟悉该系统的人来说是清楚的就很好：
 
 * ✅ `useMediaQuery(query)`
 * ✅ `useSocket(url)`
 * ✅ `useIntersectionObserver(ref, options)`
 
-**Keep custom Hooks focused on concrete high-level use cases.** Avoid creating and using custom "lifecycle" Hooks that act as alternatives and convenience wrappers for the `useEffect` API itself:
+**让自定义 Hook 聚焦于具体的高层用例。**避免创建和使用那种作为 `useEffect` API 本身的替代品和便捷包装的自定义“生命周期” Hooks：
 
 * 🔴 `useMount(fn)`
 * 🔴 `useEffectOnce(fn)`
 * 🔴 `useUpdateEffect(fn)`
 
-For example, this `useMount` Hook tries to ensure some code only runs "on mount":
+例如，这个 `useMount` Hook 试图确保某些代码只在“挂载时”运行：
 
 ```js {4-5,14-15}
 function ChatRoom({ roomId }) {
   const [serverUrl, setServerUrl] = useState('https://localhost:1234');
 
-  // 🔴 Avoid: using custom "lifecycle" Hooks
+  // 🔴 避免：使用自定义“生命周期” Hooks
   useMount(() => {
     const connection = createConnection({ roomId, serverUrl });
     connection.connect();
@@ -1211,23 +1211,23 @@ function ChatRoom({ roomId }) {
   // ...
 }
 
-// 🔴 Avoid: creating custom "lifecycle" Hooks
+// 🔴 避免：创建自定义“生命周期” Hooks
 function useMount(fn) {
   useEffect(() => {
     fn();
-  }, []); // 🔴 React Hook useEffect has a missing dependency: 'fn'
+  }, []); // 🔴 React Hook useEffect 缺少一个依赖项：'fn'
 }
 ```
 
-**Custom "lifecycle" Hooks like `useMount` don't fit well into the React paradigm.** For example, this code example has a mistake (it doesn't "react" to `roomId` or `serverUrl` changes), but the linter won't warn you about it because the linter only checks direct `useEffect` calls. It won't know about your Hook.
+**像 `useMount` 这样的自定义“生命周期” Hooks 并不适合 React 的范式。**例如，这段代码有一个错误（它不会对 `roomId` 或 `serverUrl` 的变化作出“响应”），但 lint 工具不会提醒你，因为它只检查直接的 `useEffect` 调用。它不会知道你的 Hook。
 
-If you're writing an Effect, start by using the React API directly:
+如果你正在编写一个 Effect，先直接使用 React API：
 
 ```js
 function ChatRoom({ roomId }) {
   const [serverUrl, setServerUrl] = useState('https://localhost:1234');
 
-  // ✅ Good: two raw Effects separated by purpose
+  // ✅ 好：两个原始 Effects，按用途分开
 
   useEffect(() => {
     const connection = createConnection({ serverUrl, roomId });
@@ -1243,28 +1243,28 @@ function ChatRoom({ roomId }) {
 }
 ```
 
-Then, you can (but don't have to) extract custom Hooks for different high-level use cases:
+然后，你可以（但不一定非得）针对不同的高层用例提取自定义 Hooks：
 
 ```js
 function ChatRoom({ roomId }) {
   const [serverUrl, setServerUrl] = useState('https://localhost:1234');
 
-  // ✅ Great: custom Hooks named after their purpose
+  // ✅ 很好：按用途命名的自定义 Hooks
   useChatRoom({ serverUrl, roomId });
   useImpressionLog('visit_chat', { roomId });
   // ...
 }
 ```
 
-**A good custom Hook makes the calling code more declarative by constraining what it does.** For example, `useChatRoom(options)` can only connect to the chat room, while `useImpressionLog(eventName, extraData)` can only send an impression log to the analytics. If your custom Hook API doesn't constrain the use cases and is very abstract, in the long run it's likely to introduce more problems than it solves.
+**一个好的自定义 Hook 会通过限制其功能，让调用代码更具声明性。**例如，`useChatRoom(options)` 只能连接到聊天室，而 `useImpressionLog(eventName, extraData)` 只能向分析系统发送曝光日志。如果你的自定义 Hook API 没有约束使用场景，而且过于抽象，从长远来看，它很可能带来的问题比解决的问题更多。
 
 </DeepDive>
 
-### Custom Hooks help you migrate to better patterns {/*custom-hooks-help-you-migrate-to-better-patterns*/}
+### 自定义 Hooks 帮助你迁移到更好的模式 {/*custom-hooks-help-you-migrate-to-better-patterns*/}
 
-Effects are an ["escape hatch"](/learn/escape-hatches): you use them when you need to "step outside React" and when there is no better built-in solution for your use case. With time, the React team's goal is to reduce the number of the Effects in your app to the minimum by providing more specific solutions to more specific problems. Wrapping your Effects in custom Hooks makes it easier to upgrade your code when these solutions become available.
+Effects 是一种["逃生舱口"](/learn/escape-hatches)：当你需要“跳出 React”，并且你的用例没有更好的内置解决方案时，你就会用到它们。随着时间推移，React 团队的目标是通过为更具体的问题提供更具体的解决方案，将你应用中的 Effects 数量尽量减少到最低。把你的 Effects 封装进自定义 Hooks，可以让你在这些解决方案可用时更容易升级代码。
 
-Let's return to this example:
+让我们回到这个例子：
 
 <Sandpack>
 
@@ -1325,9 +1325,9 @@ export function useOnlineStatus() {
 
 </Sandpack>
 
-In the above example, `useOnlineStatus` is implemented with a pair of [`useState`](/reference/react/useState) and [`useEffect`.](/reference/react/useEffect) However, this isn't the best possible solution. There is a number of edge cases it doesn't consider. For example, it assumes that when the component mounts, `isOnline` is already `true`, but this may be wrong if the network already went offline. You can use the browser [`navigator.onLine`](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/onLine) API to check for that, but using it directly would not work on the server for generating the initial HTML. In short, this code could be improved.
+在上面的例子中，`useOnlineStatus` 是用一对 [`useState`](/reference/react/useState) 和 [`useEffect`.](/reference/react/useEffect) 实现的。不过，这不是最好的可能方案。它没有考虑到一些边缘情况。例如，它假设组件挂载时 `isOnline` 已经是 `true`，但如果网络已经离线，这可能是错的。你可以使用浏览器的 [`navigator.onLine`](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/onLine) API 来检查这一点，但直接使用它在服务端生成初始 HTML 时不会生效。简而言之，这段代码还可以改进。
 
-React includes a dedicated API called [`useSyncExternalStore`](/reference/react/useSyncExternalStore) which takes care of all of these problems for you. Here is your `useOnlineStatus` Hook, rewritten to take advantage of this new API:
+React 包含一个专门的 API，叫做 [`useSyncExternalStore`](/reference/react/useSyncExternalStore)，它会帮你处理这些问题。下面是你的 `useOnlineStatus` Hook，重写后利用了这个新的 API：
 
 <Sandpack>
 
@@ -1378,8 +1378,8 @@ function subscribe(callback) {
 export function useOnlineStatus() {
   return useSyncExternalStore(
     subscribe,
-    () => navigator.onLine, // How to get the value on the client
-    () => true // How to get the value on the server
+    () => navigator.onLine, // 如何在客户端获取值
+    () => true // 如何在服务端获取值
   );
 }
 
@@ -1387,7 +1387,7 @@ export function useOnlineStatus() {
 
 </Sandpack>
 
-Notice how **you didn't need to change any of the components** to make this migration:
+注意，为了完成这次迁移，**你不需要修改任何组件**：
 
 ```js {2,7}
 function StatusBar() {
@@ -1401,19 +1401,19 @@ function SaveButton() {
 }
 ```
 
-This is another reason for why wrapping Effects in custom Hooks is often beneficial:
+这也是为什么把 Effects 封装进自定义 Hooks 往往是有益的另一个原因：
 
-1. You make the data flow to and from your Effects very explicit.
-2. You let your components focus on the intent rather than on the exact implementation of your Effects.
-3. When React adds new features, you can remove those Effects without changing any of your components.
+1. 你让数据进出 Effects 的流向变得非常明确。
+2. 你让组件专注于意图，而不是 Effects 的具体实现。
+3. 当 React 增加新特性时，你可以在不修改任何组件的情况下移除这些 Effects。
 
-Similar to a [design system,](https://uxdesign.cc/everything-you-need-to-know-about-design-systems-54b109851969) you might find it helpful to start extracting common idioms from your app's components into custom Hooks. This will keep your components' code focused on the intent, and let you avoid writing raw Effects very often. Many excellent custom Hooks are maintained by the React community.
+类似于[设计系统，](https://uxdesign.cc/everything-you-need-to-know-about-design-systems-54b109851969)你可能会发现，把应用组件中常见的模式提取到自定义 Hooks 里会很有帮助。这会让组件代码聚焦于意图，并让你避免频繁编写原始 Effects。许多优秀的自定义 Hooks 都由 React 社区维护。
 
 <DeepDive>
 
-#### Will React provide any built-in solution for data fetching? {/*will-react-provide-any-built-in-solution-for-data-fetching*/}
+#### React 会为数据获取提供任何内置方案吗？ {/*will-react-provide-any-built-in-solution-for-data-fetching*/}
 
-Today, with the [`use`](/reference/react/use#streaming-data-from-server-to-client) API, data can be read in render by passing a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) to `use`:
+今天，借助 [`use`](/reference/react/use#streaming-data-from-server-to-client) API，可以通过向 `use` 传入一个 [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) 在渲染时读取数据：
 
 ```js {1,4,11}
 import { use, Suspense } from "react";
@@ -1432,7 +1432,7 @@ export function MessageContainer({ messagePromise }) {
 }
 ```
 
-We're still working out the details, but we expect that in the future, you'll write data fetching like this:
+我们仍在完善细节，但我们预计未来你会像这样编写数据获取：
 
 ```js {1,4,6}
 import { use } from 'react';
@@ -1444,13 +1444,13 @@ function ShippingForm({ country }) {
   // ...
 ```
 
-If you use custom Hooks like `useData` above in your app, it will require fewer changes to migrate to the eventually recommended approach than if you write raw Effects in every component manually. However, the old approach will still work fine, so if you feel happy writing raw Effects, you can continue to do that.
+如果你在应用中使用像上面 `useData` 这样的自定义 Hooks，那么迁移到最终推荐的方法时所需的改动会更少，比起在每个组件里手动编写原始 Effects 要轻松得多。不过，旧方法依然能正常工作，所以如果你更喜欢写原始 Effects，也可以继续这样做。
 
 </DeepDive>
 
-### There is more than one way to do it {/*there-is-more-than-one-way-to-do-it*/}
+### 实现方式不止一种 {/*there-is-more-than-one-way-to-do-it*/}
 
-Let's say you want to implement a fade-in animation *from scratch* using the browser [`requestAnimationFrame`](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame) API. You might start with an Effect that sets up an animation loop. During each frame of the animation, you could change the opacity of the DOM node you [hold in a ref](/learn/manipulating-the-dom-with-refs) until it reaches `1`. Your code might start like this:
+假设你想使用浏览器的 [`requestAnimationFrame`](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame) API 从零开始实现一个淡入动画。你可以先写一个 Effect 来设置动画循环。在动画的每一帧中，你可以逐步改变你[保存在 ref 中](/learn/manipulating-the-dom-with-refs)的 DOM 节点的不透明度，直到它达到 `1`。你的代码可能会像这样开始：
 
 <Sandpack>
 
@@ -1472,7 +1472,7 @@ function Welcome() {
       const progress = Math.min(timePassed / duration, 1);
       onProgress(progress);
       if (progress < 1) {
-        // We still have more frames to paint
+        // 我们还有更多帧要绘制
         frameId = requestAnimationFrame(onFrame);
       }
     }
@@ -1533,7 +1533,7 @@ html, body { min-height: 300px; }
 
 </Sandpack>
 
-To make the component more readable, you might extract the logic into a `useFadeIn` custom Hook:
+为了让组件更易读，你可以把逻辑提取到一个 `useFadeIn` 自定义 Hook 中：
 
 <Sandpack>
 
@@ -1582,7 +1582,7 @@ export function useFadeIn(ref, duration) {
       const progress = Math.min(timePassed / duration, 1);
       onProgress(progress);
       if (progress < 1) {
-        // We still have more frames to paint
+        // 我们还有更多帧要绘制
         frameId = requestAnimationFrame(onFrame);
       }
     }
@@ -1624,7 +1624,7 @@ html, body { min-height: 300px; }
 
 </Sandpack>
 
-You could keep the `useFadeIn` code as is, but you could also refactor it more. For example, you could extract the logic for setting up the animation loop out of `useFadeIn` into a custom `useAnimationLoop` Hook:
+你可以保持 `useFadeIn` 的代码原样，但也可以进一步重构它。例如，你可以把设置动画循环的逻辑从 `useFadeIn` 中提取到一个自定义 `useAnimationLoop` Hook 里：
 
 <Sandpack>
 
@@ -1712,7 +1712,7 @@ html, body { min-height: 300px; }
 
 </Sandpack>
 
-However, you didn't *have to* do that. As with regular functions, ultimately you decide where to draw the boundaries between different parts of your code. You could also take a very different approach. Instead of keeping the logic in the Effect, you could move most of the imperative logic inside a JavaScript [class:](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes)
+不过，你并**不一定必须**这样做。和普通函数一样，最终由你决定如何在代码的不同部分之间划定边界。你也可以采用完全不同的方法。与其把逻辑保留在 Effect 里，不如把大部分命令式逻辑移到一个 JavaScript [class:](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes)
 
 <Sandpack>
 
@@ -1779,7 +1779,7 @@ export class FadeInAnimation {
     if (progress === 1) {
       this.stop();
     } else {
-      // We still have more frames to paint
+      // 我们还有更多帧要绘制
       this.frameId = requestAnimationFrame(() => this.onFrame());
     }
   }
@@ -1810,9 +1810,9 @@ html, body { min-height: 300px; }
 
 </Sandpack>
 
-Effects let you connect React to external systems. The more coordination between Effects is needed (for example, to chain multiple animations), the more it makes sense to extract that logic out of Effects and Hooks *completely* like in the sandbox above. Then, the code you extracted *becomes* the "external system". This lets your Effects stay simple because they only need to send messages to the system you've moved outside React.
+Effects 让你把 React 连接到外部系统。Effects 之间需要协调得越多（例如，串联多个动画），就越有理由像上面的沙盒那样，把这些逻辑**完全**从 Effects 和 Hooks 中提取出来。这样，被你提取出来的代码就**成为了**“外部系统”。这能让你的 Effects 保持简单，因为它们只需要向你搬到 React 外面的系统发送消息。
 
-The examples above assume that the fade-in logic needs to be written in JavaScript. However, this particular fade-in animation is both simpler and much more efficient to implement with a plain [CSS Animation:](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations/Using_CSS_animations)
+上面的例子假设淡入逻辑需要用 JavaScript 来编写。不过，这种淡入动画用纯 [CSS Animation:](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Animations/Using_CSS_animations) 来实现既更简单，也更高效：
 
 <Sandpack>
 
@@ -1867,27 +1867,27 @@ html, body { min-height: 300px; }
 
 </Sandpack>
 
-Sometimes, you don't even need a Hook!
+有时候，你甚至不需要 Hook！
 
 <Recap>
 
-- Custom Hooks let you share logic between components.
-- Custom Hooks must be named starting with `use` followed by a capital letter.
-- Custom Hooks only share stateful logic, not state itself.
-- You can pass reactive values from one Hook to another, and they stay up-to-date.
-- All Hooks re-run every time your component re-renders.
-- The code of your custom Hooks should be pure, like your component's code.
-- Wrap event handlers received by custom Hooks into Effect Events.
-- Don't create custom Hooks like `useMount`. Keep their purpose specific.
-- It's up to you how and where to choose the boundaries of your code.
+- 自定义 Hooks 让你可以在组件之间共享逻辑。
+- 自定义 Hooks 的命名必须以 `use` 开头，后面跟一个大写字母。
+- 自定义 Hooks 只共享有状态逻辑，不共享 state 本身。
+- 你可以把响应式值从一个 Hook 传给另一个，它们会保持最新。
+- 组件每次重新渲染时，所有 Hooks 都会重新运行。
+- 自定义 Hooks 的代码应该像组件代码一样是纯的。
+- 把自定义 Hooks 接收到的事件处理函数封装进 Effect Events。
+- 不要创建像 `useMount` 这样的自定义 Hooks。保持用途具体。
+- 代码边界如何划分、在哪里划分，由你决定。
 
 </Recap>
 
 <Challenges>
 
-#### Extract a `useCounter` Hook {/*extract-a-usecounter-hook*/}
+#### 提取一个 `useCounter` Hook {/*extract-a-usecounter-hook*/}
 
-This component uses a state variable and an Effect to display a number that increments every second. Extract this logic into a custom Hook called `useCounter`. Your goal is to make the `Counter` component implementation look exactly like this:
+这个组件使用一个 state 变量和一个 Effect 来显示每秒递增的数字。把这段逻辑提取到一个名为 `useCounter` 的自定义 Hook 中。你的目标是让 `Counter` 组件的实现看起来完全像这样：
 
 ```js
 export default function Counter() {
@@ -1896,7 +1896,7 @@ export default function Counter() {
 }
 ```
 
-You'll need to write your custom Hook in `useCounter.js` and import it into the `App.js` file.
+你需要在 `useCounter.js` 中编写你的自定义 Hook，并将它导入到 `App.js` 文件中。
 
 <Sandpack>
 
@@ -1916,14 +1916,14 @@ export default function Counter() {
 ```
 
 ```js src/useCounter.js
-// Write your custom Hook in this file!
+// 在这个文件中编写你的自定义 Hook！
 ```
 
 </Sandpack>
 
 <Solution>
 
-Your code should look like this:
+你的代码应该像这样：
 
 <Sandpack>
 
@@ -1953,13 +1953,13 @@ export function useCounter() {
 
 </Sandpack>
 
-Notice that `App.js` doesn't need to import `useState` or `useEffect` anymore.
+注意，`App.js` 已经不再需要导入 `useState` 或 `useEffect` 了。
 
 </Solution>
 
-#### Make the counter delay configurable {/*make-the-counter-delay-configurable*/}
+#### 让计数器的延迟可配置 {/*make-the-counter-delay-configurable*/}
 
-In this example, there is a `delay` state variable controlled by a slider, but its value is not used. Pass the `delay` value to your custom `useCounter` Hook, and change the `useCounter` Hook to use the passed `delay` instead of hardcoding `1000` ms.
+在这个例子中，有一个由滑块控制的 `delay` state 变量，但它的值没有被使用。把 `delay` 值传给你的自定义 `useCounter` Hook，并修改 `useCounter` Hook，让它使用传入的 `delay`，而不是硬编码的 `1000` ms。
 
 <Sandpack>
 
@@ -2009,7 +2009,7 @@ export function useCounter() {
 
 <Solution>
 
-Pass the `delay` to your Hook with `useCounter(delay)`. Then, inside the Hook, use `delay` instead of the hardcoded `1000` value. You'll need to add `delay` to your Effect's dependencies. This ensures that a change in `delay` will reset the interval.
+通过 `useCounter(delay)` 把 `delay` 传给你的 Hook。然后在 Hook 内部，使用 `delay` 而不是硬编码的 `1000`。你需要把 `delay` 加到 Effect 的依赖项中。这可以确保 `delay` 的变化会重置这个间隔。
 
 <Sandpack>
 
@@ -2059,9 +2059,9 @@ export function useCounter(delay) {
 
 </Solution>
 
-#### Extract `useInterval` out of `useCounter` {/*extract-useinterval-out-of-usecounter*/}
+#### 从 `useCounter` 中提取 `useInterval` {/*extract-useinterval-out-of-usecounter*/}
 
-Currently, your `useCounter` Hook does two things. It sets up an interval, and it also increments a state variable on every interval tick. Split out the logic that sets up the interval into a separate Hook called `useInterval`. It should take two arguments: the `onTick` callback, and the `delay`. After this change, your `useCounter` implementation should look like this:
+目前，你的 `useCounter` Hook 做了两件事。它设置了一个间隔，同时还在每次间隔触发时递增一个 state 变量。把设置间隔的逻辑拆分到一个单独的 Hook 中，叫做 `useInterval`。它应该接收两个参数：`onTick` 回调和 `delay`。完成这个改动后，你的 `useCounter` 实现应该看起来像这样：
 
 ```js
 export function useCounter(delay) {
@@ -2073,7 +2073,7 @@ export function useCounter(delay) {
 }
 ```
 
-Write `useInterval` in the `useInterval.js` file and import it into the `useCounter.js` file.
+在 `useInterval.js` 文件中编写 `useInterval`，并将它导入到 `useCounter.js` 文件中。
 
 <Sandpack>
 
@@ -2102,14 +2102,14 @@ export function useCounter(delay) {
 ```
 
 ```js src/useInterval.js
-// Write your Hook here!
+// 在这里编写你的 Hook！
 ```
 
 </Sandpack>
 
 <Solution>
 
-The logic inside `useInterval` should set up and clear the interval. It doesn't need to do anything else.
+`useInterval` 内部的逻辑应该负责设置和清除这个间隔。它不需要做任何别的事。
 
 <Sandpack>
 
@@ -2148,36 +2148,36 @@ export function useInterval(onTick, delay) {
 
 </Sandpack>
 
-Note that there is a bit of a problem with this solution, which you'll solve in the next challenge.
+注意，这个解决方案有一点小问题，你会在下一个挑战中解决它。
 
 </Solution>
 
-#### Fix a resetting interval {/*fix-a-resetting-interval*/}
+#### 修复一个会重置的间隔 {/*fix-a-resetting-interval*/}
 
-In this example, there are *two* separate intervals.
+在这个例子中，有 *两个* 独立的间隔。
 
-The `App` component calls `useCounter`, which calls `useInterval` to update the counter every second. But the `App` component *also* calls `useInterval` to randomly update the page background color every two seconds.
+`App` 组件调用了 `useCounter`，而 `useCounter` 又调用 `useInterval` 来每秒更新计数器。但 `App` 组件 *还* 调用了 `useInterval` 来每两秒随机更新页面背景颜色。
 
-For some reason, the callback that updates the page background never runs. Add some logs inside `useInterval`:
+由于某些原因，更新页面背景的回调从未运行。在 `useInterval` 中添加一些日志：
 
 ```js {2,5}
   useEffect(() => {
-    console.log('✅ Setting up an interval with delay ', delay)
+    console.log('✅ 使用延迟 ', delay, ' 设置一个间隔')
     const id = setInterval(onTick, delay);
     return () => {
-      console.log('❌ Clearing an interval with delay ', delay)
+      console.log('❌ 使用延迟 ', delay, ' 清除一个间隔')
       clearInterval(id);
     };
   }, [onTick, delay]);
 ```
 
-Do the logs match what you expect to happen? If some of your Effects seem to re-synchronize unnecessarily, can you guess which dependency is causing that to happen? Is there some way to [remove that dependency](/learn/removing-effect-dependencies) from your Effect?
+这些日志和你预期的行为一致吗？如果你的某些 Effects 似乎在不必要地重新同步，你能猜出是哪个依赖项导致的吗？有没有办法从这个 Effect 中[移除那个依赖项](/learn/removing-effect-dependencies)？
 
-After you fix the issue, you should expect the page background to update every two seconds.
+修复这个问题后，你应该能看到页面背景每两秒更新一次。
 
 <Hint>
 
-It looks like your `useInterval` Hook accepts an event listener as an argument. Can you think of some way to wrap that event listener so that it doesn't need to be a dependency of your Effect?
+看起来你的 `useInterval` Hook 把一个事件监听器作为参数接收。你能想到一种方法把这个事件监听器包装起来，使它不需要作为你 Effect 的依赖项吗？
 
 </Hint>
 
@@ -2230,11 +2230,11 @@ export function useInterval(onTick, delay) {
 
 <Solution>
 
-Inside `useInterval`, wrap the tick callback into an Effect Event, as you did [earlier on this page.](/learn/reusing-logic-with-custom-hooks#passing-event-handlers-to-custom-hooks)
+在 `useInterval` 内部，将 tick 回调包装成一个 Effect Event，就像你在[本页前面](/learn/reusing-logic-with-custom-hooks#passing-event-handlers-to-custom-hooks)那样做的。
 
-This will allow you to omit `onTick` from dependencies of your Effect. The Effect won't re-synchronize on every re-render of the component, so the page background color change interval won't get reset every second before it has a chance to fire.
+这样就可以把 `onTick` 从 Effect 的依赖项中移除。Effect 就不会在组件每次重新渲染时重新同步，因此页面背景颜色的间隔不会每秒在有机会触发之前就被重置。
 
-With this change, both intervals work as expected and don't interfere with each other:
+完成这个改动后，两个间隔都能按预期工作，而且彼此不会干扰：
 
 <Sandpack>
 
@@ -2285,21 +2285,21 @@ export function useInterval(callback, delay) {
 
 </Solution>
 
-#### Implement a staggering movement {/*implement-a-staggering-movement*/}
+#### 实现一种错位移动 {/*implement-a-staggering-movement*/}
 
-In this example, the `usePointerPosition()` Hook tracks the current pointer position. Try moving your cursor or your finger over the preview area and see the red dot follow your movement. Its position is saved in the `pos1` variable.
+在这个例子中，`usePointerPosition()` Hook 会跟踪当前指针的位置。试着在预览区域内移动你的鼠标或手指，看看红点跟随你的移动。它的位置保存在 `pos1` 变量中。
 
-In fact, there are five (!) different red dots being rendered. You don't see them because currently they all appear at the same position. This is what you need to fix. What you want to implement instead is a "staggered" movement: each dot should "follow" the previous dot's path. For example, if you quickly move your cursor, the first dot should follow it immediately, the second dot should follow the first dot with a small delay, the third dot should follow the second dot, and so on.
+事实上，页面上渲染了五个不同的红点（！）。你看不到它们，因为它们目前都出现在同一个位置。你需要修复这个问题。你要实现的是一种“错位”的移动：每个点都应该“跟随”前一个点的轨迹。例如，如果你快速移动鼠标，第一个点应该立即跟随，第二个点应该稍微延迟地跟随第一个点，第三个点再跟随第二个点，以此类推。
 
-You need to implement the `useDelayedValue` custom Hook. Its current implementation returns the `value` provided to it. Instead, you want to return the value back from `delay` milliseconds ago. You might need some state and an Effect to do this.
+你需要实现 `useDelayedValue` 自定义 Hook。它当前的实现直接返回传入的 `value`。而你希望返回 `delay` 毫秒之前的值。为此，你可能需要一些 state 和一个 Effect。
 
-After you implement `useDelayedValue`, you should see the dots move following one another.
+在实现 `useDelayedValue` 之后，你应该能看到这些点一个接一个地移动。
 
 <Hint>
 
-You'll need to store the `delayedValue` as a state variable inside your custom Hook. When the `value` changes, you'll want to run an Effect. This Effect should update `delayedValue` after the `delay`. You might find it helpful to call `setTimeout`.
+你需要在自定义 Hook 内部把 `delayedValue` 存成一个 state 变量。当 `value` 变化时，你需要运行一个 Effect。这个 Effect 应该在 `delay` 之后更新 `delayedValue`。你可能会发现调用 `setTimeout` 很有帮助。
 
-Does this Effect need cleanup? Why or why not?
+这个 Effect 需要清理吗？为什么需要，或者为什么不需要？
 
 </Hint>
 
@@ -2309,7 +2309,7 @@ Does this Effect need cleanup? Why or why not?
 import { usePointerPosition } from './usePointerPosition.js';
 
 function useDelayedValue(value, delay) {
-  // TODO: Implement this Hook
+  // TODO: 实现这个 Hook
   return value;
 }
 
@@ -2372,7 +2372,7 @@ body { min-height: 300px; }
 
 <Solution>
 
-Here is a working version. You keep the `delayedValue` as a state variable. When `value` updates, your Effect schedules a timeout to update the `delayedValue`. This is why the `delayedValue` always "lags behind" the actual `value`.
+这是一个可工作的版本。你把 `delayedValue` 保持为一个 state 变量。当 `value` 更新时，你的 Effect 会安排一个超时来更新 `delayedValue`。这就是为什么 `delayedValue` 总是“落后”于实际的 `value`。
 
 <Sandpack>
 
@@ -2449,7 +2449,7 @@ body { min-height: 300px; }
 
 </Sandpack>
 
-Note that this Effect *does not* need cleanup. If you called `clearTimeout` in the cleanup function, then each time the `value` changes, it would reset the already scheduled timeout. To keep the movement continuous, you want all the timeouts to fire.
+注意，这个 Effect **不需要**清理。如果你在清理函数中调用 `clearTimeout`，那么每次 `value` 变化时，它都会重置已经安排好的超时。为了保持移动的连续性，你希望所有超时都能触发。
 
 </Solution>
 

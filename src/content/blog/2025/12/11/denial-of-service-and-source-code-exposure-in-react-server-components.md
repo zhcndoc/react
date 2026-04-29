@@ -1,202 +1,202 @@
 ---
-title: "Denial of Service and Source Code Exposure in React Server Components"
+title: "React Server Components 中的拒绝服务与源代码泄露"
 author: The React Team
 date: 2025/12/11
-description: Security researchers have found and disclosed two additional vulnerabilities in React Server Components while attempting to exploit the patches in last week’s critical vulnerability. High vulnerability Denial of Service (CVE-2025-55184), and medium vulnerability Source Code Exposure (CVE-2025-55183)
+description: 安全研究人员在尝试利用上周关键漏洞的补丁时，发现并披露了 React Server Components 中另外两个漏洞。高危漏洞拒绝服务（CVE-2025-55184）和中危漏洞源代码泄露（CVE-2025-55183）
 
 
 ---
 
-December 11, 2025 by [The React Team](/community/team)
+2025 年 12 月 11 日，作者：[The React Team](/community/team)
 
-_Updated January 26, 2026._
+_更新于 2026 年 1 月 26 日。_
 
 ---
 
 <Intro>
 
-Security researchers have found and disclosed two additional vulnerabilities in React Server Components while attempting to exploit the patches in last week’s critical vulnerability.
+安全研究人员在尝试利用上周关键漏洞的补丁时，发现并披露了 React Server Components 中另外两个漏洞。
 
-**These new vulnerabilities do not allow for Remote Code Execution.** The patch for React2Shell remains effective at mitigating the Remote Code Execution exploit.
+**这些新漏洞不允许远程代码执行。** React2Shell 的补丁在缓解远程代码执行利用方面仍然有效。
 
 </Intro>
 
 ---
 
-The new vulnerabilities are disclosed as:
+新漏洞披露如下：
 
-- **Denial of Service - High Severity**: [CVE-2025-55184](https://www.cve.org/CVERecord?id=CVE-2025-55184), [CVE-2025-67779](https://www.cve.org/CVERecord?id=CVE-2025-67779), and [CVE-2026-23864](https://www.cve.org/CVERecord?id=CVE-2026-23864) (CVSS 7.5)
-- **Source Code Exposure - Medium Severity**: [CVE-2025-55183](https://www.cve.org/CVERecord?id=CVE-2025-55183) (CVSS 5.3)
+- **拒绝服务 - 高危**: [CVE-2025-55184](https://www.cve.org/CVERecord?id=CVE-2025-55184), [CVE-2025-67779](https://www.cve.org/CVERecord?id=CVE-2025-67779), 和 [CVE-2026-23864](https://www.cve.org/CVERecord?id=CVE-2026-23864)（CVSS 7.5）
+- **源代码泄露 - 中危**: [CVE-2025-55183](https://www.cve.org/CVERecord?id=CVE-2025-55183)（CVSS 5.3）
 
-We recommend upgrading immediately due to the severity of the newly disclosed vulnerabilities.
+由于新披露漏洞的严重性，我们建议立即升级。
 
 <Note>
 
-#### The patches published earlier are vulnerable. {/*the-patches-published-earlier-are-vulnerable*/}
+#### 先前发布的补丁存在漏洞。 {/*the-patches-published-earlier-are-vulnerable*/}
 
-If you already updated for the previous vulnerabilities, you will need to update again.
+如果你已经为之前的漏洞进行了更新，则还需要再次更新。
 
-If you updated to 19.0.3, 19.1.4, and 19.2.3, [these are incomplete](#additional-fix-published), and you will need to update again.
+如果你更新到了 19.0.3、19.1.4 和 19.2.3， [这些是不完整的](#additional-fix-published)，你还需要再次更新。
 
-Please see [the instructions in the previous post](/blog/2025/12/03/critical-security-vulnerability-in-react-server-components#update-instructions) for upgrade steps.
+升级步骤请参见 [上一条帖子中的说明](/blog/2025/12/03/critical-security-vulnerability-in-react-server-components#update-instructions)。
 
 -----
 
-_Updated January 26, 2026._
+_更新于 2026 年 1 月 26 日。_
 
 </Note>
 
-Further details of these vulnerabilities will be provided after the rollout of the fixes are complete.
+在修复措施全部发布完成后，将提供这些漏洞的更多细节。
 
-## Immediate Action Required {/*immediate-action-required*/}
+## 需要立即采取的行动 {/*immediate-action-required*/}
 
-These vulnerabilities are present in the same packages and versions as [CVE-2025-55182](/blog/2025/12/03/critical-security-vulnerability-in-react-server-components).
+这些漏洞存在于与 [CVE-2025-55182](/blog/2025/12/03/critical-security-vulnerability-in-react-server-components) 相同的包和版本中。
 
-This includes 19.0.0, 19.0.1, 19.0.2, 19.0.3, 19.1.0, 19.1.1, 19.1.2, 19.1.3, 19.2.0, 19.2.1, 19.2.2, and 19.2.3 of:
+包括以下包的 19.0.0、19.0.1、19.0.2、19.0.3、19.1.0、19.1.1、19.1.2、19.1.3、19.2.0、19.2.1、19.2.2 和 19.2.3：
 
 * [react-server-dom-webpack](https://www.npmjs.com/package/react-server-dom-webpack)
 * [react-server-dom-parcel](https://www.npmjs.com/package/react-server-dom-parcel)
 * [react-server-dom-turbopack](https://www.npmjs.com/package/react-server-dom-turbopack?activeTab=readme)
 
-Fixes were backported to versions 19.0.4, 19.1.5, and 19.2.4. If you are using any of the above packages please upgrade to any of the fixed versions immediately.
+修复已回补到 19.0.4、19.1.5 和 19.2.4 版本。如果你正在使用上述任意包，请立即升级到任一已修复版本。
 
-As before, if your app’s React code does not use a server, your app is not affected by these vulnerabilities. If your app does not use a framework, bundler, or bundler plugin that supports React Server Components, your app is not affected by these vulnerabilities.
+和之前一样，如果你的应用的 React 代码不使用服务器，那么你的应用不受这些漏洞影响。如果你的应用不使用支持 React Server Components 的框架、打包器或打包器插件，那么你的应用不受这些漏洞影响。
 
 <Note>
 
-#### It’s common for critical CVEs to uncover follow‑up vulnerabilities. {/*its-common-for-critical-cves-to-uncover-followup-vulnerabilities*/}
+#### 关键 CVE 导致后续漏洞被发现是很常见的。 {/*its-common-for-critical-cves-to-uncover-followup-vulnerabilities*/}
 
-When a critical vulnerability is disclosed, researchers scrutinize adjacent code paths looking for variant exploit techniques to test whether the initial mitigation can be bypassed.
+当披露一个关键漏洞时，研究人员会仔细检查相邻的代码路径，寻找变种利用技术，以测试初始缓解措施是否可以被绕过。
 
-This pattern shows up across the industry, not just in JavaScript. For example, after [Log4Shell](https://nvd.nist.gov/vuln/detail/cve-2021-44228), additional CVEs ([1](https://nvd.nist.gov/vuln/detail/cve-2021-45046), [2](https://nvd.nist.gov/vuln/detail/cve-2021-45105)) were reported as the community probed the original fix.
+这种模式不仅出现在 JavaScript 领域，在整个行业都很常见。例如，在 [Log4Shell](https://nvd.nist.gov/vuln/detail/cve-2021-44228) 之后，随着社区继续研究原始修复，披露了额外的 CVE（[1](https://nvd.nist.gov/vuln/detail/cve-2021-45046)、[2](https://nvd.nist.gov/vuln/detail/cve-2021-45105)）。
 
-Additional disclosures can be frustrating, but they are generally a sign of a healthy response cycle.
+额外披露可能令人沮丧，但通常表明响应周期是健康的。
 
 </Note>
 
-### Affected frameworks and bundlers {/*affected-frameworks-and-bundlers*/}
+### 受影响的框架和打包器 {/*affected-frameworks-and-bundlers*/}
 
-Some React frameworks and bundlers depended on, had peer dependencies for, or included the vulnerable React packages. The following React frameworks & bundlers are affected: [next](https://www.npmjs.com/package/next), [react-router](https://www.npmjs.com/package/react-router), [waku](https://www.npmjs.com/package/waku), [@parcel/rsc](https://www.npmjs.com/package/@parcel/rsc), [@vite/rsc-plugin](https://www.npmjs.com/package/@vitejs/plugin-rsc), and [rwsdk](https://www.npmjs.com/package/rwsdk).
+一些 React 框架和打包器依赖、具有 peer 依赖，或包含了存在漏洞的 React 包。以下 React 框架和打包器受到影响：[next](https://www.npmjs.com/package/next)、[react-router](https://www.npmjs.com/package/react-router)、[waku](https://www.npmjs.com/package/waku)、[@parcel/rsc](https://www.npmjs.com/package/@parcel/rsc)、[@vite/rsc-plugin](https://www.npmjs.com/package/@vitejs/plugin-rsc) 和 [rwsdk](https://www.npmjs.com/package/rwsdk)。
 
-Please see [the instructions in the previous post](/blog/2025/12/03/critical-security-vulnerability-in-react-server-components#update-instructions) for upgrade steps.
+升级步骤请参见 [上一条帖子中的说明](/blog/2025/12/03/critical-security-vulnerability-in-react-server-components#update-instructions)。
 
-### Hosting Provider Mitigations {/*hosting-provider-mitigations*/}
+### 托管服务提供商的缓解措施 {/*hosting-provider-mitigations*/}
 
-As before, we have worked with a number of hosting providers to apply temporary mitigations.
+和之前一样，我们已与多家托管服务提供商合作，应用临时缓解措施。
 
-You should not depend on these to secure your app, and still update immediately.
+你不应依赖这些措施来保护你的应用，仍需立即更新。
 
 ### React Native {/*react-native*/}
 
-For React Native users not using a monorepo or `react-dom`, your `react` version should be pinned in your `package.json`, and there are no additional steps needed.
+对于不使用 monorepo 或 `react-dom` 的 React Native 用户，你的 `react` 版本应在 `package.json` 中固定，并且不需要其他额外步骤。
 
-If you are using React Native in a monorepo, you should update _only_ the impacted packages if they are installed:
+如果你在 monorepo 中使用 React Native，并且安装了受影响的包，则你应当仅更新受影响的包：
 
 - `react-server-dom-webpack`
 - `react-server-dom-parcel`
 - `react-server-dom-turbopack`
 
-This is required to mitigate the security advisories, but you do not need to update `react` and `react-dom` so this will not cause the version mismatch error in React Native.
+这对于缓解安全通告是必要的，但你不需要更新 `react` 和 `react-dom`，因此不会在 React Native 中引起版本不匹配错误。
 
-See [this issue](https://github.com/facebook/react-native/issues/54772#issuecomment-3617929832) for more information.
+更多信息请参见 [这个 issue](https://github.com/facebook/react-native/issues/54772#issuecomment-3617929832)。
 
 ---
 
-## High Severity: Multiple Denial of Service {/*high-severity-multiple-denial-of-service*/}
+## 高危：多个拒绝服务 {/*high-severity-multiple-denial-of-service*/}
 
 **CVEs:** [CVE-2026-23864](https://www.cve.org/CVERecord?id=CVE-2026-23864)
-**Base Score:** 7.5 (High)
-**Date**: January 26, 2026
+**基础分数:** 7.5（高）
+**日期**: 2026 年 1 月 26 日
 
-Security researchers discovered additional DoS vulnerabilities still exist in React Server Components.
+安全研究人员发现 React Server Components 中仍然存在额外的 DoS 漏洞。
 
-The vulnerabilities are triggered by sending specially crafted HTTP requests to Server Function endpoints, and could lead to server crashes, out-of-memory exceptions or excessive CPU usage; depending on the vulnerable code path being exercised, the application configuration and application code.
+这些漏洞可通过向 Server Function 端点发送特制的 HTTP 请求来触发，并可能导致服务器崩溃、内存不足异常或 CPU 过度使用；具体取决于所利用的存在漏洞的代码路径、应用配置和应用代码。
 
-The patches published January 26th mitigate these DoS vulnerabilities.
+1 月 26 日发布的补丁缓解了这些 DoS 漏洞。
 
 <Note>
 
-#### Additional fixes published {/*additional-fix-published*/}
+#### 发布了额外修复 {/*additional-fix-published*/}
 
-The original fix addressing the DoS in [CVE-2025-55184](https://www.cve.org/CVERecord?id=CVE-2025-55184) was incomplete.
+最初针对 [CVE-2025-55184](https://www.cve.org/CVERecord?id=CVE-2025-55184) 中 DoS 的修复是不完整的。
 
-This left previous versions vulnerable. Versions 19.0.4, 19.1.5, 19.2.4 are safe.
+这使得先前版本仍然存在漏洞。19.0.4、19.1.5、19.2.4 版本是安全的。
 
 -----
 
-_Updated January 26, 2026._
+_更新于 2026 年 1 月 26 日。_
 
 </Note>
 
 ---
 
-## High Severity: Denial of Service {/*high-severity-denial-of-service*/}
+## 高危：拒绝服务 {/*high-severity-denial-of-service*/}
 
-**CVEs:** [CVE-2025-55184](https://www.cve.org/CVERecord?id=CVE-2025-55184) and [CVE-2025-67779](https://www.cve.org/CVERecord?id=CVE-2025-67779)
-**Base Score:** 7.5 (High)
+**CVEs:** [CVE-2025-55184](https://www.cve.org/CVERecord?id=CVE-2025-55184) 和 [CVE-2025-67779](https://www.cve.org/CVERecord?id=CVE-2025-67779)
+**基础分数:** 7.5（高）
 
-Security researchers have discovered that a malicious HTTP request can be crafted and sent to any Server Functions endpoint that, when deserialized by React, can cause an infinite loop that hangs the server process and consumes CPU. Even if your app does not implement any React Server Function endpoints it may still be vulnerable if your app supports React Server Components.
+安全研究人员发现，可以构造并发送恶意 HTTP 请求到任何 Server Functions 端点，当 React 对其反序列化时，可能导致一个无限循环，从而挂起服务器进程并消耗 CPU。即使你的应用没有实现任何 React Server Function 端点，如果你的应用支持 React Server Components，也仍然可能存在漏洞。
 
-This creates a vulnerability vector where an attacker may be able to deny users from accessing the product, and potentially have a  performance impact on the server environment.
+这会形成一种漏洞利用向量，攻击者可能借此阻止用户访问产品，并可能对服务器环境造成性能影响。
 
-The patches published today mitigate by preventing the infinite loop.
+今天发布的补丁通过防止无限循环来缓解此问题。
 
-## Medium Severity: Source Code Exposure {/*low-severity-source-code-exposure*/}
+## 中危：源代码泄露 {/*low-severity-source-code-exposure*/}
 
 **CVE:** [CVE-2025-55183](https://www.cve.org/CVERecord?id=CVE-2025-55183)
-**Base Score**: 5.3 (Medium)
+**基础分数**: 5.3（中）
 
-A security researcher has discovered that a malicious HTTP request sent to a vulnerable Server Function may unsafely return the source code of any Server Function. Exploitation requires the existence of a Server Function which explicitly or implicitly exposes a stringified argument:
+一名安全研究人员发现，向存在漏洞的 Server Function 发送恶意 HTTP 请求，可能会不安全地返回任何 Server Function 的源代码。利用这一问题需要存在一个 Server Function，它显式或隐式地暴露了一个字符串化参数：
 
 ```javascript
 'use server';
 
 export async function serverFunction(name) {
   const conn = db.createConnection('SECRET KEY');
-  const user = await conn.createUser(name); // implicitly stringified, leaked in db
+  const user = await conn.createUser(name); // 隐式字符串化，在 db 中泄露
 
   return {
    id: user.id,
-   message: `Hello, ${name}!` // explicitly stringified, leaked in reply
+   message: `Hello, ${name}!` // 显式字符串化，在回复中泄露
   }}
 ```
 
-An attacker may be able to leak the following:
+攻击者可能能够泄露以下内容：
 
 ```txt
 0:{"a":"$@1","f":"","b":"Wy43RxUKdxmr5iuBzJ1pN"}
 1:{"id":"tva1sfodwq","message":"Hello, async function(a){console.log(\"serverFunction\");let b=i.createConnection(\"SECRET KEY\");return{id:(await b.createUser(a)).id,message:`Hello, ${a}!`}}!"}
 ```
 
-The patches published today prevent stringifying the Server Function source code.
+今天发布的补丁阻止了对 Server Function 源代码的字符串化。
 
 <Note>
 
-#### Only secrets in source code may be exposed. {/*only-secrets-in-source-code-may-be-exposed*/}
+#### 只有源代码中的秘密可能会被泄露。 {/*only-secrets-in-source-code-may-be-exposed*/}
 
-Secrets hardcoded in source code may be exposed, but runtime secrets such as `process.env.SECRET` are not affected.
+以硬编码方式写入源代码中的秘密可能会被泄露，但运行时秘密（例如 `process.env.SECRET`）不受影响。
 
-The scope of the exposed code is limited to the code inside the Server Function, which may include other functions depending on the amount of inlining your bundler provides.
+泄露代码的范围仅限于 Server Function 内部的代码，其中可能包括其他函数，具体取决于你的打包器进行了多少内联。
 
-Always verify against production bundles.
+务必针对生产构建进行验证。
 
 </Note>
 
 ---
 
-## Timeline {/*timeline*/}
-* **December 3rd**: Leak reported to Vercel and [Meta Bug Bounty](https://bugbounty.meta.com/) by [Andrew MacPherson](https://github.com/AndrewMohawk).
-* **December 4th**: Initial DoS reported to [Meta Bug Bounty](https://bugbounty.meta.com/) by [RyotaK](https://ryotak.net).
-* **December 6th**: Both issues confirmed by the React team, and the team began investigating.
-* **December 7th**: Initial fixes created and the React team began verifying and planning new patch.
-* **December 8th**: Affected hosting providers and open source projects notified.
-* **December 10th**: Hosting provider mitigations in place and patches verified.
-* **December 11th**: Additional DoS reported to [Meta Bug Bounty](https://bugbounty.meta.com/) by Shinsaku Nomura.
-* **December 11th**: Patches published and publicly disclosed as [CVE-2025-55183](https://www.cve.org/CVERecord?id=CVE-2025-55183) and [CVE-2025-55184](https://www.cve.org/CVERecord?id=CVE-2025-55184).
-* **December 11th**: Missing DoS case found internally, patched and publicly disclosed as [CVE-2025-67779](https://www.cve.org/CVERecord?id=CVE-2025-67779).
-* **January 26th**: Additional DoS cases found, patched, and publicly disclosed as [CVE-2026-23864](https://www.cve.org/CVERecord?id=CVE-2026-23864).
+## 时间线 {/*timeline*/}
+* **12 月 3 日**：泄露由 [Andrew MacPherson](https://github.com/AndrewMohawk) 向 Vercel 和 [Meta Bug Bounty](https://bugbounty.meta.com/) 报告。
+* **12 月 4 日**：初始 DoS 由 [RyotaK](https://ryotak.net) 向 [Meta Bug Bounty](https://bugbounty.meta.com/) 报告。
+* **12 月 6 日**：React 团队确认这两个问题，并开始调查。
+* **12 月 7 日**：创建初始修复方案，React 团队开始验证并规划新的补丁。
+* **12 月 8 日**：通知受影响的托管服务提供商和开源项目。
+* **12 月 10 日**：托管服务提供商已实施缓解措施，补丁已验证。
+* **12 月 11 日**：Shinsaku Nomura 向 [Meta Bug Bounty](https://bugbounty.meta.com/) 报告了额外的 DoS。
+* **12 月 11 日**：补丁发布，并作为 [CVE-2025-55183](https://www.cve.org/CVERecord?id=CVE-2025-55183) 和 [CVE-2025-55184](https://www.cve.org/CVERecord?id=CVE-2025-55184) 对外披露。
+* **12 月 11 日**：内部发现缺失的 DoS 情况，已修补并作为 [CVE-2025-67779](https://www.cve.org/CVERecord?id=CVE-2025-67779) 对外披露。
+* **1 月 26 日**：发现、修补并对外披露了额外的 DoS 情况，编号为 [CVE-2026-23864](https://www.cve.org/CVERecord?id=CVE-2026-23864)。
 ---
 
-## Attribution {/*attribution*/}
+## 归因 {/*attribution*/}
 
-Thank you to [Andrew MacPherson (AndrewMohawk)](https://github.com/AndrewMohawk) for reporting the Source Code Exposure, [RyotaK](https://ryotak.net) from GMO Flatt Security Inc and Shinsaku Nomura of Bitforest Co., Ltd. for reporting the Denial of Service vulnerabilities. Thank you to [Mufeed VH](https://x.com/mufeedvh) from [Winfunc Research](https://winfunc.com), [Joachim Viide](https://jviide.iki.fi), [RyotaK](https://ryotak.net) from [GMO Flatt Security Inc](https://flatt.tech/en/) and Xiangwei Zhang of Tencent Security YUNDING LAB for reporting the additional DoS vulnerabilities.
+感谢 [Andrew MacPherson (AndrewMohawk)](https://github.com/AndrewMohawk) 报告了源代码暴露问题，感谢 [RyotaK](https://ryotak.net)（来自 GMO Flatt Security Inc）和 Bitforest Co., Ltd. 的 Shinsaku Nomura 报告了拒绝服务漏洞。感谢 [Mufeed VH](https://x.com/mufeedvh)（来自 [Winfunc Research](https://winfunc.com)）、[Joachim Viide](https://jviide.iki.fi)、[RyotaK](https://ryotak.net)（来自 [GMO Flatt Security Inc](https://flatt.tech/en/)）以及腾讯安全 云鼎实验室的 Xiangwei Zhang 报告了其他 DoS 漏洞。

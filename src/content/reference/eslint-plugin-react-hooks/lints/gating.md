@@ -4,53 +4,53 @@ title: gating
 
 <Intro>
 
-Validates configuration of [gating mode](/reference/react-compiler/gating).
+验证 [gating mode](/reference/react-compiler/gating) 的配置。
 
 </Intro>
 
-## Rule Details {/*rule-details*/}
+## 规则详情 {/*rule-details*/}
 
-Gating mode lets you gradually adopt React Compiler by marking specific components for optimization. This rule ensures your gating configuration is valid so the compiler knows which components to process.
+Gating mode 允许你通过标记特定组件进行优化，逐步采用 React Compiler。此规则可确保你的 gating 配置有效，从而让编译器知道要处理哪些组件。
 
-### Invalid {/*invalid*/}
+### 无效 {/*invalid*/}
 
-Examples of incorrect code for this rule:
+此规则的错误代码示例：
 
 ```js
-// ❌ Missing required fields
+// ❌ 缺少必需字段
 module.exports = {
   plugins: [
     ['babel-plugin-react-compiler', {
       gating: {
         importSpecifierName: '__experimental_useCompiler'
-        // Missing 'source' field
+        // 缺少 'source' 字段
       }
     }]
   ]
 };
 
-// ❌ Invalid gating type
+// ❌ 无效的 gating 类型
 module.exports = {
   plugins: [
     ['babel-plugin-react-compiler', {
-      gating: '__experimental_useCompiler' // Should be object
+      gating: '__experimental_useCompiler' // 应为对象
     }]
   ]
 };
 ```
 
-### Valid {/*valid*/}
+### 有效 {/*valid*/}
 
-Examples of correct code for this rule:
+此规则的正确代码示例：
 
 ```js
-// ✅ Complete gating configuration
+// ✅ 完整的 gating 配置
 module.exports = {
   plugins: [
     ['babel-plugin-react-compiler', {
       gating: {
-        importSpecifierName: 'isCompilerEnabled', // exported function name
-        source: 'featureFlags' // module name
+        importSpecifierName: 'isCompilerEnabled', // 导出的函数名
+        source: 'featureFlags' // 模块名
       }
     }]
   ]
@@ -61,11 +61,11 @@ export function isCompilerEnabled() {
   // ...
 }
 
-// ✅ No gating (compile everything)
+// ✅ 不使用 gating（编译所有内容）
 module.exports = {
   plugins: [
     ['babel-plugin-react-compiler', {
-      // No gating field - compiles all components
+      // 没有 gating 字段 - 编译所有组件
     }]
   ]
 };

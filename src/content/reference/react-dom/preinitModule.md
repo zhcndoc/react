@@ -4,13 +4,13 @@ title: preinitModule
 
 <Note>
 
-[React-based frameworks](/learn/creating-a-react-app) frequently handle resource loading for you, so you might not have to call this API yourself. Consult your framework's documentation for details.
+[基于 React 的框架](/learn/creating-a-react-app)通常会为你处理资源加载，因此你可能不需要自己调用这个 API。详情请查阅你所使用框架的文档。
 
 </Note>
 
 <Intro>
 
-`preinitModule` lets you eagerly fetch and evaluate an ESM module.
+`preinitModule` 允许你预先获取并执行一个 ESM 模块。
 
 ```js
 preinitModule("https://example.com/module.js", {as: "script"});
@@ -22,11 +22,11 @@ preinitModule("https://example.com/module.js", {as: "script"});
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `preinitModule(href, options)` {/*preinitmodule*/}
 
-To preinit an ESM module, call the `preinitModule` function from `react-dom`.
+要预初始化一个 ESM 模块，请从 `react-dom` 调用 `preinitModule` 函数。
 
 ```js
 import { preinitModule } from 'react-dom';
@@ -38,36 +38,36 @@ function AppRoot() {
 
 ```
 
-[See more examples below.](#usage)
+[在下方查看更多示例。](#usage)
 
-The `preinitModule` function provides the browser with a hint that it should start downloading and executing the given module, which can save time. Modules that you `preinit` are executed when they finish downloading.
+`preinitModule` 函数会向浏览器提供一个提示，表示它应该开始下载并执行给定的模块，这可以节省时间。你 `preinit` 的模块会在下载完成后立即执行。
 
-#### Parameters {/*parameters*/}
+#### 参数 {/*parameters*/}
 
-* `href`: a string. The URL of the module you want to download and execute.
-* `options`: an object. It contains the following properties:
-  *  `as`: a required string. It must be `'script'`.
-  *  `crossOrigin`: a string. The [CORS policy](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/crossorigin) to use. Its possible values are `anonymous` and `use-credentials`.
-  *  `integrity`: a string. A cryptographic hash of the module, to [verify its authenticity](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity).
-  *  `nonce`: a string. A cryptographic [nonce to allow the module](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/nonce) when using a strict Content Security Policy.
+* `href`：字符串。你想要下载并执行的模块 URL。
+* `options`：对象。它包含以下属性：
+  *  `as`：必需的字符串。其值必须是 `'script'`。
+  *  `crossOrigin`：字符串。要使用的 [CORS 策略](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/crossorigin)。可选值为 `anonymous` 和 `use-credentials`。
+  *  `integrity`：字符串。模块的加密哈希值，用于[验证其真实性](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity)。
+  *  `nonce`：字符串。在使用严格内容安全策略时，用于允许该模块的加密[nonce](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/nonce)。
 
-#### Returns {/*returns*/}
+#### 返回值 {/*returns*/}
 
-`preinitModule` returns nothing.
+`preinitModule` 不返回任何内容。
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-* Multiple calls to `preinitModule` with the same `href` have the same effect as a single call.
-* In the browser, you can call `preinitModule` in any situation: while rendering a component, in an Effect, in an event handler, and so on.
-* In server-side rendering or when rendering Server Components, `preinitModule` only has an effect if you call it while rendering a component or in an async context originating from rendering a component. Any other calls will be ignored.
+* 多次使用相同的 `href` 调用 `preinitModule` 与调用一次的效果相同。
+* 在浏览器中，你可以在任何情况下调用 `preinitModule`：在渲染组件时、在 Effect 中、在事件处理程序中，等等。
+* 在服务端渲染或渲染 Server Components 时，只有当你在渲染组件时或在源自渲染组件的异步上下文中调用 `preinitModule`，它才会生效。任何其他调用都会被忽略。
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Preloading when rendering {/*preloading-when-rendering*/}
+### 在渲染时预加载 {/*preloading-when-rendering*/}
 
-Call `preinitModule` when rendering a component if you know that it or its children will use a specific module and you're OK with the module being evaluated and thereby taking effect immediately upon being downloaded.
+如果你知道某个组件或其子组件将使用特定模块，并且你接受该模块被执行后在下载完成时立即生效，那么请在渲染组件时调用 `preinitModule`。
 
 ```js
 import { preinitModule } from 'react-dom';
@@ -78,11 +78,11 @@ function AppRoot() {
 }
 ```
 
-If you want the browser to download the module but not to execute it right away, use [`preloadModule`](/reference/react-dom/preloadModule) instead. If you want to preinit a script that isn't an ESM module, use [`preinit`](/reference/react-dom/preinit).
+如果你希望浏览器下载该模块但不要立即执行它，请改用 [`preloadModule`](/reference/react-dom/preloadModule)。如果你想预初始化的不是 ESM 模块的脚本，请使用 [`preinit`](/reference/react-dom/preinit)。
 
-### Preloading in an event handler {/*preloading-in-an-event-handler*/}
+### 在事件处理程序中预加载 {/*preloading-in-an-event-handler*/}
 
-Call `preinitModule` in an event handler before transitioning to a page or state where the module will be needed. This gets the process started earlier than if you call it during the rendering of the new page or state.
+在事件处理程序中、在转换到需要该模块的页面或状态之前调用 `preinitModule`。这样会比你在新页面或新状态渲染期间调用它更早地启动流程。
 
 ```js
 import { preinitModule } from 'react-dom';
@@ -93,7 +93,7 @@ function CallToAction() {
     startWizard();
   }
   return (
-    <button onClick={onClick}>Start Wizard</button>
+    <button onClick={onClick}>开始向导</button>
   );
 }
 ```

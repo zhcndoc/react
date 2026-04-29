@@ -4,13 +4,13 @@ title: panicThreshold
 
 <Intro>
 
-The `panicThreshold` option controls how the React Compiler handles errors during compilation.
+`panicThreshold` 选项控制 React Compiler 在编译期间如何处理错误。
 
 </Intro>
 
 ```js
 {
-  panicThreshold: 'none' // Recommended
+  panicThreshold: 'none' // 推荐
 }
 ```
 
@@ -22,7 +22,7 @@ The `panicThreshold` option controls how the React Compiler handles errors durin
 
 ### `panicThreshold` {/*panicthreshold*/}
 
-Determines whether compilation errors should fail the build or skip optimization.
+决定编译错误是应导致构建失败，还是跳过优化。
 
 #### Type {/*type*/}
 
@@ -36,16 +36,16 @@ Determines whether compilation errors should fail the build or skip optimization
 
 #### Options {/*options*/}
 
-- **`'none'`** (default, recommended): Skip components that can't be compiled and continue building
-- **`'critical_errors'`**: Fail the build only on critical compiler errors
-- **`'all_errors'`**: Fail the build on any compiler diagnostic
+- **`'none'`**（默认，推荐）：跳过无法编译的组件并继续构建
+- **`'critical_errors'`**：仅在出现严重编译器错误时使构建失败
+- **`'all_errors'`**：在出现任何编译器诊断时使构建失败
 
 #### Caveats {/*caveats*/}
 
-- Production builds should always use `'none'`
-- Build failures prevent your application from building
-- The compiler automatically detects and skips problematic code with `'none'`
-- Higher thresholds are only useful during development for debugging
+- 生产构建应始终使用 `'none'`
+- 构建失败会阻止你的应用程序构建完成
+- 在使用 `'none'` 时，编译器会自动检测并跳过有问题的代码
+- 更高的阈值仅在开发期间用于调试
 
 ---
 
@@ -53,7 +53,7 @@ Determines whether compilation errors should fail the build or skip optimization
 
 ### Production configuration (recommended) {/*production-configuration*/}
 
-For production builds, always use `'none'`. This is the default value:
+对于生产构建，请始终使用 `'none'`。这是默认值：
 
 ```js
 {
@@ -61,15 +61,15 @@ For production builds, always use `'none'`. This is the default value:
 }
 ```
 
-This ensures:
-- Your build never fails due to compiler issues
-- Components that can't be optimized run normally
-- Maximum components get optimized
-- Stable production deployments
+这可以确保：
+- 你的构建不会因为编译器问题而失败
+- 无法优化的组件会正常运行
+- 尽可能多的组件得到优化
+- 生产环境部署稳定
 
 ### Development debugging {/*development-debugging*/}
 
-Temporarily use stricter thresholds to find issues:
+临时使用更严格的阈值来查找问题：
 
 ```js
 const isDevelopment = process.env.NODE_ENV === 'development';

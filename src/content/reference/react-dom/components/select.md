@@ -4,12 +4,12 @@ title: "<select>"
 
 <Intro>
 
-The [built-in browser `<select>` component](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select) lets you render a select box with options.
+[内置浏览器的 `<select>` 组件](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select) 让你渲染一个带选项的选择框。
 
 ```js
 <select>
-  <option value="someOption">Some option</option>
-  <option value="otherOption">Other option</option>
+  <option value="someOption">某个选项</option>
+  <option value="otherOption">另一个选项</option>
 </select>
 ```
 
@@ -19,68 +19,68 @@ The [built-in browser `<select>` component](https://developer.mozilla.org/en-US/
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `<select>` {/*select*/}
 
-To display a select box, render the [built-in browser `<select>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select) component.
+要显示一个选择框，请渲染 [内置浏览器的 `<select>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select) 组件。
 
 ```js
 <select>
-  <option value="someOption">Some option</option>
-  <option value="otherOption">Other option</option>
+  <option value="someOption">某个选项</option>
+  <option value="otherOption">另一个选项</option>
 </select>
 ```
 
-[See more examples below.](#usage)
+[查看更多示例。](#usage)
 
 #### Props {/*props*/}
 
-`<select>` supports all [common element props.](/reference/react-dom/components/common#common-props)
+`<select>` 支持所有 [通用元素 props。](/reference/react-dom/components/common#common-props)
 
-You can [make a select box controlled](#controlling-a-select-box-with-a-state-variable) by passing a `value` prop:
+你可以通过传递 `value` prop 来[将选择框设为受控](#controlling-a-select-box-with-a-state-variable)：
 
-* `value`: A string (or an array of strings for [`multiple={true}`](#enabling-multiple-selection)). Controls which option is selected. Every value string match the `value` of some `<option>` nested inside the `<select>`.
+* `value`：一个字符串（对于 [`multiple={true}`](#enabling-multiple-selection) 则为字符串数组）。控制选中了哪个选项。每个值字符串都应匹配 `<select>` 内部嵌套的某个 `<option>` 的 `value`。
 
-When you pass `value`, you must also pass an `onChange` handler that updates the passed value.
+当你传递 `value` 时，也必须传递一个会更新所传值的 `onChange` 处理函数。
 
-If your `<select>` is uncontrolled, you may pass the `defaultValue` prop instead:
+如果你的 `<select>` 是非受控的，你可以改为传递 `defaultValue` prop：
 
-* `defaultValue`: A string (or an array of strings for [`multiple={true}`](#enabling-multiple-selection)). Specifies [the initially selected option.](#providing-an-initially-selected-option)
+* `defaultValue`：一个字符串（对于 [`multiple={true}`](#enabling-multiple-selection) 则为字符串数组）。指定[初始选中的选项。](#providing-an-initially-selected-option)
 
-These `<select>` props are relevant both for uncontrolled and controlled select boxes:
+这些 `<select>` props 同时适用于非受控和受控选择框：
 
-* [`autoComplete`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#autocomplete): A string. Specifies one of the possible [autocomplete behaviors.](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values)
-* [`autoFocus`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#autofocus): A boolean. If `true`, React will focus the element on mount.
-* `children`: `<select>` accepts [`<option>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/option), [`<optgroup>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/optgroup), and [`<datalist>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist) components as children. You can also pass your own components as long as they eventually render one of the allowed components. If you pass your own components that eventually render `<option>` tags, each `<option>` you render must have a `value`.
-* [`disabled`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#disabled): A boolean. If `true`, the select box will not be interactive and will appear dimmed.
-* [`form`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#form): A string. Specifies the `id` of the `<form>` this select box belongs to. If omitted, it's the closest parent form.
-* [`multiple`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#multiple): A boolean. If `true`, the browser allows [multiple selection.](#enabling-multiple-selection)
-* [`name`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#name): A string. Specifies the name for this select box that's [submitted with the form.](#reading-the-select-box-value-when-submitting-a-form)
-* `onChange`: An [`Event` handler](/reference/react-dom/components/common#event-handler) function. Required for [controlled select boxes.](#controlling-a-select-box-with-a-state-variable) Fires immediately when the user picks a different option. Behaves like the browser [`input` event.](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/input_event)
-* `onChangeCapture`: A version of `onChange` that fires in the [capture phase.](/learn/responding-to-events#capture-phase-events)
-* [`onInput`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/input_event): An [`Event` handler](/reference/react-dom/components/common#event-handler) function. Fires immediately when the value is changed by the user. For historical reasons, in React it is idiomatic to use `onChange` instead which works similarly.
-* `onInputCapture`: A version of `onInput` that fires in the [capture phase.](/learn/responding-to-events#capture-phase-events)
-* [`onInvalid`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/invalid_event): An [`Event` handler](/reference/react-dom/components/common#event-handler) function. Fires if an input fails validation on form submit. Unlike the built-in `invalid` event, the React `onInvalid` event bubbles.
-* `onInvalidCapture`: A version of `onInvalid` that fires in the [capture phase.](/learn/responding-to-events#capture-phase-events)
-* [`required`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#required): A boolean. If `true`, the value must be provided for the form to submit.
-* [`size`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#size): A number. For `multiple={true}` selects, specifies the preferred number of initially visible items.
+* [`autoComplete`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#autocomplete)：一个字符串。指定某种可能的[自动完成行为。](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values)
+* [`autoFocus`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#autofocus)：一个布尔值。如果为 `true`，React 会在挂载时聚焦该元素。
+* `children`：`<select>` 接受 [`<option>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/option)、[`<optgroup>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/optgroup) 和 [`<datalist>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist) 组件作为子元素。只要你的自定义组件最终渲染出允许的组件，也可以传入它们。如果你传入的自定义组件最终渲染 `<option>` 标签，那么你渲染的每个 `<option>` 都必须有一个 `value`。
+* [`disabled`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#disabled)：一个布尔值。如果为 `true`，选择框将不可交互并会显示为灰暗。
+* [`form`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#form)：一个字符串。指定该选择框所属的 `<form>` 的 `id`。如果省略，则为最近的父级 form。
+* [`multiple`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#multiple)：一个布尔值。如果为 `true`，浏览器允许[多选。](#enabling-multiple-selection)
+* [`name`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#name)：一个字符串。指定这个选择框的名称，它会[随表单一起提交。](#reading-the-select-box-value-when-submitting-a-form)
+* `onChange`：一个 [`Event` 处理函数](/reference/react-dom/components/common#event-handler)。对于[受控选择框](#controlling-a-select-box-with-a-state-variable)是必需的。用户选择不同选项时会立即触发。行为类似于浏览器的 [`input` 事件。](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/input_event)
+* `onChangeCapture`：在[捕获阶段](/learn/responding-to-events#capture-phase-events)触发的 `onChange` 版本。
+* [`onInput`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/input_event)：一个 [`Event` 处理函数](/reference/react-dom/components/common#event-handler)。当用户更改值时会立即触发。出于历史原因，在 React 中通常使用同样能起类似作用的 `onChange` 来代替。
+* `onInputCapture`：在[捕获阶段](/learn/responding-to-events#capture-phase-events)触发的 `onInput` 版本。
+* [`onInvalid`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/invalid_event)：一个 [`Event` 处理函数](/reference/react-dom/components/common#event-handler)。如果输入在表单提交时未通过校验，则触发。不同于内置的 `invalid` 事件，React 的 `onInvalid` 事件会冒泡。
+* `onInvalidCapture`：在[捕获阶段](/learn/responding-to-events#capture-phase-events)触发的 `onInvalid` 版本。
+* [`required`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#required)：一个布尔值。如果为 `true`，则表单提交时必须提供该值。
+* [`size`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#size)：一个数字。对于 `multiple={true}` 的选择框，指定初始可见项目的期望数量。
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-- Unlike in HTML, passing a `selected` attribute to `<option>` is not supported. Instead, use [`<select defaultValue>`](#providing-an-initially-selected-option) for uncontrolled select boxes and [`<select value>`](#controlling-a-select-box-with-a-state-variable) for controlled select boxes.
-- If a select box receives a `value` prop, it will be [treated as controlled.](#controlling-a-select-box-with-a-state-variable)
-- A select box can't be both controlled and uncontrolled at the same time.
-- A select box cannot switch between being controlled or uncontrolled over its lifetime.
-- Every controlled select box needs an `onChange` event handler that synchronously updates its backing value.
+- 与 HTML 不同，向 `<option>` 传递 `selected` 属性是不支持的。请改用 [`<select defaultValue>`](#providing-an-initially-selected-option) 处理非受控选择框，以及用 [`<select value>`](#controlling-a-select-box-with-a-state-variable) 处理受控选择框。
+- 如果选择框接收到 `value` prop，它将被[视为受控。](#controlling-a-select-box-with-a-state-variable)
+- 选择框不能同时既是受控又是非受控的。
+- 选择框在其生命周期内不能在受控和非受控之间切换。
+- 每个受控选择框都需要一个 `onChange` 事件处理函数，用于同步更新其底层值。
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Displaying a select box with options {/*displaying-a-select-box-with-options*/}
+### 使用选项显示一个选择框 {/*displaying-a-select-box-with-options*/}
 
-Render a `<select>` with a list of `<option>` components inside to display a select box. Give each `<option>` a `value` representing the data to be submitted with the form.
+渲染一个内部包含 `<option>` 组件列表的 `<select>`，即可显示一个选择框。给每个 `<option>` 一个 `value`，表示要随表单提交的数据。
 
 <Sandpack>
 
@@ -88,11 +88,11 @@ Render a `<select>` with a list of `<option>` components inside to display a sel
 export default function FruitPicker() {
   return (
     <label>
-      Pick a fruit:
+      选择一种水果：
       <select name="selectedFruit">
-        <option value="apple">Apple</option>
-        <option value="banana">Banana</option>
-        <option value="orange">Orange</option>
+        <option value="apple">苹果</option>
+        <option value="banana">香蕉</option>
+        <option value="orange">橙子</option>
       </select>
     </label>
   );
@@ -107,11 +107,11 @@ select { margin: 5px; }
 
 ---
 
-### Providing a label for a select box {/*providing-a-label-for-a-select-box*/}
+### 为选择框提供标签 {/*providing-a-label-for-a-select-box*/}
 
-Typically, you will place every `<select>` inside a [`<label>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label) tag. This tells the browser that this label is associated with that select box. When the user clicks the label, the browser will automatically focus the select box. It's also essential for accessibility: a screen reader will announce the label caption when the user focuses the select box.
+通常，你会把每个 `<select>` 都放在一个 [`<label>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label) 标签内。这会告诉浏览器该标签与这个选择框相关联。当用户点击标签时，浏览器会自动聚焦到选择框上。这对于可访问性也很重要：当用户聚焦选择框时，屏幕阅读器会朗读标签说明。
 
-If you can't nest `<select>` into a `<label>`, associate them by passing the same ID to `<select id>` and [`<label htmlFor>`.](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/htmlFor) To avoid conflicts between multiple instances of one component, generate such an ID with [`useId`.](/reference/react/useId)
+如果你不能把 `<select>` 嵌套进 `<label>`，可以通过给 `<select id>` 和 [`<label htmlFor>`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/htmlFor) 传入相同的 ID 来关联它们。为了避免同一个组件的多个实例之间发生冲突，可以用 [`useId`](/reference/react/useId) 生成这样的 ID。
 
 <Sandpack>
 
@@ -123,21 +123,21 @@ export default function Form() {
   return (
     <>
       <label>
-        Pick a fruit:
+        选择一种水果：
         <select name="selectedFruit">
-          <option value="apple">Apple</option>
-          <option value="banana">Banana</option>
-          <option value="orange">Orange</option>
+          <option value="apple">苹果</option>
+          <option value="banana">香蕉</option>
+          <option value="orange">橙子</option>
         </select>
       </label>
       <hr />
       <label htmlFor={vegetableSelectId}>
-        Pick a vegetable:
+        选择一种蔬菜：
       </label>
       <select id={vegetableSelectId} name="selectedVegetable">
-        <option value="cucumber">Cucumber</option>
-        <option value="corn">Corn</option>
-        <option value="tomato">Tomato</option>
+        <option value="cucumber">黄瓜</option>
+        <option value="corn">玉米</option>
+        <option value="tomato">番茄</option>
       </select>
     </>
   );
@@ -153,9 +153,9 @@ select { margin: 5px; }
 
 ---
 
-### Providing an initially selected option {/*providing-an-initially-selected-option*/}
+### 提供一个初始选中的选项 {/*providing-an-initially-selected-option*/}
 
-By default, the browser will select the first `<option>` in the list. To select a different option by default, pass that `<option>`'s `value` as the `defaultValue` to the `<select>` element.
+默认情况下，浏览器会选中列表中的第一个 `<option>`。如果想默认选中其他选项，请把该 `<option>` 的 `value` 作为 `defaultValue` 传给 `<select>` 元素。
 
 <Sandpack>
 
@@ -163,11 +163,11 @@ By default, the browser will select the first `<option>` in the list. To select 
 export default function FruitPicker() {
   return (
     <label>
-      Pick a fruit:
+      选择一种水果：
       <select name="selectedFruit" defaultValue="orange">
-        <option value="apple">Apple</option>
-        <option value="banana">Banana</option>
-        <option value="orange">Orange</option>
+        <option value="apple">苹果</option>
+        <option value="banana">香蕉</option>
+        <option value="orange">橙子</option>
       </select>
     </label>
   );
@@ -182,15 +182,15 @@ select { margin: 5px; }
 
 <Pitfall>
 
-Unlike in HTML, passing a `selected` attribute to an individual `<option>` is not supported.
+与 HTML 不同，向单独的 `<option>` 传递 `selected` 属性是不支持的。
 
 </Pitfall>
 
 ---
 
-### Enabling multiple selection {/*enabling-multiple-selection*/}
+### 启用多选 {/*enabling-multiple-selection*/}
 
-Pass `multiple={true}` to the `<select>` to let the user select multiple options. In that case, if you also specify `defaultValue` to choose the initially selected options, it must be an array.
+向 `<select>` 传递 `multiple={true}` 以允许用户选择多个选项。在这种情况下，如果你还指定了 `defaultValue` 来选择初始选中的选项，它必须是一个数组。
 
 <Sandpack>
 
@@ -198,15 +198,15 @@ Pass `multiple={true}` to the `<select>` to let the user select multiple options
 export default function FruitPicker() {
   return (
     <label>
-      Pick some fruits:
+      选择一些水果：
       <select
         name="selectedFruit"
         defaultValue={['orange', 'banana']}
         multiple={true}
       >
-        <option value="apple">Apple</option>
-        <option value="banana">Banana</option>
-        <option value="orange">Orange</option>
+        <option value="apple">苹果</option>
+        <option value="banana">香蕉</option>
+        <option value="orange">橙子</option>
       </select>
     </label>
   );
@@ -221,55 +221,55 @@ select { display: block; margin-top: 10px; width: 200px; }
 
 ---
 
-### Reading the select box value when submitting a form {/*reading-the-select-box-value-when-submitting-a-form*/}
+### 提交表单时读取选择框的值 {/*reading-the-select-box-value-when-submitting-a-form*/}
 
-Add a [`<form>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form) around your select box with a [`<button type="submit">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button) inside. It will call your `<form onSubmit>` event handler. By default, the browser will send the form data to the current URL and refresh the page. You can override that behavior by calling `e.preventDefault()`. Read the form data with [`new FormData(e.target)`](https://developer.mozilla.org/en-US/docs/Web/API/FormData).
+在选择框外包裹一个 [`<form>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form)，并在其中放一个 [`<button type="submit">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button)。它会调用你的 `<form onSubmit>` 事件处理函数。默认情况下，浏览器会把表单数据发送到当前 URL 并刷新页面。你可以通过调用 `e.preventDefault()` 来覆盖这种行为。使用 [`new FormData(e.target)`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) 读取表单数据。
 <Sandpack>
 
 ```js
 export default function EditPost() {
   function handleSubmit(e) {
-    // Prevent the browser from reloading the page
+    // 阻止浏览器重新加载页面
     e.preventDefault();
-    // Read the form data
+    // 读取表单数据
     const form = e.target;
     const formData = new FormData(form);
-    // You can pass formData as a fetch body directly:
+    // 你可以直接将 formData 作为 fetch 的 body：
     fetch('/some-api', { method: form.method, body: formData });
-    // You can generate a URL out of it, as the browser does by default:
+    // 你也可以像浏览器默认行为那样，从中生成一个 URL：
     console.log(new URLSearchParams(formData).toString());
-    // You can work with it as a plain object.
+    // 你也可以把它当作普通对象来使用。
     const formJson = Object.fromEntries(formData.entries());
-    console.log(formJson); // (!) This doesn't include multiple select values
-    // Or you can get an array of name-value pairs.
+    console.log(formJson); // (!) 这里不包括多选值
+    // 或者你可以获取一个 name-value 对数组。
     console.log([...formData.entries()]);
   }
 
   return (
     <form method="post" onSubmit={handleSubmit}>
       <label>
-        Pick your favorite fruit:
+        选择你最喜欢的水果：
         <select name="selectedFruit" defaultValue="orange">
-          <option value="apple">Apple</option>
-          <option value="banana">Banana</option>
-          <option value="orange">Orange</option>
+          <option value="apple">苹果</option>
+          <option value="banana">香蕉</option>
+          <option value="orange">橙子</option>
         </select>
       </label>
       <label>
-        Pick all your favorite vegetables:
+        选择你最喜欢的所有蔬菜：
         <select
           name="selectedVegetables"
           multiple={true}
           defaultValue={['corn', 'tomato']}
         >
-          <option value="cucumber">Cucumber</option>
-          <option value="corn">Corn</option>
-          <option value="tomato">Tomato</option>
+          <option value="cucumber">黄瓜</option>
+          <option value="corn">玉米</option>
+          <option value="tomato">番茄</option>
         </select>
       </label>
       <hr />
-      <button type="reset">Reset</button>
-      <button type="submit">Submit</button>
+      <button type="reset">重置</button>
+      <button type="submit">提交</button>
     </form>
   );
 }
@@ -284,44 +284,44 @@ label { margin-bottom: 20px; }
 
 <Note>
 
-Give a `name` to your `<select>`, for example `<select name="selectedFruit" />`. The `name` you specified will be used as a key in the form data, for example `{ selectedFruit: "orange" }`.
+给你的 `<select>` 一个 `name`，例如 `<select name="selectedFruit" />`。你指定的 `name` 会作为表单数据中的键，例如 `{ selectedFruit: "orange" }`。
 
-If you use `<select multiple={true}>`, the [`FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) you'll read from the form will include each selected value as a separate name-value pair. Look closely at the console logs in the example above.
+如果你使用 `<select multiple={true}>`，那么你从表单中读取的 [`FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) 会把每个被选中的值作为独立的 name-value 对包含进去。请仔细查看上面示例中的控制台日志。
 
 </Note>
 
 <Pitfall>
 
-By default, *any* `<button>` inside a `<form>` will submit it. This can be surprising! If you have your own custom `Button` React component, consider returning [`<button type="button">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/button) instead of `<button>`. Then, to be explicit, use `<button type="submit">` for buttons that *are* supposed to submit the form.
+默认情况下，表单内*任何* `<button>` 都会提交表单。这可能会让人意外！如果你有自己的自定义 `Button` React 组件，建议返回 [`<button type="button">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/button) 而不是 `<button>`。然后，为了明确起见，把*确实*应该提交表单的按钮写成 `<button type="submit">`。
 
 </Pitfall>
 
 ---
 
-### Controlling a select box with a state variable {/*controlling-a-select-box-with-a-state-variable*/}
+### 使用状态变量控制选择框 {/*controlling-a-select-box-with-a-state-variable*/}
 
-A select box like `<select />` is *uncontrolled.* Even if you [pass an initially selected value](#providing-an-initially-selected-option) like `<select defaultValue="orange" />`, your JSX only specifies the initial value, not the value right now.
+像 `<select />` 这样的选择框是*非受控的*。即使你[传入一个初始选中值](#providing-an-initially-selected-option)，比如 `<select defaultValue="orange" />`，你的 JSX 也只指定了初始值，而不是当前值。
 
-**To render a _controlled_ select box, pass the `value` prop to it.** React will force the select box to always have the `value` you passed. Typically, you will control a select box by declaring a [state variable:](/reference/react/useState)
+**要渲染一个_受控_选择框，请向它传递 `value` prop。** React 会强制让选择框始终具有你传入的 `value`。通常，你会通过声明一个[状态变量：](/reference/react/useState)来控制选择框：
 
 ```js {2,6,7}
 function FruitPicker() {
-  const [selectedFruit, setSelectedFruit] = useState('orange'); // Declare a state variable...
+  const [selectedFruit, setSelectedFruit] = useState('orange'); // 声明一个状态变量...
   // ...
   return (
     <select
-      value={selectedFruit} // ...force the select's value to match the state variable...
-      onChange={e => setSelectedFruit(e.target.value)} // ... and update the state variable on any change!
+      value={selectedFruit} // ...强制让选择框的值与状态变量匹配...
+      onChange={e => setSelectedFruit(e.target.value)} // ...并在任何变化时更新状态变量！
     >
-      <option value="apple">Apple</option>
-      <option value="banana">Banana</option>
-      <option value="orange">Orange</option>
+      <option value="apple">苹果</option>
+      <option value="banana">香蕉</option>
+      <option value="orange">橙子</option>
     </select>
   );
 }
 ```
 
-This is useful if you want to re-render some part of the UI in response to every selection.
+如果你想针对每次选择都重新渲染 UI 的某一部分，这就很有用。
 
 <Sandpack>
 
@@ -334,19 +334,19 @@ export default function FruitPicker() {
   return (
     <>
       <label>
-        Pick a fruit:
+        选择一种水果：
         <select
           value={selectedFruit}
           onChange={e => setSelectedFruit(e.target.value)}
         >
-          <option value="apple">Apple</option>
-          <option value="banana">Banana</option>
-          <option value="orange">Orange</option>
+          <option value="apple">苹果</option>
+          <option value="banana">香蕉</option>
+          <option value="orange">橙子</option>
         </select>
       </label>
       <hr />
       <label>
-        Pick all your favorite vegetables:
+        选择你最喜欢的所有蔬菜：
         <select
           multiple={true}
           value={selectedVegs}
@@ -356,14 +356,14 @@ export default function FruitPicker() {
             setSelectedVegs(values);
           }}
         >
-          <option value="cucumber">Cucumber</option>
-          <option value="corn">Corn</option>
-          <option value="tomato">Tomato</option>
+          <option value="cucumber">黄瓜</option>
+          <option value="corn">玉米</option>
+          <option value="tomato">番茄</option>
         </select>
       </label>
       <hr />
-      <p>Your favorite fruit: {selectedFruit}</p>
-      <p>Your favorite vegetables: {selectedVegs.join(', ')}</p>
+      <p>你最喜欢的水果：{selectedFruit}</p>
+      <p>你最喜欢的蔬菜：{selectedVegs.join(', ')}</p>
     </>
   );
 }
@@ -377,8 +377,8 @@ select { margin-bottom: 10px; display: block; }
 
 <Pitfall>
 
-**If you pass `value` without `onChange`, it will be impossible to select an option.** When you control a select box by passing some `value` to it, you *force* it to always have the value you passed. So if you pass a state variable as a `value` but forget to update that state variable synchronously during the `onChange` event handler, React will revert the select box after every keystroke back to the `value` that you specified.
+**如果你传递 `value` 却没有传递 `onChange`，就无法选择任何选项。** 当你通过传入某个 `value` 来控制选择框时，你*强制*它始终保持你传入的值。所以如果你把一个状态变量作为 `value` 传入，但忘记在 `onChange` 事件处理函数中同步更新这个状态变量，React 会在每次按键后把选择框恢复成你指定的 `value`。
 
-Unlike in HTML, passing a `selected` attribute to an individual `<option>` is not supported.
+与 HTML 不同，向单独的 `<option>` 传递 `selected` 属性是不支持的。
 
 </Pitfall>

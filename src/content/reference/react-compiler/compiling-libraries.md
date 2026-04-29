@@ -1,30 +1,30 @@
 ---
-title: Compiling Libraries
+title: 编译库
 ---
 
 <Intro>
-This guide helps library authors understand how to use React Compiler to ship optimized library code to their users.
+本指南帮助库作者了解如何使用 React Compiler 为用户发布经过优化的库代码。
 </Intro>
 
 <InlineToc />
 
-## Why Ship Compiled Code? {/*why-ship-compiled-code*/}
+## 为什么要发布编译后的代码？ {/*why-ship-compiled-code*/}
 
-As a library author, you can compile your library code before publishing to npm. This provides several benefits:
+作为库作者，你可以在发布到 npm 之前先编译你的库代码。这带来几个好处：
 
-- **Performance improvements for all users** - Your library users get optimized code even if they aren't using React Compiler yet
-- **No configuration required by users** - The optimizations work out of the box
-- **Consistent behavior** - All users get the same optimized version regardless of their build setup
+- **为所有用户带来性能提升** - 即使你的库用户还没有使用 React Compiler，他们也能获得优化后的代码
+- **无需用户进行配置** - 优化开箱即用
+- **行为一致** - 无论构建设置如何，所有用户都会获得相同的优化版本
 
-## Setting Up Compilation {/*setting-up-compilation*/}
+## 设置编译 {/*setting-up-compilation*/}
 
-Add React Compiler to your library's build process:
+将 React Compiler 添加到你的库构建流程中：
 
 <TerminalBlock>
 npm install -D babel-plugin-react-compiler@latest
 </TerminalBlock>
 
-Configure your build tool to compile your library. For example, with Babel:
+配置你的构建工具来编译你的库。例如，使用 Babel：
 
 ```js
 // babel.config.js
@@ -32,17 +32,17 @@ module.exports = {
   plugins: [
     'babel-plugin-react-compiler',
   ],
-  // ... other config
+  // ... 其他配置
 };
 ```
 
-## Backwards Compatibility {/*backwards-compatibility*/}
+## 向后兼容性 {/*backwards-compatibility*/}
 
-If your library supports React versions below 19, you'll need additional configuration:
+如果你的库支持 React 19 以下的版本，你将需要额外的配置：
 
-### 1. Install the runtime package {/*install-runtime-package*/}
+### 1. 安装运行时包 {/*install-runtime-package*/}
 
-We recommend installing react-compiler-runtime as a direct dependency:
+我们建议将 react-compiler-runtime 作为直接依赖安装：
 
 <TerminalBlock>
 npm install react-compiler-runtime@latest
@@ -59,48 +59,48 @@ npm install react-compiler-runtime@latest
 }
 ```
 
-### 2. Configure the target version {/*configure-target-version*/}
+### 2. 配置目标版本 {/*configure-target-version*/}
 
-Set the minimum React version your library supports:
+设置你的库所支持的最低 React 版本：
 
 ```js
 {
-  target: '17', // Minimum supported React version
+  target: '17', // 最低支持的 React 版本
 }
 ```
 
-## Testing Strategy {/*testing-strategy*/}
+## 测试策略 {/*testing-strategy*/}
 
-Test your library both with and without compilation to ensure compatibility. Run your existing test suite against the compiled code, and also create a separate test configuration that bypasses the compiler. This helps catch any issues that might arise from the compilation process and ensures your library works correctly in all scenarios.
+分别在启用和未启用编译的情况下测试你的库，以确保兼容性。将你现有的测试套件运行在编译后的代码上，同时再创建一个绕过编译器的独立测试配置。这有助于发现编译过程中可能出现的任何问题，并确保你的库在所有场景下都能正常工作。
 
-## Troubleshooting {/*troubleshooting*/}
+## 故障排查 {/*troubleshooting*/}
 
-### Library doesn't work with older React versions {/*library-doesnt-work-with-older-react-versions*/}
+### 库在较旧的 React 版本中无法工作 {/*library-doesnt-work-with-older-react-versions*/}
 
-If your compiled library throws errors in React 17 or 18:
+如果你编译后的库在 React 17 或 18 中抛出错误：
 
-1. Verify you've installed `react-compiler-runtime` as a dependency
-2. Check that your `target` configuration matches your minimum supported React version
-3. Ensure the runtime package is included in your published bundle
+1. 确认你已经将 `react-compiler-runtime` 作为依赖安装
+2. 检查你的 `target` 配置是否与你支持的最低 React 版本一致
+3. 确保运行时包已包含在你发布的 bundle 中
 
-### Compilation conflicts with other Babel plugins {/*compilation-conflicts-with-other-babel-plugins*/}
+### 编译与其他 Babel 插件冲突 {/*compilation-conflicts-with-other-babel-plugins*/}
 
-Some Babel plugins may conflict with React Compiler:
+某些 Babel 插件可能与 React Compiler 冲突：
 
-1. Place `babel-plugin-react-compiler` early in your plugin list
-2. Disable conflicting optimizations in other plugins
-3. Test your build output thoroughly
+1. 将 `babel-plugin-react-compiler` 放在你的插件列表靠前的位置
+2. 在其他插件中禁用有冲突的优化
+3. 彻底测试你的构建输出
 
-### Runtime module not found {/*runtime-module-not-found*/}
+### 未找到运行时模块 {/*runtime-module-not-found*/}
 
-If users see "Cannot find module 'react-compiler-runtime'":
+如果用户看到 “Cannot find module 'react-compiler-runtime'”：
 
-1. Ensure the runtime is listed in `dependencies`, not `devDependencies`
-2. Check that your bundler includes the runtime in the output
-3. Verify the package is published to npm with your library
+1. 确保运行时包列在 `dependencies` 中，而不是 `devDependencies`
+2. 检查你的 bundler 是否将运行时包含在输出中
+3. 验证该包是否已与你的库一起发布到 npm
 
-## Next Steps {/*next-steps*/}
+## 后续步骤 {/*next-steps*/}
 
-- Learn about [debugging techniques](/learn/react-compiler/debugging) for compiled code
-- Check the [configuration options](/reference/react-compiler/configuration) for all compiler options
-- Explore [compilation modes](/reference/react-compiler/compilationMode) for selective optimization
+- 了解用于编译后代码的[调试技巧](/learn/react-compiler/debugging)
+- 查看所有编译器选项的[配置选项](/reference/react-compiler/configuration)
+- 探索用于选择性优化的[编译模式](/reference/react-compiler/compilationMode)

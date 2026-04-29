@@ -1,44 +1,44 @@
 ---
-title: Render and Commit
+title: 渲染与提交
 ---
 
 <Intro>
 
-Before your components are displayed on screen, they must be rendered by React. Understanding the steps in this process will help you think about how your code executes and explain its behavior.
+在你的组件显示到屏幕之前，它们必须先由 React 渲染。理解这个过程中的各个步骤，将帮助你思考代码是如何执行的，并解释它的行为。
 
 </Intro>
 
 <YouWillLearn>
 
-* What rendering means in React
-* When and why React renders a component
-* The steps involved in displaying a component on screen
-* Why rendering does not always produce a DOM update
+* React 中“渲染”是什么意思
+* React 何时以及为什么会渲染组件
+* 在屏幕上显示组件所涉及的步骤
+* 为什么渲染不一定会产生 DOM 更新
 
 </YouWillLearn>
 
-Imagine that your components are cooks in the kitchen, assembling tasty dishes from ingredients. In this scenario, React is the waiter who puts in requests from customers and brings them their orders. This process of requesting and serving UI has three steps:
+想象你的组件是厨房里的厨师，用各种食材准备美味菜肴。在这个场景中，React 就是服务员，负责接收顾客的请求并把订单送达。这个请求和提供 UI 的过程分为三步：
 
-1. **Triggering** a render (delivering the guest's order to the kitchen)
-2. **Rendering** the component (preparing the order in the kitchen)
-3. **Committing** to the DOM (placing the order on the table)
+1. **触发** 渲染（把客人的订单送到厨房）
+2. **渲染** 组件（在厨房里准备订单）
+3. **提交** 到 DOM（把订单放到桌上）
 
 <IllustrationBlock sequential>
-  <Illustration caption="Trigger" alt="React as a server in a restaurant, fetching orders from the users and delivering them to the Component Kitchen." src="/images/docs/illustrations/i_render-and-commit1.png" />
-  <Illustration caption="Render" alt="The Card Chef gives React a fresh Card component." src="/images/docs/illustrations/i_render-and-commit2.png" />
-  <Illustration caption="Commit" alt="React delivers the Card to the user at their table." src="/images/docs/illustrations/i_render-and-commit3.png" />
+  <Illustration caption="触发" alt="React 作为餐厅里的服务员，从用户那里取走订单并送到组件厨房。" src="/images/docs/illustrations/i_render-and-commit1.png" />
+  <Illustration caption="渲染" alt="卡片厨师把一个新的 Card 组件交给 React。" src="/images/docs/illustrations/i_render-and-commit2.png" />
+  <Illustration caption="提交" alt="React 将 Card 送到用户桌前。" src="/images/docs/illustrations/i_render-and-commit3.png" />
 </IllustrationBlock>
 
-## Step 1: Trigger a render {/*step-1-trigger-a-render*/}
+## 第 1 步：触发渲染 {/*step-1-trigger-a-render*/}
 
-There are two reasons for a component to render:
+组件需要渲染有两个原因：
 
-1. It's the component's **initial render.**
-2. The component's (or one of its ancestors') **state has been updated.**
+1. 它的 **初始渲染**。
+2. 该组件（或其某个祖先组件）的 **状态已更新**。
 
-### Initial render {/*initial-render*/}
+### 初始渲染 {/*initial-render*/}
 
-When your app starts, you need to trigger the initial render. Frameworks and sandboxes sometimes hide this code, but it's done by calling [`createRoot`](/reference/react-dom/client/createRoot) with the target DOM node, and then calling its `render` method with your component:
+当你的应用启动时，你需要触发初始渲染。框架和沙盒有时会隐藏这段代码，但本质上是通过对目标 DOM 节点调用 [`createRoot`](/reference/react-dom/client/createRoot)，然后使用你的组件调用它的 `render` 方法来完成的：
 
 <Sandpack>
 
@@ -63,28 +63,28 @@ export default function Image() {
 
 </Sandpack>
 
-Try commenting out the `root.render()` call and see the component disappear!
+试着把 `root.render()` 调用注释掉，看看组件是否会消失！
 
-### Re-renders when state updates {/*re-renders-when-state-updates*/}
+### 状态更新时的重新渲染 {/*re-renders-when-state-updates*/}
 
-Once the component has been initially rendered, you can trigger further renders by updating its state with the [`set` function.](/reference/react/useState#setstate) Updating your component's state automatically queues a render. (You can imagine these as a restaurant guest ordering tea, dessert, and all sorts of things after putting in their first order, depending on the state of their thirst or hunger.)
+一旦组件完成了初始渲染，你就可以通过使用 [`set` 函数。](/reference/react/useState#setstate) 更新它的状态来触发后续渲染。更新组件的状态会自动把一次渲染排入队列。（你可以把它想象成餐厅里的客人在点完第一单后，又根据自己是渴还是饿，继续点茶、甜点以及各种各样的东西。）
 
 <IllustrationBlock sequential>
-  <Illustration caption="State update..." alt="React as a server in a restaurant, serving a Card UI to the user, represented as a patron with a cursor for their head. The patron expresses they want a pink card, not a black one!" src="/images/docs/illustrations/i_rerender1.png" />
-  <Illustration caption="...triggers..." alt="React returns to the Component Kitchen and tells the Card Chef they need a pink Card." src="/images/docs/illustrations/i_rerender2.png" />
-  <Illustration caption="...render!" alt="The Card Chef gives React the pink Card." src="/images/docs/illustrations/i_rerender3.png" />
+  <Illustration caption="状态更新..." alt="React 作为餐厅里的服务员，向用户提供一个 Card UI；用户被表示为一个头上是光标的顾客。顾客表示他们想要一个粉色卡片，而不是黑色卡片！" src="/images/docs/illustrations/i_rerender1.png" />
+  <Illustration caption="...触发..." alt="React 回到组件厨房，并告诉卡片厨师他们需要一个粉色的 Card。" src="/images/docs/illustrations/i_rerender2.png" />
+  <Illustration caption="...渲染！" alt="卡片厨师把粉色的 Card 交给 React。" src="/images/docs/illustrations/i_rerender3.png" />
 </IllustrationBlock>
 
-## Step 2: React renders your components {/*step-2-react-renders-your-components*/}
+## 第 2 步：React 渲染你的组件 {/*step-2-react-renders-your-components*/}
 
-After you trigger a render, React calls your components to figure out what to display on screen. **"Rendering" is React calling your components.**
+当你触发渲染后，React 会调用你的组件来弄清楚屏幕上应该显示什么。**“渲染”就是 React 调用你的组件。**
 
-* **On initial render,** React will call the root component.
-* **For subsequent renders,** React will call the function component whose state update triggered the render.
+* **在初始渲染时，** React 会调用根组件。
+* **在后续渲染时，** React 会调用触发了这次渲染的那个函数组件。
 
-This process is recursive: if the updated component returns some other component, React will render _that_ component next, and if that component also returns something, it will render _that_ component next, and so on. The process will continue until there are no more nested components and React knows exactly what should be displayed on screen.
+这个过程是递归的：如果更新后的组件返回了另一个组件，React 接下来就会渲染那个组件；如果那个组件也返回了别的东西，React 接着就会渲染那个组件，依此类推。这个过程会一直持续，直到不再有嵌套组件，React 也就能准确知道屏幕上应该显示什么。
 
-In the following example, React will call `Gallery()` and `Image()` several times:
+在下面的示例中，React 会多次调用 `Gallery()` 和 `Image()`：
 
 <Sandpack>
 
@@ -124,36 +124,36 @@ img { margin: 0 10px 10px 0; }
 
 </Sandpack>
 
-* **During the initial render,** React will [create the DOM nodes](https://developer.mozilla.org/docs/Web/API/Document/createElement) for `<section>`, `<h1>`, and three `<img>` tags.
-* **During a re-render,** React will calculate which of their properties, if any, have changed since the previous render. It won't do anything with that information until the next step, the commit phase.
+* **在初始渲染期间，** React 会为 `<section>`、`<h1>` 和三个 `<img>` 标签 [创建 DOM 节点](https://developer.mozilla.org/docs/Web/API/Document/createElement)。
+* **在重新渲染期间，** React 会计算它们的哪些属性（如果有）自上一次渲染以来发生了变化。直到下一步，即提交阶段，它才会使用这些信息。
 
 <Pitfall>
 
-Rendering must always be a [pure calculation](/learn/keeping-components-pure):
+渲染必须始终是一个[纯计算](/learn/keeping-components-pure)：
 
-* **Same inputs, same output.** Given the same inputs, a component should always return the same JSX. (When someone orders a salad with tomatoes, they should not receive a salad with onions!)
-* **It minds its own business.** It should not change any objects or variables that existed before rendering. (One order should not change anyone else's order.)
+* **相同输入，相同输出。** 在给定相同输入的情况下，组件应始终返回相同的 JSX。（当有人点一份加番茄的沙拉时，不应该拿到一份加洋葱的沙拉！）
+* **各司其职。** 它不应修改渲染之前就已存在的任何对象或变量。（一份订单不应改变别人的订单。）
 
-Otherwise, you can encounter confusing bugs and unpredictable behavior as your codebase grows in complexity. When developing in "Strict Mode", React calls each component's function twice, which can help surface mistakes caused by impure functions.
+否则，随着代码库复杂度增加，你可能会遇到令人困惑的 bug 和不可预测的行为。在开发模式下使用“严格模式”时，React 会把每个组件函数调用两次，这有助于暴露由不纯函数导致的错误。
 
 </Pitfall>
 
 <DeepDive>
 
-#### Optimizing performance {/*optimizing-performance*/}
+#### 优化性能 {/*optimizing-performance*/}
 
-The default behavior of rendering all components nested within the updated component is not optimal for performance if the updated component is very high in the tree. If you run into a performance issue, there are several opt-in ways to solve it described in the [Performance](https://reactjs.org/docs/optimizing-performance.html) section. **Don't optimize prematurely!**
+默认情况下，渲染更新组件内部所有嵌套组件的行为，在更新组件处于树的较高位置时，对性能并不理想。如果你遇到性能问题，可以在 [性能](https://reactjs.org/docs/optimizing-performance.html) 章节中找到几种可选的解决方式。**不要过早优化！**
 
 </DeepDive>
 
-## Step 3: React commits changes to the DOM {/*step-3-react-commits-changes-to-the-dom*/}
+## 第 3 步：React 将变更提交到 DOM {/*step-3-react-commits-changes-to-the-dom*/}
 
-After rendering (calling) your components, React will modify the DOM.
+在渲染（调用）完你的组件后，React 会修改 DOM。
 
-* **For the initial render,** React will use the [`appendChild()`](https://developer.mozilla.org/docs/Web/API/Node/appendChild) DOM API to put all the DOM nodes it has created on screen.
-* **For re-renders,** React will apply the minimal necessary operations (calculated while rendering!) to make the DOM match the latest rendering output.
+* **对于初始渲染，** React 会使用 DOM API [`appendChild()`](https://developer.mozilla.org/docs/Web/API/Node/appendChild) 将它创建的所有 DOM 节点放到屏幕上。
+* **对于重新渲染，** React 会应用必要的最小操作（在渲染时计算得出！），使 DOM 与最新的渲染输出保持一致。
 
-**React only changes the DOM nodes if there's a difference between renders.** For example, here is a component that re-renders with different props passed from its parent every second. Notice how you can add some text into the `<input>`, updating its `value`, but the text doesn't disappear when the component re-renders:
+**只有当两次渲染之间存在差异时，React 才会改变 DOM 节点。** 例如，下面这个组件每秒都会从其父组件接收不同的 props 并重新渲染。注意，你可以向 `<input>` 中输入一些文本，更新它的 `value`，但当组件重新渲染时，文本并不会消失：
 
 <Sandpack>
 
@@ -193,21 +193,21 @@ export default function App() {
 
 </Sandpack>
 
-This works because during this last step, React only updates the content of `<h1>` with the new `time`. It sees that the `<input>` appears in the JSX in the same place as last time, so React doesn't touch the `<input>`—or its `value`!
-## Epilogue: Browser paint {/*epilogue-browser-paint*/}
+这之所以有效，是因为在最后这一步中，React 只会用新的 `time` 更新 `<h1>` 的内容。它发现 `<input>` 在 JSX 中出现的位置和上一次相同，所以 React 不会碰 `<input>`——也不会碰它的 `value`！
+## 尾声：浏览器绘制 {/*epilogue-browser-paint*/}
 
-After rendering is done and React updated the DOM, the browser will repaint the screen. Although this process is known as "browser rendering", we'll refer to it as "painting" to avoid confusion throughout the docs.
+在渲染完成且 React 更新了 DOM 之后，浏览器会重新绘制屏幕。虽然这个过程被称为“浏览器渲染”，但为了避免在本文档中产生混淆，我们会把它称为“绘制”。
 
-<Illustration alt="A browser painting 'still life with card element'." src="/images/docs/illustrations/i_browser-paint.png" />
+<Illustration alt="浏览器正在绘制“卡片元素静物”。" src="/images/docs/illustrations/i_browser-paint.png" />
 
 <Recap>
 
-* Any screen update in a React app happens in three steps:
-  1. Trigger
-  2. Render
-  3. Commit
-* You can use Strict Mode to find mistakes in your components
-* React does not touch the DOM if the rendering result is the same as last time
+* React 应用中的任何屏幕更新都分三步进行：
+  1. 触发
+  2. 渲染
+  3. 提交
+* 你可以使用严格模式来发现组件中的错误
+* 如果渲染结果和上一次相同，React 就不会碰 DOM
 
 </Recap>
 

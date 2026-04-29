@@ -4,7 +4,7 @@ title: logger
 
 <Intro>
 
-The `logger` option provides custom logging for React Compiler events during compilation.
+`logger` 选项在编译期间为 React Compiler 事件提供自定义日志记录。
 
 </Intro>
 
@@ -22,13 +22,13 @@ The `logger` option provides custom logging for React Compiler events during com
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `logger` {/*logger*/}
 
-Configures custom logging to track compiler behavior and debug issues.
+配置自定义日志记录以跟踪编译器行为并调试问题。
 
-#### Type {/*type*/}
+#### 类型 {/*type*/}
 
 ```
 {
@@ -36,35 +36,35 @@ Configures custom logging to track compiler behavior and debug issues.
 } | null
 ```
 
-#### Default value {/*default-value*/}
+#### 默认值 {/*default-value*/}
 
 `null`
 
-#### Methods {/*methods*/}
+#### 方法 {/*methods*/}
 
-- **`logEvent`**: Called for each compiler event with the filename and event details
+- **`logEvent`**：针对每个编译器事件调用，传入文件名和事件详情
 
-#### Event types {/*event-types*/}
+#### 事件类型 {/*event-types*/}
 
-- **`CompileSuccess`**: Function successfully compiled
-- **`CompileError`**: Function skipped due to errors
-- **`CompileDiagnostic`**: Non-fatal diagnostic information
-- **`CompileSkip`**: Function skipped for other reasons
-- **`PipelineError`**: Unexpected compilation error
-- **`Timing`**: Performance timing information
+- **`CompileSuccess`**：函数成功编译
+- **`CompileError`**：由于错误而跳过函数
+- **`CompileDiagnostic`**：非致命诊断信息
+- **`CompileSkip`**：由于其他原因跳过函数
+- **`PipelineError`**：意外的编译错误
+- **`Timing`**：性能计时信息
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-- Event structure may change between versions
-- Large codebases generate many log entries
+- 事件结构在不同版本之间可能会发生变化
+- 大型代码库会生成许多日志条目
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Basic logging {/*basic-logging*/}
+### 基本日志记录 {/*basic-logging*/}
 
-Track compilation success and failures:
+跟踪编译成功和失败：
 
 ```js
 {
@@ -72,11 +72,11 @@ Track compilation success and failures:
     logEvent(filename, event) {
       switch (event.kind) {
         case 'CompileSuccess': {
-          console.log(`✅ Compiled: ${filename}`);
+          console.log(`✅ 已编译：${filename}`);
           break;
         }
         case 'CompileError': {
-          console.log(`❌ Skipped: ${filename}`);
+          console.log(`❌ 已跳过：${filename}`);
           break;
         }
         default: {}
@@ -86,29 +86,29 @@ Track compilation success and failures:
 }
 ```
 
-### Detailed error logging {/*detailed-error-logging*/}
+### 详细错误日志记录 {/*detailed-error-logging*/}
 
-Get specific information about compilation failures:
+获取有关编译失败的具体信息：
 
 ```js
 {
   logger: {
     logEvent(filename, event) {
       if (event.kind === 'CompileError') {
-        console.error(`\nCompilation failed: ${filename}`);
-        console.error(`Reason: ${event.detail.reason}`);
+        console.error(`\n编译失败：${filename}`);
+        console.error(`原因：${event.detail.reason}`);
 
         if (event.detail.description) {
-          console.error(`Details: ${event.detail.description}`);
+          console.error(`详情：${event.detail.description}`);
         }
 
         if (event.detail.loc) {
           const { line, column } = event.detail.loc.start;
-          console.error(`Location: Line ${line}, Column ${column}`);
+          console.error(`位置：第 ${line} 行，第 ${column} 列`);
         }
 
         if (event.detail.suggestions) {
-          console.error('Suggestions:', event.detail.suggestions);
+          console.error('建议：', event.detail.suggestions);
         }
       }
     }

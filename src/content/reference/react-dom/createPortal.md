@@ -4,7 +4,7 @@ title: createPortal
 
 <Intro>
 
-`createPortal` lets you render some children into a different part of the DOM.
+`createPortal` 让你可以将一些子元素渲染到 DOM 的不同部分。
 
 
 ```js
@@ -20,11 +20,11 @@ title: createPortal
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `createPortal(children, domNode, key?)` {/*createportal*/}
 
-To create a portal, call `createPortal`, passing some JSX, and the DOM node where it should be rendered:
+要创建一个 portal，请调用 `createPortal`，传入一些 JSX，以及它应该渲染到的 DOM 节点：
 
 ```js
 import { createPortal } from 'react-dom';
@@ -32,43 +32,43 @@ import { createPortal } from 'react-dom';
 // ...
 
 <div>
-  <p>This child is placed in the parent div.</p>
+  <p>这个子元素被放置在父级 div 中。</p>
   {createPortal(
-    <p>This child is placed in the document body.</p>,
+    <p>这个子元素被放置在 document body 中。</p>,
     document.body
   )}
 </div>
 ```
 
-[See more examples below.](#usage)
+[查看更多示例。](#usage)
 
-A portal only changes the physical placement of the DOM node. In every other way, the JSX you render into a portal acts as a child node of the React component that renders it. For example, the child can access the context provided by the parent tree, and events bubble up from children to parents according to the React tree.
+portal 只会改变 DOM 节点的物理位置。除此之外，你渲染到 portal 中的 JSX 的行为，和作为渲染它的 React 组件的子节点并无不同。例如，子元素可以访问由父级树提供的上下文，并且事件会按照 React 树从子节点冒泡到父节点。
 
-#### Parameters {/*parameters*/}
+#### 参数 {/*parameters*/}
 
-* `children`: Anything that can be rendered with React, such as a piece of JSX (e.g. `<div />` or `<SomeComponent />`), a [Fragment](/reference/react/Fragment) (`<>...</>`), a string or a number, or an array of these.
+* `children`：任何可以由 React 渲染的内容，例如一段 JSX（比如 `<div />` 或 `<SomeComponent />`）、一个 [Fragment](/reference/react/Fragment)（`<>...</>`）、字符串或数字，或者它们组成的数组。
 
-* `domNode`: Some DOM node, such as those returned by `document.getElementById()`. The node must already exist. Passing a different DOM node during an update will cause the portal content to be recreated.
+* `domNode`：某个 DOM 节点，例如 `document.getElementById()` 返回的节点。该节点必须已经存在。在更新期间传入不同的 DOM 节点会导致 portal 内容被重新创建。
 
-* **optional** `key`: A unique string or number to be used as the portal's [key.](/learn/rendering-lists#keeping-list-items-in-order-with-key)
+* **可选** `key`：用于作为 portal 的 [key](/learn/rendering-lists#keeping-list-items-in-order-with-key) 的唯一字符串或数字。
 
-#### Returns {/*returns*/}
+#### 返回值 {/*returns*/}
 
-`createPortal` returns a React node that can be included into JSX or returned from a React component. If React encounters it in the render output, it will place the provided `children` inside the provided `domNode`.
+`createPortal` 返回一个 React 节点，它可以包含在 JSX 中，或从 React 组件中返回。如果 React 在渲染输出中遇到它，它会将提供的 `children` 放入提供的 `domNode` 内。
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-* Events from portals propagate according to the React tree rather than the DOM tree. For example, if you click inside a portal, and the portal is wrapped in `<div onClick>`, that `onClick` handler will fire. If this causes issues, either stop the event propagation from inside the portal, or move the portal itself up in the React tree.
+* 来自 portal 的事件会按照 React 树而不是 DOM 树传播。例如，如果你在 portal 内点击，并且 portal 被 `<div onClick>` 包裹，那么该 `onClick` 处理函数会被触发。如果这会导致问题，可以选择阻止 portal 内部事件继续传播，或者将 portal 本身在 React 树中向上移动。
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Rendering to a different part of the DOM {/*rendering-to-a-different-part-of-the-dom*/}
+### 渲染到 DOM 的不同部分 {/*rendering-to-a-different-part-of-the-dom*/}
 
-*Portals* let your components render some of their children into a different place in the DOM. This lets a part of your component "escape" from whatever containers it may be in. For example, a component can display a modal dialog or a tooltip that appears above and outside of the rest of the page.
+*Portal* 允许你的组件将其中一些子元素渲染到 DOM 中的不同位置。这让组件的一部分可以从它可能处于的任何容器中“逃逸”出来。例如，组件可以显示一个弹窗对话框或一个工具提示，使其显示在页面其余内容的上方和外部。
 
-To create a portal, render the result of `createPortal` with <CodeStep step={1}>some JSX</CodeStep> and the <CodeStep step={2}>DOM node where it should go</CodeStep>:
+要创建一个 portal，请渲染 `createPortal` 的结果，并传入 <CodeStep step={1}>一些 JSX</CodeStep> 以及 <CodeStep step={2}>它应该放置到的 DOM 节点</CodeStep>：
 
 ```js [[1, 8, "<p>This child is placed in the document body.</p>"], [2, 9, "document.body"]]
 import { createPortal } from 'react-dom';
@@ -76,9 +76,9 @@ import { createPortal } from 'react-dom';
 function MyComponent() {
   return (
     <div style={{ border: '2px solid black' }}>
-      <p>This child is placed in the parent div.</p>
+      <p>这个子元素被放置在父级 div 中。</p>
       {createPortal(
-        <p>This child is placed in the document body.</p>,
+        <p>这个子元素被放置在 document body 中。</p>,
         document.body
       )}
     </div>
@@ -86,9 +86,9 @@ function MyComponent() {
 }
 ```
 
-React will put the DOM nodes for <CodeStep step={1}>the JSX you passed</CodeStep> inside of the <CodeStep step={2}>DOM node you provided</CodeStep>.
+React 会将 <CodeStep step={1}>你传入的 JSX</CodeStep> 对应的 DOM 节点放入 <CodeStep step={2}>你提供的 DOM 节点</CodeStep> 内。
 
-Without a portal, the second `<p>` would be placed inside the parent `<div>`, but the portal "teleported" it into the [`document.body`:](https://developer.mozilla.org/en-US/docs/Web/API/Document/body)
+如果没有 portal，第二个 `<p>` 会被放置在父级 `<div>` 中，但 portal 将它“传送”到了 [`document.body`:](https://developer.mozilla.org/en-US/docs/Web/API/Document/body)
 
 <Sandpack>
 
@@ -98,9 +98,9 @@ import { createPortal } from 'react-dom';
 export default function MyComponent() {
   return (
     <div style={{ border: '2px solid black' }}>
-      <p>This child is placed in the parent div.</p>
+      <p>这个子元素被放置在父级 div 中。</p>
       {createPortal(
-        <p>This child is placed in the document body.</p>,
+        <p>这个子元素被放置在 document body 中。</p>,
         document.body
       )}
     </div>
@@ -110,30 +110,30 @@ export default function MyComponent() {
 
 </Sandpack>
 
-Notice how the second paragraph visually appears outside the parent `<div>` with the border. If you inspect the DOM structure with developer tools, you'll see that the second `<p>` got placed directly into the `<body>`:
+注意第二个段落在视觉上是如何显示在带边框的父级 `<div>` 外部的。如果你使用开发者工具检查 DOM 结构，你会看到第二个 `<p>` 被直接放置到了 `<body>` 中：
 
 ```html {4-6,9}
 <body>
   <div id="root">
     ...
       <div style="border: 2px solid black">
-        <p>This child is placed inside the parent div.</p>
+        <p>这个子元素被放置在父级 div 中。</p>
       </div>
     ...
   </div>
-  <p>This child is placed in the document body.</p>
+  <p>这个子元素被放置在 document body 中。</p>
 </body>
 ```
 
-A portal only changes the physical placement of the DOM node. In every other way, the JSX you render into a portal acts as a child node of the React component that renders it. For example, the child can access the context provided by the parent tree, and events still bubble up from children to parents according to the React tree.
+portal 只会改变 DOM 节点的物理位置。除此之外，你渲染到 portal 中的 JSX 的行为，和作为渲染它的 React 组件的子节点并无不同。例如，子元素可以访问由父级树提供的上下文，并且事件仍会按照 React 树从子节点冒泡到父节点。
 
 ---
 
-### Rendering a modal dialog with a portal {/*rendering-a-modal-dialog-with-a-portal*/}
+### 使用 portal 渲染模态对话框 {/*rendering-a-modal-dialog-with-a-portal*/}
 
-You can use a portal to create a modal dialog that floats above the rest of the page, even if the component that summons the dialog is inside a container with `overflow: hidden` or other styles that interfere with the dialog.
+你可以使用 portal 来创建一个悬浮在页面其余内容之上的模态对话框，即使调用该对话框的组件位于带有 `overflow: hidden` 或其他会干扰对话框样式的容器中。
 
-In this example, the two containers have styles that disrupt the modal dialog, but the one rendered into a portal is unaffected because, in the DOM, the modal is not contained within the parent JSX elements.
+在这个例子中，两个容器都有会破坏模态对话框的样式，但渲染到 portal 中的那个不会受影响，因为在 DOM 中，模态并不包含在父级 JSX 元素内。
 
 <Sandpack>
 
@@ -164,7 +164,7 @@ export default function NoPortalExample() {
   return (
     <>
       <button onClick={() => setShowModal(true)}>
-        Show modal without a portal
+        不使用 portal 显示模态框
       </button>
       {showModal && (
         <ModalContent onClose={() => setShowModal(false)} />
@@ -184,7 +184,7 @@ export default function PortalExample() {
   return (
     <>
       <button onClick={() => setShowModal(true)}>
-        Show modal using a portal
+        使用 portal 显示模态框
       </button>
       {showModal && createPortal(
         <ModalContent onClose={() => setShowModal(false)} />,
@@ -199,8 +199,8 @@ export default function PortalExample() {
 export default function ModalContent({ onClose }) {
   return (
     <div className="modal">
-      <div>I'm a modal dialog</div>
-      <button onClick={onClose}>Close</button>
+      <div>我是一个模态对话框</div>
+      <button onClick={onClose}>关闭</button>
     </div>
   );
 }
@@ -238,29 +238,29 @@ export default function ModalContent({ onClose }) {
 
 <Pitfall>
 
-It's important to make sure that your app is accessible when using portals. For instance, you may need to manage keyboard focus so that the user can move the focus in and out of the portal in a natural way.
+在使用 portal 时，确保你的应用具有可访问性非常重要。例如，你可能需要管理键盘焦点，以便用户能够自然地将焦点移入和移出 portal。
 
-Follow the [WAI-ARIA Modal Authoring Practices](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal) when creating modals. If you use a community package, ensure that it is accessible and follows these guidelines.
+创建模态框时，请遵循 [WAI-ARIA Modal Authoring Practices](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal)。如果你使用社区提供的包，请确保它具备可访问性并遵循这些指南。
 
 </Pitfall>
 
 ---
 
-### Rendering React components into non-React server markup {/*rendering-react-components-into-non-react-server-markup*/}
+### 将 React 组件渲染到非 React 的服务器标记中 {/*rendering-react-components-into-non-react-server-markup*/}
 
-Portals can be useful if your React root is only part of a static or server-rendered page that isn't built with React. For example, if your page is built with a server framework like Rails, you can create areas of interactivity within static areas such as sidebars. Compared with having [multiple separate React roots,](/reference/react-dom/client/createRoot#rendering-a-page-partially-built-with-react) portals let you treat the app as a single React tree with shared state even though its parts render to different parts of the DOM.
+如果你的 React 根节点只是一个静态页面或服务器渲染页面的一部分，而该页面并不是用 React 构建的，那么 portal 也会很有用。例如，如果你的页面是用 Rails 之类的服务器框架构建的，你可以在侧边栏等静态区域中创建交互区域。与拥有[多个独立的 React 根节点](/reference/react-dom/client/createRoot#rendering-a-page-partially-built-with-react)相比，portal 让你可以将应用视为一个共享状态的单一 React 树，即使它的各个部分会渲染到 DOM 的不同位置。
 
 <Sandpack>
 
 ```html public/index.html
 <!DOCTYPE html>
 <html>
-  <head><title>My app</title></head>
+  <head><title>我的应用</title></head>
   <body>
-    <h1>Welcome to my hybrid app</h1>
+    <h1>欢迎来到我的混合应用</h1>
     <div class="parent">
       <div class="sidebar">
-        This is server non-React markup
+        这是服务器端非 React 标记
         <div id="sidebar-content"></div>
       </div>
       <div id="root"></div>
@@ -301,11 +301,11 @@ export default function App() {
 }
 
 function MainContent() {
-  return <p>This part is rendered by React</p>;
+  return <p>这一部分由 React 渲染</p>;
 }
 
 function SidebarContent() {
-  return <p>This part is also rendered by React!</p>;
+  return <p>这一部分也由 React 渲染！</p>;
 }
 ```
 
@@ -342,15 +342,15 @@ p {
 
 ---
 
-### Rendering React components into non-React DOM nodes {/*rendering-react-components-into-non-react-dom-nodes*/}
+### 将 React 组件渲染到非 React 的 DOM 节点中 {/*rendering-react-components-into-non-react-dom-nodes*/}
 
-You can also use a portal to manage the content of a DOM node that's managed outside of React. For example, suppose you're integrating with a non-React map widget and you want to render React content inside a popup. To do this, declare a `popupContainer` state variable to store the DOM node you're going to render into:
+你也可以使用 portal 来管理由 React 之外的系统管理的 DOM 节点中的内容。例如，假设你正在与一个非 React 的地图组件集成，并且想要在弹出窗口中渲染 React 内容。为此，声明一个 `popupContainer` 状态变量，用来保存你将要渲染到其中的 DOM 节点：
 
 ```js
 const [popupContainer, setPopupContainer] = useState(null);
 ```
 
-When you create the third-party widget, store the DOM node returned by the widget so you can render into it:
+当你创建第三方组件时，把该组件返回的 DOM 节点保存起来，这样你就可以向其中渲染内容：
 
 ```js {5-6}
 useEffect(() => {
@@ -363,7 +363,7 @@ useEffect(() => {
 }, []);
 ```
 
-This lets you use `createPortal` to render React content into `popupContainer` once it becomes available:
+这让你可以在 `popupContainer` 可用后，使用 `createPortal` 将 React 内容渲染到其中：
 
 ```js {3-6}
 return (
@@ -376,7 +376,7 @@ return (
 );
 ```
 
-Here is a complete example you can play with:
+下面是一个你可以实际尝试的完整示例：
 
 <Sandpack>
 

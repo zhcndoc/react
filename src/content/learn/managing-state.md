@@ -1,30 +1,30 @@
 ---
-title: Managing State
+title: 管理状态
 ---
 
 <Intro>
 
-As your application grows, it helps to be more intentional about how your state is organized and how the data flows between your components. Redundant or duplicate state is a common source of bugs. In this chapter, you'll learn how to structure your state well, how to keep your state update logic maintainable, and how to share state between distant components.
+随着应用的增长，你会更需要有意识地组织状态，以及让数据如何在组件之间流动。冗余或重复的状态是常见的 bug 来源。在这一章中，你将学习如何良好地组织状态，如何让状态更新逻辑更易维护，以及如何在相距较远的组件之间共享状态。
 
 </Intro>
 
 <YouWillLearn isChapter={true}>
 
-* [How to think about UI changes as state changes](/learn/reacting-to-input-with-state)
-* [How to structure state well](/learn/choosing-the-state-structure)
-* [How to "lift state up" to share it between components](/learn/sharing-state-between-components)
-* [How to control whether the state gets preserved or reset](/learn/preserving-and-resetting-state)
-* [How to consolidate complex state logic in a function](/learn/extracting-state-logic-into-a-reducer)
-* [How to pass information without "prop drilling"](/learn/passing-data-deeply-with-context)
-* [How to scale state management as your app grows](/learn/scaling-up-with-reducer-and-context)
+* [如何将 UI 变化视为状态变化](/learn/reacting-to-input-with-state)
+* [如何良好地组织状态](/learn/choosing-the-state-structure)
+* [如何通过“状态提升”在组件之间共享状态](/learn/sharing-state-between-components)
+* [如何控制状态是被保留还是被重置](/learn/preserving-and-resetting-state)
+* [如何将复杂的状态逻辑整合到一个函数中](/learn/extracting-state-logic-into-a-reducer)
+* [如何在不进行“属性传递”的情况下传递信息](/learn/passing-data-deeply-with-context)
+* [当应用增长时如何扩展状态管理](/learn/scaling-up-with-reducer-and-context)
 
 </YouWillLearn>
 
-## Reacting to input with state {/*reacting-to-input-with-state*/}
+## 用状态响应输入 {/*reacting-to-input-with-state*/}
 
-With React, you won't modify the UI from code directly. For example, you won't write commands like "disable the button", "enable the button", "show the success message", etc. Instead, you will describe the UI you want to see for the different visual states of your component ("initial state", "typing state", "success state"), and then trigger the state changes in response to user input. This is similar to how designers think about UI.
+在 React 中，你不会直接通过代码修改 UI。例如，你不会写出诸如“禁用按钮”“启用按钮”“显示成功消息”之类的命令。相反，你会描述在组件的不同视觉状态下你想看到的 UI（“初始状态”“输入状态”“成功状态”），然后根据用户输入触发状态变化。这类似于设计师思考 UI 的方式。
 
-Here is a quiz form built using React. Note how it uses the `status` state variable to determine whether to enable or disable the submit button, and whether to show the success message instead.
+下面是一个使用 React 构建的测验表单。注意它如何使用 `status` 状态变量来决定是否启用或禁用提交按钮，以及是否改为显示成功消息。
 
 <Sandpack>
 
@@ -37,7 +37,7 @@ export default function Form() {
   const [status, setStatus] = useState('typing');
 
   if (status === 'success') {
-    return <h1>That's right!</h1>
+    return <h1>答对了！</h1>
   }
 
   async function handleSubmit(e) {
@@ -58,9 +58,9 @@ export default function Form() {
 
   return (
     <>
-      <h2>City quiz</h2>
+      <h2>城市测验</h2>
       <p>
-        In which city is there a billboard that turns air into drinkable water?
+        在哪个城市里有一个广告牌能把空气变成可饮用的水？
       </p>
       <form onSubmit={handleSubmit}>
         <textarea
@@ -73,7 +73,7 @@ export default function Form() {
           answer.length === 0 ||
           status === 'submitting'
         }>
-          Submit
+          提交
         </button>
         {error !== null &&
           <p className="Error">
@@ -86,12 +86,12 @@ export default function Form() {
 }
 
 function submitForm(answer) {
-  // Pretend it's hitting the network.
+  // 假装它正在访问网络。
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       let shouldError = answer.toLowerCase() !== 'lima'
       if (shouldError) {
-        reject(new Error('Good guess but a wrong answer. Try again!'));
+        reject(new Error('猜得不错，但答案错误。再试一次！'));
       } else {
         resolve();
       }
@@ -108,15 +108,15 @@ function submitForm(answer) {
 
 <LearnMore path="/learn/reacting-to-input-with-state">
 
-Read **[Reacting to Input with State](/learn/reacting-to-input-with-state)** to learn how to approach interactions with a state-driven mindset.
+阅读 **[用状态响应输入](/learn/reacting-to-input-with-state)**，学习如何以状态驱动的思维方式来处理交互。
 
 </LearnMore>
 
-## Choosing the state structure {/*choosing-the-state-structure*/}
+## 选择状态结构 {/*choosing-the-state-structure*/}
 
-Structuring state well can make a difference between a component that is pleasant to modify and debug, and one that is a constant source of bugs. The most important principle is that state shouldn't contain redundant or duplicated information. If there's unnecessary state, it's easy to forget to update it, and introduce bugs!
+良好地组织状态，可以决定一个组件是易于修改和调试，还是持续成为 bug 来源。最重要的原则是：状态不应包含冗余或重复的信息。如果有不必要的状态，就很容易忘记更新它，从而引入 bug！
 
-For example, this form has a **redundant** `fullName` state variable:
+例如，这个表单有一个**冗余的** `fullName` 状态变量：
 
 <Sandpack>
 
@@ -140,23 +140,23 @@ export default function Form() {
 
   return (
     <>
-      <h2>Let’s check you in</h2>
+      <h2>让我们为你办理登记</h2>
       <label>
-        First name:{' '}
+        名字：{' '}
         <input
           value={firstName}
           onChange={handleFirstNameChange}
         />
       </label>
       <label>
-        Last name:{' '}
+        姓氏：{' '}
         <input
           value={lastName}
           onChange={handleLastNameChange}
         />
       </label>
       <p>
-        Your ticket will be issued to: <b>{fullName}</b>
+        你的票将签发给：<b>{fullName}</b>
       </p>
     </>
   );
@@ -169,7 +169,7 @@ label { display: block; margin-bottom: 5px; }
 
 </Sandpack>
 
-You can remove it and simplify the code by calculating `fullName` while the component is rendering:
+你可以删除它，并在组件渲染时计算 `fullName`，从而简化代码：
 
 <Sandpack>
 
@@ -192,23 +192,23 @@ export default function Form() {
 
   return (
     <>
-      <h2>Let’s check you in</h2>
+      <h2>让我们为你办理登记</h2>
       <label>
-        First name:{' '}
+        名字：{' '}
         <input
           value={firstName}
           onChange={handleFirstNameChange}
         />
       </label>
       <label>
-        Last name:{' '}
+        姓氏：{' '}
         <input
           value={lastName}
           onChange={handleLastNameChange}
         />
       </label>
       <p>
-        Your ticket will be issued to: <b>{fullName}</b>
+        你的票将签发给：<b>{fullName}</b>
       </p>
     </>
   );
@@ -221,19 +221,19 @@ label { display: block; margin-bottom: 5px; }
 
 </Sandpack>
 
-This might seem like a small change, but many bugs in React apps are fixed this way.
+这看起来可能只是一个小改动，但 React 应用中很多 bug 都是这样修复的。
 
 <LearnMore path="/learn/choosing-the-state-structure">
 
-Read **[Choosing the State Structure](/learn/choosing-the-state-structure)** to learn how to design the state shape to avoid bugs.
+阅读 **[选择状态结构](/learn/choosing-the-state-structure)**，学习如何设计状态形状以避免 bug。
 
 </LearnMore>
 
-## Sharing state between components {/*sharing-state-between-components*/}
+## 在组件之间共享状态 {/*sharing-state-between-components*/}
 
-Sometimes, you want the state of two components to always change together. To do it, remove state from both of them, move it to their closest common parent, and then pass it down to them via props. This is known as "lifting state up", and it's one of the most common things you will do writing React code.
+有时你希望两个组件的状态始终一起变化。要做到这一点，就把它们各自的状态删除，将状态提升到它们最近的共同父组件中，然后通过 props 传递给它们。这被称为“状态提升”，也是你编写 React 代码时最常做的事情之一。
 
-In this example, only one panel should be active at a time. To achieve this, instead of keeping the active state inside each individual panel, the parent component holds the state and specifies the props for its children.
+在这个例子中，一次只能有一个面板处于活动状态。为实现这一点，不再把活动状态保存在每个单独的面板内部，而是由父组件持有该状态，并为其子组件指定 props。
 
 <Sandpack>
 
@@ -244,20 +244,20 @@ export default function Accordion() {
   const [activeIndex, setActiveIndex] = useState(0);
   return (
     <>
-      <h2>Almaty, Kazakhstan</h2>
+      <h2>哈萨克斯坦，阿拉木图</h2>
       <Panel
-        title="About"
+        title="关于"
         isActive={activeIndex === 0}
         onShow={() => setActiveIndex(0)}
       >
-        With a population of about 2 million, Almaty is Kazakhstan's largest city. From 1929 to 1997, it was its capital city.
+        阿拉木图人口约 200 万，是哈萨克斯坦最大的城市。从 1929 年到 1997 年，它曾是该国首都。
       </Panel>
       <Panel
-        title="Etymology"
+        title="词源"
         isActive={activeIndex === 1}
         onShow={() => setActiveIndex(1)}
       >
-        The name comes from <span lang="kk-KZ">алма</span>, the Kazakh word for "apple" and is often translated as "full of apples". In fact, the region surrounding Almaty is thought to be the ancestral home of the apple, and the wild <i lang="la">Malus sieversii</i> is considered a likely candidate for the ancestor of the modern domestic apple.
+        这个名字来自 <span lang="kk-KZ">алма</span>，即哈萨克语中“苹果”的意思，通常被翻译为“满是苹果”。事实上，阿拉木图周边地区被认为是苹果的原生家园，而野生的 <i lang="la">Malus sieversii</i> 被认为很可能是现代家养苹果的祖先。
       </Panel>
     </>
   );
@@ -276,7 +276,7 @@ function Panel({
         <p>{children}</p>
       ) : (
         <button onClick={onShow}>
-          Show
+          显示
         </button>
       )}
     </section>
@@ -296,15 +296,15 @@ h3, p { margin: 5px 0px; }
 
 <LearnMore path="/learn/sharing-state-between-components">
 
-Read **[Sharing State Between Components](/learn/sharing-state-between-components)** to learn how to lift state up and keep components in sync.
+阅读 **[在组件之间共享状态](/learn/sharing-state-between-components)**，学习如何提升状态以及让组件保持同步。
 
 </LearnMore>
 
-## Preserving and resetting state {/*preserving-and-resetting-state*/}
+## 保留和重置状态 {/*preserving-and-resetting-state*/}
 
-When you re-render a component, React needs to decide which parts of the tree to keep (and update), and which parts to discard or re-create from scratch. In most cases, React's automatic behavior works well enough. By default, React preserves the parts of the tree that "match up" with the previously rendered component tree.
+当你重新渲染一个组件时，React 需要决定保留（并更新）树中的哪些部分，以及丢弃或从头重新创建哪些部分。在大多数情况下，React 的自动行为已经足够好。默认情况下，React 会保留与之前渲染的组件树“匹配”的那部分树。
 
-However, sometimes this is not what you want. In this chat app, typing a message and then switching the recipient does not reset the input. This can make the user accidentally send a message to the wrong person:
+然而，有时这并不是你想要的。在这个聊天应用中，输入一条消息后再切换收件人，并不会重置输入框。这可能会导致用户不小心把消息发送给错误的人：
 
 <Sandpack>
 
@@ -367,11 +367,11 @@ export default function Chat({ contact }) {
     <section className="chat">
       <textarea
         value={text}
-        placeholder={'Chat to ' + contact.name}
+        placeholder={'与 ' + contact.name + ' 聊天'}
         onChange={e => setText(e.target.value)}
       />
       <br />
-      <button>Send to {contact.email}</button>
+      <button>发送给 {contact.email}</button>
     </section>
   );
 }
@@ -399,7 +399,7 @@ textarea {
 
 </Sandpack>
 
-React lets you override the default behavior, and *force* a component to reset its state by passing it a different `key`, like `<Chat key={email} />`. This tells React that if the recipient is different, it should be considered a *different* `Chat` component that needs to be re-created from scratch with the new data (and UI like inputs). Now switching between the recipients resets the input field--even though you render the same component.
+React 允许你覆盖默认行为，并通过传递不同的 `key` 强制组件重置其状态，就像 `<Chat key={email} />` 一样。这告诉 React：如果收件人不同，就应将其视为一个**不同的** `Chat` 组件，需要用新数据（以及输入框等 UI）从头重新创建。现在，在收件人之间切换时会重置输入框——即使你渲染的是同一个组件。
 
 <Sandpack>
 
@@ -462,11 +462,11 @@ export default function Chat({ contact }) {
     <section className="chat">
       <textarea
         value={text}
-        placeholder={'Chat to ' + contact.name}
+        placeholder={'与 ' + contact.name + ' 聊天'}
         onChange={e => setText(e.target.value)}
       />
       <br />
-      <button>Send to {contact.email}</button>
+      <button>发送给 {contact.email}</button>
     </section>
   );
 }
@@ -496,13 +496,13 @@ textarea {
 
 <LearnMore path="/learn/preserving-and-resetting-state">
 
-Read **[Preserving and Resetting State](/learn/preserving-and-resetting-state)** to learn the lifetime of state and how to control it.
+阅读 **[保留和重置状态](/learn/preserving-and-resetting-state)**，学习状态的生命周期以及如何控制它。
 
 </LearnMore>
 
-## Extracting state logic into a reducer {/*extracting-state-logic-into-a-reducer*/}
+## 将状态逻辑提取到 reducer 中 {/*extracting-state-logic-into-a-reducer*/}
 
-Components with many state updates spread across many event handlers can get overwhelming. For these cases, you can consolidate all the state update logic outside your component in a single function, called "reducer". Your event handlers become concise because they only specify the user "actions". At the bottom of the file, the reducer function specifies how the state should update in response to each action!
+在许多事件处理函数中分散着大量状态更新的组件，可能会变得难以管理。对于这种情况，你可以把所有状态更新逻辑集中到组件外面的一个单独函数中，这个函数称为 “reducer”。这样你的事件处理函数就会变得简洁，因为它们只需要说明用户的 “动作”。在文件底部，reducer 函数会指定状态应该如何响应每个动作进行更新！
 
 <Sandpack>
 
@@ -541,7 +541,7 @@ export default function TaskApp() {
 
   return (
     <>
-      <h1>Prague itinerary</h1>
+      <h1>布拉格行程</h1>
       <AddTask
         onAddTask={handleAddTask}
       />
@@ -576,16 +576,16 @@ function tasksReducer(tasks, action) {
       return tasks.filter(t => t.id !== action.id);
     }
     default: {
-      throw Error('Unknown action: ' + action.type);
+      throw Error('未知的动作：' + action.type);
     }
   }
 }
 
 let nextId = 3;
 const initialTasks = [
-  { id: 0, text: 'Visit Kafka Museum', done: true },
-  { id: 1, text: 'Watch a puppet show', done: false },
-  { id: 2, text: 'Lennon Wall pic', done: false }
+  { id: 0, text: '参观卡夫卡博物馆', done: true },
+  { id: 1, text: '看木偶戏', done: false },
+  { id: 2, text: '列侬墙照片', done: false }
 ];
 ```
 
@@ -597,14 +597,14 @@ export default function AddTask({ onAddTask }) {
   return (
     <>
       <input
-        placeholder="Add task"
+        placeholder="添加任务"
         value={text}
         onChange={e => setText(e.target.value)}
       />
       <button onClick={() => {
         setText('');
         onAddTask(text);
-      }}>Add</button>
+      }}>添加</button>
     </>
   )
 }
@@ -648,7 +648,7 @@ function Task({ task, onChange, onDelete }) {
             });
           }} />
         <button onClick={() => setIsEditing(false)}>
-          Save
+          保存
         </button>
       </>
     );
@@ -657,7 +657,7 @@ function Task({ task, onChange, onDelete }) {
       <>
         {task.text}
         <button onClick={() => setIsEditing(true)}>
-          Edit
+          编辑
         </button>
       </>
     );
@@ -676,7 +676,7 @@ function Task({ task, onChange, onDelete }) {
       />
       {taskContent}
       <button onClick={() => onDelete(task.id)}>
-        Delete
+        删除
       </button>
     </label>
   );
@@ -693,15 +693,15 @@ ul, li { margin: 0; padding: 0; }
 
 <LearnMore path="/learn/extracting-state-logic-into-a-reducer">
 
-Read **[Extracting State Logic into a Reducer](/learn/extracting-state-logic-into-a-reducer)** to learn how to consolidate logic in the reducer function.
+阅读 **[将状态逻辑提取到 reducer 中](/learn/extracting-state-logic-into-a-reducer)**，了解如何在 reducer 函数中整合逻辑。
 
 </LearnMore>
 
-## Passing data deeply with context {/*passing-data-deeply-with-context*/}
+## 使用 context 深层传递数据 {/*passing-data-deeply-with-context*/}
 
-Usually, you will pass information from a parent component to a child component via props. But passing props can become inconvenient if you need to pass some prop through many components, or if many components need the same information. Context lets the parent component make some information available to any component in the tree below it—no matter how deep it is—without passing it explicitly through props.
+通常，你会通过 props 将信息从父组件传递给子组件。但如果你需要把某个 prop 经过许多组件层层传递下去，或者许多组件都需要同样的信息，传递 props 可能会变得不方便。Context 允许父组件把某些信息提供给它下面树中的任意组件——不管层级有多深——而无需显式地通过 props 传递。
 
-Here, the `Heading` component determines its heading level by "asking" the closest `Section` for its level. Each `Section` tracks its own level by asking the parent `Section` and adding one to it. Every `Section` provides information to all components below it without passing props--it does that through context.
+这里，`Heading` 组件通过“询问”最近的 `Section` 来确定自己的标题级别。每个 `Section` 通过询问父 `Section` 并在其基础上加一来跟踪自己的级别。每个 `Section` 都会通过 context 向其下方的所有组件提供信息，而不需要传递 props。
 
 <Sandpack>
 
@@ -712,19 +712,19 @@ import Section from './Section.js';
 export default function Page() {
   return (
     <Section>
-      <Heading>Title</Heading>
+      <Heading>标题</Heading>
       <Section>
-        <Heading>Heading</Heading>
-        <Heading>Heading</Heading>
-        <Heading>Heading</Heading>
+        <Heading>标题</Heading>
+        <Heading>标题</Heading>
+        <Heading>标题</Heading>
         <Section>
-          <Heading>Sub-heading</Heading>
-          <Heading>Sub-heading</Heading>
-          <Heading>Sub-heading</Heading>
+          <Heading>副标题</Heading>
+          <Heading>副标题</Heading>
+          <Heading>副标题</Heading>
           <Section>
-            <Heading>Sub-sub-heading</Heading>
-            <Heading>Sub-sub-heading</Heading>
-            <Heading>Sub-sub-heading</Heading>
+            <Heading>二级副标题</Heading>
+            <Heading>二级副标题</Heading>
+            <Heading>二级副标题</Heading>
           </Section>
         </Section>
       </Section>
@@ -757,7 +757,7 @@ export default function Heading({ children }) {
   const level = useContext(LevelContext);
   switch (level) {
     case 0:
-      throw Error('Heading must be inside a Section!');
+      throw Error('标题必须位于 Section 内部！');
     case 1:
       return <h1>{children}</h1>;
     case 2:
@@ -771,7 +771,7 @@ export default function Heading({ children }) {
     case 6:
       return <h6>{children}</h6>;
     default:
-      throw Error('Unknown level: ' + level);
+      throw Error('未知级别：' + level);
   }
 }
 ```
@@ -795,15 +795,15 @@ export const LevelContext = createContext(0);
 
 <LearnMore path="/learn/passing-data-deeply-with-context">
 
-Read **[Passing Data Deeply with Context](/learn/passing-data-deeply-with-context)** to learn about using context as an alternative to passing props.
+阅读 **[使用 Context 深层传递数据](/learn/passing-data-deeply-with-context)**，了解如何使用 context 作为传递 props 的替代方案。
 
 </LearnMore>
 
-## Scaling up with reducer and context {/*scaling-up-with-reducer-and-context*/}
+## 使用 reducer 和 context 扩展规模 {/*scaling-up-with-reducer-and-context*/}
 
-Reducers let you consolidate a component’s state update logic. Context lets you pass information deep down to other components. You can combine reducers and context together to manage state of a complex screen.
+Reducer 可以让你将组件的状态更新逻辑集中起来。Context 可以让你将信息向下传递到更深层的其他组件。你可以将 reducer 和 context 结合起来管理复杂界面的状态。
 
-With this approach, a parent component with complex state manages it with a reducer. Other components anywhere deep in the tree can read its state via context. They can also dispatch actions to update that state.
+使用这种方法时，具有复杂状态的父组件会通过 reducer 来管理它。树中任意深处的其他组件都可以通过 context 读取它的状态。它们也可以分发动作来更新该状态。
 
 <Sandpack>
 
@@ -815,7 +815,7 @@ import { TasksProvider } from './TasksContext.js';
 export default function TaskApp() {
   return (
     <TasksProvider>
-      <h1>Day off in Kyoto</h1>
+      <h1>京都休息日</h1>
       <AddTask />
       <TaskList />
     </TasksProvider>
@@ -874,15 +874,15 @@ function tasksReducer(tasks, action) {
       return tasks.filter(t => t.id !== action.id);
     }
     default: {
-      throw Error('Unknown action: ' + action.type);
+      throw Error('未知的动作：' + action.type);
     }
   }
 }
 
 const initialTasks = [
-  { id: 0, text: 'Philosopher’s Path', done: true },
-  { id: 1, text: 'Visit the temple', done: false },
-  { id: 2, text: 'Drink matcha', done: false }
+  { id: 0, text: '哲人之路', done: true },
+  { id: 1, text: '参观寺庙', done: false },
+  { id: 2, text: '喝抹茶', done: false }
 ];
 ```
 
@@ -896,7 +896,7 @@ export default function AddTask({ onAddTask }) {
   return (
     <>
       <input
-        placeholder="Add task"
+        placeholder="添加任务"
         value={text}
         onChange={e => setText(e.target.value)}
       />
@@ -907,7 +907,7 @@ export default function AddTask({ onAddTask }) {
           id: nextId++,
           text: text,
         });
-      }}>Add</button>
+      }}>添加</button>
     </>
   );
 }
@@ -951,7 +951,7 @@ function Task({ task }) {
             });
           }} />
         <button onClick={() => setIsEditing(false)}>
-          Save
+          保存
         </button>
       </>
     );
@@ -960,7 +960,7 @@ function Task({ task }) {
       <>
         {task.text}
         <button onClick={() => setIsEditing(true)}>
-          Edit
+          编辑
         </button>
       </>
     );
@@ -987,7 +987,7 @@ function Task({ task }) {
           id: task.id
         });
       }}>
-        Delete
+        删除
       </button>
     </label>
   );
@@ -1004,12 +1004,12 @@ ul, li { margin: 0; padding: 0; }
 
 <LearnMore path="/learn/scaling-up-with-reducer-and-context">
 
-Read **[Scaling Up with Reducer and Context](/learn/scaling-up-with-reducer-and-context)** to learn how state management scales in a growing app.
+阅读 **[使用 reducer 和 context 扩展规模](/learn/scaling-up-with-reducer-and-context)**，了解状态管理如何在不断增长的应用中扩展。
 
 </LearnMore>
 
-## What's next? {/*whats-next*/}
+## 接下来是什么？ {/*whats-next*/}
 
-Head over to [Reacting to Input with State](/learn/reacting-to-input-with-state) to start reading this chapter page by page!
+前往 [使用 State 响应输入](/learn/reacting-to-input-with-state) 开始逐页阅读本章！
 
-Or, if you're already familiar with these topics, why not read about [Escape Hatches](/learn/escape-hatches)?
+或者，如果你已经熟悉这些主题，为什么不去看看 [逃生舱口](/learn/escape-hatches) 呢？

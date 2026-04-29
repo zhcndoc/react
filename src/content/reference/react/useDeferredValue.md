@@ -4,7 +4,7 @@ title: useDeferredValue
 
 <Intro>
 
-`useDeferredValue` is a React Hook that lets you defer updating a part of the UI.
+`useDeferredValue` 是一个 React Hook，它允许你延迟更新 UI 的某一部分。
 
 ```js
 const deferredValue = useDeferredValue(value)
@@ -16,11 +16,11 @@ const deferredValue = useDeferredValue(value)
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `useDeferredValue(value, initialValue?)` {/*usedeferredvalue*/}
 
-Call `useDeferredValue` at the top level of your component to get a deferred version of that value.
+在组件顶层调用 `useDeferredValue`，以获取该值的延迟版本。
 
 ```js
 import { useState, useDeferredValue } from 'react';
@@ -32,41 +32,41 @@ function SearchPage() {
 }
 ```
 
-[See more examples below.](#usage)
+[查看下面的更多示例。](#usage)
 
-#### Parameters {/*parameters*/}
+#### 参数 {/*parameters*/}
 
-* `value`: The value you want to defer. It can have any type.
-* **optional** `initialValue`: A value to use during the initial render of a component. If this option is omitted, `useDeferredValue` will not defer during the initial render, because there's no previous version of `value` that it can render instead.
+* `value`：你想要延迟的值。它可以是任何类型。
+* **可选** `initialValue`：组件初始渲染期间使用的值。如果省略此选项，`useDeferredValue` 在初始渲染期间不会延迟，因为没有可供替代渲染的 `value` 的上一个版本。
 
 
-#### Returns {/*returns*/}
+#### 返回值 {/*returns*/}
 
-- `currentValue`: During the initial render, the returned deferred value will be the `initialValue`, or the same as the value you provided. During updates, React will first attempt a re-render with the old value (so it will return the old value), and then try another re-render in the background with the new value (so it will return the updated value).
+- `currentValue`：在初始渲染期间，返回的延迟值将是 `initialValue`，或者与你提供的值相同。在更新期间，React 会先尝试使用旧值重新渲染（因此它会返回旧值），然后在后台使用新值尝试另一次重新渲染（因此它会返回更新后的值）。
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-- When an update is inside a Transition, `useDeferredValue` always returns the new `value` and does not spawn a deferred render, since the update is already deferred.
+- 当更新位于 Transition 中时，`useDeferredValue` 总是返回新的 `value`，并且不会生成延迟渲染，因为该更新已经被延迟了。
 
-- The values you pass to `useDeferredValue` should either be primitive values (like strings and numbers) or objects created outside of rendering. If you create a new object during rendering and immediately pass it to `useDeferredValue`, it will be different on every render, causing unnecessary background re-renders.
+- 传给 `useDeferredValue` 的值应该是原始值（如字符串和数字），或者是在渲染之外创建的对象。如果你在渲染期间创建了一个新对象并立即将其传给 `useDeferredValue`，那么它在每次渲染时都会不同，从而导致不必要的后台重新渲染。
 
-- When `useDeferredValue` receives a different value (compared with [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is)), in addition to the current render (when it still uses the previous value), it schedules a re-render in the background with the new value. The background re-render is interruptible: if there's another update to the `value`, React will restart the background re-render from scratch. For example, if the user is typing into an input faster than a chart receiving its deferred value can re-render, the chart will only re-render after the user stops typing.
+- 当 `useDeferredValue` 接收到不同的值（与 [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is) 比较），除了当前渲染（此时它仍然使用之前的值）之外，它还会在后台调度一次使用新值的重新渲染。后台重新渲染是可中断的：如果 `value` 又有了新的更新，React 会从头重新开始后台重新渲染。例如，如果用户输入到输入框中的速度快于图表基于其延迟值重新渲染的速度，那么图表只有在用户停止输入后才会重新渲染。
 
-- `useDeferredValue` is integrated with [`<Suspense>`.](/reference/react/Suspense) If the background update caused by a new value suspends the UI, the user will not see the fallback. They will see the old deferred value until the data loads.
+- `useDeferredValue` 与 [`<Suspense>`](/reference/react/Suspense) 集成。如果由新值引起的后台更新使 UI 挂起，用户不会看到回退内容。他们会一直看到旧的延迟值，直到数据加载完成。
 
-- `useDeferredValue` does not by itself prevent extra network requests.
+- `useDeferredValue` 本身不会阻止额外的网络请求。
 
-- There is no fixed delay caused by `useDeferredValue` itself. As soon as React finishes the original re-render, React will immediately start working on the background re-render with the new deferred value. Any updates caused by events (like typing) will interrupt the background re-render and get prioritized over it.
+- `useDeferredValue` 本身不会造成固定延迟。只要 React 完成原始重新渲染，React 就会立即开始处理使用新延迟值的后台重新渲染。由事件（如输入）引起的任何更新都会中断后台重新渲染，并获得比它更高的优先级。
 
-- The background re-render caused by `useDeferredValue` does not fire Effects until it's committed to the screen. If the background re-render suspends, its Effects will run after the data loads and the UI updates.
+- `useDeferredValue` 引起的后台重新渲染在提交到屏幕之前不会触发 Effects。如果后台重新渲染挂起，其 Effects 会在数据加载完成且 UI 更新后运行。
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Showing stale content while fresh content is loading {/*showing-stale-content-while-fresh-content-is-loading*/}
+### 在新内容加载时显示旧内容 {/*showing-stale-content-while-fresh-content-is-loading*/}
 
-Call `useDeferredValue` at the top level of your component to defer updating some part of your UI.
+在组件顶层调用 `useDeferredValue`，以延迟更新 UI 的某一部分。
 
 ```js [[1, 5, "query"], [2, 5, "deferredQuery"]]
 import { useState, useDeferredValue } from 'react';
@@ -78,26 +78,26 @@ function SearchPage() {
 }
 ```
 
-During the initial render, the <CodeStep step={2}>deferred value</CodeStep> will be the same as the <CodeStep step={1}>value</CodeStep> you provided.
+在初始渲染期间，<CodeStep step={2}>延迟值</CodeStep>将与您提供的<CodeStep step={1}>值</CodeStep>相同。
 
-During updates, the <CodeStep step={2}>deferred value</CodeStep> will "lag behind" the latest <CodeStep step={1}>value</CodeStep>. In particular, React will first re-render *without* updating the deferred value, and then try to re-render with the newly received value in the background.
+在更新期间，<CodeStep step={2}>延迟值</CodeStep>会“落后”于最新的<CodeStep step={1}>值</CodeStep>。具体来说，React 会首先在*不*更新延迟值的情况下重新渲染，然后尝试在后台使用新接收到的值重新渲染。
 
-**Let's walk through an example to see when this is useful.**
+**让我们通过一个示例来看看这在什么时候有用。**
 
 <Note>
 
-This example assumes you use a Suspense-enabled data source:
+此示例假设你使用的是支持 Suspense 的数据源：
 
-- Data fetching with Suspense-enabled frameworks like [Relay](https://relay.dev/docs/guided-tour/rendering/loading-states/) and [Next.js](https://nextjs.org/docs/app/getting-started/fetching-data#with-suspense)
-- Lazy-loading component code with [`lazy`](/reference/react/lazy)
-- Reading the value of a Promise with [`use`](/reference/react/use)
+- 使用支持 Suspense 的框架进行数据获取，例如 [Relay](https://relay.dev/docs/guided-tour/rendering/loading-states/) 和 [Next.js](https://nextjs.org/docs/app/getting-started/fetching-data#with-suspense)
+- 使用 [`lazy`](/reference/react/lazy) 懒加载组件代码
+- 使用 [`use`](/reference/react/use) 读取 Promise 的值
 
-[Learn more about Suspense and its limitations.](/reference/react/Suspense)
+[了解有关 Suspense 及其限制的更多信息。](/reference/react/Suspense)
 
 </Note>
 
 
-In this example, the `SearchResults` component [suspends](/reference/react/Suspense#displaying-a-fallback-while-content-is-loading) while fetching the search results. Try typing `"a"`, waiting for the results, and then editing it to `"ab"`. The results for `"a"` get replaced by the loading fallback.
+在此示例中，`SearchResults` 组件在获取搜索结果时会[挂起](/reference/react/Suspense#displaying-a-fallback-while-content-is-loading)。试着输入 `"a"`，等待结果出现，然后把它改成 `"ab"`。`"a"` 的结果会被加载中的回退内容替换。
 
 <Sandpack>
 
@@ -110,10 +110,10 @@ export default function App() {
   return (
     <>
       <label>
-        Search albums:
+        搜索专辑：
         <input value={query} onChange={e => setQuery(e.target.value)} />
       </label>
-      <Suspense fallback={<h2>Loading...</h2>}>
+      <Suspense fallback={<h2>加载中...</h2>}>
         <SearchResults query={query} />
       </Suspense>
     </>
@@ -131,7 +131,7 @@ export default function SearchResults({ query }) {
   }
   const albums = use(fetchData(`/search?q=${query}`));
   if (albums.length === 0) {
-    return <p>No matches for <i>"{query}"</i></p>;
+    return <p>没有找到与 <i>"{query}"</i> 匹配的结果</p>;
   }
   return (
     <ul>
@@ -146,9 +146,9 @@ export default function SearchResults({ query }) {
 ```
 
 ```js src/data.js hidden
-// Note: the way you would do data fetching depends on
-// the framework that you use together with Suspense.
-// Normally, the caching logic would be inside a framework.
+// 注意：你进行数据获取的方式取决于
+// 你与 Suspense 一起使用的框架。
+// 通常，缓存逻辑会在框架内部。
 
 let cache = new Map();
 
@@ -163,12 +163,12 @@ async function getData(url) {
   if (url.startsWith('/search?q=')) {
     return await getSearchResults(url.slice('/search?q='.length));
   } else {
-    throw Error('Not implemented');
+    throw Error('未实现');
   }
 }
 
 async function getSearchResults(query) {
-  // Add a fake delay to make waiting noticeable.
+  // 添加一个假的延迟，让等待变得明显。
   await new Promise(resolve => {
     setTimeout(resolve, 1000);
   });
@@ -244,7 +244,7 @@ input { margin: 10px; }
 
 </Sandpack>
 
-A common alternative UI pattern is to *defer* updating the list of results and to keep showing the previous results until the new results are ready. Call `useDeferredValue` to pass a deferred version of the query down:
+一种常见的替代 UI 模式是*延迟*更新结果列表，并在新结果准备好之前继续显示旧结果。调用 `useDeferredValue` 将查询的延迟版本向下传递：
 
 ```js {3,11}
 export default function App() {
@@ -264,9 +264,9 @@ export default function App() {
 }
 ```
 
-The `query` will update immediately, so the input will display the new value. However, the `deferredQuery` will keep its previous value until the data has loaded, so `SearchResults` will show the stale results for a bit.
+`query` 会立即更新，因此输入框会显示新值。然而，`deferredQuery` 会在数据加载完成之前保持其之前的值，因此 `SearchResults` 会短暂显示旧结果。
 
-Enter `"a"` in the example below, wait for the results to load, and then edit the input to `"ab"`. Notice how instead of the Suspense fallback, you now see the stale result list until the new results have loaded:
+在下面的示例中输入 `"a"`，等待结果加载，然后将输入框编辑为 `"ab"`。注意，此时显示的不是 Suspense 回退内容，而是在新结果加载完成之前一直显示旧的结果列表：
 
 <Sandpack>
 
@@ -280,10 +280,10 @@ export default function App() {
   return (
     <>
       <label>
-        Search albums:
+        搜索专辑：
         <input value={query} onChange={e => setQuery(e.target.value)} />
       </label>
-      <Suspense fallback={<h2>Loading...</h2>}>
+      <Suspense fallback={<h2>加载中...</h2>}>
         <SearchResults query={deferredQuery} />
       </Suspense>
     </>
@@ -301,7 +301,7 @@ export default function SearchResults({ query }) {
   }
   const albums = use(fetchData(`/search?q=${query}`));
   if (albums.length === 0) {
-    return <p>No matches for <i>"{query}"</i></p>;
+    return <p>没有找到与 <i>"{query}"</i> 匹配的结果</p>;
   }
   return (
     <ul>
@@ -316,9 +316,9 @@ export default function SearchResults({ query }) {
 ```
 
 ```js src/data.js hidden
-// Note: the way you would do data fetching depends on
-// the framework that you use together with Suspense.
-// Normally, the caching logic would be inside a framework.
+// 注意：你进行数据获取的方式取决于
+// 你与 Suspense 一起使用的框架。
+// 通常，缓存逻辑会在框架内部。
 
 let cache = new Map();
 
@@ -333,12 +333,12 @@ async function getData(url) {
   if (url.startsWith('/search?q=')) {
     return await getSearchResults(url.slice('/search?q='.length));
   } else {
-    throw Error('Not implemented');
+    throw Error('未实现');
   }
 }
 
 async function getSearchResults(query) {
-  // Add a fake delay to make waiting noticeable.
+  // 添加一个假的延迟，让等待变得明显。
   await new Promise(resolve => {
     setTimeout(resolve, 1000);
   });
@@ -416,25 +416,25 @@ input { margin: 10px; }
 
 <DeepDive>
 
-#### How does deferring a value work under the hood? {/*how-does-deferring-a-value-work-under-the-hood*/}
+#### 延迟值在底层是如何工作的？ {/*how-does-deferring-a-value-work-under-the-hood*/}
 
-You can think of it as happening in two steps:
+你可以把它理解为分两步发生：
 
-1. **First, React re-renders with the new `query` (`"ab"`) but with the old `deferredQuery` (still `"a"`).** The `deferredQuery` value, which you pass to the result list, is *deferred:* it "lags behind" the `query` value.
+1. **首先，React 使用新的 `query`（`"ab"`），但仍使用旧的 `deferredQuery`（还是 `"a"`）重新渲染。** 你传给结果列表的 `deferredQuery` 值是*延迟的*：它会“落后”于 `query` 值。
 
-2. **In the background, React tries to re-render with *both* `query` and `deferredQuery` updated to `"ab"`.** If this re-render completes, React will show it on the screen. However, if it suspends (the results for `"ab"` have not loaded yet), React will abandon this rendering attempt, and retry this re-render again after the data has loaded. The user will keep seeing the stale deferred value until the data is ready.
+2. **然后在后台，React 尝试将 `query` 和 `deferredQuery` 都更新为 `"ab"` 并重新渲染。** 如果这次重新渲染完成，React 就会把它显示到屏幕上。然而，如果它挂起了（`"ab"` 的结果尚未加载），React 会放弃这次渲染尝试，并在数据加载完成后再次重试。用户会一直看到旧的延迟值，直到数据准备就绪。
 
-The deferred "background" rendering is interruptible. For example, if you type into the input again, React will abandon it and restart with the new value. React will always use the latest provided value.
+这种延迟的“后台”渲染是可中断的。例如，如果你再次在输入框中输入，React 会放弃当前渲染并使用新值重新开始。React 总是会使用最新提供的值。
 
-Note that there is still a network request per each keystroke. What's being deferred here is displaying results (until they're ready), not the network requests themselves. Even if the user continues typing, responses for each keystroke get cached, so pressing Backspace is instant and doesn't fetch again.
+请注意，每次按键仍然会发起一次网络请求。这里被延迟的是结果的显示（直到它们准备好），而不是网络请求本身。即使用户继续输入，每次按键对应的响应也会被缓存，因此按退格键会立刻生效，并且不会再次发起请求。
 
 </DeepDive>
 
 ---
 
-### Indicating that the content is stale {/*indicating-that-the-content-is-stale*/}
+### 指示内容已过期 {/*indicating-that-the-content-is-stale*/}
 
-In the example above, there is no indication that the result list for the latest query is still loading. This can be confusing to the user if the new results take a while to load. To make it more obvious to the user that the result list does not match the latest query, you can add a visual indication when the stale result list is displayed:
+在上面的示例中，没有任何提示表明最新查询的结果列表仍在加载中。如果新结果需要较长时间才能加载，这可能会让用户感到困惑。为了更明显地告诉用户结果列表与最新查询不一致，你可以在显示旧结果列表时添加一个视觉提示：
 
 ```js {2}
 <div style={{
@@ -444,7 +444,7 @@ In the example above, there is no indication that the result list for the latest
 </div>
 ```
 
-With this change, as soon as you start typing, the stale result list gets slightly dimmed until the new result list loads. You can also add a CSS transition to delay dimming so that it feels gradual, like in the example below:
+这样改完后，一旦你开始输入，旧的结果列表就会稍微变暗，直到新的结果列表加载完成。你也可以添加 CSS 过渡效果来延迟变暗，使其看起来更平滑，就像下面这个示例一样：
 
 <Sandpack>
 
@@ -485,7 +485,7 @@ export default function SearchResults({ query }) {
   }
   const albums = use(fetchData(`/search?q=${query}`));
   if (albums.length === 0) {
-    return <p>No matches for <i>"{query}"</i></p>;
+    return <p>没有找到与 <i>"{query}"</i> 匹配的结果</p>;
   }
   return (
     <ul>
@@ -500,9 +500,9 @@ export default function SearchResults({ query }) {
 ```
 
 ```js src/data.js hidden
-// Note: the way you would do data fetching depends on
-// the framework that you use together with Suspense.
-// Normally, the caching logic would be inside a framework.
+// 注意：你进行数据获取的方式取决于
+// 你与 Suspense 一起使用的框架。
+// 通常，缓存逻辑会在框架内部。
 
 let cache = new Map();
 
@@ -517,12 +517,12 @@ async function getData(url) {
   if (url.startsWith('/search?q=')) {
     return await getSearchResults(url.slice('/search?q='.length));
   } else {
-    throw Error('Not implemented');
+    throw Error('未实现');
   }
 }
 
 async function getSearchResults(query) {
-  // Add a fake delay to make waiting noticeable.
+  // 添加一个假的延迟，让等待变得明显。
   await new Promise(resolve => {
     setTimeout(resolve, 1000);
   });
@@ -600,11 +600,11 @@ input { margin: 10px; }
 
 ---
 
-### Deferring re-rendering for a part of the UI {/*deferring-re-rendering-for-a-part-of-the-ui*/}
+### 延迟 UI 某一部分的重新渲染 {/*deferring-re-rendering-for-a-part-of-the-ui*/}
 
-You can also apply `useDeferredValue` as a performance optimization. It is useful when a part of your UI is slow to re-render, there's no easy way to optimize it, and you want to prevent it from blocking the rest of the UI.
+你也可以将 `useDeferredValue` 作为一种性能优化手段。当 UI 的某一部分重新渲染很慢、又没有很容易的优化方法、并且你想避免它阻塞其余 UI 时，这会很有用。
 
-Imagine you have a text field and a component (like a chart or a long list) that re-renders on every keystroke:
+假设你有一个文本字段和一个组件（比如图表或长列表），它会在每次按键时重新渲染：
 
 ```js
 function App() {
@@ -618,7 +618,7 @@ function App() {
 }
 ```
 
-First, optimize `SlowList` to skip re-rendering when its props are the same. To do this, [wrap it in `memo`:](/reference/react/memo#skipping-re-rendering-when-props-are-unchanged)
+首先，优化 `SlowList` 以在其 props 相同时跳过重新渲染。为此，[将其包裹在 `memo` 中：](/reference/react/memo#skipping-re-rendering-when-props-are-unchanged)
 
 ```js {1,3}
 const SlowList = memo(function SlowList({ text }) {
@@ -626,9 +626,9 @@ const SlowList = memo(function SlowList({ text }) {
 });
 ```
 
-However, this only helps if the `SlowList` props are *the same* as during the previous render. The problem you're facing now is that it's slow when they're *different,* and when you actually need to show different visual output.
+然而，这只有在 `SlowList` 的 props 与上一次渲染时*相同*时才有帮助。你现在面临的问题是，当它们*不同*时会很慢，而这正是你真正需要显示不同视觉输出的时候。
 
-Concretely, the main performance problem is that whenever you type into the input, the `SlowList` receives new props, and re-rendering its entire tree makes the typing feel janky. In this case, `useDeferredValue` lets you prioritize updating the input (which must be fast) over updating the result list (which is allowed to be slower):
+具体来说，主要的性能问题在于，每当你在输入框中输入时，`SlowList` 都会接收到新的 props，重新渲染整个树会让输入变得卡顿。在这种情况下，`useDeferredValue` 允许你将更新输入框（必须很快）的优先级高于更新结果列表（可以稍慢）：
 
 ```js {3,7}
 function App() {
@@ -643,13 +643,13 @@ function App() {
 }
 ```
 
-This does not make re-rendering of the `SlowList` faster. However, it tells React that re-rendering the list can be deprioritized so that it doesn't block the keystrokes. The list will "lag behind" the input and then "catch up". Like before, React will attempt to update the list as soon as possible, but will not block the user from typing.
+这不会让 `SlowList` 的重新渲染更快。然而，它会告诉 React，可以降低列表重新渲染的优先级，从而不阻塞按键。列表会“落后”于输入，然后再“赶上”来。和之前一样，React 会尽快尝试更新列表，但不会阻止用户输入。
 
-<Recipes titleText="The difference between useDeferredValue and unoptimized re-rendering" titleId="examples">
+<Recipes titleText="useDeferredValue 与未优化重新渲染之间的差异" titleId="examples">
 
-#### Deferred re-rendering of the list {/*deferred-re-rendering-of-the-list*/}
+#### 列表的延迟重新渲染 {/*deferred-re-rendering-of-the-list*/}
 
-In this example, each item in the `SlowList` component is **artificially slowed down** so that you can see how `useDeferredValue` lets you keep the input responsive. Type into the input and notice that typing feels snappy while the list "lags behind" it.
+在这个示例中，`SlowList` 组件中的每个条目都被**人为减速**，这样你就能看到 `useDeferredValue` 如何让输入保持响应。输入内容时，请注意键入依然很流畅，而列表会“落后”于输入。
 
 <Sandpack>
 
@@ -673,7 +673,7 @@ export default function App() {
 import { memo } from 'react';
 
 const SlowList = memo(function SlowList({ text }) {
-  // Log once. The actual slowdown is inside SlowItem.
+  // 只记录一次日志。真正的减速在 SlowItem 内部。
   console.log('[ARTIFICIALLY SLOW] Rendering 250 <SlowItem />');
 
   let items = [];
@@ -690,12 +690,12 @@ const SlowList = memo(function SlowList({ text }) {
 function SlowItem({ text }) {
   let startTime = performance.now();
   while (performance.now() - startTime < 1) {
-    // Do nothing for 1 ms per item to emulate extremely slow code
+    // 每个条目空转 1 毫秒，以模拟极慢的代码
   }
 
   return (
     <li className="item">
-      Text: {text}
+      文本：{text}
     </li>
   )
 }
@@ -723,11 +723,11 @@ export default SlowList;
 
 <Solution />
 
-#### Unoptimized re-rendering of the list {/*unoptimized-re-rendering-of-the-list*/}
+#### 未优化的列表重新渲染 {/*unoptimized-re-rendering-of-the-list*/}
 
-In this example, each item in the `SlowList` component is **artificially slowed down**, but there is no `useDeferredValue`.
+在这个示例中，`SlowList` 组件中的每个条目都被**人为减速**，但没有使用 `useDeferredValue`。
 
-Notice how typing into the input feels very janky. This is because without `useDeferredValue`, each keystroke forces the entire list to re-render immediately in a non-interruptible way.
+注意，输入内容时会感觉非常卡顿。这是因为没有 `useDeferredValue` 时，每次按键都会迫使整个列表立即以不可中断的方式重新渲染。
 
 <Sandpack>
 
@@ -750,7 +750,7 @@ export default function App() {
 import { memo } from 'react';
 
 const SlowList = memo(function SlowList({ text }) {
-  // Log once. The actual slowdown is inside SlowItem.
+  // 只记录一次日志。真正的减速在 SlowItem 内部。
   console.log('[ARTIFICIALLY SLOW] Rendering 250 <SlowItem />');
 
   let items = [];
@@ -767,12 +767,12 @@ const SlowList = memo(function SlowList({ text }) {
 function SlowItem({ text }) {
   let startTime = performance.now();
   while (performance.now() - startTime < 1) {
-    // Do nothing for 1 ms per item to emulate extremely slow code
+    // 每个条目空转 1 毫秒，以模拟极慢的代码
   }
 
   return (
     <li className="item">
-      Text: {text}
+      文本：{text}
     </li>
   )
 }
@@ -804,25 +804,25 @@ export default SlowList;
 
 <Pitfall>
 
-This optimization requires `SlowList` to be wrapped in [`memo`.](/reference/react/memo) This is because whenever the `text` changes, React needs to be able to re-render the parent component quickly. During that re-render, `deferredText` still has its previous value, so `SlowList` is able to skip re-rendering (its props have not changed). Without [`memo`,](/reference/react/memo) it would have to re-render anyway, defeating the point of the optimization.
+这种优化要求 `SlowList` 被 [`memo`](/reference/react/memo) 包裹。这是因为每当 `text` 改变时，React 需要能够快速重新渲染父组件。在那次重新渲染期间，`deferredText` 仍然保持其之前的值，因此 `SlowList` 可以跳过重新渲染（它的 props 没有变化）。如果没有 [`memo`](/reference/react/memo)，它无论如何都必须重新渲染，这就失去了优化的意义。
 
 </Pitfall>
 
 <DeepDive>
 
-#### How is deferring a value different from debouncing and throttling? {/*how-is-deferring-a-value-different-from-debouncing-and-throttling*/}
+#### 延迟值与防抖和节流有何不同？ {/*how-is-deferring-a-value-different-from-debouncing-and-throttling*/}
 
-There are two common optimization techniques you might have used before in this scenario:
+在这种场景中，你之前可能用过两种常见的优化技术：
 
-- *Debouncing* means you'd wait for the user to stop typing (e.g. for a second) before updating the list.
-- *Throttling* means you'd update the list every once in a while (e.g. at most once a second).
+- *防抖* 意味着你会等用户停止输入（例如等一秒）后再更新列表。
+- *节流* 意味着你会每隔一段时间更新一次列表（例如最多每秒一次）。
 
-While these techniques are helpful in some cases, `useDeferredValue` is better suited to optimizing rendering because it is deeply integrated with React itself and adapts to the user's device.
+虽然这些技术在某些情况下很有帮助，但 `useDeferredValue` 更适合优化渲染，因为它与 React 本身深度集成，并且会适应用户的设备。
 
-Unlike debouncing or throttling, it doesn't require choosing any fixed delay. If the user's device is fast (e.g. powerful laptop), the deferred re-render would happen almost immediately and wouldn't be noticeable. If the user's device is slow, the list would "lag behind" the input proportionally to how slow the device is.
+与防抖或节流不同，它不需要选择任何固定延迟。如果用户的设备很快（例如性能强劲的笔记本电脑），延迟重新渲染几乎会立刻发生，不会被察觉。如果用户的设备较慢，列表就会按设备速度相应地“落后”于输入。
 
-Also, unlike with debouncing or throttling, deferred re-renders done by `useDeferredValue` are interruptible by default. This means that if React is in the middle of re-rendering a large list, but the user makes another keystroke, React will abandon that re-render, handle the keystroke, and then start rendering in the background again. By contrast, debouncing and throttling still produce a janky experience because they're *blocking:* they merely postpone the moment when rendering blocks the keystroke.
+此外，与防抖或节流不同，`useDeferredValue` 所做的延迟重新渲染默认是可中断的。这意味着，如果 React 正在重新渲染一个大型列表，而用户又输入了一个按键，React 会放弃那次重新渲染，处理这个按键，然后再次在后台开始渲染。相比之下，防抖和节流仍然会带来卡顿体验，因为它们是*阻塞式*的：它们只是推迟了渲染阻塞按键的时刻。
 
-If the work you're optimizing doesn't happen during rendering, debouncing and throttling are still useful. For example, they can let you fire fewer network requests. You can also use these techniques together.
+如果你要优化的工作并不发生在渲染期间，防抖和节流仍然很有用。例如，它们可以让你发起更少的网络请求。你也可以把这些技术结合起来使用。
 
 </DeepDive>

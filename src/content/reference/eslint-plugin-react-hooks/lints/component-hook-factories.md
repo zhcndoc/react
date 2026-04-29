@@ -4,27 +4,27 @@ title: component-hook-factories
 
 <Intro>
 
-Validates against higher order functions defining nested components or hooks. Components and hooks should be defined at the module level.
+会对定义嵌套组件或 Hook 的高阶函数进行校验。组件和 Hook 应该定义在模块级别。
 
 </Intro>
 
 ## Rule Details {/*rule-details*/}
 
-Defining components or hooks inside other functions creates new instances on every call. React treats each as a completely different component, destroying and recreating the entire component tree, losing all state, and causing performance problems.
+在其他函数内部定义组件或 Hook 会在每次调用时创建新的实例。React 会将每个实例视为完全不同的组件，销毁并重新创建整个组件树，丢失所有状态，并导致性能问题。
 
 ### Invalid {/*invalid*/}
 
-Examples of incorrect code for this rule:
+此规则的错误代码示例：
 
 ```js {expectedErrors: {'react-compiler': [14]}}
-// ❌ Factory function creating components
+// ❌ 创建组件的工厂函数
 function createComponent(defaultValue) {
   return function Component() {
     // ...
   };
 }
 
-// ❌ Component defined inside component
+// ❌ 定义在组件内部的组件
 function Parent() {
   function Child() {
     // ...
@@ -33,7 +33,7 @@ function Parent() {
   return <Child />;
 }
 
-// ❌ Hook factory function
+// ❌ Hook 工厂函数
 function createCustomHook(endpoint) {
   return function useData() {
     // ...
@@ -43,15 +43,15 @@ function createCustomHook(endpoint) {
 
 ### Valid {/*valid*/}
 
-Examples of correct code for this rule:
+此规则的正确代码示例：
 
 ```js
-// ✅ Component defined at module level
+// ✅ 定义在模块级别的组件
 function Component({ defaultValue }) {
   // ...
 }
 
-// ✅ Custom hook at module level
+// ✅ 定义在模块级别的自定义 Hook
 function useData(endpoint) {
   // ...
 }
@@ -61,10 +61,10 @@ function useData(endpoint) {
 
 ### I need dynamic component behavior {/*dynamic-behavior*/}
 
-You might think you need a factory to create customized components:
+你可能会认为需要使用工厂来创建定制化组件：
 
 ```js
-// ❌ Wrong: Factory pattern
+// ❌ 错误：工厂模式
 function makeButton(color) {
   return function Button({children}) {
     return (
@@ -79,10 +79,10 @@ const RedButton = makeButton('red');
 const BlueButton = makeButton('blue');
 ```
 
-Pass [JSX as children](/learn/passing-props-to-a-component#passing-jsx-as-children) instead:
+改为传递 [JSX 作为 children](/learn/passing-props-to-a-component#passing-jsx-as-children)：
 
 ```js
-// ✅ Better: Pass JSX as children
+// ✅ 更好的方式：将 JSX 作为 children 传递
 function Button({color, children}) {
   return (
     <button style={{backgroundColor: color}}>

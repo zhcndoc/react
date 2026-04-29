@@ -1,89 +1,89 @@
 ---
-title: "How to Upgrade to React 18"
+title: "如何升级到 React 18"
 author: Rick Hanlon
 date: 2022/03/08
-description: As we shared in the release post, React 18 introduces features powered by our new concurrent renderer, with a gradual adoption strategy for existing applications. In this post, we will guide you through the steps for upgrading to React 18.
+description: 正如我们在发布文章中所分享的，React 18 通过我们新的并发渲染器引入了诸多功能，并为现有应用提供了渐进式采用策略。在这篇文章中，我们将引导你完成升级到 React 18 的步骤。
 ---
 
-March 08, 2022 by [Rick Hanlon](https://twitter.com/rickhanlonii)
+2022 年 3 月 8 日，作者 [Rick Hanlon](https://twitter.com/rickhanlonii)
 
 ---
 
 <Intro>
 
-As we shared in the [release post](/blog/2022/03/29/react-v18), React 18 introduces features powered by our new concurrent renderer, with a gradual adoption strategy for existing applications. In this post, we will guide you through the steps for upgrading to React 18.
+正如我们在 [发布文章](/blog/2022/03/29/react-v18) 中所分享的，React 18 通过我们新的并发渲染器引入了诸多功能，并为现有应用提供了渐进式采用策略。在这篇文章中，我们将引导你完成升级到 React 18 的步骤。
 
-Please [report any issues](https://github.com/facebook/react/issues/new/choose) you encounter while upgrading to React 18.
+如果你在升级到 React 18 的过程中遇到任何问题，请 [报告任何问题](https://github.com/facebook/react/issues/new/choose)。
 
 </Intro>
 
 <Note>
 
-For React Native users, React 18 will ship in a future version of React Native. This is because React 18 relies on the New React Native Architecture to benefit from the new capabilities presented in this blogpost. For more information, see the [React Conf keynote here](https://www.youtube.com/watch?v=FZ0cG47msEk&t=1530s).
+对于 React Native 用户，React 18 将在未来版本的 React Native 中发布。这是因为 React 18 依赖于新的 React Native 架构，才能从本博客文章中介绍的新能力中受益。更多信息请参见 [React Conf 主题演讲](https://www.youtube.com/watch?v=FZ0cG47msEk&t=1530s)。
 
 </Note>
 
 ---
 
-## Installing {/*installing*/}
+## 安装 {/*installing*/}
 
-To install the latest version of React:
+要安装最新版本的 React：
 
 ```bash
 npm install react react-dom
 ```
 
-Or if you’re using yarn:
+或者如果你使用的是 yarn：
 
 ```bash
 yarn add react react-dom
 ```
 
-## Updates to Client Rendering APIs {/*updates-to-client-rendering-apis*/}
+## 客户端渲染 API 的更新 {/*updates-to-client-rendering-apis*/}
 
-When you first install React 18, you will see a warning in the console:
+当你首次安装 React 18 时，你会在控制台中看到一条警告：
 
 <ConsoleBlock level="error">
 
-ReactDOM.render is no longer supported in React 18. Use createRoot instead. Until you switch to the new API, your app will behave as if it's running React 17. Learn more: https://reactjs.org/link/switch-to-createroot
+ReactDOM.render 在 React 18 中不再受支持。请改用 createRoot。在你切换到新 API 之前，你的应用将表现得像是在运行 React 17。了解更多：https://reactjs.org/link/switch-to-createroot
 
 </ConsoleBlock>
 
-React 18 introduces a new root API which provides better ergonomics for managing roots. The new root API also enables the new concurrent renderer, which allows you to opt-into concurrent features.
+React 18 引入了一个新的 root API，它为管理 root 提供了更好的易用性。新的 root API 还启用了新的并发渲染器，使你可以选择启用并发特性。
 
 ```js
-// Before
+// 之前
 import { render } from 'react-dom';
 const container = document.getElementById('app');
 render(<App tab="home" />, container);
 
-// After
+// 之后
 import { createRoot } from 'react-dom/client';
 const container = document.getElementById('app');
-const root = createRoot(container); // createRoot(container!) if you use TypeScript
+const root = createRoot(container); // 如果你使用 TypeScript，则为 createRoot(container!)
 root.render(<App tab="home" />);
 ```
 
-We’ve also changed `unmountComponentAtNode` to `root.unmount`:
+我们还将 `unmountComponentAtNode` 改为了 `root.unmount`：
 
 ```js
-// Before
+// 之前
 unmountComponentAtNode(container);
 
-// After
+// 之后
 root.unmount();
 ```
 
-We've also removed the callback from render, since it usually does not have the expected result when using Suspense:
+我们还移除了 render 中的回调函数，因为在使用 Suspense 时它通常不会得到预期结果：
 
 ```js
-// Before
+// 之前
 const container = document.getElementById('app');
 render(<App tab="home" />, container, () => {
   console.log('rendered');
 });
 
-// After
+// 之后
 function AppWithCallbackAfterRender() {
   useEffect(() => {
     console.log('rendered');
@@ -99,59 +99,59 @@ root.render(<AppWithCallbackAfterRender />);
 
 <Note>
 
-There is no one-to-one replacement for the old render callback API — it depends on your use case. See the working group post for [Replacing render with createRoot](https://github.com/reactwg/react-18/discussions/5) for more information.
+旧的 render 回调 API 没有一对一的替代方案——这取决于你的使用场景。更多信息请参见工作组文章 [将 render 替换为 createRoot](https://github.com/reactwg/react-18/discussions/5)。
 
 </Note>
 
-Finally, if your app uses server-side rendering with hydration, upgrade `hydrate` to `hydrateRoot`:
+最后，如果你的应用使用带有 hydration 的服务端渲染，请将 `hydrate` 升级为 `hydrateRoot`：
 
 ```js
-// Before
+// 之前
 import { hydrate } from 'react-dom';
 const container = document.getElementById('app');
 hydrate(<App tab="home" />, container);
 
-// After
+// 之后
 import { hydrateRoot } from 'react-dom/client';
 const container = document.getElementById('app');
 const root = hydrateRoot(container, <App tab="home" />);
-// Unlike with createRoot, you don't need a separate root.render() call here.
+// 与 createRoot 不同，这里你不需要单独调用 root.render()。
 ```
 
-For more information, see the [working group discussion here](https://github.com/reactwg/react-18/discussions/5).
+更多信息请参见 [工作组讨论](https://github.com/reactwg/react-18/discussions/5)。
 
 <Note>
 
-**If your app doesn't work after upgrading, check whether it's wrapped in `<StrictMode>`.** [Strict Mode has gotten stricter in React 18](#updates-to-strict-mode), and not all your components may be resilient to the new checks it adds in development mode. If removing Strict Mode fixes your app, you can remove it during the upgrade, and then add it back (either at the top or for a part of the tree) after you fix the issues that it's pointing out.
+**如果你的应用在升级后无法运行，请检查它是否被 `<StrictMode>` 包裹。** [Strict Mode 在 React 18 中变得更严格了](#updates-to-strict-mode)，并不是所有组件都能承受它在开发模式下新增的检查。如果移除 Strict Mode 可以修复你的应用，你可以在升级期间先移除它，然后在修复它指出的问题后再把它加回去（可以加在最顶层，或者只包裹树的一部分）。
 
 </Note>
 
-## Updates to Server Rendering APIs {/*updates-to-server-rendering-apis*/}
+## 服务端渲染 API 的更新 {/*updates-to-server-rendering-apis*/}
 
-In this release, we’re revamping our `react-dom/server` APIs to fully support Suspense on the server and Streaming SSR. As part of these changes, we're deprecating the old Node streaming API, which does not support incremental Suspense streaming on the server.
+在这个版本中，我们正在重构 `react-dom/server` API，以便在服务端全面支持 Suspense 和流式 SSR。作为这些变更的一部分，我们将弃用旧的 Node 流式 API，因为它不支持在服务端进行增量式 Suspense 流式传输。
 
-Using this API will now warn:
+使用此 API 现在会发出警告：
 
-* `renderToNodeStream`: **Deprecated ⛔️️**
+* `renderToNodeStream`：**已弃用 ⛔️️**
 
-Instead, for streaming in Node environments, use:
-* `renderToPipeableStream`: **New ✨**
+相反，在 Node 环境中进行流式传输时，请使用：
+* `renderToPipeableStream`：**新增 ✨**
 
-We're also introducing a new API to support streaming SSR with Suspense for modern edge runtime environments, such as Deno and Cloudflare workers:
-* `renderToReadableStream`: **New ✨**
+我们还引入了一个新的 API，用于支持现代边缘运行时环境（例如 Deno 和 Cloudflare workers）中的带 Suspense 的流式 SSR：
+* `renderToReadableStream`：**新增 ✨**
 
-The following APIs will continue working, but with limited support for Suspense:
-* `renderToString`: **Limited** ⚠️
-* `renderToStaticMarkup`: **Limited** ⚠️
+以下 API 仍将继续工作，但对 Suspense 的支持有限：
+* `renderToString`：**有限** ⚠️
+* `renderToStaticMarkup`：**有限** ⚠️
 
-Finally, this API will continue to work for rendering e-mails:
+最后，这个 API 将继续用于渲染电子邮件：
 * `renderToStaticNodeStream`
 
-For more information on the changes to server rendering APIs, see the working group post on [Upgrading to React 18 on the server](https://github.com/reactwg/react-18/discussions/22), a [deep dive on the new Suspense SSR Architecture](https://github.com/reactwg/react-18/discussions/37), and [Shaundai Person’s](https://twitter.com/shaundai) talk on [Streaming Server Rendering with Suspense](https://www.youtube.com/watch?v=pj5N-Khihgc) at React Conf 2021.
+有关服务端渲染 API 变更的更多信息，请参见工作组文章 [在服务端升级到 React 18](https://github.com/reactwg/react-18/discussions/22)、[关于新的 Suspense SSR 架构的深入解析](https://github.com/reactwg/react-18/discussions/37)，以及 [Shaundai Person](https://twitter.com/shaundai) 在 React Conf 2021 上关于 [使用 Suspense 进行流式服务端渲染](https://www.youtube.com/watch?v=pj5N-Khihgc) 的演讲。
 
-## Updates to TypeScript definitions {/*updates-to-typescript-definitions*/}
+## TypeScript 定义的更新 {/*updates-to-typescript-definitions*/}
 
-If your project uses TypeScript, you will need to update your `@types/react` and `@types/react-dom` dependencies to the latest versions. The new types are safer and catch issues that used to be ignored by the type checker. The most notable change is that the `children` prop now needs to be listed explicitly when defining props, for example:
+如果你的项目使用 TypeScript，你需要将 `@types/react` 和 `@types/react-dom` 依赖更新到最新版本。新的类型更安全，并能捕获过去会被类型检查器忽略的问题。最显著的变化是，在定义 props 时，`children` prop 现在需要显式列出，例如：
 
 ```typescript{3}
 interface MyButtonProps {
@@ -160,51 +160,51 @@ interface MyButtonProps {
 }
 ```
 
-See the [React 18 typings pull request](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/56210) for a full list of type-only changes. It links to example fixes in library types so you can see how to adjust your code. You can use the [automated migration script](https://github.com/eps1lon/types-react-codemod) to help port your application code to the new and safer typings faster.
+请参见 [React 18 typings 拉取请求](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/56210)，了解完整的仅类型变更列表。它链接到了库类型中的示例修复，因此你可以看到如何调整你的代码。你可以使用 [自动迁移脚本](https://github.com/eps1lon/types-react-codemod) 更快地帮助将你的应用代码迁移到新的、更安全的类型定义。
 
-If you find a bug in the typings, please [file an issue](https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/new?category=issues-with-a-types-package) in the DefinitelyTyped repo.
+如果你在这些类型定义中发现了 bug，请在 DefinitelyTyped 仓库中 [提交 issue](https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/new?category=issues-with-a-types-package)。
 
-## Automatic Batching {/*automatic-batching*/}
+## 自动批处理 {/*automatic-batching*/}
 
-React 18 adds out-of-the-box performance improvements by doing more batching by default. Batching is when React groups multiple state updates into a single re-render for better performance. Before React 18, we only batched updates inside React event handlers. Updates inside of promises, setTimeout, native event handlers, or any other event were not batched in React by default:
+React 18 通过默认进行更多批处理，带来了开箱即用的性能提升。批处理是指 React 将多个状态更新合并为一次重新渲染，以获得更好的性能。在 React 18 之前，我们只会在 React 事件处理程序内部批处理更新。promise、setTimeout、原生事件处理程序或任何其他事件内部的更新默认都不会在 React 中批处理：
 
 ```js
-// Before React 18 only React events were batched
+// 仅在 React 18 之前，只有 React 事件会被批处理
 
 function handleClick() {
   setCount(c => c + 1);
   setFlag(f => !f);
-  // React will only re-render once at the end (that's batching!)
+  // React 只会在最后重新渲染一次（这就是批处理！）
 }
 
 setTimeout(() => {
   setCount(c => c + 1);
   setFlag(f => !f);
-  // React will render twice, once for each state update (no batching)
+  // React 将渲染两次，每次状态更新一次（没有批处理）
 }, 1000);
 ```
 
 
-Starting in React 18 with `createRoot`, all updates will be automatically batched, no matter where they originate from. This means that updates inside of timeouts, promises, native event handlers or any other event will batch the same way as updates inside of React events:
+从 React 18 开始，使用 `createRoot` 后，所有更新都会自动批处理，无论它们来自哪里。这意味着，timeout、promise、原生事件处理程序或任何其他事件中的更新，都会像 React 事件中的更新一样被批处理：
 
 ```js
-// After React 18 updates inside of timeouts, promises,
-// native event handlers or any other event are batched.
+// 在 React 18 之后，timeout、promise、
+// 原生事件处理程序或任何其他事件中的更新都会被批处理。
 
 function handleClick() {
   setCount(c => c + 1);
   setFlag(f => !f);
-  // React will only re-render once at the end (that's batching!)
+  // React 只会在最后重新渲染一次（这就是批处理！）
 }
 
 setTimeout(() => {
   setCount(c => c + 1);
   setFlag(f => !f);
-  // React will only re-render once at the end (that's batching!)
+  // React 只会在最后重新渲染一次（这就是批处理！）
 }, 1000);
 ```
 
-This is a breaking change, but we expect this to result in less work rendering, and therefore better performance in your applications. To opt-out of automatic batching, you can use `flushSync`:
+这是一项破坏性变更，但我们预计这会减少渲染工作量，因此提升应用性能。若要退出自动批处理，你可以使用 `flushSync`：
 
 ```js
 import { flushSync } from 'react-dom';
@@ -213,119 +213,119 @@ function handleClick() {
   flushSync(() => {
     setCounter(c => c + 1);
   });
-  // React has updated the DOM by now
+  // 到此时 React 已经更新了 DOM
   flushSync(() => {
     setFlag(f => !f);
   });
-  // React has updated the DOM by now
+  // 到此时 React 已经更新了 DOM
 }
 ```
 
-For more information, see the [Automatic batching deep dive](https://github.com/reactwg/react-18/discussions/21).
+更多信息请参见 [自动批处理深度解析](https://github.com/reactwg/react-18/discussions/21)。
 
-## New APIs for Libraries {/*new-apis-for-libraries*/}
+## 面向库的新 API {/*new-apis-for-libraries*/}
 
-In the React 18 Working Group we worked with library maintainers to create new APIs needed to support concurrent rendering for use cases specific to their use case in areas like styles, and external stores. To support React 18, some libraries may need to switch to one of the following APIs:
+在 React 18 工作组中，我们与库维护者合作，创建了支持并发渲染所需的新 API，以满足其在样式、外部存储等领域的特定使用场景。为了支持 React 18，一些库可能需要切换到以下 API 之一：
 
-* `useSyncExternalStore` is a new Hook that allows external stores to support concurrent reads by forcing updates to the store to be synchronous. This new API is recommended for any library that integrates with state external to React. For more information, see the [useSyncExternalStore overview post](https://github.com/reactwg/react-18/discussions/70) and [useSyncExternalStore API details](https://github.com/reactwg/react-18/discussions/86).
-* `useInsertionEffect` is a new Hook that allows CSS-in-JS libraries to address performance issues of injecting styles in render. Unless you've already built a CSS-in-JS library we don't expect you to ever use this. This Hook will run after the DOM is mutated, but before layout effects read the new layout. This solves an issue that already exists in React 17 and below, but is even more important in React 18 because React yields to the browser during concurrent rendering, giving it a chance to recalculate layout. For more information, see the [Library Upgrade Guide for `<style>`](https://github.com/reactwg/react-18/discussions/110).
+* `useSyncExternalStore` 是一个新的 Hook，它通过强制对 store 的更新同步执行，从而允许外部 store 支持并发读取。对于任何与 React 之外的状态集成的库，推荐使用这个新 API。更多信息请参见 [useSyncExternalStore 概览文章](https://github.com/reactwg/react-18/discussions/70) 和 [useSyncExternalStore API 详情](https://github.com/reactwg/react-18/discussions/86)。
+* `useInsertionEffect` 是一个新的 Hook，它允许 CSS-in-JS 库解决在渲染期间注入样式所带来的性能问题。除非你已经构建了一个 CSS-in-JS 库，否则我们不预计你会用到它。这个 Hook 会在 DOM 被修改之后、布局 effect 读取新布局之前运行。这解决了 React 17 及以下版本中已经存在的问题，但在 React 18 中更为重要，因为 React 在并发渲染期间会让出执行权给浏览器，从而让浏览器有机会重新计算布局。更多信息请参见 [针对 `<style>` 的库升级指南](https://github.com/reactwg/react-18/discussions/110)。
 
-React 18 also introduces new APIs for concurrent rendering such as `startTransition`, `useDeferredValue` and `useId`, which we share more about in the [release post](/blog/2022/03/29/react-v18).
+React 18 还引入了用于并发渲染的新 API，例如 `startTransition`、`useDeferredValue` 和 `useId`，我们在 [发布文章](/blog/2022/03/29/react-v18) 中有更多介绍。
 
-## Updates to Strict Mode {/*updates-to-strict-mode*/}
+## 严格模式更新 {/*updates-to-strict-mode*/}
 
-In the future, we'd like to add a feature that allows React to add and remove sections of the UI while preserving state. For example, when a user tabs away from a screen and back, React should be able to immediately show the previous screen. To do this, React would unmount and remount trees using the same component state as before.
+未来，我们希望添加一个特性，允许 React 在保留状态的同时添加和移除 UI 的部分区域。例如，当用户从某个屏幕切换出去又返回时，React 应该能够立即显示之前的屏幕。为此，React 会使用与之前相同的组件状态来卸载并重新挂载树。
 
-This feature will give React better performance out-of-the-box, but requires components to be resilient to effects being mounted and destroyed multiple times. Most effects will work without any changes, but some effects assume they are only mounted or destroyed once.
+这个特性会让 React 开箱即用地拥有更好的性能，但也要求组件能够承受 effect 被多次挂载和销毁。大多数 effect 无需任何更改即可工作，但有些 effect 会假定它们只会被挂载或销毁一次。
 
-To help surface these issues, React 18 introduces a new development-only check to Strict Mode. This new check will automatically unmount and remount every component, whenever a component mounts for the first time, restoring the previous state on the second mount.
+为了帮助暴露这些问题，React 18 在 Strict Mode 中引入了一个仅开发环境下的新检查。这个新检查会在组件首次挂载时自动卸载并重新挂载每个组件，并在第二次挂载时恢复之前的状态。
 
-Before this change, React would mount the component and create the effects:
-
-```
-* React mounts the component.
-    * Layout effects are created.
-    * Effect effects are created.
-```
-
-With Strict Mode in React 18, React will simulate unmounting and remounting the component in development mode:
+在此更改之前，React 会挂载组件并创建这些 effects：
 
 ```
-* React mounts the component.
-    * Layout effects are created.
-    * Effect effects are created.
-* React simulates unmounting the component.
-    * Layout effects are destroyed.
-    * Effects are destroyed.
-* React simulates mounting the component with the previous state.
-    * Layout effect setup code runs
-    * Effect setup code runs
+* React 挂载组件。
+    * 创建布局 effect。
+    * 创建 Effect effects。
 ```
 
-For more information, see the Working Group posts for [Adding Reusable State to StrictMode](https://github.com/reactwg/react-18/discussions/19) and [How to support Reusable State in Effects](https://github.com/reactwg/react-18/discussions/18).
+在 React 18 的 Strict Mode 下，React 会在开发模式中模拟卸载并重新挂载组件：
 
-## Configuring Your Testing Environment {/*configuring-your-testing-environment*/}
+```
+* React 挂载组件。
+    * 创建布局 effect。
+    * 创建 Effect effects。
+* React 模拟卸载组件。
+    * 销毁布局 effect。
+    * 销毁 effects。
+* React 模拟使用之前的状态挂载组件。
+    * 布局 effect 的设置代码运行
+    * Effect 的设置代码运行
+```
 
-When you first update your tests to use `createRoot`, you may see this warning in your test console:
+有关更多信息，请参阅工作组帖子 [向 StrictMode 添加可复用状态](https://github.com/reactwg/react-18/discussions/19) 和 [如何在 effects 中支持可复用状态](https://github.com/reactwg/react-18/discussions/18)。
+
+## 配置测试环境 {/*configuring-your-testing-environment*/}
+
+当你第一次更新测试以使用 `createRoot` 时，可能会在测试控制台中看到此警告：
 
 <ConsoleBlock level="error">
 
-The current testing environment is not configured to support act(...)
+当前测试环境未配置以支持 act(...)
 
 </ConsoleBlock>
 
-To fix this, set `globalThis.IS_REACT_ACT_ENVIRONMENT` to `true` before running your test:
+要修复此问题，请在运行测试之前将 `globalThis.IS_REACT_ACT_ENVIRONMENT` 设置为 `true`：
 
 ```js
-// In your test setup file
+// 在你的测试设置文件中
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 ```
 
-The purpose of the flag is to tell React that it's running in a unit test-like environment. React will log helpful warnings if you forget to wrap an update with `act`.
+该标志的目的是告诉 React，它运行在类似单元测试的环境中。如果你忘记使用 `act` 包裹更新，React 会输出有帮助的警告。
 
-You can also set the flag to `false` to tell React that `act` isn't needed. This can be useful for end-to-end tests that simulate a full browser environment.
+你也可以将该标志设置为 `false`，告诉 React 不需要 `act`。这对于模拟完整浏览器环境的端到端测试很有用。
 
-Eventually, we expect testing libraries will configure this for you automatically. For example, the [next version of React Testing Library has built-in support for React 18](https://github.com/testing-library/react-testing-library/issues/509#issuecomment-917989936) without any additional configuration.
+最终，我们预计测试库会自动为你配置这一点。例如，[下一版 React Testing Library 已内置对 React 18 的支持](https://github.com/testing-library/react-testing-library/issues/509#issuecomment-917989936)，无需任何额外配置。
 
-[More background on the `act` testing API and related changes](https://github.com/reactwg/react-18/discussions/102) is available in the working group.
+有关 `act` 测试 API 及相关更改的[更多背景信息](https://github.com/reactwg/react-18/discussions/102)可在工作组中查看。
 
-## Dropping Support for Internet Explorer {/*dropping-support-for-internet-explorer*/}
+## 放弃对 Internet Explorer 的支持 {/*dropping-support-for-internet-explorer*/}
 
-In this release, React is dropping support for Internet Explorer, which is [going out of support on June 15, 2022](https://blogs.windows.com/windowsexperience/2021/05/19/the-future-of-internet-explorer-on-windows-10-is-in-microsoft-edge). We’re making this change now because new features introduced in React 18 are built using modern browser features such as microtasks which cannot be adequately polyfilled in IE.
+在此版本中，React 将放弃对 Internet Explorer 的支持，而 Internet Explorer [将于 2022 年 6 月 15 日停止支持](https://blogs.windows.com/windowsexperience/2021/05/19/the-future-of-internet-explorer-on-windows-10-is-in-microsoft-edge)。我们现在做出这一更改，是因为 React 18 中引入的新特性使用了现代浏览器特性，例如微任务，而这些特性无法在 IE 中得到充分的 polyfill 支持。
 
-If you need to support Internet Explorer we recommend you stay with React 17.
+如果你需要支持 Internet Explorer，我们建议你继续使用 React 17。
 
-## Deprecations {/*deprecations*/}
+## 弃用项 {/*deprecations*/}
 
-* `react-dom`: `ReactDOM.render` has been deprecated. Using it will warn and run your app in React 17 mode.
-* `react-dom`: `ReactDOM.hydrate` has been deprecated. Using it will warn and run your app in React 17 mode.
-* `react-dom`: `ReactDOM.unmountComponentAtNode` has been deprecated.
-* `react-dom`: `ReactDOM.renderSubtreeIntoContainer` has been deprecated.
-* `react-dom/server`: `ReactDOMServer.renderToNodeStream` has been deprecated.
+* `react-dom`：`ReactDOM.render` 已被弃用。使用它会发出警告，并让你的应用以 React 17 模式运行。
+* `react-dom`：`ReactDOM.hydrate` 已被弃用。使用它会发出警告，并让你的应用以 React 17 模式运行。
+* `react-dom`：`ReactDOM.unmountComponentAtNode` 已被弃用。
+* `react-dom`：`ReactDOM.renderSubtreeIntoContainer` 已被弃用。
+* `react-dom/server`：`ReactDOMServer.renderToNodeStream` 已被弃用。
 
-## Other Breaking Changes {/*other-breaking-changes*/}
+## 其他破坏性变更 {/*other-breaking-changes*/}
 
-* **Consistent useEffect timing**: React now always synchronously flushes effect functions if the update was triggered during a discrete user input event such as a click or a keydown event. Previously, the behavior wasn't always predictable or consistent.
-* **Stricter hydration errors**: Hydration mismatches due to missing or extra text content are now treated like errors instead of warnings. React will no longer attempt to "patch up" individual nodes by inserting or deleting a node on the client in an attempt to match the server markup, and will revert to client rendering up to the closest `<Suspense>` boundary in the tree. This ensures the hydrated tree is consistent and avoids potential privacy and security holes that can be caused by hydration mismatches.
-* **Suspense trees are always consistent:** If a component suspends before it's fully added to the tree, React will not add it to the tree in an incomplete state or fire its effects. Instead, React will throw away the new tree completely, wait for the asynchronous operation to finish, and then retry rendering again from scratch. React will render the retry attempt concurrently, and without blocking the browser.
-* **Layout Effects with Suspense**: When a tree re-suspends and reverts to a fallback, React will now clean up layout effects, and then re-create them when the content inside the boundary is shown again. This fixes an issue which prevented component libraries from correctly measuring layout when used with Suspense.
-* **New JS Environment Requirements**: React now depends on modern browsers features including `Promise`, `Symbol`, and `Object.assign`. If you support older browsers and devices such as Internet Explorer which do not provide modern browser features natively or have non-compliant implementations, consider including a global polyfill in your bundled application.
+* **一致的 useEffect 时机**：如果更新是在离散用户输入事件期间触发的，例如点击或 keydown 事件，React 现在总是会同步刷新 effect 函数。以前，这种行为并不总是可预测或一致。
+* **更严格的 hydration 错误**：由于缺失或多余文本内容导致的 hydration 不匹配，现在会被视为错误而不是警告。React 将不再尝试通过在客户端插入或删除节点来“修补”单个节点以匹配服务器标记，而是回退到树中最近的 `<Suspense>` 边界之前的客户端渲染。这确保了 hydration 后的树是一致的，并避免了 hydration 不匹配可能导致的隐私和安全漏洞。
+* **Suspense 树始终保持一致：** 如果某个组件在完全添加到树中之前就挂起了，React 不会以不完整的状态将其添加到树中，也不会触发它的 effects。相反，React 会完全丢弃新树，等待异步操作完成，然后从头重新尝试渲染。React 会并发地渲染重试尝试，并且不会阻塞浏览器。
+* **带有 Suspense 的布局 Effects**：当某棵树重新挂起并回退到 fallback 时，React 现在会清理布局 effects，然后在边界内的内容再次显示时重新创建它们。这修复了一个问题，该问题曾阻止组件库在与 Suspense 一起使用时正确测量布局。
+* **新的 JS 环境要求**：React 现在依赖现代浏览器特性，包括 `Promise`、`Symbol` 和 `Object.assign`。如果你支持不原生提供现代浏览器特性或实现不兼容的旧浏览器和设备，例如 Internet Explorer，请考虑在打包后的应用中包含全局 polyfill。
 
-## Other Notable Changes {/*other-notable-changes*/}
+## 其他值得注意的变更 {/*other-notable-changes*/}
 
 ### React {/*react*/}
 
-* **Components can now render `undefined`:** React no longer warns if you return `undefined` from a component. This makes the allowed component return values consistent with values that are allowed in the middle of a component tree. We suggest to use a linter to prevent mistakes like forgetting a `return` statement before JSX.
-* **In tests, `act` warnings are now opt-in:** If you're running end-to-end tests, the `act` warnings are unnecessary. We've introduced an [opt-in](https://github.com/reactwg/react-18/discussions/102) mechanism so you can enable them only for unit tests where they are useful and beneficial.
-* **No warning about `setState` on unmounted components:** Previously, React warned about memory leaks when you call `setState` on an unmounted component. This warning was added for subscriptions, but people primarily run into it in scenarios where setting state is fine, and workarounds make the code worse. We've [removed](https://github.com/facebook/react/pull/22114) this warning.
-* **No suppression of console logs:** When you use Strict Mode, React renders each component twice to help you find unexpected side effects. In React 17, we've suppressed console logs for one of the two renders to make the logs easier to read. In response to [community feedback](https://github.com/facebook/react/issues/21783) about this being confusing, we've removed the suppression. Instead, if you have React DevTools installed, the second log's renders will be displayed in grey, and there will be an option (off by default) to suppress them completely.
-* **Improved memory usage:** React now cleans up more internal fields on unmount, making the impact from unfixed memory leaks that may exist in your application code less severe.
+* **组件现在可以渲染 `undefined`：** 如果你从组件返回 `undefined`，React 不再发出警告。这使得允许的组件返回值与组件树中间允许的值保持一致。我们建议使用 linter 来防止诸如在 JSX 之前忘记写 `return` 之类的错误。
+* **在测试中，`act` 警告现在需要显式启用：** 如果你正在运行端到端测试，那么 `act` 警告是不必要的。我们引入了一个[显式启用](https://github.com/reactwg/react-18/discussions/102)机制，因此你可以只在它们有用且有益的单元测试中启用它们。
+* **不再警告在未挂载组件上调用 `setState`：** 以前，当你在一个未挂载组件上调用 `setState` 时，React 会警告内存泄漏。这个警告是为订阅场景添加的，但人们主要是在设置状态其实没问题的场景中遇到它，而规避方案会让代码更糟。我们已经[移除了](https://github.com/facebook/react/pull/22114)这个警告。
+* **不再抑制控制台日志：** 当你使用 Strict Mode 时，React 会将每个组件渲染两次，以帮助你发现意外的副作用。在 React 17 中，我们抑制了两次渲染中的一次控制台日志，以便日志更易于阅读。针对社区关于这会造成困惑的[反馈](https://github.com/facebook/react/issues/21783)，我们移除了这种抑制。相反，如果你安装了 React DevTools，第二次日志中的渲染将以灰色显示，并且会有一个选项（默认关闭）来完全抑制它们。
+* **改进内存使用：** React 现在在卸载时会清理更多内部字段，从而减轻应用代码中可能存在且未修复的内存泄漏所带来的影响。
 
 ### React DOM Server {/*react-dom-server*/}
 
-* **`renderToString`:** Will no longer error when suspending on the server. Instead, it will emit the fallback HTML for the closest `<Suspense>` boundary and then retry rendering the same content on the client. It is still recommended that you switch to a streaming API like `renderToPipeableStream` or `renderToReadableStream` instead.
-* **`renderToStaticMarkup`:** Will no longer error when suspending on the server. Instead, it will emit the fallback HTML for the closest `<Suspense>` boundary.
+* **`renderToString`：** 在服务器上挂起时将不再报错。相反，它会为最近的 `<Suspense>` 边界输出 fallback HTML，然后在客户端重试渲染相同内容。仍然建议你改用流式 API，例如 `renderToPipeableStream` 或 `renderToReadableStream`。
+* **`renderToStaticMarkup`：** 在服务器上挂起时将不再报错。相反，它会为最近的 `<Suspense>` 边界输出 fallback HTML。
 
-## Changelog {/*changelog*/}
+## 更新日志 {/*changelog*/}
 
-You can view the [full changelog here](https://github.com/facebook/react/blob/main/CHANGELOG.md).
+你可以在这里查看[完整更新日志](https://github.com/facebook/react/blob/main/CHANGELOG.md)。

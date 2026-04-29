@@ -1,30 +1,30 @@
 ---
-title: Describing the UI
+title: 描述 UI
 ---
 
 <Intro>
 
-React is a JavaScript library for rendering user interfaces (UI). UI is built from small units like buttons, text, and images. React lets you combine them into reusable, nestable *components.* From web sites to phone apps, everything on the screen can be broken down into components. In this chapter, you'll learn to create, customize, and conditionally display React components.
+React 是一个用于渲染用户界面（UI）的 JavaScript 库。UI 由按钮、文本和图片等小单元构成。React 让你可以把它们组合成可复用、可嵌套的 *组件*。从网站到手机应用，屏幕上的一切都可以拆分为组件。在本章中，你将学习如何创建、定制以及有条件地显示 React 组件。
 
 </Intro>
 
 <YouWillLearn isChapter={true}>
 
-* [How to write your first React component](/learn/your-first-component)
-* [When and how to create multi-component files](/learn/importing-and-exporting-components)
-* [How to add markup to JavaScript with JSX](/learn/writing-markup-with-jsx)
-* [How to use curly braces with JSX to access JavaScript functionality from your components](/learn/javascript-in-jsx-with-curly-braces)
-* [How to configure components with props](/learn/passing-props-to-a-component)
-* [How to conditionally render components](/learn/conditional-rendering)
-* [How to render multiple components at a time](/learn/rendering-lists)
-* [How to avoid confusing bugs by keeping components pure](/learn/keeping-components-pure)
-* [Why understanding your UI as trees is useful](/learn/understanding-your-ui-as-a-tree)
+* [如何编写你的第一个 React 组件](/learn/your-first-component)
+* [何时以及如何创建多组件文件](/learn/importing-and-exporting-components)
+* [如何使用 JSX 向 JavaScript 添加标记](/learn/writing-markup-with-jsx)
+* [如何在 JSX 中使用花括号，从组件中访问 JavaScript 功能](/learn/javascript-in-jsx-with-curly-braces)
+* [如何使用 props 配置组件](/learn/passing-props-to-a-component)
+* [如何有条件地渲染组件](/learn/conditional-rendering)
+* [如何一次渲染多个组件](/learn/rendering-lists)
+* [如何通过保持组件纯净来避免令人困惑的 bug](/learn/keeping-components-pure)
+* [为什么将 UI 理解为树很有用](/learn/understanding-your-ui-as-a-tree)
 
 </YouWillLearn>
 
-## Your first component {/*your-first-component*/}
+## 你的第一个组件 {/*your-first-component*/}
 
-React applications are built from isolated pieces of UI called *components*. A React component is a JavaScript function that you can sprinkle with markup. Components can be as small as a button, or as large as an entire page. Here is a `Gallery` component rendering three `Profile` components:
+React 应用由称为 *组件* 的独立 UI 片段构成。React 组件是一个可以穿插标记的 JavaScript 函数。组件可以小到一个按钮，也可以大到整个页面。下面是一个渲染三个 `Profile` 组件的 `Gallery` 组件：
 
 <Sandpack>
 
@@ -41,7 +41,7 @@ function Profile() {
 export default function Gallery() {
   return (
     <section>
-      <h1>Amazing scientists</h1>
+      <h1>杰出的科学家</h1>
       <Profile />
       <Profile />
       <Profile />
@@ -58,13 +58,13 @@ img { margin: 0 10px 10px 0; height: 90px; }
 
 <LearnMore path="/learn/your-first-component">
 
-Read **[Your First Component](/learn/your-first-component)** to learn how to declare and use React components.
+阅读 **[你的第一个组件](/learn/your-first-component)**，了解如何声明和使用 React 组件。
 
 </LearnMore>
 
-## Importing and exporting components {/*importing-and-exporting-components*/}
+## 导入和导出组件 {/*importing-and-exporting-components*/}
 
-You can declare many components in one file, but large files can get difficult to navigate. To solve this, you can *export* a component into its own file, and then *import* that component from another file:
+你可以在一个文件中声明许多组件，但大型文件可能会变得难以浏览。为了解决这个问题，你可以将组件 *导出* 到它自己的文件中，然后从另一个文件中 *导入* 这个组件：
 
 
 <Sandpack>
@@ -85,7 +85,7 @@ import Profile from './Profile.js';
 export default function Gallery() {
   return (
     <section>
-      <h1>Amazing scientists</h1>
+      <h1>杰出的科学家</h1>
       <Profile />
       <Profile />
       <Profile />
@@ -113,23 +113,23 @@ img { margin: 0 10px 10px 0; }
 
 <LearnMore path="/learn/importing-and-exporting-components">
 
-Read **[Importing and Exporting Components](/learn/importing-and-exporting-components)** to learn how to split components into their own files.
+阅读 **[导入和导出组件](/learn/importing-and-exporting-components)**，了解如何将组件拆分到它们自己的文件中。
 
 </LearnMore>
 
-## Writing markup with JSX {/*writing-markup-with-jsx*/}
+## 使用 JSX 编写标记 {/*writing-markup-with-jsx*/}
 
-Each React component is a JavaScript function that may contain some markup that React renders into the browser. React components use a syntax extension called JSX to represent that markup. JSX looks a lot like HTML, but it is a bit stricter and can display dynamic information.
+每个 React 组件都是一个 JavaScript 函数，其中可能包含一些由 React 渲染到浏览器中的标记。React 组件使用一种名为 JSX 的语法扩展来表示这些标记。JSX 看起来很像 HTML，但它更严格一些，并且可以显示动态信息。
 
-If we paste existing HTML markup into a React component, it won't always work:
+如果我们把已有的 HTML 标记粘贴到 React 组件中，它并不总是能正常工作：
 
 <Sandpack>
 
 ```js
 export default function TodoList() {
   return (
-    // This doesn't quite work!
-    <h1>Hedy Lamarr's Todos</h1>
+    // 这不太行！
+    <h1>Hedy Lamarr 的待办事项</h1>
     <img
       src="https://react.dev/images/docs/scientists/yXOvdOSs.jpg"
       alt="Hedy Lamarr"
@@ -150,7 +150,7 @@ img { height: 90px; }
 
 </Sandpack>
 
-If you have existing HTML like this, you can fix it using a [converter](https://transform.tools/html-to-jsx):
+如果你已有这样的 HTML，可以使用一个 [转换器](https://transform.tools/html-to-jsx) 来修复它：
 
 <Sandpack>
 
@@ -158,7 +158,7 @@ If you have existing HTML like this, you can fix it using a [converter](https://
 export default function TodoList() {
   return (
     <>
-      <h1>Hedy Lamarr's Todos</h1>
+      <h1>Hedy Lamarr 的待办事项</h1>
       <img
         src="https://react.dev/images/docs/scientists/yXOvdOSs.jpg"
         alt="Hedy Lamarr"
@@ -182,13 +182,13 @@ img { height: 90px; }
 
 <LearnMore path="/learn/writing-markup-with-jsx">
 
-Read **[Writing Markup with JSX](/learn/writing-markup-with-jsx)** to learn how to write valid JSX.
+阅读 **[使用 JSX 编写标记](/learn/writing-markup-with-jsx)**，了解如何编写有效的 JSX。
 
 </LearnMore>
 
-## JavaScript in JSX with curly braces {/*javascript-in-jsx-with-curly-braces*/}
+## 在 JSX 中使用花括号编写 JavaScript {/*javascript-in-jsx-with-curly-braces*/}
 
-JSX lets you write HTML-like markup inside a JavaScript file, keeping rendering logic and content in the same place. Sometimes you will want to add a little JavaScript logic or reference a dynamic property inside that markup. In this situation, you can use curly braces in your JSX to "open a window" to JavaScript:
+JSX 让你可以在 JavaScript 文件中编写类似 HTML 的标记，从而将渲染逻辑和内容放在同一个地方。有时你会想在这些标记中添加一点 JavaScript 逻辑，或者引用某个动态属性。在这种情况下，你可以在 JSX 中使用花括号，向 JavaScript “打开一扇窗”：
 
 <Sandpack>
 
@@ -204,7 +204,7 @@ const person = {
 export default function TodoList() {
   return (
     <div style={person.theme}>
-      <h1>{person.name}'s Todos</h1>
+      <h1>{person.name} 的待办事项</h1>
       <img
         className="avatar"
         src="https://react.dev/images/docs/scientists/7vQD0fPs.jpg"
@@ -230,13 +230,13 @@ body > div > div { padding: 20px; }
 
 <LearnMore path="/learn/javascript-in-jsx-with-curly-braces">
 
-Read **[JavaScript in JSX with Curly Braces](/learn/javascript-in-jsx-with-curly-braces)** to learn how to access JavaScript data from JSX.
+阅读 **[在 JSX 中使用花括号编写 JavaScript](/learn/javascript-in-jsx-with-curly-braces)**，了解如何从 JSX 访问 JavaScript 数据。
 
 </LearnMore>
 
-## Passing props to a component {/*passing-props-to-a-component*/}
+## 向组件传递 props {/*passing-props-to-a-component*/}
 
-React components use *props* to communicate with each other. Every parent component can pass some information to its child components by giving them props. Props might remind you of HTML attributes, but you can pass any JavaScript value through them, including objects, arrays, functions, and even JSX!
+React 组件使用 *props* 来彼此通信。每个父组件都可以通过给子组件传递 props，向它们提供一些信息。props 可能会让你联想到 HTML 属性，但你可以通过它们传递任何 JavaScript 值，包括对象、数组、函数，甚至 JSX！
 
 <Sandpack>
 
@@ -311,15 +311,15 @@ export function getImageUrl(person, size = 's') {
 
 <LearnMore path="/learn/passing-props-to-a-component">
 
-Read **[Passing Props to a Component](/learn/passing-props-to-a-component)** to learn how to pass and read props.
+阅读 **[向组件传递 props](/learn/passing-props-to-a-component)**，了解如何传递和读取 props。
 
 </LearnMore>
 
-## Conditional rendering {/*conditional-rendering*/}
+## 条件渲染 {/*conditional-rendering*/}
 
-Your components will often need to display different things depending on different conditions. In React, you can conditionally render JSX using JavaScript syntax like `if` statements, `&&`, and `? :` operators.
+你的组件通常需要根据不同条件显示不同内容。在 React 中，你可以使用 JavaScript 语法如 `if` 语句、`&&` 和 `? :` 运算符来有条件地渲染 JSX。
 
-In this example, the JavaScript `&&` operator is used to conditionally render a checkmark:
+在这个例子中，使用 JavaScript 的 `&&` 运算符来有条件地渲染一个对勾：
 
 <Sandpack>
 
@@ -335,7 +335,7 @@ function Item({ name, isPacked }) {
 export default function PackingList() {
   return (
     <section>
-      <h1>Sally Ride's Packing List</h1>
+      <h1>Sally Ride 的打包清单</h1>
       <ul>
         <Item
           isPacked={true}
@@ -359,15 +359,15 @@ export default function PackingList() {
 
 <LearnMore path="/learn/conditional-rendering">
 
-Read **[Conditional Rendering](/learn/conditional-rendering)** to learn the different ways to render content conditionally.
+阅读 **[条件渲染](/learn/conditional-rendering)**，了解有条件地渲染内容的不同方式。
 
 </LearnMore>
 
-## Rendering lists {/*rendering-lists*/}
+## 渲染列表 {/*rendering-lists*/}
 
-You will often want to display multiple similar components from a collection of data. You can use JavaScript's `filter()` and `map()` with React to filter and transform your array of data into an array of components.
+你经常会希望从一组数据中显示多个相似的组件。你可以将 JavaScript 的 `filter()` 和 `map()` 与 React 一起使用，把数据数组筛选并转换为组件数组。
 
-For each array item, you will need to specify a `key`. Usually, you will want to use an ID from the database as a `key`. Keys let React keep track of each item's place in the list even if the list changes.
+对于每个数组项，你都需要指定一个 `key`。通常，你会希望使用数据库中的 ID 作为 `key`。即使列表发生变化，key 也能让 React 追踪列表中每一项的位置。
 
 <Sandpack>
 
@@ -385,13 +385,13 @@ export default function List() {
       <p>
         <b>{person.name}:</b>
         {' ' + person.profession + ' '}
-        known for {person.accomplishment}
+        擅长 {person.accomplishment}
       </p>
     </li>
   );
   return (
     <article>
-      <h1>Scientists</h1>
+      <h1>科学家</h1>
       <ul>{listItems}</ul>
     </article>
   );
@@ -459,18 +459,18 @@ h2 { font-size: 20px; }
 
 <LearnMore path="/learn/rendering-lists">
 
-Read **[Rendering Lists](/learn/rendering-lists)** to learn how to render a list of components, and how to choose a key.
+阅读 **[渲染列表](/learn/rendering-lists)**，了解如何渲染组件列表，以及如何选择 key。
 
 </LearnMore>
 
-## Keeping components pure {/*keeping-components-pure*/}
+## 将组件保持纯净 {/*keeping-components-pure*/}
 
-Some JavaScript functions are *pure.* A pure function:
+一些 JavaScript 函数是*纯函数*。纯函数：
 
-* **Minds its own business.** It does not change any objects or variables that existed before it was called.
-* **Same inputs, same output.** Given the same inputs, a pure function should always return the same result.
+* **只处理自己的事情。** 它不会更改在调用之前已存在的任何对象或变量。
+* **相同的输入，相同的输出。** 给定相同的输入，纯函数应始终返回相同的结果。
 
-By strictly only writing your components as pure functions, you can avoid an entire class of baffling bugs and unpredictable behavior as your codebase grows. Here is an example of an impure component:
+通过严格地只将组件编写为纯函数，你可以避免随着代码库增长而出现的一整类令人困惑的 bug 和不可预测的行为。下面是一个不纯组件的示例：
 
 <Sandpack>
 
@@ -478,9 +478,9 @@ By strictly only writing your components as pure functions, you can avoid an ent
 let guest = 0;
 
 function Cup() {
-  // Bad: changing a preexisting variable!
+  // 糟糕：正在修改一个已存在的变量！
   guest = guest + 1;
-  return <h2>Tea cup for guest #{guest}</h2>;
+  return <h2>给第 #{guest} 位客人的茶杯</h2>;
 }
 
 export default function TeaSet() {
@@ -496,13 +496,13 @@ export default function TeaSet() {
 
 </Sandpack>
 
-You can make this component pure by passing a prop instead of modifying a preexisting variable:
+你可以通过传递 prop，而不是修改一个已存在的变量，来让这个组件变成纯函数：
 
 <Sandpack>
 
 ```js
 function Cup({ guest }) {
-  return <h2>Tea cup for guest #{guest}</h2>;
+  return <h2>给第 #{guest} 位客人的茶杯</h2>;
 }
 
 export default function TeaSet() {
@@ -520,43 +520,43 @@ export default function TeaSet() {
 
 <LearnMore path="/learn/keeping-components-pure">
 
-Read **[Keeping Components Pure](/learn/keeping-components-pure)** to learn how to write components as pure, predictable functions.
+阅读 **[Keeping Components Pure](/learn/keeping-components-pure)**，了解如何将组件编写为纯净、可预测的函数。
 
 </LearnMore>
 
-## Your UI as a tree {/*your-ui-as-a-tree*/}
+## 你的 UI 是一棵树 {/*your-ui-as-a-tree*/}
 
-React uses trees to model the relationships between components and modules.
+React 使用树来表示组件和模块之间的关系。
 
-A React render tree is a representation of the parent and child relationship between components.
+React 渲染树是组件之间父子关系的一种表示。
 
 <Diagram name="generic_render_tree" height={250} width={500} alt="A tree graph with five nodes, with each node representing a component. The root node is located at the top the tree graph and is labelled 'Root Component'. It has two arrows extending down to two nodes labelled 'Component A' and 'Component C'. Each of the arrows is labelled with 'renders'. 'Component A' has a single 'renders' arrow to a node labelled 'Component B'. 'Component C' has a single 'renders' arrow to a node labelled 'Component D'.">
 
-An example React render tree.
+一个 React 渲染树示例。
 
 </Diagram>
 
-Components near the top of the tree, near the root component, are considered top-level components. Components with no child components are leaf components. This categorization of components is useful for understanding data flow and rendering performance.
+树顶部、靠近根组件的组件被视为顶层组件。没有子组件的组件是叶子组件。这种对组件的分类有助于理解数据流和渲染性能。
 
-Modelling the relationship between JavaScript modules is another useful way to understand your app. We refer to it as a module dependency tree.
+将 JavaScript 模块之间的关系建模，是理解你的应用的另一种有用方式。我们将其称为模块依赖树。
 
 <Diagram name="generic_dependency_tree" height={250} width={500} alt="A tree graph with five nodes. Each node represents a JavaScript module. The top-most node is labelled 'RootModule.js'. It has three arrows extending to the nodes: 'ModuleA.js', 'ModuleB.js', and 'ModuleC.js'. Each arrow is labelled as 'imports'. 'ModuleC.js' node has a single 'imports' arrow that points to a node labelled 'ModuleD.js'.">
 
-An example module dependency tree.
+一个模块依赖树示例。
 
 </Diagram>
 
-A dependency tree is often used by build tools to bundle all the relevant JavaScript code for the client to download and render. A large bundle size regresses user experience for React apps. Understanding the module dependency tree is helpful to debug such issues.
+构建工具通常会使用依赖树来把客户端下载和渲染所需的所有相关 JavaScript 代码打包在一起。过大的 bundle 会降低 React 应用的用户体验。理解模块依赖树有助于调试这类问题。
 
 <LearnMore path="/learn/understanding-your-ui-as-a-tree">
 
-Read **[Your UI as a Tree](/learn/understanding-your-ui-as-a-tree)** to learn how to create a render and module dependency trees for a React app and how they're useful mental models for improving user experience and performance.
+阅读 **[Your UI as a Tree](/learn/understanding-your-ui-as-a-tree)**，了解如何为 React 应用创建渲染树和模块依赖树，以及它们如何作为改进用户体验和性能的有用心智模型。
 
 </LearnMore>
 
 
-## What's next? {/*whats-next*/}
+## 接下来是什么？ {/*whats-next*/}
 
-Head over to [Your First Component](/learn/your-first-component) to start reading this chapter page by page!
+前往 [Your First Component](/learn/your-first-component)，开始逐页阅读本章节！
 
-Or, if you're already familiar with these topics, why not read about [Adding Interactivity](/learn/adding-interactivity)?
+或者，如果你已经熟悉这些主题，为什么不继续阅读 [Adding Interactivity](/learn/adding-interactivity) 呢？

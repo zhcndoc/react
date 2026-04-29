@@ -4,15 +4,15 @@ title: forwardRef
 
 <Deprecated>
 
-In React 19, `forwardRef` is no longer necessary. Pass `ref` as a prop instead.
+在 React 19 中，`forwardRef` 已不再需要。请改为将 `ref` 作为 prop 传递。
 
-`forwardRef` will be deprecated in a future release. Learn more [here](/blog/2024/04/25/react-19#ref-as-a-prop).
+`forwardRef` 将在未来的版本中被弃用。了解更多信息 [这里](/blog/2024/04/25/react-19#ref-as-a-prop)。
 
 </Deprecated>
 
 <Intro>
 
-`forwardRef` lets your component expose a DOM node to the parent component with a [ref.](/learn/manipulating-the-dom-with-refs)
+`forwardRef` 让你的组件可以通过 [ref.](/learn/manipulating-the-dom-with-refs) 向父组件暴露一个 DOM 节点
 
 ```js
 const SomeComponent = forwardRef(render)
@@ -24,11 +24,11 @@ const SomeComponent = forwardRef(render)
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `forwardRef(render)` {/*forwardref*/}
 
-Call `forwardRef()` to let your component receive a ref and forward it to a child component:
+调用 `forwardRef()`，让你的组件接收一个 ref，并将它转发给子组件：
 
 ```js
 import { forwardRef } from 'react';
@@ -38,26 +38,26 @@ const MyInput = forwardRef(function MyInput(props, ref) {
 });
 ```
 
-[See more examples below.](#usage)
+[查看更多示例。](#usage)
 
-#### Parameters {/*parameters*/}
+#### 参数 {/*parameters*/}
 
-* `render`: The render function for your component. React calls this function with the props and `ref` that your component received from its parent. The JSX you return will be the output of your component.
+* `render`：你组件的渲染函数。React 会使用你的组件从父组件接收到的 props 和 `ref` 调用这个函数。你返回的 JSX 将成为你组件的输出。
 
-#### Returns {/*returns*/}
+#### 返回值 {/*returns*/}
 
-`forwardRef` returns a React component that you can render in JSX. Unlike React components defined as plain functions, a component returned by `forwardRef` is also able to receive a `ref` prop.
+`forwardRef` 返回一个可以在 JSX 中渲染的 React 组件。与普通函数定义的 React 组件不同，`forwardRef` 返回的组件也能够接收 `ref` prop。
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-* In Strict Mode, React will **call your render function twice** in order to [help you find accidental impurities.](/reference/react/useState#my-initializer-or-updater-function-runs-twice) This is development-only behavior and does not affect production. If your render function is pure (as it should be), this should not affect the logic of your component. The result from one of the calls will be ignored.
+* 在严格模式下，React 会**调用你的渲染函数两次**，以[帮助你发现意外的副作用。](/reference/react/useState#my-initializer-or-updater-function-runs-twice)这是仅在开发环境中的行为，不会影响生产环境。如果你的渲染函数是纯函数（它应该如此），这不会影响你组件的逻辑。两次调用中的一次结果会被忽略。
 
 
 ---
 
-### `render` function {/*render-function*/}
+### `render` 函数 {/*render-function*/}
 
-`forwardRef` accepts a render function as an argument. React calls this function with `props` and `ref`:
+`forwardRef` 接受一个渲染函数作为参数。React 会使用 `props` 和 `ref` 调用这个函数：
 
 ```js
 const MyInput = forwardRef(function MyInput(props, ref) {
@@ -70,23 +70,23 @@ const MyInput = forwardRef(function MyInput(props, ref) {
 });
 ```
 
-#### Parameters {/*render-parameters*/}
+#### 参数 {/*render-parameters*/}
 
-* `props`: The props passed by the parent component.
+* `props`：父组件传递的 props。
 
-* `ref`:  The `ref` attribute passed by the parent component. The `ref` can be an object or a function. If the parent component has not passed a ref, it will be `null`. You should either pass the `ref` you receive to another component, or pass it to [`useImperativeHandle`.](/reference/react/useImperativeHandle)
+* `ref`：父组件传递的 `ref` 属性。`ref` 可以是一个对象或一个函数。如果父组件没有传递 ref，它将为 `null`。你应该将接收到的 `ref` 传递给另一个组件，或者传给 [`useImperativeHandle`.](/reference/react/useImperativeHandle)
 
-#### Returns {/*render-returns*/}
+#### 返回值 {/*render-returns*/}
 
-`forwardRef` returns a React component that you can render in JSX. Unlike React components defined as plain functions, the component returned by `forwardRef` is able to take a `ref` prop.
+`forwardRef` 返回一个可以在 JSX 中渲染的 React 组件。与普通函数定义的 React 组件不同，`forwardRef` 返回的组件可以接收 `ref` prop。
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Exposing a DOM node to the parent component {/*exposing-a-dom-node-to-the-parent-component*/}
+### 向父组件暴露一个 DOM 节点 {/*exposing-a-dom-node-to-the-parent-component*/}
 
-By default, each component's DOM nodes are private. However, sometimes it's useful to expose a DOM node to the parent--for example, to allow focusing it. To opt in, wrap your component definition into `forwardRef()`:
+默认情况下，每个组件的 DOM 节点都是私有的。不过，有时向父组件暴露一个 DOM 节点会很有用——例如，允许它获得焦点。要启用这一点，请把你的组件定义包裹在 `forwardRef()` 中：
 
 ```js {3,11}
 import { forwardRef } from 'react';
@@ -102,7 +102,7 @@ const MyInput = forwardRef(function MyInput(props, ref) {
 });
 ```
 
-You will receive a <CodeStep step={1}>ref</CodeStep> as the second argument after props. Pass it to the DOM node that you want to expose:
+你会在 props 之后收到第二个参数 <CodeStep step={1}>ref</CodeStep>。把它传给你想要暴露的 DOM 节点：
 
 ```js {8} [[1, 3, "ref"], [1, 8, "ref", 30]]
 import { forwardRef } from 'react';
@@ -118,7 +118,7 @@ const MyInput = forwardRef(function MyInput(props, ref) {
 });
 ```
 
-This lets the parent `Form` component access the <CodeStep step={2}>`<input>` DOM node</CodeStep> exposed by `MyInput`:
+这让父组件 `Form` 能够访问 `MyInput` 暴露的 <CodeStep step={2}>`<input>` DOM 节点</CodeStep>：
 
 ```js [[1, 2, "ref"], [1, 10, "ref", 41], [2, 5, "ref.current"]]
 function Form() {
@@ -139,15 +139,15 @@ function Form() {
 }
 ```
 
-This `Form` component [passes a ref](/reference/react/useRef#manipulating-the-dom-with-a-ref) to `MyInput`. The `MyInput` component *forwards* that ref to the `<input>` browser tag. As a result, the `Form` component can access that `<input>` DOM node and call [`focus()`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus) on it.
+这个 `Form` 组件[传递了一个 ref](/reference/react/useRef#manipulating-the-dom-with-a-ref) 给 `MyInput`。`MyInput` 组件将这个 ref *转发* 到 `<input>` 浏览器标签。结果，`Form` 组件可以访问那个 `<input>` DOM 节点，并对它调用 [`focus()`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus)。
 
-Keep in mind that exposing a ref to the DOM node inside your component makes it harder to change your component's internals later. You will typically expose DOM nodes from reusable low-level components like buttons or text inputs, but you won't do it for application-level components like an avatar or a comment.
+请记住，将 ref 暴露给组件内部的 DOM 节点，会让你以后更难修改组件内部实现。通常你会从可复用的底层组件中暴露 DOM 节点，比如按钮或文本输入框，但不会对头像或评论这类应用层组件这样做。
 
-<Recipes titleText="Examples of forwarding a ref">
+<Recipes titleText="转发 ref 的示例">
 
-#### Focusing a text input {/*focusing-a-text-input*/}
+#### 聚焦文本输入框 {/*focusing-a-text-input*/}
 
-Clicking the button will focus the input. The `Form` component defines a ref and passes it to the `MyInput` component. The `MyInput` component forwards that ref to the browser `<input>`. This lets the `Form` component focus the `<input>`.
+点击按钮会聚焦输入框。`Form` 组件定义了一个 ref，并将它传递给 `MyInput` 组件。`MyInput` 组件将这个 ref 转发给浏览器 `<input>`。这让 `Form` 组件可以聚焦 `<input>`。
 
 <Sandpack>
 
@@ -199,9 +199,9 @@ input {
 
 <Solution />
 
-#### Playing and pausing a video {/*playing-and-pausing-a-video*/}
+#### 播放和暂停视频 {/*playing-and-pausing-a-video*/}
 
-Clicking the button will call [`play()`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/play) and [`pause()`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/pause) on a `<video>` DOM node. The `App` component defines a ref and passes it to the `MyVideoPlayer` component. The `MyVideoPlayer` component forwards that ref to the browser `<video>` node. This lets the `App` component play and pause the `<video>`.
+点击按钮会在一个 `<video>` DOM 节点上调用 [`play()`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/play) 和 [`pause()`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/pause)。`App` 组件定义了一个 ref，并将它传递给 `MyVideoPlayer` 组件。`MyVideoPlayer` 组件将这个 ref 转发给浏览器 `<video>` 节点。这让 `App` 组件可以播放和暂停 `<video>`。
 
 <Sandpack>
 
@@ -214,10 +214,10 @@ export default function App() {
   return (
     <>
       <button onClick={() => ref.current.play()}>
-        Play
+        播放
       </button>
       <button onClick={() => ref.current.pause()}>
-        Pause
+        暂停
       </button>
       <br />
       <MyVideoPlayer
@@ -260,9 +260,9 @@ button { margin-bottom: 10px; margin-right: 10px; }
 
 ---
 
-### Forwarding a ref through multiple components {/*forwarding-a-ref-through-multiple-components*/}
+### 通过多个组件转发 ref {/*forwarding-a-ref-through-multiple-components*/}
 
-Instead of forwarding a `ref` to a DOM node, you can forward it to your own component like `MyInput`:
+你可以不将 `ref` 转发给某个 DOM 节点，而是把它转发给你自己的组件，比如 `MyInput`：
 
 ```js {1,5}
 const FormField = forwardRef(function FormField(props, ref) {
@@ -276,7 +276,7 @@ const FormField = forwardRef(function FormField(props, ref) {
 });
 ```
 
-If that `MyInput` component forwards a ref to its `<input>`, a ref to `FormField` will give you that `<input>`:
+如果那个 `MyInput` 组件将 ref 转发到它的 `<input>` 上，那么指向 `FormField` 的 ref 就会给你那个 `<input>`：
 
 ```js {2,5,10}
 function Form() {
@@ -297,7 +297,7 @@ function Form() {
 }
 ```
 
-The `Form` component defines a ref and passes it to `FormField`. The `FormField` component forwards that ref to `MyInput`, which forwards it to a browser `<input>` DOM node. This is how `Form` accesses that DOM node.
+`Form` 组件定义了一个 ref，并将它传递给 `FormField`。`FormField` 组件将这个 ref 转发给 `MyInput`，而 `MyInput` 又将它转发给浏览器的 `<input>` DOM 节点。这就是 `Form` 访问那个 DOM 节点的方式。
 
 
 <Sandpack>
@@ -339,7 +339,7 @@ const FormField = forwardRef(function FormField({ label, isRequired }, ref) {
         onChange={e => setValue(e.target.value)}
       />
       {(isRequired && value === '') &&
-        <i>Required</i>
+        <i>必填</i>
       }
     </>
   );
@@ -375,9 +375,9 @@ input, button {
 
 ---
 
-### Exposing an imperative handle instead of a DOM node {/*exposing-an-imperative-handle-instead-of-a-dom-node*/}
+### 暴露一个命令式句柄，而不是 DOM 节点 {/*exposing-an-imperative-handle-instead-of-a-dom-node*/}
 
-Instead of exposing an entire DOM node, you can expose a custom object, called an *imperative handle,* with a more constrained set of methods. To do this, you'd need to define a separate ref to hold the DOM node:
+你可以不暴露整个 DOM 节点，而是暴露一个自定义对象，称为 *命令式句柄*，并提供一组更受限制的方法。为此，你需要定义一个单独的 ref 来保存 DOM 节点：
 
 ```js {2,6}
 const MyInput = forwardRef(function MyInput(props, ref) {
@@ -389,7 +389,7 @@ const MyInput = forwardRef(function MyInput(props, ref) {
 });
 ```
 
-Pass the `ref` you received to [`useImperativeHandle`](/reference/react/useImperativeHandle) and specify the value you want to expose to the `ref`:
+将你收到的 `ref` 传给 [`useImperativeHandle`](/reference/react/useImperativeHandle)，并指定你想要暴露给 `ref` 的值：
 
 ```js {6-15}
 import { forwardRef, useRef, useImperativeHandle } from 'react';
@@ -412,7 +412,7 @@ const MyInput = forwardRef(function MyInput(props, ref) {
 });
 ```
 
-If some component gets a ref to `MyInput`, it will only receive your `{ focus, scrollIntoView }` object instead of the DOM node. This lets you limit the information you expose about your DOM node to the minimum.
+如果某个组件拿到了 `MyInput` 的 ref，它接收到的将只是你的 `{ focus, scrollIntoView }` 对象，而不是 DOM 节点。这样你就可以把暴露给外界的 DOM 节点信息限制到最少。
 
 <Sandpack>
 
@@ -425,7 +425,7 @@ export default function Form() {
 
   function handleClick() {
     ref.current.focus();
-    // This won't work because the DOM node isn't exposed:
+    // 这将不起作用，因为 DOM 节点没有被暴露：
     // ref.current.style.opacity = 0.5;
   }
 
@@ -471,25 +471,25 @@ input {
 
 </Sandpack>
 
-[Read more about using imperative handles.](/reference/react/useImperativeHandle)
+[阅读更多关于使用命令式句柄的内容。](/reference/react/useImperativeHandle)
 
 <Pitfall>
 
-**Do not overuse refs.** You should only use refs for *imperative* behaviors that you can't express as props: for example, scrolling to a node, focusing a node, triggering an animation, selecting text, and so on.
+**不要过度使用 refs。** 你应该只将 refs 用于那些你无法用 props 表达的 *命令式* 行为：例如，滚动到某个节点、聚焦某个节点、触发动画、选中文本，等等。
 
-**If you can express something as a prop, you should not use a ref.** For example, instead of exposing an imperative handle like `{ open, close }` from a `Modal` component, it is better to take `isOpen` as a prop like `<Modal isOpen={isOpen} />`. [Effects](/learn/synchronizing-with-effects) can help you expose imperative behaviors via props.
+**如果某件事可以用 prop 表达，就不应该使用 ref。** 例如，不要从 `Modal` 组件中暴露像 `{ open, close }` 这样的命令式句柄，而应该把 `isOpen` 作为 prop 传入，例如 `<Modal isOpen={isOpen} />`。[Effects](/learn/synchronizing-with-effects) 可以帮助你通过 props 暴露命令式行为。
 
 </Pitfall>
 
 ---
 
-## Troubleshooting {/*troubleshooting*/}
+## 故障排除 {/*troubleshooting*/}
 
-### My component is wrapped in `forwardRef`, but the `ref` to it is always `null` {/*my-component-is-wrapped-in-forwardref-but-the-ref-to-it-is-always-null*/}
+### 我的组件被 `forwardRef` 包裹了，但它的 `ref` 总是 `null` {/*my-component-is-wrapped-in-forwardref-but-the-ref-to-it-is-always-null*/}
 
-This usually means that you forgot to actually use the `ref` that you received.
+这通常意味着你忘了实际使用你收到的 `ref`。
 
-For example, this component doesn't do anything with its `ref`:
+例如，这个组件没有对它的 `ref` 做任何事情：
 
 ```js {1}
 const MyInput = forwardRef(function MyInput({ label }, ref) {
@@ -502,7 +502,7 @@ const MyInput = forwardRef(function MyInput({ label }, ref) {
 });
 ```
 
-To fix it, pass the `ref` down to a DOM node or another component that can accept a ref:
+要修复它，请把 `ref` 传递给一个 DOM 节点，或者另一个可以接受 ref 的组件：
 
 ```js {1,5}
 const MyInput = forwardRef(function MyInput({ label }, ref) {
@@ -515,7 +515,7 @@ const MyInput = forwardRef(function MyInput({ label }, ref) {
 });
 ```
 
-The `ref` to `MyInput` could also be `null` if some of the logic is conditional:
+如果某些逻辑是条件性的，`MyInput` 的 `ref` 也可能是 `null`：
 
 ```js {1,5}
 const MyInput = forwardRef(function MyInput({ label, showInput }, ref) {
@@ -528,7 +528,7 @@ const MyInput = forwardRef(function MyInput({ label, showInput }, ref) {
 });
 ```
 
-If `showInput` is `false`, then the ref won't be forwarded to any node, and a ref to `MyInput` will remain empty. This is particularly easy to miss if the condition is hidden inside another component, like `Panel` in this example:
+如果 `showInput` 是 `false`，那么 ref 不会被转发到任何节点，`MyInput` 的 ref 将保持为空。如果条件隐藏在另一个组件中，这一点尤其容易被忽略，比如这个例子中的 `Panel`：
 
 ```js {5,7}
 const MyInput = forwardRef(function MyInput({ label, showInput }, ref) {

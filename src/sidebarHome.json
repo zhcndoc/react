@@ -1,117 +1,117 @@
 {
-  "title": "React Docs",
+  "title": "React 文档",
   "path": "/",
   "routes": [
     {
       "hasSectionHeader": true,
-      "sectionHeader": "GET STARTED"
+      "sectionHeader": "快速开始"
     },
     {
-      "title": "Quick Start",
+      "title": "快速开始",
       "path": "/learn"
     },
     {
-      "title": "Installation",
+      "title": "安装",
       "path": "/learn/installation"
     },
     {
-      "title": "Setup",
+      "title": "设置",
       "path": "/learn/setup"
     },
     {
-      "title": "React Compiler",
+      "title": "React 编译器",
       "path": "/learn/react-compiler"
     },
     {
       "hasSectionHeader": true,
-      "sectionHeader": "LEARN REACT"
+      "sectionHeader": "学习 React"
     },
     {
-      "title": "Describing the UI",
+      "title": "描述界面",
       "path": "/learn/describing-the-ui"
     },
     {
-      "title": "Adding Interactivity",
+      "title": "添加交互",
       "path": "/learn/adding-interactivity"
     },
     {
-      "title": "Managing State",
+      "title": "管理状态",
       "path": "/learn/managing-state"
     },
     {
-      "title": "Escape Hatches",
+      "title": "逃生通道",
       "path": "/learn/escape-hatches"
     },
     {
       "hasSectionHeader": true,
-      "sectionHeader": "REACT API"
+      "sectionHeader": "React API"
     },
     {
       "title": "Hooks",
       "path": "/reference/react"
     },
     {
-      "title": "Components",
+      "title": "组件",
       "path": "/reference/react/components"
     },
     {
-      "title": "APIs",
+      "title": "API",
       "path": "/reference/react/apis"
     },
     {
-      "title": "Legacy APIs",
+      "title": "旧版 API",
       "path": "/reference/react/legacy"
     },
     {
       "hasSectionHeader": true,
-      "sectionHeader": "REACT DOM API"
+      "sectionHeader": "React DOM API"
     },
     {
-      "title": "Components",
+      "title": "组件",
       "path": "/reference/react-dom/components"
     },
     {
-      "title": "APIs",
+      "title": "API",
       "path": "/reference/react-dom"
     },
     {
-      "title": "Client APIs",
+      "title": "客户端 API",
       "path": "/reference/react-dom/client"
     },
     {
-      "title": "Server APIs",
+      "title": "服务端 API",
       "path": "/reference/react-dom/server"
     },
     {
       "hasSectionHeader": true,
-      "sectionHeader": "REACT COMPILER API"
+      "sectionHeader": "React 编译器 API"
     },
     {
-      "title": "Configuration",
+      "title": "配置",
       "path": "/reference/react-compiler/configuration"
     },
     {
-      "title": "Directives",
+      "title": "指令",
       "path": "/reference/react-compiler/directives"
     },
     {
-      "title": "Compiling Libraries",
+      "title": "编译库",
       "path": "/reference/react-compiler/compiling-libraries"
     },
     {
       "hasSectionHeader": true,
-      "sectionHeader": "GET INVOLVED"
+      "sectionHeader": "参与其中"
     },
     {
-      "title": "React Community",
+      "title": "React 社区",
       "path": "/community"
     },
     {
       "hasSectionHeader": true,
-      "sectionHeader": "STAY INFORMED"
+      "sectionHeader": "获取资讯"
     },
     {
-      "title": "React Blog",
+      "title": "React 博客",
       "path": "/blog"
     }
   ]

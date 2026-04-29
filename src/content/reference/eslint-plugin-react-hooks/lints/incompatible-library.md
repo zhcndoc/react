@@ -4,59 +4,59 @@ title: incompatible-library
 
 <Intro>
 
-Validates against usage of libraries which are incompatible with memoization (manual or automatic).
+验证与与 memoization（手动或自动）不兼容的库使用情况。
 
 </Intro>
 
 <Note>
 
-These libraries were designed before React's memoization rules were fully documented. They made the correct choices at the time to optimize for ergonomic ways to keep components just the right amount of reactive as app state changes. While these legacy patterns worked, we have since discovered that it's incompatible with React's programming model. We will continue working with library authors to migrate these libraries to use patterns that follow the Rules of React.
+这些库是在 React 的 memoization 规则尚未被充分记录之前设计的。当时它们做出了正确的选择，以优化在应用状态变化时让组件保持“恰到好处”的响应性这一更符合开发体验的方式。虽然这些旧模式曾经有效，但我们后来发现它们与 React 的编程模型不兼容。我们将继续与库作者合作，将这些库迁移到遵循 React 规则的模式。
 
 </Note>
 
 ## Rule Details {/*rule-details*/}
 
-Some libraries use patterns that aren't supported by React. When the linter detects usages of these APIs from a [known list](https://github.com/facebook/react/blob/main/compiler/packages/babel-plugin-react-compiler/src/HIR/DefaultModuleTypeProvider.ts), it flags them under this rule. This means that React Compiler can automatically skip over components that use these incompatible APIs, in order to avoid breaking your app.
+某些库使用了 React 不支持的模式。当 linter 检测到来自[已知列表](https://github.com/facebook/react/blob/main/compiler/packages/babel-plugin-react-compiler/src/HIR/DefaultModuleTypeProvider.ts)中的这些 API 的使用时，会根据这条规则将其标记出来。这意味着 React Compiler 可以自动跳过使用这些不兼容 API 的组件，从而避免破坏你的应用。
 
 ```js
-// Example of how memoization breaks with these libraries
+// 这些库中 memoization 失效的示例
 function Form() {
   const { watch } = useForm();
 
-  // ❌ This value will never update, even when 'name' field changes
+  // ❌ 即使 'name' 字段变化，这个值也永远不会更新
   const name = useMemo(() => watch('name'), [watch]);
 
-  return <div>Name: {name}</div>; // UI appears "frozen"
+  return <div>Name: {name}</div>; // UI 看起来“冻结”了
 }
 ```
 
-React Compiler automatically memoizes values following the Rules of React. If something breaks with manual `useMemo`, it will also break the compiler's automatic optimization. This rule helps identify these problematic patterns.
+React Compiler 会根据 React 规则自动对值进行 memoization。如果手动使用 `useMemo` 会出错，那么编译器的自动优化也会出错。这条规则有助于识别这些有问题的模式。
 
 <DeepDive>
 
-#### Designing APIs that follow the Rules of React {/*designing-apis-that-follow-the-rules-of-react*/}
+#### 设计遵循 React 规则的 API {/*designing-apis-that-follow-the-rules-of-react*/}
 
-One question to think about when designing a library API or hook is whether calling the API can be safely memoized with `useMemo`. If it can't, then both manual and React Compiler memoizations will break your user's code.
+在设计库的 API 或 hook 时，需要思考的一个问题是：调用该 API 是否可以安全地用 `useMemo` 进行 memoization。如果不行，那么无论是手动 memoization 还是 React Compiler 的 memoization，都会破坏用户的代码。
 
-For example, one such incompatible pattern is "interior mutability". Interior mutability is when an object or function keeps its own hidden state that changes over time, even though the reference to it stays the same. Think of it like a box that looks the same on the outside but secretly rearranges its contents. React can't tell anything changed because it only checks if you gave it a different box, not what's inside. This breaks memoization, since React relies on the outer object (or function) changing if part of its value has changed.
+例如，一种不兼容的模式是“内部可变性”（interior mutability）。内部可变性指的是：一个对象或函数会保留自己的隐藏状态，并且这个状态会随着时间发生变化，尽管它的引用保持不变。可以把它想象成一个外表看起来一样、但内部内容会悄悄重排的盒子。React 无法判断任何东西变了，因为它只会检查你是否给了它一个不同的盒子，而不会看盒子里面是什么。这会破坏 memoization，因为 React 依赖外层对象（或函数）在其值的某部分发生变化时也随之变化。
 
-As a rule of thumb, when designing React APIs, think about whether `useMemo` would break it:
+通常来说，在设计 React API 时，要思考 `useMemo` 是否会把它弄坏：
 
 ```js
 function Component() {
   const { someFunction } = useLibrary();
-  // it should always be safe to memoize functions like this
+  // 像这样的函数，应该始终可以安全地进行 memoization
   const result = useMemo(() => someFunction(), [someFunction]);
 }
 ```
 
-Instead, design APIs that return immutable state and use explicit update functions:
+相反，应当设计返回不可变状态并使用显式更新函数的 API：
 
 ```js
-// ✅ Good: Return immutable state that changes reference when updated
+// ✅ 好：返回不可变状态，在更新时引用会变化
 function Component() {
   const { field, updateField } = useLibrary();
-  // this is always safe to memo
+  // 这样做始终可以安全地进行 memo
   const greeting = useMemo(() => `Hello, ${field.name}!`, [field.name]);
 
   return (
@@ -75,13 +75,13 @@ function Component() {
 
 ### Invalid {/*invalid*/}
 
-Examples of incorrect code for this rule:
+以下是此规则的错误代码示例：
 
 ```js
 // ❌ react-hook-form `watch`
 function Component() {
   const {watch} = useForm();
-  const value = watch('field'); // Interior mutability
+  const value = watch('field'); // 内部可变性
   return <div>{value}</div>;
 }
 
@@ -92,7 +92,7 @@ function Component({data}) {
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
-  // table instance uses interior mutability
+  // table 实例使用了内部可变性
   return <Table table={table} />;
 }
 ```
@@ -101,13 +101,13 @@ function Component({data}) {
 
 #### MobX {/*mobx*/}
 
-MobX patterns like `observer` also break memoization assumptions, but the linter does not yet detect them. If you rely on MobX and find that your app doesn't work with React Compiler, you may need to use the `"use no memo" directive`.
+像 `observer` 这样的 MobX 模式也会破坏 memoization 的假设，但 linter 目前还不能检测到它们。如果你依赖 MobX，并且发现你的应用与 React Compiler 不兼容，你可能需要使用 `"use no memo" 指令`。
 
 ```js
 // ❌ MobX `observer`
 const Component = observer(() => {
   const [timer] = useState(() => new Timer());
-  return <span>Seconds passed: {timer.secondsPassed}</span>;
+  return <span>已经过去的秒数：{timer.secondsPassed}</span>;
 });
 ```
 
@@ -115,10 +115,10 @@ const Component = observer(() => {
 
 ### Valid {/*valid*/}
 
-Examples of correct code for this rule:
+以下是此规则的正确代码示例：
 
 ```js
-// ✅ For react-hook-form, use `useWatch`:
+// ✅ 对于 react-hook-form，使用 `useWatch`：
 function Component() {
   const {register, control} = useForm();
   const watchedValue = useWatch({
@@ -129,10 +129,10 @@ function Component() {
   return (
     <>
       <input {...register('field')} />
-      <div>Current value: {watchedValue}</div>
+      <div>当前值：{watchedValue}</div>
     </>
   );
 }
 ```
 
-Some other libraries do not yet have alternative APIs that are compatible with React's memoization model. If the linter doesn't automatically skip over your components or hooks that call these APIs, please [file an issue](https://github.com/facebook/react/issues) so we can add it to the linter.
+还有一些其他库目前还没有与 React 的 memoization 模型兼容的替代 API。如果 linter 不能自动跳过调用这些 API 的组件或 hooks，请[提交 issue](https://github.com/facebook/react/issues)，这样我们就可以把它添加到 linter 中。

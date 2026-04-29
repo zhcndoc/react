@@ -4,13 +4,13 @@ title: target
 
 <Intro>
 
-The `target` option specifies which React version the compiler should generate code for.
+`target` 选项指定编译器应为哪个 React 版本生成代码。
 
 </Intro>
 
 ```js
 {
-  target: '19' // or '18', '17'
+  target: '19' // 或 '18'、'17'
 }
 ```
 
@@ -18,131 +18,131 @@ The `target` option specifies which React version the compiler should generate c
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `target` {/*target*/}
 
-Configures the React version compatibility for the compiled output.
+配置编译后输出的 React 版本兼容性。
 
-#### Type {/*type*/}
+#### 类型 {/*type*/}
 
 ```
 '17' | '18' | '19'
 ```
 
-#### Default value {/*default-value*/}
+#### 默认值 {/*default-value*/}
 
 `'19'`
 
-#### Valid values {/*valid-values*/}
+#### 有效值 {/*valid-values*/}
 
-- **`'19'`**: Target React 19 (default). No additional runtime required.
-- **`'18'`**: Target React 18. Requires `react-compiler-runtime` package.
-- **`'17'`**: Target React 17. Requires `react-compiler-runtime` package.
+- **`'19'`**：目标 React 19（默认）。不需要额外的运行时。
+- **`'18'`**：目标 React 18。需要 `react-compiler-runtime` 包。
+- **`'17'`**：目标 React 17。需要 `react-compiler-runtime` 包。
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-- Always use string values, not numbers (e.g., `'17'` not `17`)
-- Don't include patch versions (e.g., use `'18'` not `'18.2.0'`)
-- React 19 includes built-in compiler runtime APIs
-- React 17 and 18 require installing `react-compiler-runtime@latest`
+- 始终使用字符串值，而不是数字（例如，`'17'` 而不是 `17`）
+- 不要包含补丁版本号（例如，使用 `'18'` 而不是 `'18.2.0'`）
+- React 19 包含内置的编译器运行时 API
+- React 17 和 18 需要安装 `react-compiler-runtime@latest`
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Targeting React 19 (default) {/*targeting-react-19*/}
+### 以 React 19 为目标（默认） {/*targeting-react-19*/}
 
-For React 19, no special configuration is needed:
+对于 React 19，无需特殊配置：
 
 ```js
 {
-  // defaults to target: '19'
+  // 默认为 target: '19'
 }
 ```
 
-The compiler will use React 19's built-in runtime APIs:
+编译器将使用 React 19 内置的运行时 API：
 
 ```js
-// Compiled output uses React 19's native APIs
+// 编译后的输出使用 React 19 的原生 API
 import { c as _c } from 'react/compiler-runtime';
 ```
 
-### Targeting React 17 or 18 {/*targeting-react-17-or-18*/}
+### 以 React 17 或 18 为目标 {/*targeting-react-17-or-18*/}
 
-For React 17 and React 18 projects, you need two steps:
+对于 React 17 和 React 18 项目，你需要两个步骤：
 
-1. Install the runtime package:
+1. 安装运行时包：
 
 ```bash
 npm install react-compiler-runtime@latest
 ```
 
-2. Configure the target:
+2. 配置目标版本：
 
 ```js
-// For React 18
+// 对于 React 18
 {
   target: '18'
 }
 
-// For React 17
+// 对于 React 17
 {
   target: '17'
 }
 ```
 
-The compiler will use the polyfill runtime for both versions:
+编译器将为这两个版本使用 polyfill 运行时：
 
 ```js
-// Compiled output uses the polyfill
+// 编译后的输出使用 polyfill
 import { c as _c } from 'react-compiler-runtime';
 ```
 
 ---
 
-## Troubleshooting {/*troubleshooting*/}
+## 故障排查 {/*troubleshooting*/}
 
-### Runtime errors about missing compiler runtime {/*missing-runtime*/}
+### 关于缺少编译器运行时的运行时错误 {/*missing-runtime*/}
 
-If you see errors like "Cannot find module 'react/compiler-runtime'":
+如果你看到类似 “Cannot find module 'react/compiler-runtime'” 的错误：
 
-1. Check your React version:
+1. 检查你的 React 版本：
    ```bash
    npm why react
    ```
 
-2. If using React 17 or 18, install the runtime:
+2. 如果使用 React 17 或 18，请安装运行时：
    ```bash
    npm install react-compiler-runtime@latest
    ```
 
-3. Ensure your target matches your React version:
+3. 确保你的 target 与 React 版本匹配：
    ```js
    {
-     target: '18' // Must match your React major version
+     target: '18' // 必须与你的 React 主版本匹配
    }
    ```
 
-### Runtime package not working {/*runtime-not-working*/}
+### 运行时包不起作用 {/*runtime-not-working*/}
 
-Ensure the runtime package is:
+请确保运行时包：
 
-1. Installed in your project (not globally)
-2. Listed in your `package.json` dependencies
-3. The correct version (`@latest` tag)
-4. Not in `devDependencies` (it's needed at runtime)
+1. 安装在你的项目中（而不是全局）
+2. 列在你的 `package.json` 依赖项中
+3. 使用正确的版本（`@latest` 标签）
+4. 不在 `devDependencies` 中（它在运行时需要）
 
-### Checking compiled output {/*checking-output*/}
+### 检查编译后的输出 {/*checking-output*/}
 
-To verify the correct runtime is being used, note the different import (`react/compiler-runtime` for builtin, `react-compiler-runtime` standalone package for 17/18):
+要验证是否使用了正确的运行时，请注意不同的导入（内置使用 `react/compiler-runtime`，17/18 的独立包使用 `react-compiler-runtime`）：
 
 ```js
-// For React 19 (built-in runtime)
+// 对于 React 19（内置运行时）
 import { c } from 'react/compiler-runtime'
 //                      ^
 
-// For React 17/18 (polyfill runtime)
+// 对于 React 17/18（polyfill 运行时）
 import { c } from 'react-compiler-runtime'
 //                      ^
 ```

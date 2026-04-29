@@ -4,4 +4,4 @@ title: React
 permalink: index.html
 ---
 
-{/* See HomeContent.js */}
+{/* 参见 HomeContent.js */}

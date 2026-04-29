@@ -1,68 +1,68 @@
 ---
-title: Add React to an Existing Project
+title: 将 React 添加到现有项目
 ---
 
 <Intro>
 
-If you want to add some interactivity to your existing project, you don't have to rewrite it in React. Add React to your existing stack, and render interactive React components anywhere.
+如果你想为现有项目添加一些交互性，你不必用 React 重写它。将 React 添加到你现有的技术栈中，并在任何地方渲染交互式 React 组件。
 
 </Intro>
 
 <Note>
 
-**You need to install [Node.js](https://nodejs.org/en/) for local development.** Although you can [try React](/learn/installation#try-react) online or with a simple HTML page, realistically most JavaScript tooling you'll want to use for development requires Node.js.
+**你需要安装 [Node.js](https://nodejs.org/en/) 才能进行本地开发。** 虽然你可以在线 [试用 React](/learn/installation#try-react)，或者用一个简单的 HTML 页面来试用，但实际上你在开发中想使用的大多数 JavaScript 工具链都需要 Node.js。
 
 </Note>
 
-## Using React for an entire subroute of your existing website {/*using-react-for-an-entire-subroute-of-your-existing-website*/}
+## 将 React 用于现有网站的整个子路由 {/*using-react-for-an-entire-subroute-of-your-existing-website*/}
 
-Let's say you have an existing web app at `example.com` built with another server technology (like Rails), and you want to implement all routes starting with `example.com/some-app/` fully with React.
+假设你在 `example.com` 上有一个使用其他服务器技术（比如 Rails）构建的现有 Web 应用，并且你想用 React 完整实现所有以 `example.com/some-app/` 开头的路由。
 
-Here's how we recommend to set it up:
+我们建议这样设置：
 
-1. **Build the React part of your app** using one of the [React-based frameworks](/learn/creating-a-react-app).
-2. **Specify `/some-app` as the *base path*** in your framework's configuration (here's how: [Next.js](https://nextjs.org/docs/app/api-reference/config/next-config-js/basePath), [Gatsby](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/path-prefix/)).
-3. **Configure your server or a proxy** so that all requests under `/some-app/` are handled by your React app.
+1. **使用其中一个 [基于 React 的框架](/learn/creating-a-react-app) 构建应用的 React 部分**。
+2. **在框架配置中将 `/some-app` 指定为 *基础路径***（方法如下：[Next.js](https://nextjs.org/docs/app/api-reference/config/next-config-js/basePath)、[Gatsby](https://www.gatsbyjs.com/docs/how-to/previews-deploys-hosting/path-prefix/)）。
+3. **配置你的服务器或代理**，使 `/some-app/` 下的所有请求都由你的 React 应用处理。
 
-This ensures the React part of your app can [benefit from the best practices](/learn/build-a-react-app-from-scratch#consider-using-a-framework) baked into those frameworks.
+这可以确保你应用中的 React 部分能够[受益于这些框架中内置的最佳实践](/learn/build-a-react-app-from-scratch#consider-using-a-framework)。
 
-Many React-based frameworks are full-stack and let your React app take advantage of the server. However, you can use the same approach even if you can't or don't want to run JavaScript on the server. In that case, serve the HTML/CSS/JS export ([`next export` output](https://nextjs.org/docs/advanced-features/static-html-export) for Next.js, default for Gatsby) at `/some-app/` instead.
+许多基于 React 的框架是全栈的，允许你的 React 应用利用服务器。不过，即使你不能或不想在服务器上运行 JavaScript，你也可以采用同样的方法。此时，将 HTML/CSS/JS 导出内容（Next.js 为 [`next export` 输出](https://nextjs.org/docs/advanced-features/static-html-export)，Gatsby 默认为此方式）改为托管在 `/some-app/` 即可。
 
-## Using React for a part of your existing page {/*using-react-for-a-part-of-your-existing-page*/}
+## 将 React 用于现有页面的一部分 {/*using-react-for-a-part-of-your-existing-page*/}
 
-Let's say you have an existing page built with another technology (either a server one like Rails, or a client one like Backbone), and you want to render interactive React components somewhere on that page. That's a common way to integrate React--in fact, it's how most React usage looked at Meta for many years!
+假设你有一个用其他技术构建的现有页面（无论是像 Rails 这样的服务端技术，还是像 Backbone 这样的客户端技术），并且你想在该页面的某个位置渲染交互式 React 组件。这是集成 React 的常见方式——实际上，这也是 Meta 多年来大多数 React 使用方式的样子！
 
-You can do this in two steps:
+你可以分两步完成：
 
-1. **Set up a JavaScript environment** that lets you use the [JSX syntax](/learn/writing-markup-with-jsx), split your code into modules with the [`import`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) / [`export`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export) syntax, and use packages (for example, React) from the [npm](https://www.npmjs.com/) package registry.
-2. **Render your React components** where you want to see them on the page.
+1. **搭建一个 JavaScript 环境**，让你可以使用 [JSX 语法](/learn/writing-markup-with-jsx)，使用 [`import`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) / [`export`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export) 语法将代码拆分为模块，并使用来自 [npm](https://www.npmjs.com/) 包注册表的包（例如 React）。
+2. **渲染你的 React 组件** 到你希望它们出现在页面中的位置。
 
-The exact approach depends on your existing page setup, so let's walk through some details.
+具体做法取决于你现有的页面设置，因此让我们逐步了解一些细节。
 
-### Step 1: Set up a modular JavaScript environment {/*step-1-set-up-a-modular-javascript-environment*/}
+### 第 1 步：搭建模块化 JavaScript 环境 {/*step-1-set-up-a-modular-javascript-environment*/}
 
-A modular JavaScript environment lets you write your React components in individual files, as opposed to writing all of your code in a single file. It also lets you use all the wonderful packages published by other developers on the [npm](https://www.npmjs.com/) registry--including React itself! How you do this depends on your existing setup:
+模块化 JavaScript 环境让你可以把 React 组件写在单独的文件中，而不是把所有代码都写在一个文件里。它还让你可以使用其他开发者在 [npm](https://www.npmjs.com/) 注册表上发布的各种优秀包——包括 React 本身！具体做法取决于你现有的设置：
 
-* **If your app is already split into files that use `import` statements,** try to use the setup you already have. Check whether writing `<div />` in your JS code causes a syntax error. If it causes a syntax error, you might need to [transform your JavaScript code with Babel](https://babeljs.io/setup), and enable the [Babel React preset](https://babeljs.io/docs/babel-preset-react) to use JSX.
+* **如果你的应用已经拆分为使用 `import` 语句的多个文件，** 尝试直接使用你已有的设置。检查在你的 JS 代码中写 `<div />` 是否会导致语法错误。如果会导致语法错误，你可能需要使用 [Babel 转换你的 JavaScript 代码](https://babeljs.io/setup)，并启用 [Babel React 预设](https://babeljs.io/docs/babel-preset-react) 来使用 JSX。
 
-* **If your app doesn't have an existing setup for compiling JavaScript modules,** set it up with [Vite](https://vite.dev/). The Vite community maintains [many integrations with backend frameworks](https://github.com/vitejs/awesome-vite#integrations-with-backends), including Rails, Django, and Laravel. If your backend framework is not listed, [follow this guide](https://vite.dev/guide/backend-integration.html) to manually integrate Vite builds with your backend.
+* **如果你的应用还没有用于编译 JavaScript 模块的现有设置，** 请使用 [Vite](https://vite.dev/) 来搭建。Vite 社区维护着[许多与后端框架的集成](https://github.com/vitejs/awesome-vite#integrations-with-backends)，包括 Rails、Django 和 Laravel。如果你的后端框架不在列表中，请[按照此指南](https://vite.dev/guide/backend-integration.html)手动将 Vite 构建集成到你的后端中。
 
-To check whether your setup works, run this command in your project folder:
+要检查你的设置是否可用，请在项目文件夹中运行此命令：
 
 <TerminalBlock>
 npm install react react-dom
 </TerminalBlock>
 
-Then add these lines of code at the top of your main JavaScript file (it might be called `index.js` or `main.js`):
+然后将以下代码行添加到主 JavaScript 文件顶部（它可能名为 `index.js` 或 `main.js`）：
 
 <Sandpack>
 
 ```html public/index.html hidden
 <!DOCTYPE html>
 <html>
-  <head><title>My app</title></head>
+  <head><title>我的应用</title></head>
   <body>
-    <!-- Your existing page content (in this example, it gets replaced) -->
+    <!-- 你的现有页面内容（在此示例中，它会被替换） -->
     <div id="root"></div>
   </body>
 </html>
@@ -71,63 +71,63 @@ Then add these lines of code at the top of your main JavaScript file (it might b
 ```js src/index.js active
 import { createRoot } from 'react-dom/client';
 
-// Clear the existing HTML content
+// 清除现有的 HTML 内容
 document.body.innerHTML = '<div id="app"></div>';
 
-// Render your React component instead
+// 改为渲染你的 React 组件
 const root = createRoot(document.getElementById('app'));
 root.render(<h1>Hello, world</h1>);
 ```
 
 </Sandpack>
 
-If the entire content of your page was replaced by a "Hello, world!", everything worked! Keep reading.
+如果你的整个页面内容被替换成了 “Hello, world!” ，那就说明一切正常！继续往下看。
 
 <Note>
 
-Integrating a modular JavaScript environment into an existing project for the first time can feel intimidating, but it's worth it! If you get stuck, try our [community resources](/community) or the [Vite Chat](https://chat.vite.dev/).
+第一次将模块化 JavaScript 环境集成到现有项目中可能会让人觉得有些棘手，但这是值得的！如果你遇到困难，试试我们的[社区资源](/community)或 [Vite Chat](https://chat.vite.dev/)。
 
 </Note>
 
-### Step 2: Render React components anywhere on the page {/*step-2-render-react-components-anywhere-on-the-page*/}
+### 第 2 步：在页面任意位置渲染 React 组件 {/*step-2-render-react-components-anywhere-on-the-page*/}
 
-In the previous step, you put this code at the top of your main file:
+在上一步中，你把这段代码放在了主文件顶部：
 
 ```js
 import { createRoot } from 'react-dom/client';
 
-// Clear the existing HTML content
+// 清除现有的 HTML 内容
 document.body.innerHTML = '<div id="app"></div>';
 
-// Render your React component instead
+// 改为渲染你的 React 组件
 const root = createRoot(document.getElementById('app'));
 root.render(<h1>Hello, world</h1>);
 ```
 
-Of course, you don't actually want to clear the existing HTML content!
+当然，你实际上并不想清除现有的 HTML 内容！
 
-Delete this code.
+删除这段代码。
 
-Instead, you probably want to render your React components in specific places in your HTML. Open your HTML page (or the server templates that generate it) and add a unique [`id`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/id) attribute to any tag, for example:
+相反，你可能希望把 React 组件渲染到 HTML 中的特定位置。打开你的 HTML 页面（或生成它的服务器模板），并为任意标签添加一个唯一的 [`id`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/id) 属性，例如：
 
 ```html
-<!-- ... somewhere in your html ... -->
+<!-- ... 你的 html 中的某处 ... -->
 <nav id="navigation"></nav>
-<!-- ... more html ... -->
+<!-- ... 更多 html ... -->
 ```
 
-This lets you find that HTML element with [`document.getElementById`](https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementById) and pass it to [`createRoot`](/reference/react-dom/client/createRoot) so that you can render your own React component inside:
+这样你就可以使用 [`document.getElementById`](https://developer.mozilla.org/en-US/docs/Web/API/Document/getElementById) 找到该 HTML 元素，并将它传给 [`createRoot`](/reference/react-dom/client/createRoot)，从而在其中渲染你自己的 React 组件：
 
 <Sandpack>
 
 ```html public/index.html
 <!DOCTYPE html>
 <html>
-  <head><title>My app</title></head>
+  <head><title>我的应用</title></head>
   <body>
-    <p>This paragraph is a part of HTML.</p>
+    <p>这个段落是 HTML 的一部分。</p>
     <nav id="navigation"></nav>
-    <p>This paragraph is also a part of HTML.</p>
+    <p>这个段落也是 HTML 的一部分。</p>
   </body>
 </html>
 ```
@@ -136,7 +136,7 @@ This lets you find that HTML element with [`document.getElementById`](https://de
 import { createRoot } from 'react-dom/client';
 
 function NavigationBar() {
-  // TODO: Actually implement a navigation bar
+  // TODO：实际实现一个导航栏
   return <h1>Hello from React!</h1>;
 }
 
@@ -147,10 +147,10 @@ root.render(<NavigationBar />);
 
 </Sandpack>
 
-Notice how the original HTML content from `index.html` is preserved, but your own `NavigationBar` React component now appears inside the `<nav id="navigation">` from your HTML. Read the [`createRoot` usage documentation](/reference/react-dom/client/createRoot#rendering-a-page-partially-built-with-react) to learn more about rendering React components inside an existing HTML page.
+请注意，`index.html` 中原有的 HTML 内容得以保留，而你自己的 `NavigationBar` React 组件现在出现在 HTML 中的 `<nav id="navigation">` 内。阅读 [`createRoot` 使用文档](/reference/react-dom/client/createRoot#rendering-a-page-partially-built-with-react)，了解更多关于在现有 HTML 页面中渲染 React 组件的信息。
 
-When you adopt React in an existing project, it's common to start with small interactive components (like buttons), and then gradually keep "moving upwards" until eventually your entire page is built with React. If you ever reach that point, we recommend migrating to [a React framework](/learn/creating-a-react-app) right after to get the most out of React.
+当你在现有项目中引入 React 时，通常会先从较小的交互式组件（比如按钮）开始，然后逐步不断“向上迁移”，直到最终整个页面都由 React 构建。如果你真的达到了那一步，我们建议你随后立即迁移到[一个 React 框架](/learn/creating-a-react-app)，以充分发挥 React 的优势。
 
-## Using React Native in an existing native mobile app {/*using-react-native-in-an-existing-native-mobile-app*/}
+## 在现有原生移动应用中使用 React Native {/*using-react-native-in-an-existing-native-mobile-app*/}
 
-[React Native](https://reactnative.dev/) can also be integrated into existing native apps incrementally. If you have an existing native app for Android (Java or Kotlin) or iOS (Objective-C or Swift), [follow this guide](https://reactnative.dev/docs/integration-with-existing-apps) to add a React Native screen to it.
+[React Native](https://reactnative.dev/) 也可以逐步集成到现有原生应用中。如果你已经有一个 Android（Java 或 Kotlin）或 iOS（Objective-C 或 Swift）的原生应用，请[按照此指南](https://reactnative.dev/docs/integration-with-existing-apps)为其添加一个 React Native 界面。

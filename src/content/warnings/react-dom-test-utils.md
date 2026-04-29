@@ -1,34 +1,34 @@
 ---
-title: react-dom/test-utils Deprecation Warnings
+title: react-dom/test-utils 弃用警告
 ---
 
-## ReactDOMTestUtils.act() warning {/*reactdomtestutilsact-warning*/}
+## ReactDOMTestUtils.act() 警告 {/*reactdomtestutilsact-warning*/}
 
-`act` from `react-dom/test-utils` has been deprecated in favor of `act` from `react`.
+来自 `react-dom/test-utils` 的 `act` 已被弃用，建议改用来自 `react` 的 `act`。
 
-Before:
+之前：
 
 ```js
 import {act} from 'react-dom/test-utils';
 ```
 
-After:
+之后：
 
 ```js
 import {act} from 'react';
 ```
 
-## Rest of ReactDOMTestUtils APIS {/*rest-of-reactdomtestutils-apis*/}
+## ReactDOMTestUtils 的其余 API {/*rest-of-reactdomtestutils-apis*/}
 
-All APIs except `act` have been removed.
+除 `act` 外，所有 API 都已移除。
 
-The React Team recommends migrating your tests to [@testing-library/react](https://testing-library.com/docs/react-testing-library/intro/) for a modern and well supported testing experience.
+React 团队建议将你的测试迁移到 [@testing-library/react](https://testing-library.com/docs/react-testing-library/intro/)，以获得现代且支持良好的测试体验。
 
 ### ReactDOMTestUtils.renderIntoDocument {/*reactdomtestutilsrenderintodocument*/}
 
-`renderIntoDocument` can be replaced with `render` from `@testing-library/react`.
+`renderIntoDocument` 可以用 `@testing-library/react` 中的 `render` 替代。
 
-Before:
+之前：
 
 ```js
 import {renderIntoDocument} from 'react-dom/test-utils';
@@ -36,7 +36,7 @@ import {renderIntoDocument} from 'react-dom/test-utils';
 renderIntoDocument(<Component />);
 ```
 
-After:
+之后：
 
 ```js
 import {render} from '@testing-library/react';
@@ -46,9 +46,9 @@ render(<Component />);
 
 ### ReactDOMTestUtils.Simulate {/*reactdomtestutilssimulate*/}
 
-`Simulate` can be replaced with `fireEvent` from `@testing-library/react`.
+`Simulate` 可以用 `@testing-library/react` 中的 `fireEvent` 替代。
 
-Before:
+之前：
 
 ```js
 import {Simulate} from 'react-dom/test-utils';
@@ -57,7 +57,7 @@ const element = document.querySelector('button');
 Simulate.click(element);
 ```
 
-After:
+之后：
 
 ```js
 import {fireEvent} from '@testing-library/react';
@@ -66,9 +66,9 @@ const element = document.querySelector('button');
 fireEvent.click(element);
 ```
 
-Be aware that `fireEvent` dispatches an actual event on the element and doesn't just synthetically call the event handler.
+请注意，`fireEvent` 会在元素上分发一个真实事件，而不只是以合成方式调用事件处理函数。
 
-### List of all removed APIs {/*list-of-all-removed-apis-list-of-all-removed-apis*/}
+### 所有已移除 API 的列表 {/*list-of-all-removed-apis-list-of-all-removed-apis*/}
 
 - `mockComponent()`
 - `isElement()`

@@ -4,7 +4,7 @@ meta: "<meta>"
 
 <Intro>
 
-The [built-in browser `<meta>` component](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta) lets you add metadata to the document.
+[内置浏览器 `<meta>` 组件](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta) 可让你向文档添加元数据。
 
 ```js
 <meta name="keywords" content="React, JavaScript, semantic markup, html" />
@@ -16,51 +16,51 @@ The [built-in browser `<meta>` component](https://developer.mozilla.org/en-US/do
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `<meta>` {/*meta*/}
 
-To add document metadata, render the [built-in browser `<meta>` component](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta). You can render `<meta>` from any component and React will always place the corresponding DOM element in the document head.
+要添加文档元数据，请渲染 [内置浏览器 `<meta>` 组件](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta)。你可以在任何组件中渲染 `<meta>`，React 会始终将对应的 DOM 元素放置到文档的 head 中。
 
 ```js
 <meta name="keywords" content="React, JavaScript, semantic markup, html" />
 ```
 
-[See more examples below.](#usage)
+[查看更多示例。](#usage)
 
-#### Props {/*props*/}
+#### 属性 {/*props*/}
 
-`<meta>` supports all [common element props.](/reference/react-dom/components/common#common-props)
+`<meta>` 支持所有 [通用元素属性。](/reference/react-dom/components/common#common-props)
 
-It should have *exactly one* of the following props: `name`, `httpEquiv`, `charset`, `itemProp`. The `<meta>` component does something different depending on which of these props is specified.
+它应当且仅应具有以下属性中的 *一个*：`name`、`httpEquiv`、`charset`、`itemProp`。`<meta>` 组件会根据指定的是这些属性中的哪一个而执行不同的操作。
 
-* `name`: a string. Specifies the [kind of metadata](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta/name) to be attached to the document.
-* `charset`: a string. Specifies the character set used by the document. The only valid value is `"utf-8"`.
-* `httpEquiv`: a string. Specifies a directive for processing the document.
-* `itemProp`: a string. Specifies metadata about a particular item within the document rather than the document as a whole.
-* `content`: a string. Specifies the metadata to be attached when used with the `name` or `itemProp` props or the behavior of the directive when used with the `httpEquiv` prop.
+* `name`：字符串。指定要附加到文档的 [元数据类型](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta/name)。
+* `charset`：字符串。指定文档使用的字符集。唯一有效值是 `"utf-8"`。
+* `httpEquiv`：字符串。指定文档处理指令。
+* `itemProp`：字符串。指定文档中某个特定项目的元数据，而不是整个文档的元数据。
+* `content`：字符串。与 `name` 或 `itemProp` 属性一起使用时，指定要附加的元数据；与 `httpEquiv` 属性一起使用时，指定该指令的行为。
 
-#### Special rendering behavior {/*special-rendering-behavior*/}
+#### 特殊的渲染行为 {/*special-rendering-behavior*/}
 
-React will always place the DOM element corresponding to the `<meta>` component within the document’s `<head>`, regardless of where in the React tree it is rendered. The `<head>` is the only valid place for `<meta>` to exist within the DOM, yet it’s convenient and keeps things composable if a component representing a specific page can render `<meta>` components itself.
+无论 `<meta>` 组件在 React 树中的何处渲染，React 都会始终将其对应的 DOM 元素放置在文档的 `<head>` 中。`<head>` 是 `<meta>` 在 DOM 中唯一有效的存在位置，但如果某个组件代表特定页面时能够自行渲染 `<meta>` 组件，这会更方便，也能保持可组合性。
 
-There is one exception to this: if `<meta>` has an [`itemProp`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/itemprop) prop, there is no special behavior, because in this case it doesn’t represent metadata about the document but rather metadata about a specific part of the page.
+对此有一个例外：如果 `<meta>` 具有 [`itemProp`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/itemprop) 属性，则不会有特殊行为，因为在这种情况下，它表示的不是关于文档的元数据，而是关于页面某个特定部分的元数据。
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Annotating the document with metadata {/*annotating-the-document-with-metadata*/}
+### 用元数据标注文档 {/*annotating-the-document-with-metadata*/}
 
-You can annotate the document with metadata such as keywords, a summary, or the author’s name. React will place this metadata within the document `<head>` regardless of where in the React tree it is rendered.
+你可以用关键词、摘要或作者姓名等元数据来标注文档。无论这些元数据在 React 树中的何处渲染，React 都会将其放置在文档的 `<head>` 中。
 
 ```html
 <meta name="author" content="John Smith" />
 <meta name="keywords" content="React, JavaScript, semantic markup, html" />
-<meta name="description" content="API reference for the <meta> component in React DOM" />
+<meta name="description" content="React DOM 中 `<meta>` 组件的 API 参考" />
 ```
 
-You can render the `<meta>` component from any component. React will put a `<meta>` DOM node in the document `<head>`.
+你可以在任何组件中渲染 `<meta>` 组件。React 会在文档的 `<head>` 中放置一个 `<meta>` DOM 节点。
 
 <SandpackWithHTMLOutput>
 
@@ -81,14 +81,14 @@ export default function SiteMapPage() {
 
 </SandpackWithHTMLOutput>
 
-### Annotating specific items within the document with metadata {/*annotating-specific-items-within-the-document-with-metadata*/}
+### 用元数据标注文档中的特定项目 {/*annotating-specific-items-within-the-document-with-metadata*/}
 
-You can use the `<meta>` component with the `itemProp` prop to annotate specific items within the document with metadata. In this case, React will *not* place these annotations within the document `<head>` but will place them like any other React component.
+你可以将 `<meta>` 组件与 `itemProp` 属性一起使用，以便为文档中的特定项目添加元数据。在这种情况下，React *不会* 将这些标注放置到文档的 `<head>` 中，而是会像其他 React 组件一样放置它们。
 
 ```js
 <section itemScope>
-  <h3>Annotating specific items</h3>
-  <meta itemProp="description" content="API reference for using <meta> with itemProp" />
+  <h3>标注特定项目</h3>
+  <meta itemProp="description" content="使用 <meta> 和 itemProp 的 API 参考" />
   <p>...</p>
 </section>
 ```

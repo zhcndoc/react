@@ -1,46 +1,46 @@
 {
-  "title": "Community",
+  "title": "社区",
   "path": "/community",
   "routes": [
     {
       "hasSectionHeader": true,
-      "sectionHeader": "GET INVOLVED"
+      "sectionHeader": "参与其中"
     },
     {
-      "title": "Community",
+      "title": "社区",
       "path": "/community",
       "skipBreadcrumb": true,
       "routes": [
         {
-          "title": "React Conferences",
+          "title": "React 会议",
           "path": "/community/conferences"
         },
         {
-          "title": "React Meetups",
+          "title": "React 聚会",
           "path": "/community/meetups"
         },
         {
-          "title": "React Videos",
+          "title": "React 视频",
           "path": "/community/videos"
         },
         {
-          "title": "Meet the Team",
+          "title": "认识团队",
           "path": "/community/team"
         },
         {
-          "title": "Docs Contributors",
+          "title": "文档贡献者",
           "path": "/community/docs-contributors"
         },
         {
-          "title": "Translations",
+          "title": "翻译",
           "path": "/community/translations"
         },
         {
-          "title": "Acknowledgements",
+          "title": "致谢",
           "path": "/community/acknowledgements"
         },
         {
-          "title": "Versioning Policy",
+          "title": "版本策略",
           "path": "/community/versioning-policy"
         }
       ]

@@ -4,7 +4,7 @@ title: startTransition
 
 <Intro>
 
-`startTransition` lets you render a part of the UI in the background.
+`startTransition` 让你可以在后台渲染 UI 的一部分。
 
 ```js
 startTransition(action)
@@ -16,11 +16,11 @@ startTransition(action)
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `startTransition(action)` {/*starttransition*/}
 
-The `startTransition` function lets you mark a state update as a Transition.
+`startTransition` 函数让你可以将一次状态更新标记为 Transition。
 
 ```js {7,9}
 import { startTransition } from 'react';
@@ -37,39 +37,39 @@ function TabContainer() {
 }
 ```
 
-[See more examples below.](#usage)
+[查看更多示例。](#usage)
 
-#### Parameters {/*parameters*/}
+#### 参数 {/*parameters*/}
 
-* `action`: A function that updates some state by calling one or more [`set` functions](/reference/react/useState#setstate). React calls `action` immediately with no parameters and marks all state updates scheduled synchronously during the `action` function call as Transitions. Any async calls awaited in the `action` will be included in the transition, but currently require wrapping any `set` functions after the `await` in an additional `startTransition` (see [Troubleshooting](/reference/react/useTransition#react-doesnt-treat-my-state-update-after-await-as-a-transition)). State updates marked as Transitions will be [non-blocking](#marking-a-state-update-as-a-non-blocking-transition) and [will not display unwanted loading indicators.](/reference/react/useTransition#preventing-unwanted-loading-indicators).
+* `action`: 一个通过调用一个或多个 [`set` 函数](/reference/react/useState#setstate) 来更新某些状态的函数。React 会立即以不带参数的方式调用 `action`，并将 `action` 函数调用期间同步安排的所有状态更新标记为 Transitions。`action` 中 await 的任何异步调用都将包含在 transition 中，但目前需要在 `await` 之后的任何 `set` 函数外再包一层额外的 `startTransition`（参见 [故障排除](/reference/react/useTransition#react-doesnt-treat-my-state-update-after-await-as-a-transition)）。标记为 Transitions 的状态更新将是[非阻塞的](#marking-a-state-update-as-a-non-blocking-transition)，并且[不会显示不需要的加载指示器。](/reference/react/useTransition#preventing-unwanted-loading-indicators)
 
-#### Returns {/*returns*/}
+#### 返回值 {/*returns*/}
 
-`startTransition` does not return anything.
+`startTransition` 不返回任何内容。
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-* `startTransition` does not provide a way to track whether a Transition is pending. To show a pending indicator while the Transition is ongoing, you need [`useTransition`](/reference/react/useTransition) instead.
+* `startTransition` 不提供跟踪 Transition 是否正在挂起的方法。要在 Transition 进行中显示挂起指示器，你需要改用 [`useTransition`](/reference/react/useTransition)。
 
-* You can wrap an update into a Transition only if you have access to the `set` function of that state. If you want to start a Transition in response to some prop or a custom Hook return value, try [`useDeferredValue`](/reference/react/useDeferredValue) instead.
+* 只有在你能够访问该状态的 `set` 函数时，才能将更新包装为 Transition。如果你想根据某个 prop 或自定义 Hook 的返回值来启动 Transition，请尝试改用 [`useDeferredValue`](/reference/react/useDeferredValue)。
 
-* The function you pass to `startTransition` is called immediately, marking all state updates that happen while it executes as Transitions. If you try to perform state updates in a `setTimeout`, for example, they won't be marked as Transitions.
+* 传给 `startTransition` 的函数会立即调用，并将其执行期间发生的所有状态更新标记为 Transitions。比如，如果你尝试在 `setTimeout` 中执行状态更新，它们就不会被标记为 Transitions。
 
-* You must wrap any state updates after any async requests in another `startTransition` to mark them as Transitions. This is a known limitation that we will fix in the future (see [Troubleshooting](/reference/react/useTransition#react-doesnt-treat-my-state-update-after-await-as-a-transition)).
+* 你必须将任何异步请求后的状态更新再包裹一层 `startTransition`，以将它们标记为 Transitions。这是一个已知限制，我们会在未来修复它（参见 [故障排除](/reference/react/useTransition#react-doesnt-treat-my-state-update-after-await-as-a-transition)）。
 
-* A state update marked as a Transition will be interrupted by other state updates. For example, if you update a chart component inside a Transition, but then start typing into an input while the chart is in the middle of a re-render, React will restart the rendering work on the chart component after handling the input state update.
+* 被标记为 Transition 的状态更新会被其他状态更新中断。例如，如果你在 Transition 中更新一个图表组件，但随后在图表重新渲染进行到一半时开始在输入框中输入内容，React 会在处理输入状态更新后重新开始图表组件的渲染工作。
 
-* Transition updates can't be used to control text inputs.
+* Transition 更新不能用于控制文本输入框。
 
-* If there are multiple ongoing Transitions, React currently batches them together. This is a limitation that may be removed in a future release.
+* 如果有多个正在进行的 Transitions，React 目前会将它们批量处理在一起。这是一个限制，未来版本中可能会移除。
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Marking a state update as a non-blocking Transition {/*marking-a-state-update-as-a-non-blocking-transition*/}
+### 将状态更新标记为非阻塞的 Transition {/*marking-a-state-update-as-a-non-blocking-transition*/}
 
-You can mark a state update as a *Transition* by wrapping it in a `startTransition` call:
+你可以通过将状态更新包裹在 `startTransition` 调用中，把它标记为一个 *Transition*：
 
 ```js {7,9}
 import { startTransition } from 'react';
@@ -86,14 +86,14 @@ function TabContainer() {
 }
 ```
 
-Transitions let you keep the user interface updates responsive even on slow devices.
+Transitions 让你即使在慢速设备上也能保持界面更新的响应性。
 
-With a Transition, your UI stays responsive in the middle of a re-render. For example, if the user clicks a tab but then change their mind and click another tab, they can do that without waiting for the first re-render to finish.
+使用 Transition 时，你的 UI 在重新渲染过程中仍能保持响应。例如，如果用户点击了一个标签页，但随后改变主意又点击了另一个标签页，他们无需等待第一次重新渲染完成就可以这样做。
 
 <Note>
 
-`startTransition` is very similar to [`useTransition`](/reference/react/useTransition), except that it does not provide the `isPending` flag to track whether a Transition is ongoing. You can call `startTransition` when `useTransition` is not available. For example, `startTransition` works outside components, such as from a data library.
+`startTransition` 与 [`useTransition`](/reference/react/useTransition) 非常相似，不同之处在于它不提供 `isPending` 标志来跟踪 Transition 是否正在进行中。当 `useTransition` 不可用时，你可以调用 `startTransition`。例如，`startTransition` 可在组件外部使用，比如在数据库中。
 
-[Learn about Transitions and see examples on the `useTransition` page.](/reference/react/useTransition)
+[了解 Transition，并在 `useTransition` 页面查看更多示例。](/reference/react/useTransition)
 
 </Note>

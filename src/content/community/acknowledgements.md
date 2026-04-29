@@ -1,16 +1,16 @@
 ---
-title: Acknowledgements
+title: 致谢
 ---
 
 <Intro>
 
-React was originally created by [Jordan Walke.](https://github.com/jordwalke) Today, React has a [dedicated full-time team working on it](/community/team), as well as over a thousand [open source contributors.](https://github.com/facebook/react/graphs/contributors)
+React 最初由 [Jordan Walke.](https://github.com/jordwalke) 创建。如今，React 拥有一个 [专门的全职团队在维护它](/community/team)，以及超过一千名 [开源贡献者。](https://github.com/facebook/react/graphs/contributors)
 
 </Intro>
 
-## Past contributors {/*past-contributors*/}
+## 过去的贡献者 {/*past-contributors*/}
 
-We'd like to recognize a few people who have made significant contributions to React and its documentation in the past and have helped maintain them over the years:
+我们想向过去为 React 及其文档做出重要贡献，并在多年间帮助维护它们的一些人表示认可：
 
 * [Almero Steyn](https://github.com/AlmeroSteyn)
 * [Andreas Svensson](https://github.com/syranide)
@@ -60,15 +60,15 @@ We'd like to recognize a few people who have made significant contributions to R
 * [Tim Yung](https://github.com/yungsters)
 * [Xuan Huang](https://github.com/huxpro)
 
-This list is not exhaustive.
+这份列表并不完整。
 
-We'd like to give special thanks to [Tom Occhino](https://github.com/tomocchino) and [Adam Wolff](https://github.com/wolffiex) for their guidance and support over the years. We are also thankful to all the volunteers who [translated React into other languages.](https://translations.react.dev/)
+我们还要特别感谢 [Tom Occhino](https://github.com/tomocchino) 和 [Adam Wolff](https://github.com/wolffiex) 多年来给予的指导和支持。我们也感谢所有将 [React 翻译成其他语言的志愿者。](https://translations.react.dev/)
 
-## Additional Thanks {/*additional-thanks*/}
+## 其他致谢 {/*additional-thanks*/}
 
-Additionally, we're grateful to:
+此外，我们感谢：
 
-* [Jeff Barczewski](https://github.com/jeffbski) for allowing us to use the `react` package name on npm
-* [Christopher Aue](https://christopheraue.net/) for letting us use the reactjs.com domain name and the [@reactjs](https://twitter.com/reactjs) username on Twitter
-* [ProjectMoon](https://github.com/ProjectMoon) for letting us use the [flux](https://www.npmjs.com/package/flux) package name on npm
-* Shane Anderson for allowing us to use the [react](https://github.com/react) org on GitHub
+* [Jeff Barczewski](https://github.com/jeffbski) 允许我们在 npm 上使用 `react` 包名
+* [Christopher Aue](https://christopheraue.net/) 允许我们使用 reactjs.com 域名以及 Twitter 上的 [@reactjs](https://twitter.com/reactjs) 用户名
+* [ProjectMoon](https://github.com/ProjectMoon) 允许我们在 npm 上使用 [flux](https://www.npmjs.com/package/flux) 包名
+* Shane Anderson 允许我们在 GitHub 上使用 [react](https://github.com/react) 组织

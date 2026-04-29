@@ -4,13 +4,13 @@ title: cache
 
 <RSC>
 
-`cache` is only for use with [React Server Components](/reference/rsc/server-components).
+`cache` 仅适用于 [React Server Components](/reference/rsc/server-components)。
 
 </RSC>
 
 <Intro>
 
-`cache` lets you cache the result of a data fetch or computation.
+`cache` 允许你缓存数据获取或计算的结果。
 
 ```js
 const cachedFn = cache(fn);
@@ -22,11 +22,11 @@ const cachedFn = cache(fn);
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `cache(fn)` {/*cache*/}
 
-Call `cache` outside of any components to create a version of the function with caching.
+在任何组件外调用 `cache`，以创建带缓存的函数版本。
 
 ```js {4,7}
 import {cache} from 'react';
@@ -40,40 +40,40 @@ function Chart({data}) {
 }
 ```
 
-When `getMetrics` is first called with `data`, `getMetrics` will call `calculateMetrics(data)` and store the result in cache. If `getMetrics` is called again with the same `data`, it will return the cached result instead of calling `calculateMetrics(data)` again.
+当首次使用 `data` 调用 `getMetrics` 时，`getMetrics` 会调用 `calculateMetrics(data)`，并将结果存入缓存。如果再次使用相同的 `data` 调用 `getMetrics`，它会返回缓存结果，而不是再次调用 `calculateMetrics(data)`。
 
-[See more examples below.](#usage)
+[查看更多示例。](#usage)
 
-#### Parameters {/*parameters*/}
+#### 参数 {/*parameters*/}
 
-- `fn`: The function you want to cache results for. `fn` can take any arguments and return any value.
+- `fn`：你希望缓存结果的函数。`fn` 可以接受任意参数并返回任意值。
 
-#### Returns {/*returns*/}
+#### 返回值 {/*returns*/}
 
-`cache` returns a cached version of `fn` with the same type signature. It does not call `fn` in the process.
+`cache` 返回一个与 `fn` 具有相同类型签名的缓存版本。这个过程不会调用 `fn`。
 
-When calling `cachedFn` with given arguments, it first checks if a cached result exists in the cache. If a cached result exists, it returns the result. If not, it calls `fn` with the arguments, stores the result in the cache, and returns the result. The only time `fn` is called is when there is a cache miss.
+当使用给定参数调用 `cachedFn` 时，它首先检查缓存中是否存在已缓存结果。如果存在，则返回该结果；如果不存在，则使用这些参数调用 `fn`，将结果存入缓存，并返回结果。只有在缓存未命中时才会调用 `fn`。
 
 <Note>
 
-The optimization of caching return values based on inputs is known as [_memoization_](https://en.wikipedia.org/wiki/Memoization). We refer to the function returned from `cache` as a memoized function.
+根据输入缓存返回值的优化称为 [_memoization_](https://en.wikipedia.org/wiki/Memoization)。我们将 `cache` 返回的函数称为记忆化函数。
 
 </Note>
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-- React will invalidate the cache for all memoized functions for each server request.
-- Each call to `cache` creates a new function. This means that calling `cache` with the same function multiple times will return different memoized functions that do not share the same cache.
-- `cachedFn` will also cache errors. If `fn` throws an error for certain arguments, it will be cached, and the same error is re-thrown when `cachedFn` is called with those same arguments.
-- `cache` is for use in [Server Components](/reference/rsc/server-components) only.
+- React 会在每次服务器请求时使所有记忆化函数的缓存失效。
+- 每次调用 `cache` 都会创建一个新函数。这意味着用同一个函数多次调用 `cache` 会返回不同的记忆化函数，它们不共享同一缓存。
+- `cachedFn` 也会缓存错误。如果 `fn` 对某些参数抛出错误，该错误会被缓存，并且当使用相同参数调用 `cachedFn` 时会重新抛出相同错误。
+- `cache` 仅用于 [Server Components](/reference/rsc/server-components)。
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Cache an expensive computation {/*cache-expensive-computation*/}
+### 缓存昂贵的计算 {/*cache-expensive-computation*/}
 
-Use `cache` to skip duplicate work.
+使用 `cache` 来跳过重复工作。
 
 ```js [[1, 7, "getUserMetrics(user)"],[2, 13, "getUserMetrics(user)"]]
 import {cache} from 'react';
@@ -95,19 +95,19 @@ function TeamReport({users}) {
 }
 ```
 
-If the same `user` object is rendered in both `Profile` and `TeamReport`, the two components can share work and only call `calculateUserMetrics` once for that `user`.
+如果同一个 `user` 对象同时在 `Profile` 和 `TeamReport` 中渲染，这两个组件就可以共享工作，只需对该 `user` 调用一次 `calculateUserMetrics`。
 
-Assume `Profile` is rendered first. It will call <CodeStep step={1}>`getUserMetrics`</CodeStep>, and check if there is a cached result. Since it is the first time `getUserMetrics` is called with that `user`, there will be a cache miss. `getUserMetrics` will then call `calculateUserMetrics` with that `user` and write the result to cache.
+假设 `Profile` 先渲染。它会调用 <CodeStep step={1}>`getUserMetrics`</CodeStep>，并检查是否存在缓存结果。由于这是第一次用该 `user` 调用 `getUserMetrics`，因此会发生缓存未命中。随后 `getUserMetrics` 会使用该 `user` 调用 `calculateUserMetrics`，并把结果写入缓存。
 
-When `TeamReport` renders its list of `users` and reaches the same `user` object, it will call <CodeStep step={2}>`getUserMetrics`</CodeStep> and read the result from cache.
+当 `TeamReport` 渲染其 `users` 列表并到达同一个 `user` 对象时，它会调用 <CodeStep step={2}>`getUserMetrics`</CodeStep>，并从缓存中读取结果。
 
-If `calculateUserMetrics` can be aborted by passing an [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal), you can use [`cacheSignal()`](/reference/react/cacheSignal) to cancel the expensive computation if React has finished rendering. `calculateUserMetrics` may already handle cancellation internally by using `cacheSignal` directly.
+如果 `calculateUserMetrics` 可以通过传入 [`AbortSignal`](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) 中止，你可以使用 [`cacheSignal()`](/reference/react/cacheSignal) 在 React 完成渲染时取消这项昂贵计算。`calculateUserMetrics` 也可能已经通过直接使用 `cacheSignal` 在内部处理了取消。
 
 <Pitfall>
 
-##### Calling different memoized functions will read from different caches. {/*pitfall-different-memoized-functions*/}
+##### 调用不同的记忆化函数会从不同的缓存中读取。 {/*pitfall-different-memoized-functions*/}
 
-To access the same cache, components must call the same memoized function.
+要访问同一个缓存，组件必须调用同一个记忆化函数。
 
 ```js [[1, 7, "getWeekReport"], [1, 7, "cache(calculateWeekReport)"], [1, 8, "getWeekReport"]]
 // Temperature.js
@@ -115,7 +115,7 @@ import {cache} from 'react';
 import {calculateWeekReport} from './report';
 
 export function Temperature({cityData}) {
-  // 🚩 Wrong: Calling `cache` in component creates new `getWeekReport` for each render
+  // 🚩 错误：在组件中调用 `cache` 会在每次渲染时创建新的 `getWeekReport`
   const getWeekReport = cache(calculateWeekReport);
   const report = getWeekReport(cityData);
   // ...
@@ -127,7 +127,7 @@ export function Temperature({cityData}) {
 import {cache} from 'react';
 import {calculateWeekReport} from './report';
 
-// 🚩 Wrong: `getWeekReport` is only accessible for `Precipitation` component.
+// 🚩 错误：`getWeekReport` 只能被 `Precipitation` 组件访问。
 const getWeekReport = cache(calculateWeekReport);
 
 export function Precipitation({cityData}) {
@@ -136,11 +136,11 @@ export function Precipitation({cityData}) {
 }
 ```
 
-In the above example, <CodeStep step={2}>`Precipitation`</CodeStep> and <CodeStep step={1}>`Temperature`</CodeStep> each call `cache` to create a new memoized function with their own cache look-up. If both components render for the same `cityData`, they will do duplicate work to call `calculateWeekReport`.
+在上面的示例中，<CodeStep step={2}>`Precipitation`</CodeStep> 和 <CodeStep step={1}>`Temperature`</CodeStep> 都分别调用 `cache` 来创建具有各自缓存查找的新记忆化函数。如果两个组件为同一个 `cityData` 渲染，它们会重复执行 `calculateWeekReport`。
 
-In addition, `Temperature` creates a <CodeStep step={1}>new memoized function</CodeStep> each time the component is rendered which doesn't allow for any cache sharing.
+此外，`Temperature` 每次组件渲染时都会创建一个 <CodeStep step={1}>新的记忆化函数</CodeStep>，这不允许任何缓存共享。
 
-To maximize cache hits and reduce work, the two components should call the same memoized function to access the same cache. Instead, define the memoized function in a dedicated module that can be [`import`-ed](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) across components.
+为了最大化缓存命中并减少工作量，这两个组件应该调用同一个记忆化函数来访问同一个缓存。相反，应该在一个专门的模块中定义该记忆化函数，并让它可以在各组件之间通过 [`import` 导入](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import)。
 
 ```js [[3, 5, "export default cache(calculateWeekReport)"]]
 // getWeekReport.js
@@ -169,12 +169,12 @@ export default function Precipitation({cityData}) {
   // ...
 }
 ```
-Here, both components call the <CodeStep step={3}>same memoized function</CodeStep> exported from `./getWeekReport.js` to read and write to the same cache.
+这里，这两个组件都调用从 `./getWeekReport.js` 导出的 <CodeStep step={3}>同一个记忆化函数</CodeStep>，从而读写同一个缓存。
 </Pitfall>
 
-### Share a snapshot of data {/*take-and-share-snapshot-of-data*/}
+### 共享数据快照 {/*take-and-share-snapshot-of-data*/}
 
-To share a snapshot of data between components, call `cache` with a data-fetching function like `fetch`. When multiple components make the same data fetch, only one request is made and the data returned is cached and shared across components. All components refer to the same snapshot of data across the server render.
+要在组件之间共享数据快照，可以将 `cache` 与类似 `fetch` 的数据获取函数一起调用。当多个组件进行相同的数据请求时，只会发出一次请求，返回的数据会被缓存并在组件之间共享。所有组件在整个服务器渲染过程中引用同一个数据快照。
 
 ```js [[1, 4, "city"], [1, 5, "fetchTemperature(city)"], [2, 4, "getTemperature"], [2, 9, "getTemperature"], [1, 9, "city"], [2, 14, "getTemperature"], [1, 14, "city"]]
 import {cache} from 'react';
@@ -195,15 +195,15 @@ async function MinimalWeatherCard({city}) {
 }
 ```
 
-If `AnimatedWeatherCard` and `MinimalWeatherCard` both render for the same <CodeStep step={1}>city</CodeStep>, they will receive the same snapshot of data from the <CodeStep step={2}>memoized function</CodeStep>.
+如果 `AnimatedWeatherCard` 和 `MinimalWeatherCard` 都为同一个 <CodeStep step={1}>city</CodeStep> 渲染，它们将从 <CodeStep step={2}>记忆化函数</CodeStep> 中获得相同的数据快照。
 
-If `AnimatedWeatherCard` and `MinimalWeatherCard` supply different <CodeStep step={1}>city</CodeStep> arguments to <CodeStep step={2}>`getTemperature`</CodeStep>, then `fetchTemperature` will be called twice and each call site will receive different data.
+如果 `AnimatedWeatherCard` 和 `MinimalWeatherCard` 向 <CodeStep step={2}>`getTemperature`</CodeStep> 提供不同的 <CodeStep step={1}>city</CodeStep> 参数，那么 `fetchTemperature` 会被调用两次，并且每个调用点都会收到不同的数据。
 
-The <CodeStep step={1}>city</CodeStep> acts as a cache key.
+<CodeStep step={1}>city</CodeStep> 充当缓存键。
 
 <Note>
 
-<CodeStep step={3}>Asynchronous rendering</CodeStep> is only supported for Server Components.
+<CodeStep step={3}>异步渲染</CodeStep> 仅支持 Server Components。
 
 ```js [[3, 1, "async"], [3, 2, "await"]]
 async function AnimatedWeatherCard({city}) {
@@ -212,13 +212,13 @@ async function AnimatedWeatherCard({city}) {
 }
 ```
 
-To render components that use asynchronous data in Client Components, see [`use()` documentation](/reference/react/use).
+要在 Client Components 中渲染使用异步数据的组件，请参阅 [`use()` 文档](/reference/react/use)。
 
 </Note>
 
-### Preload data {/*preload-data*/}
+### 预加载数据 {/*preload-data*/}
 
-By caching a long-running data fetch, you can kick off asynchronous work prior to rendering the component.
+通过缓存一个耗时的数据获取，你可以在渲染组件之前就开始异步工作。
 
 ```jsx [[2, 6, "await getUser(id)"], [1, 17, "getUser(id)"]]
 const getUser = cache(async (id) => {
@@ -236,9 +236,9 @@ async function Profile({id}) {
 }
 
 function Page({id}) {
-  // ✅ Good: start fetching the user data
+  // ✅ 好：开始获取用户数据
   getUser(id);
-  // ... some computational work
+  // ... 一些计算工作
   return (
     <>
       <Profile id={id} />
@@ -247,17 +247,17 @@ function Page({id}) {
 }
 ```
 
-When rendering `Page`, the component calls <CodeStep step={1}>`getUser`</CodeStep> but note that it doesn't use the returned data. This early <CodeStep step={1}>`getUser`</CodeStep> call kicks off the asynchronous database query that occurs while `Page` is doing other computational work and rendering children.
+渲染 `Page` 时，组件会调用 <CodeStep step={1}>`getUser`</CodeStep>，但请注意它并未使用返回的数据。这个提前的 <CodeStep step={1}>`getUser`</CodeStep> 调用会启动异步数据库查询，而此时 `Page` 正在执行其他计算工作并渲染子组件。
 
-When rendering `Profile`, we call <CodeStep step={2}>`getUser`</CodeStep> again. If the initial <CodeStep step={1}>`getUser`</CodeStep> call has already returned and cached the user data, when `Profile` <CodeStep step={2}>asks and waits for this data</CodeStep>, it can simply read from the cache without requiring another remote procedure call. If the <CodeStep step={1}> initial data request</CodeStep> hasn't been completed, preloading data in this pattern reduces delay in data-fetching.
+渲染 `Profile` 时，我们再次调用 <CodeStep step={2}>`getUser`</CodeStep>。如果最初的 <CodeStep step={1}>`getUser`</CodeStep> 调用已经返回并缓存了用户数据，那么当 `Profile` <CodeStep step={2}>请求并等待这些数据</CodeStep> 时，它可以直接从缓存中读取，而无需再次进行远程过程调用。如果 <CodeStep step={1}>最初的数据请求</CodeStep> 尚未完成，这种预加载模式可以减少数据获取延迟。
 
 <DeepDive>
 
-#### Caching asynchronous work {/*caching-asynchronous-work*/}
+#### 缓存异步工作 {/*caching-asynchronous-work*/}
 
-When evaluating an [asynchronous function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function), you will receive a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) for that work. The promise holds the state of that work (_pending_, _fulfilled_, _failed_) and its eventual settled result.
+在计算一个 [异步函数](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function) 时，你会得到该工作的一个 [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)。promise 持有这项工作的状态（_pending_、_fulfilled_、_failed_）以及其最终完成结果。
 
-In this example, the asynchronous function <CodeStep step={1}>`fetchData`</CodeStep> returns a promise that is awaiting the `fetch`.
+在这个示例中，异步函数 <CodeStep step={1}>`fetchData`</CodeStep> 返回一个正在等待 `fetch` 的 promise。
 
 ```js [[1, 1, "fetchData()"], [2, 8, "getData()"], [3, 10, "getData()"]]
 async function fetchData() {
@@ -268,24 +268,24 @@ const getData = cache(fetchData);
 
 async function MyComponent() {
   getData();
-  // ... some computational work
+  // ... 一些计算工作
   await getData();
   // ...
 }
 ```
 
-In calling <CodeStep step={2}>`getData`</CodeStep> the first time, the promise returned from <CodeStep step={1}>`fetchData`</CodeStep> is cached. Subsequent look-ups will then return the same promise.
+在第一次调用 <CodeStep step={2}>`getData`</CodeStep> 时，来自 <CodeStep step={1}>`fetchData`</CodeStep> 的 promise 会被缓存。后续查找将返回同一个 promise。
 
-Notice that the first <CodeStep step={2}>`getData`</CodeStep> call does not `await` whereas the <CodeStep step={3}>second</CodeStep> does. [`await`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await) is a JavaScript operator that will wait and return the settled result of the promise. The first <CodeStep step={2}>`getData`</CodeStep> call simply initiates the `fetch` to cache the promise for the second <CodeStep step={3}>`getData`</CodeStep> to look-up.
+注意，第一次 <CodeStep step={2}>`getData`</CodeStep> 调用没有使用 `await`，而 <CodeStep step={3}>第二次</CodeStep> 使用了。[`await`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await) 是一个 JavaScript 运算符，它会等待并返回 promise 的最终结果。第一次 <CodeStep step={2}>`getData`</CodeStep> 调用只是启动 `fetch`，以缓存该 promise，供第二次 <CodeStep step={3}>`getData`</CodeStep> 查找。
 
-If by the <CodeStep step={3}>second call</CodeStep> the promise is still _pending_, then `await` will pause for the result. The optimization is that while we wait on the `fetch`, React can continue with computational work, thus reducing the wait time for the <CodeStep step={3}>second call</CodeStep>.
+如果到 <CodeStep step={3}>第二次调用</CodeStep> 时该 promise 仍然处于 _pending_，那么 `await` 会暂停等待结果。优化之处在于：当我们等待 `fetch` 时，React 可以继续执行计算工作，从而减少 <CodeStep step={3}>第二次调用</CodeStep> 的等待时间。
 
-If the promise is already settled, either to an error or the _fulfilled_ result, `await` will return that value immediately. In both outcomes, there is a performance benefit.
+如果该 promise 已经完成，无论是错误还是 _fulfilled_ 结果，`await` 都会立即返回该值。在这两种情况下，性能都会受益。
 </DeepDive>
 
 <Pitfall>
 
-##### Calling a memoized function outside of a component will not use the cache. {/*pitfall-memoized-call-outside-component*/}
+##### 在组件外调用记忆化函数不会使用缓存。 {/*pitfall-memoized-call-outside-component*/}
 
 ```jsx [[1, 3, "getUser"]]
 import {cache} from 'react';
@@ -294,31 +294,31 @@ const getUser = cache(async (userId) => {
   return await db.user.query(userId);
 });
 
-// 🚩 Wrong: Calling memoized function outside of component will not memoize.
+// 🚩 错误：在组件外调用记忆化函数不会进行记忆化。
 getUser('demo-id');
 
 async function DemoProfile() {
-  // ✅ Good: `getUser` will memoize.
+  // ✅ 好：`getUser` 会进行记忆化。
   const user = await getUser('demo-id');
   return <Profile user={user} />;
 }
 ```
 
-React only provides cache access to the memoized function in a component. When calling <CodeStep step={1}>`getUser`</CodeStep> outside of a component, it will still evaluate the function but not read or update the cache.
+React 只会在组件中为记忆化函数提供缓存访问权限。当在组件外调用 <CodeStep step={1}>`getUser`</CodeStep> 时，它仍然会执行该函数，但不会读取或更新缓存。
 
-This is because cache access is provided through a [context](/learn/passing-data-deeply-with-context) which is only accessible from a component.
+这是因为缓存访问是通过一个 [context](/learn/passing-data-deeply-with-context) 提供的，而该 context 只能从组件中访问。
 
 </Pitfall>
 
 <DeepDive>
 
-#### When should I use `cache`, [`memo`](/reference/react/memo), or [`useMemo`](/reference/react/useMemo)? {/*cache-memo-usememo*/}
+#### 什么时候应该使用 `cache`、[`memo`](/reference/react/memo) 或 [`useMemo`](/reference/react/useMemo)？ {/*cache-memo-usememo*/}
 
-All mentioned APIs offer memoization but the difference is what they're intended to memoize, who can access the cache, and when their cache is invalidated.
+上述 API 都提供记忆化功能，但区别在于它们各自 intended to memoize 的内容、谁可以访问缓存，以及缓存何时失效。
 
 #### `useMemo` {/*deep-dive-use-memo*/}
 
-In general, you should use [`useMemo`](/reference/react/useMemo) for caching an expensive computation in a Client Component across renders. As an example, to memoize a transformation of data within a component.
+通常，你应该在 Client Component 中使用 [`useMemo`](/reference/react/useMemo) 来跨渲染缓存昂贵的计算。比如，对组件内部的数据变换进行记忆化。
 
 ```jsx {expectedErrors: {'react-compiler': [4]}} {4}
 'use client';
@@ -338,13 +338,13 @@ function App() {
   );
 }
 ```
-In this example, `App` renders two `WeatherReport`s with the same record. Even though both components do the same work, they cannot share work. `useMemo`'s cache is only local to the component.
+在这个示例中，`App` 使用相同的 record 渲染了两个 `WeatherReport`。尽管两个组件做的是相同的工作，它们也不能共享工作。`useMemo` 的缓存只局限于组件本身。
 
-However, `useMemo` does ensure that if `App` re-renders and the `record` object doesn't change, each component instance would skip work and use the memoized value of `avgTemp`. `useMemo` will only cache the last computation of `avgTemp` with the given dependencies.
+不过，`useMemo` 确实可以保证：如果 `App` 重新渲染且 `record` 对象没有变化，每个组件实例都会跳过工作并使用 `avgTemp` 的记忆化值。`useMemo` 只会缓存给定依赖下 `avgTemp` 的最后一次计算。
 
 #### `cache` {/*deep-dive-cache*/}
 
-In general, you should use `cache` in Server Components to memoize work that can be shared across components.
+通常，你应该在 Server Components 中使用 `cache` 来对可在组件之间共享的工作进行记忆化。
 
 ```js [[1, 12, "<WeatherReport city={city} />"], [3, 13, "<WeatherReport city={city} />"], [2, 1, "cache(fetchReport)"]]
 const cachedFetchReport = cache(fetchReport);
@@ -364,13 +364,13 @@ function App() {
   );
 }
 ```
-Re-writing the previous example to use `cache`, in this case the <CodeStep step={3}>second instance of `WeatherReport`</CodeStep> will be able to skip duplicate work and read from the same cache as the <CodeStep step={1}>first `WeatherReport`</CodeStep>. Another difference from the previous example is that `cache` is also recommended for <CodeStep step={2}>memoizing data fetches</CodeStep>, unlike `useMemo` which should only be used for computations.
+将前面的示例改写为使用 `cache` 后，在这种情况下，<CodeStep step={3}>第二个 `WeatherReport` 实例</CodeStep> 将能够跳过重复工作，并从与 <CodeStep step={1}>第一个 `WeatherReport`</CodeStep> 相同的缓存中读取。与前一个示例相比，另一个不同之处在于，`cache` 也推荐用于 <CodeStep step={2}>对数据请求进行记忆化</CodeStep>，而 `useMemo` 只应用于计算。
 
-At this time, `cache` should only be used in Server Components and the cache will be invalidated across server requests.
+目前，`cache` 只能用于 Server Components，并且缓存会在不同服务器请求之间失效。
 
 #### `memo` {/*deep-dive-memo*/}
 
-You should use [`memo`](reference/react/memo) to prevent a component re-rendering if its props are unchanged.
+如果组件的 props 未变化，你应该使用 [`memo`](reference/react/memo) 来防止组件重新渲染。
 
 ```js
 'use client';
@@ -393,27 +393,27 @@ function App() {
 }
 ```
 
-In this example, both `MemoWeatherReport` components will call `calculateAvg` when first rendered. However, if `App` re-renders, with no changes to `record`, none of the props have changed and `MemoWeatherReport` will not re-render.
+在这个示例中，两个 `MemoWeatherReport` 组件在首次渲染时都会调用 `calculateAvg`。不过，如果 `App` 重新渲染，而 `record` 没有变化，那么 props 都没有变化，`MemoWeatherReport` 就不会重新渲染。
 
-Compared to `useMemo`, `memo` memoizes the component render based on props vs. specific computations. Similar to `useMemo`, the memoized component only caches the last render with the last prop values. Once the props change, the cache invalidates and the component re-renders.
+与 `useMemo` 相比，`memo` 是基于 props 而不是具体计算来对组件渲染进行记忆化。与 `useMemo` 类似，被记忆化的组件只会缓存上一次 props 值对应的最后一次渲染。一旦 props 改变，缓存就会失效，组件会重新渲染。
 
 </DeepDive>
 
 ---
 
-## Troubleshooting {/*troubleshooting*/}
+## 故障排查 {/*troubleshooting*/}
 
-### My memoized function still runs even though I've called it with the same arguments {/*memoized-function-still-runs*/}
+### 即使我用相同的参数调用了它，我的记忆化函数还是会运行 {/*memoized-function-still-runs*/}
 
-See prior mentioned pitfalls
-* [Calling different memoized functions will read from different caches.](#pitfall-different-memoized-functions)
-* [Calling a memoized function outside of a component will not use the cache.](#pitfall-memoized-call-outside-component)
+请参见前面提到的陷阱
+* [调用不同的记忆化函数会读取不同的缓存。](#pitfall-different-memoized-functions)
+* [在组件外调用记忆化函数不会使用缓存。](#pitfall-memoized-call-outside-component)
 
-If none of the above apply, it may be a problem with how React checks if something exists in cache.
+如果以上都不适用，可能是 React 检查缓存中是否存在某项内容的方式有问题。
 
-If your arguments are not [primitives](https://developer.mozilla.org/en-US/docs/Glossary/Primitive) (ex. objects, functions, arrays), ensure you're passing the same object reference.
+如果你的参数不是 [原始类型](https://developer.mozilla.org/en-US/docs/Glossary/Primitive)（例如对象、函数、数组），请确保你传入的是同一个对象引用。
 
-When calling a memoized function, React will look up the input arguments to see if a result is already cached. React will use shallow equality of the arguments to determine if there is a cache hit.
+在调用记忆化函数时，React 会查找输入参数，以查看结果是否已经被缓存。React 会使用参数的浅比较来判断是否命中缓存。
 
 ```js
 import {cache} from 'react';
@@ -423,7 +423,7 @@ const calculateNorm = cache((vector) => {
 });
 
 function MapMarker(props) {
-  // 🚩 Wrong: props is an object that changes every render.
+  // 🚩 错误：props 是一个每次渲染都会变化的对象。
   const length = calculateNorm(props);
   // ...
 }
@@ -438,9 +438,9 @@ function App() {
 }
 ```
 
-In this case the two `MapMarker`s look like they're doing the same work and calling `calculateNorm` with the same value of `{x: 10, y: 10, z:10}`. Even though the objects contain the same values, they are not the same object reference as each component creates its own `props` object.
+在这种情况下，这两个 `MapMarker` 看起来像是在做同样的工作，并且用相同的 `{x: 10, y: 10, z:10}` 值调用 `calculateNorm`。即使这些对象包含相同的值，它们也不是同一个对象引用，因为每个组件都会创建自己的 `props` 对象。
 
-React will call [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is) on the input to verify if there is a cache hit.
+React 会在输入上调用 [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is) 来验证是否命中缓存。
 
 ```js {3,9}
 import {cache} from 'react';
@@ -450,7 +450,7 @@ const calculateNorm = cache((x, y, z) => {
 });
 
 function MapMarker(props) {
-  // ✅ Good: Pass primitives to memoized function
+  // ✅ 好：向记忆化函数传递原始类型
   const length = calculateNorm(props.x, props.y, props.z);
   // ...
 }
@@ -465,9 +465,9 @@ function App() {
 }
 ```
 
-One way to address this could be to pass the vector dimensions to `calculateNorm`. This works because the dimensions themselves are primitives.
+一种解决方法是将向量维度传递给 `calculateNorm`。这可行是因为这些维度本身就是原始类型。
 
-Another solution may be to pass the vector object itself as a prop to the component. We'll need to pass the same object to both component instances.
+另一种解决方案可能是将向量对象本身作为 prop 传递给组件。我们需要向两个组件实例传递同一个对象。
 
 ```js {3,9,14}
 import {cache} from 'react';
@@ -477,7 +477,7 @@ const calculateNorm = cache((vector) => {
 });
 
 function MapMarker(props) {
-  // ✅ Good: Pass the same `vector` object
+  // ✅ 好：传递相同的 `vector` 对象
   const length = calculateNorm(props.vector);
   // ...
 }

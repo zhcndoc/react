@@ -1,25 +1,25 @@
 ---
-title: Extracting State Logic into a Reducer
+title: 将状态逻辑提取到 Reducer 中
 ---
 
 <Intro>
 
-Components with many state updates spread across many event handlers can get overwhelming. For these cases, you can consolidate all the state update logic outside your component in a single function, called a _reducer._
+包含许多状态更新、并分散在多个事件处理函数中的组件，可能会变得令人不知所措。对于这类情况，你可以把所有状态更新逻辑集中到组件外部的一个单独函数中，这个函数称为 _reducer_。
 
 </Intro>
 
 <YouWillLearn>
 
-- What a reducer function is
-- How to refactor `useState` to `useReducer`
-- When to use a reducer
-- How to write one well
+- 什么是 reducer 函数
+- 如何将 `useState` 重构为 `useReducer`
+- 何时使用 reducer
+- 如何把它写好
 
 </YouWillLearn>
 
-## Consolidate state logic with a reducer {/*consolidate-state-logic-with-a-reducer*/}
+## 使用 reducer 整合状态逻辑 {/*consolidate-state-logic-with-a-reducer*/}
 
-As your components grow in complexity, it can get harder to see at a glance all the different ways in which a component's state gets updated. For example, the `TaskApp` component below holds an array of `tasks` in state and uses three different event handlers to add, remove, and edit tasks:
+随着组件变得越来越复杂，一眼看清组件状态有哪些不同更新方式会变得更难。例如，下面的 `TaskApp` 组件在 state 中保存了一个 `tasks` 数组，并使用三个不同的事件处理函数来添加、删除和编辑任务：
 
 <Sandpack>
 
@@ -60,7 +60,7 @@ export default function TaskApp() {
 
   return (
     <>
-      <h1>Prague itinerary</h1>
+      <h1>布拉格行程</h1>
       <AddTask onAddTask={handleAddTask} />
       <TaskList
         tasks={tasks}
@@ -73,9 +73,9 @@ export default function TaskApp() {
 
 let nextId = 3;
 const initialTasks = [
-  {id: 0, text: 'Visit Kafka Museum', done: true},
-  {id: 1, text: 'Watch a puppet show', done: false},
-  {id: 2, text: 'Lennon Wall pic', done: false},
+  {id: 0, text: '参观 Kafka 博物馆', done: true},
+  {id: 1, text: '观看木偶戏', done: false},
+  {id: 2, text: '列侬墙照片', done: false},
 ];
 ```
 
@@ -87,7 +87,7 @@ export default function AddTask({onAddTask}) {
   return (
     <>
       <input
-        placeholder="Add task"
+        placeholder="添加任务"
         value={text}
         onChange={(e) => setText(e.target.value)}
       />
@@ -96,7 +96,7 @@ export default function AddTask({onAddTask}) {
           setText('');
           onAddTask(text);
         }}>
-        Add
+        添加
       </button>
     </>
   );
@@ -133,14 +133,14 @@ function Task({task, onChange, onDelete}) {
             });
           }}
         />
-        <button onClick={() => setIsEditing(false)}>Save</button>
+        <button onClick={() => setIsEditing(false)}>保存</button>
       </>
     );
   } else {
     taskContent = (
       <>
         {task.text}
-        <button onClick={() => setIsEditing(true)}>Edit</button>
+        <button onClick={() => setIsEditing(true)}>编辑</button>
       </>
     );
   }
@@ -157,7 +157,7 @@ function Task({task, onChange, onDelete}) {
         }}
       />
       {taskContent}
-      <button onClick={() => onDelete(task.id)}>Delete</button>
+      <button onClick={() => onDelete(task.id)}>删除</button>
     </label>
   );
 }
@@ -179,17 +179,17 @@ li {
 
 </Sandpack>
 
-Each of its event handlers calls `setTasks` in order to update the state. As this component grows, so does the amount of state logic sprinkled throughout it. To reduce this complexity and keep all your logic in one easy-to-access place, you can move that state logic into a single function outside your component, **called a "reducer".**
+它的每个事件处理函数都会调用 `setTasks` 来更新状态。随着组件不断增长，分散在其中的状态逻辑也会越来越多。为了降低这种复杂性，并把所有逻辑放到一个容易访问的地方，你可以把这些状态逻辑移到组件外部的一个单独函数中，**这个函数称为“reducer”。**
 
-Reducers are a different way to handle state. You can migrate from `useState` to `useReducer` in three steps:
+Reducer 是处理 state 的另一种方式。你可以通过三个步骤从 `useState` 迁移到 `useReducer`：
 
-1. **Move** from setting state to dispatching actions.
-2. **Write** a reducer function.
-3. **Use** the reducer from your component.
+1. **从设置 state 改为派发 actions。**
+2. **编写 reducer 函数。**
+3. **在组件中使用 reducer。**
 
-### Step 1: Move from setting state to dispatching actions {/*step-1-move-from-setting-state-to-dispatching-actions*/}
+### 第 1 步：从设置 state 改为派发 actions {/*step-1-move-from-setting-state-to-dispatching-actions*/}
 
-Your event handlers currently specify _what to do_ by setting state:
+你当前的事件处理函数通过设置 state 来指定 _要做什么_：
 
 ```js
 function handleAddTask(text) {
@@ -220,13 +220,13 @@ function handleDeleteTask(taskId) {
 }
 ```
 
-Remove all the state setting logic. What you are left with are three event handlers:
+移除所有设置 state 的逻辑后，剩下的就是三个事件处理函数：
 
-- `handleAddTask(text)` is called when the user presses "Add".
-- `handleChangeTask(task)` is called when the user toggles a task or presses "Save".
-- `handleDeleteTask(taskId)` is called when the user presses "Delete".
+- `handleAddTask(text)` 在用户按下“添加”时被调用。
+- `handleChangeTask(task)` 在用户切换任务状态或按下“保存”时被调用。
+- `handleDeleteTask(taskId)` 在用户按下“删除”时被调用。
 
-Managing state with reducers is slightly different from directly setting state. Instead of telling React "what to do" by setting state, you specify "what the user just did" by dispatching "actions" from your event handlers. (The state update logic will live elsewhere!) So instead of "setting `tasks`" via an event handler, you're dispatching an "added/changed/deleted a task" action. This is more descriptive of the user's intent.
+使用 reducer 管理 state 和直接设置 state 略有不同。你不是通过事件处理函数告诉 React “要做什么”并设置 state，而是通过事件处理函数派发 “actions” 来说明“用户刚刚做了什么”。（状态更新逻辑会放在别处！）因此，与其通过事件处理函数“设置 `tasks`”，不如派发一个“添加/修改/删除任务”的 action。这更能描述用户的意图。
 
 ```js
 function handleAddTask(text) {
@@ -252,12 +252,12 @@ function handleDeleteTask(taskId) {
 }
 ```
 
-The object you pass to `dispatch` is called an "action":
+传给 `dispatch` 的对象称为一个 “action”：
 
 ```js {3-7}
 function handleDeleteTask(taskId) {
   dispatch(
-    // "action" object:
+    // “action” 对象：
     {
       type: 'deleted',
       id: taskId,
@@ -266,43 +266,43 @@ function handleDeleteTask(taskId) {
 }
 ```
 
-It is a regular JavaScript object. You decide what to put in it, but generally it should contain the minimal information about _what happened_. (You will add the `dispatch` function itself in a later step.)
+它就是一个普通的 JavaScript 对象。你可以决定往里面放什么，但通常它应该包含关于 _发生了什么_ 的最少信息。（你会在后面的步骤中添加 `dispatch` 函数本身。）
 
 <Note>
 
-An action object can have any shape.
+action 对象可以有任意形状。
 
-By convention, it is common to give it a string `type` that describes what happened, and pass any additional information in other fields. The `type` is specific to a component, so in this example either `'added'` or `'added_task'` would be fine. Choose a name that says what happened!
+按照惯例，通常会给它一个描述发生了什么的字符串 `type`，并在其他字段中传递额外信息。`type` 是组件特定的，所以在这个示例中，`'added'` 或 `'added_task'` 都可以。选择一个能说明发生了什么的名称！
 
 ```js
 dispatch({
-  // specific to component
+  // 组件特定
   type: 'what_happened',
-  // other fields go here
+  // 其他字段写在这里
 });
 ```
 
 </Note>
 
-### Step 2: Write a reducer function {/*step-2-write-a-reducer-function*/}
+### 第 2 步：编写 reducer 函数 {/*step-2-write-a-reducer-function*/}
 
-A reducer function is where you will put your state logic. It takes two arguments, the current state and the action object, and it returns the next state:
+reducer 函数就是你放置 state 逻辑的地方。它接收两个参数：当前 state 和 action 对象，然后返回下一个 state：
 
 ```js
 function yourReducer(state, action) {
-  // return next state for React to set
+  // 返回 React 要设置的下一个 state
 }
 ```
 
-React will set the state to what you return from the reducer.
+React 会把 state 设置为 reducer 返回的值。
 
-To move your state setting logic from your event handlers to a reducer function in this example, you will:
+要把这个例子中的状态设置逻辑从事件处理函数迁移到 reducer 函数中，你需要：
 
-1. Declare the current state (`tasks`) as the first argument.
-2. Declare the `action` object as the second argument.
-3. Return the _next_ state from the reducer (which React will set the state to).
+1. 将当前 state（`tasks`）声明为第一个参数。
+2. 将 `action` 对象声明为第二个参数。
+3. 从 reducer 返回 _下一个_ state（React 会把它设置为 state）。
 
-Here is all the state setting logic migrated to a reducer function:
+下面是所有状态设置逻辑迁移到 reducer 函数后的样子：
 
 ```js
 function tasksReducer(tasks, action) {
@@ -331,13 +331,13 @@ function tasksReducer(tasks, action) {
 }
 ```
 
-Because the reducer function takes state (`tasks`) as an argument, you can **declare it outside of your component.** This decreases the indentation level and can make your code easier to read.
+因为 reducer 函数将 state（`tasks`）作为参数，所以你可以**把它声明在组件外部。** 这样可以减少缩进层级，并让代码更易读。
 
 <Note>
 
-The code above uses if/else statements, but it's a convention to use [switch statements](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/switch) inside reducers. The result is the same, but it can be easier to read switch statements at a glance.
+上面的代码使用了 if/else 语句，但在 reducer 内部惯例上会使用 [switch 语句](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/switch)。结果是一样的，不过 switch 语句通常一眼更容易看懂。
 
-We'll be using them throughout the rest of this documentation like so:
+在本文件余下部分，我们会像这样使用它们：
 
 ```js
 function tasksReducer(tasks, action) {
@@ -371,19 +371,19 @@ function tasksReducer(tasks, action) {
 }
 ```
 
-We recommend wrapping each `case` block into the `{` and `}` curly braces so that variables declared inside of different `case`s don't clash with each other. Also, a `case` should usually end with a `return`. If you forget to `return`, the code will "fall through" to the next `case`, which can lead to mistakes!
+我们建议把每个 `case` 块都用 `{` 和 `}` 花括号包起来，这样在不同 `case` 中声明的变量就不会互相冲突。并且，`case` 通常应该以 `return` 结尾。如果你忘记 `return`，代码就会“贯穿”到下一个 `case`，这可能导致错误！
 
-If you're not yet comfortable with switch statements, using if/else is completely fine.
+如果你还不太熟悉 switch 语句，使用 if/else 也完全没问题。
 
 </Note>
 
 <DeepDive>
 
-#### Why are reducers called this way? {/*why-are-reducers-called-this-way*/}
+#### 为什么 reducer 叫这个名字？ {/*why-are-reducers-called-this-way*/}
 
-Although reducers can "reduce" the amount of code inside your component, they are actually named after the [`reduce()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce) operation that you can perform on arrays.
+虽然 reducer 可以“减少”组件内的代码量，但它实际上是以你可以对数组执行的 [`reduce()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce) 操作命名的。
 
-The `reduce()` operation lets you take an array and "accumulate" a single value out of many:
+`reduce()` 操作可以让你拿到一个数组，并从多个值中“累积”出一个单一值：
 
 ```
 const arr = [1, 2, 3, 4, 5];
@@ -392,9 +392,9 @@ const sum = arr.reduce(
 ); // 1 + 2 + 3 + 4 + 5
 ```
 
-The function you pass to `reduce` is known as a "reducer". It takes the _result so far_ and the _current item,_ then it returns the _next result._ React reducers are an example of the same idea: they take the _state so far_ and the _action_, and return the _next state._ In this way, they accumulate actions over time into state.
+你传给 `reduce` 的函数称为 “reducer”。它接收 _当前累计结果_ 和 _当前项_，然后返回 _下一个结果_。React 中的 reducer 也是同样的思路：它接收 _当前 state_ 和 _action_，并返回 _下一个 state_。这样一来，它们会随着时间把 action 累积为 state。
 
-You could even use the `reduce()` method with an `initialState` and an array of `actions` to calculate the final state by passing your reducer function to it:
+你甚至可以使用带有 `initialState` 和 `actions` 数组的 `reduce()` 方法，把 reducer 函数传给它来计算最终 state：
 
 <Sandpack>
 
@@ -403,10 +403,10 @@ import tasksReducer from './tasksReducer.js';
 
 let initialState = [];
 let actions = [
-  {type: 'added', id: 1, text: 'Visit Kafka Museum'},
-  {type: 'added', id: 2, text: 'Watch a puppet show'},
+  {type: 'added', id: 1, text: '参观 Kafka 博物馆'},
+  {type: 'added', id: 2, text: '观看木偶戏'},
   {type: 'deleted', id: 1},
-  {type: 'added', id: 3, text: 'Lennon Wall pic'},
+  {type: 'added', id: 3, text: '列侬墙照片'},
 ];
 
 let finalState = actions.reduce(tasksReducer, initialState);
@@ -453,43 +453,43 @@ export default function tasksReducer(tasks, action) {
 
 </Sandpack>
 
-You probably won't need to do this yourself, but this is similar to what React does!
+你大概不需要自己这样做，但这和 React 所做的事情很相似！
 
 </DeepDive>
 
-### Step 3: Use the reducer from your component {/*step-3-use-the-reducer-from-your-component*/}
+### 第 3 步：在组件中使用 reducer {/*step-3-use-the-reducer-from-your-component*/}
 
-Finally, you need to hook up the `tasksReducer` to your component. Import the `useReducer` Hook from React:
+最后，你需要将 `tasksReducer` 接到你的组件上。从 React 导入 `useReducer` Hook：
 
 ```js
 import { useReducer } from 'react';
 ```
 
-Then you can replace `useState`:
+然后你就可以用 `useReducer` 替换 `useState`：
 
 ```js
 const [tasks, setTasks] = useState(initialTasks);
 ```
 
-with `useReducer` like so:
+像这样改成 `useReducer`：
 
 ```js
 const [tasks, dispatch] = useReducer(tasksReducer, initialTasks);
 ```
 
-The `useReducer` Hook is similar to `useState`—you must pass it an initial state and it returns a stateful value and a way to set state (in this case, the dispatch function). But it's a little different.
+`useReducer` Hook 和 `useState` 类似——你必须传入一个初始 state，它会返回一个有状态的值和一种设置 state 的方式（在这里就是 dispatch 函数）。但它又有一点不同。
 
-The `useReducer` Hook takes two arguments:
+`useReducer` Hook 接收两个参数：
 
-1. A reducer function
-2. An initial state
+1. 一个 reducer 函数
+2. 一个初始 state
 
-And it returns:
+并返回：
 
-1. A stateful value
-2. A dispatch function (to "dispatch" user actions to the reducer)
+1. 一个有状态的值
+2. 一个 dispatch 函数（用于把用户 action “派发”给 reducer）
 
-Now it's fully wired up! Here, the reducer is declared at the bottom of the component file:
+现在它已经完全连接好了！下面示例中，reducer 声明在组件文件的底部：
 
 <Sandpack>
 
@@ -525,7 +525,7 @@ export default function TaskApp() {
 
   return (
     <>
-      <h1>Prague itinerary</h1>
+      <h1>布拉格行程</h1>
       <AddTask onAddTask={handleAddTask} />
       <TaskList
         tasks={tasks}
@@ -568,9 +568,9 @@ function tasksReducer(tasks, action) {
 
 let nextId = 3;
 const initialTasks = [
-  {id: 0, text: 'Visit Kafka Museum', done: true},
-  {id: 1, text: 'Watch a puppet show', done: false},
-  {id: 2, text: 'Lennon Wall pic', done: false},
+  {id: 0, text: '参观 Kafka 博物馆', done: true},
+  {id: 1, text: '观看木偶戏', done: false},
+  {id: 2, text: '列侬墙照片', done: false},
 ];
 ```
 
@@ -582,7 +582,7 @@ export default function AddTask({onAddTask}) {
   return (
     <>
       <input
-        placeholder="Add task"
+        placeholder="添加任务"
         value={text}
         onChange={(e) => setText(e.target.value)}
       />
@@ -591,7 +591,7 @@ export default function AddTask({onAddTask}) {
           setText('');
           onAddTask(text);
         }}>
-        Add
+        添加
       </button>
     </>
   );
@@ -628,14 +628,14 @@ function Task({task, onChange, onDelete}) {
             });
           }}
         />
-        <button onClick={() => setIsEditing(false)}>Save</button>
+        <button onClick={() => setIsEditing(false)}>保存</button>
       </>
     );
   } else {
     taskContent = (
       <>
         {task.text}
-        <button onClick={() => setIsEditing(true)}>Edit</button>
+        <button onClick={() => setIsEditing(true)}>编辑</button>
       </>
     );
   }
@@ -652,7 +652,7 @@ function Task({task, onChange, onDelete}) {
         }}
       />
       {taskContent}
-      <button onClick={() => onDelete(task.id)}>Delete</button>
+      <button onClick={() => onDelete(task.id)}>删除</button>
     </label>
   );
 }
@@ -674,7 +674,7 @@ li {
 
 </Sandpack>
 
-If you want, you can even move the reducer to a different file:
+如果你愿意，甚至可以把 reducer 移到另一个文件中：
 
 <Sandpack>
 
@@ -711,7 +711,7 @@ export default function TaskApp() {
 
   return (
     <>
-      <h1>Prague itinerary</h1>
+      <h1>布拉格行程</h1>
       <AddTask onAddTask={handleAddTask} />
       <TaskList
         tasks={tasks}
@@ -724,9 +724,9 @@ export default function TaskApp() {
 
 let nextId = 3;
 const initialTasks = [
-  {id: 0, text: 'Visit Kafka Museum', done: true},
-  {id: 1, text: 'Watch a puppet show', done: false},
-  {id: 2, text: 'Lennon Wall pic', done: false},
+  {id: 0, text: '参观 Kafka 博物馆', done: true},
+  {id: 1, text: '观看木偶戏', done: false},
+  {id: 2, text: '列侬墙照片', done: false},
 ];
 ```
 
@@ -770,7 +770,7 @@ export default function AddTask({onAddTask}) {
   return (
     <>
       <input
-        placeholder="Add task"
+        placeholder="添加任务"
         value={text}
         onChange={(e) => setText(e.target.value)}
       />
@@ -779,7 +779,7 @@ export default function AddTask({onAddTask}) {
           setText('');
           onAddTask(text);
         }}>
-        Add
+        添加
       </button>
     </>
   );
@@ -816,14 +816,14 @@ function Task({task, onChange, onDelete}) {
             });
           }}
         />
-        <button onClick={() => setIsEditing(false)}>Save</button>
+        <button onClick={() => setIsEditing(false)}>保存</button>
       </>
     );
   } else {
     taskContent = (
       <>
         {task.text}
-        <button onClick={() => setIsEditing(true)}>Edit</button>
+        <button onClick={() => setIsEditing(true)}>编辑</button>
       </>
     );
   }
@@ -840,7 +840,7 @@ function Task({task, onChange, onDelete}) {
         }}
       />
       {taskContent}
-      <button onClick={() => onDelete(task.id)}>Delete</button>
+      <button onClick={() => onDelete(task.id)}>删除</button>
     </label>
   );
 }
@@ -862,30 +862,30 @@ li {
 
 </Sandpack>
 
-Component logic can be easier to read when you separate concerns like this. Now the event handlers only specify _what happened_ by dispatching actions, and the reducer function determines _how the state updates_ in response to them.
+把关注点这样分离后，组件逻辑会更容易阅读。现在，事件处理函数只通过派发 actions 来说明 _发生了什么_，而 reducer 函数则决定如何根据这些 action 更新 state。
 
-## Comparing `useState` and `useReducer` {/*comparing-usestate-and-usereducer*/}
+## 比较 `useState` 和 `useReducer` {/*comparing-usestate-and-usereducer*/}
 
-Reducers are not without downsides! Here's a few ways you can compare them:
+reducers 也不是没有缺点！下面是一些可以比较的方面：
 
-- **Code size:** Generally, with `useState` you have to write less code upfront. With `useReducer`, you have to write both a reducer function _and_ dispatch actions. However, `useReducer` can help cut down on the code if many event handlers modify state in a similar way.
-- **Readability:** `useState` is very easy to read when the state updates are simple. When they get more complex, they can bloat your component's code and make it difficult to scan. In this case, `useReducer` lets you cleanly separate the _how_ of update logic from the _what happened_ of event handlers.
-- **Debugging:** When you have a bug with `useState`, it can be difficult to tell _where_ the state was set incorrectly, and _why_. With `useReducer`, you can add a console log into your reducer to see every state update, and _why_ it happened (due to which `action`). If each `action` is correct, you'll know that the mistake is in the reducer logic itself. However, you have to step through more code than with `useState`.
-- **Testing:** A reducer is a pure function that doesn't depend on your component. This means that you can export and test it separately in isolation. While generally it's best to test components in a more realistic environment, for complex state update logic it can be useful to assert that your reducer returns a particular state for a particular initial state and action.
-- **Personal preference:** Some people like reducers, others don't. That's okay. It's a matter of preference. You can always convert between `useState` and `useReducer` back and forth: they are equivalent!
+- **代码量：** 通常来说，使用 `useState` 时你一开始需要写的代码更少。使用 `useReducer` 时，你需要同时编写 reducer 函数和分发 action。不过，如果很多事件处理器以相似的方式修改状态，`useReducer` 可以帮助减少代码量。
+- **可读性：** 当状态更新很简单时，`useState` 非常容易阅读。当它们变得更复杂时，它们可能会让组件代码膨胀，并且难以浏览。在这种情况下，`useReducer` 可以让你清晰地把更新逻辑的 _如何做_ 与事件处理器中的 _发生了什么_ 分开。
+- **调试：** 当你使用 `useState` 遇到 bug 时，可能很难判断状态是 _在哪里_ 被错误地设置的，以及 _为什么_ 会这样。使用 `useReducer` 时，你可以在 reducer 中添加 console log，查看每一次状态更新，以及它 _为什么_ 发生（是由于哪个 `action`）。如果每个 `action` 都是正确的，那么你就知道错误出在 reducer 逻辑本身。不过，与 `useState` 相比，你需要跟踪更多代码。
+- **测试：** reducer 是一个不依赖组件的纯函数。这意味着你可以把它导出，并在隔离环境中单独测试。虽然通常最好是在更真实的环境中测试组件，但对于复杂的状态更新逻辑，断言 reducer 在某个初始状态和 action 下返回特定状态会很有用。
+- **个人偏好：** 有些人喜欢 reducer，有些人不喜欢。没关系，这只是偏好问题。你总是可以在 `useState` 和 `useReducer` 之间来回转换：它们是等价的！
 
-We recommend using a reducer if you often encounter bugs due to incorrect state updates in some component, and want to introduce more structure to its code. You don't have to use reducers for everything: feel free to mix and match! You can even `useState` and `useReducer` in the same component.
+如果你经常在某个组件中遇到由于状态更新不正确而导致的 bug，并且希望给代码引入更多结构，我们建议使用 reducer。你不必把 reducer 用在所有地方：可以自由混用！你甚至可以在同一个组件中同时使用 `useState` 和 `useReducer`。
 
-## Writing reducers well {/*writing-reducers-well*/}
+## 编写良好的 reducer {/*writing-reducers-well*/}
 
-Keep these two tips in mind when writing reducers:
+在编写 reducer 时，请记住这两个提示：
 
-- **Reducers must be pure.** Similar to [state updater functions](/learn/queueing-a-series-of-state-updates), reducers run during rendering! (Actions are queued until the next render.) This means that reducers [must be pure](/learn/keeping-components-pure)—same inputs always result in the same output. They should not send requests, schedule timeouts, or perform any side effects (operations that impact things outside the component). They should update [objects](/learn/updating-objects-in-state) and [arrays](/learn/updating-arrays-in-state) without mutations.
-- **Each action describes a single user interaction, even if that leads to multiple changes in the data.** For example, if a user presses "Reset" on a form with five fields managed by a reducer, it makes more sense to dispatch one `reset_form` action rather than five separate `set_field` actions. If you log every action in a reducer, that log should be clear enough for you to reconstruct what interactions or responses happened in what order. This helps with debugging!
+- **reducer 必须是纯函数。** 与 [state updater 函数](/learn/queueing-a-series-of-state-updates) 类似，reducer 会在渲染期间运行！（action 会被排队，直到下一次渲染。）这意味着 reducer [必须是纯函数](/learn/keeping-components-pure)——相同的输入总是得到相同的输出。它们不应该发送请求、设置超时，或执行任何副作用（即影响组件外部内容的操作）。它们应该在不变异的情况下更新 [对象](/learn/updating-objects-in-state) 和 [数组](/learn/updating-arrays-in-state)。
+- **每个 action 描述一次单独的用户交互，即使这会导致数据发生多处变化。** 例如，如果用户在一个由 reducer 管理的、包含五个字段的表单中点击“重置”，分发一个 `reset_form` action 比分发五个独立的 `set_field` action 更合理。如果你在 reducer 中记录每个 action，这些日志应该足够清晰，让你能够重建交互或响应按什么顺序发生。这有助于调试！
 
-## Writing concise reducers with Immer {/*writing-concise-reducers-with-immer*/}
+## 使用 Immer 编写更简洁的 reducer {/*writing-concise-reducers-with-immer*/}
 
-Just like with [updating objects](/learn/updating-objects-in-state#write-concise-update-logic-with-immer) and [arrays](/learn/updating-arrays-in-state#write-concise-update-logic-with-immer) in regular state, you can use the Immer library to make reducers more concise. Here, [`useImmerReducer`](https://github.com/immerjs/use-immer#useimmerreducer) lets you mutate the state with `push` or `arr[i] =` assignment:
+就像在普通状态中[更新对象](/learn/updating-objects-in-state#write-concise-update-logic-with-immer)和[更新数组](/learn/updating-arrays-in-state#write-concise-update-logic-with-immer)一样，你也可以使用 Immer 库让 reducer 更简洁。这里，[`useImmerReducer`](https://github.com/immerjs/use-immer#useimmerreducer) 让你可以通过 `push` 或 `arr[i] =` 赋值来变异状态：
 
 <Sandpack>
 
@@ -913,7 +913,7 @@ function tasksReducer(draft, action) {
       return draft.filter((t) => t.id !== action.id);
     }
     default: {
-      throw Error('Unknown action: ' + action.type);
+      throw Error('未知的 action: ' + action.type);
     }
   }
 }
@@ -945,7 +945,7 @@ export default function TaskApp() {
 
   return (
     <>
-      <h1>Prague itinerary</h1>
+      <h1>布拉格行程</h1>
       <AddTask onAddTask={handleAddTask} />
       <TaskList
         tasks={tasks}
@@ -958,9 +958,9 @@ export default function TaskApp() {
 
 let nextId = 3;
 const initialTasks = [
-  {id: 0, text: 'Visit Kafka Museum', done: true},
-  {id: 1, text: 'Watch a puppet show', done: false},
-  {id: 2, text: 'Lennon Wall pic', done: false},
+  {id: 0, text: '参观 Kafka 博物馆', done: true},
+  {id: 1, text: '看木偶表演', done: false},
+  {id: 2, text: 'Lennon 墙照片', done: false},
 ];
 ```
 
@@ -972,7 +972,7 @@ export default function AddTask({onAddTask}) {
   return (
     <>
       <input
-        placeholder="Add task"
+        placeholder="添加任务"
         value={text}
         onChange={(e) => setText(e.target.value)}
       />
@@ -981,7 +981,7 @@ export default function AddTask({onAddTask}) {
           setText('');
           onAddTask(text);
         }}>
-        Add
+        添加
       </button>
     </>
   );
@@ -1018,14 +1018,14 @@ function Task({task, onChange, onDelete}) {
             });
           }}
         />
-        <button onClick={() => setIsEditing(false)}>Save</button>
+        <button onClick={() => setIsEditing(false)}>保存</button>
       </>
     );
   } else {
     taskContent = (
       <>
         {task.text}
-        <button onClick={() => setIsEditing(true)}>Edit</button>
+        <button onClick={() => setIsEditing(true)}>编辑</button>
       </>
     );
   }
@@ -1042,7 +1042,7 @@ function Task({task, onChange, onDelete}) {
         }}
       />
       {taskContent}
-      <button onClick={() => onDelete(task.id)}>Delete</button>
+      <button onClick={() => onDelete(task.id)}>删除</button>
     </label>
   );
 }
@@ -1082,34 +1082,34 @@ li {
 
 </Sandpack>
 
-Reducers must be pure, so they shouldn't mutate state. But Immer provides you with a special `draft` object which is safe to mutate. Under the hood, Immer will create a copy of your state with the changes you made to the `draft`. This is why reducers managed by `useImmerReducer` can mutate their first argument and don't need to return state.
+reducer 必须是纯函数，所以它们不应该变异状态。但 Immer 提供了一个特殊的 `draft` 对象，可以安全地对其进行变异。在底层，Immer 会根据你对 `draft` 所做的更改创建一份状态副本。这就是为什么由 `useImmerReducer` 管理的 reducer 可以变异第一个参数，并且不需要返回 state。
 
 <Recap>
 
-- To convert from `useState` to `useReducer`:
-  1. Dispatch actions from event handlers.
-  2. Write a reducer function that returns the next state for a given state and action.
-  3. Replace `useState` with `useReducer`.
-- Reducers require you to write a bit more code, but they help with debugging and testing.
-- Reducers must be pure.
-- Each action describes a single user interaction.
-- Use Immer if you want to write reducers in a mutating style.
+- 要从 `useState` 转换到 `useReducer`：
+  1. 在事件处理器中分发 action。
+  2. 编写一个 reducer 函数，它根据给定的 state 和 action 返回下一个 state。
+  3. 用 `useReducer` 替换 `useState`。
+- reducer 需要你多写一点代码，但它们有助于调试和测试。
+- reducer 必须是纯函数。
+- 每个 action 描述一次单独的用户交互。
+- 如果你想用变异式风格编写 reducer，就使用 Immer。
 
 </Recap>
 
 <Challenges>
 
-#### Dispatch actions from event handlers {/*dispatch-actions-from-event-handlers*/}
+#### 从事件处理器中分发 action {/*dispatch-actions-from-event-handlers*/}
 
-Currently, the event handlers in `ContactList.js` and `Chat.js` have `// TODO` comments. This is why typing into the input doesn't work, and clicking on the buttons doesn't change the selected recipient.
+目前，`ContactList.js` 和 `Chat.js` 中的事件处理器都有 `// TODO` 注释。这就是为什么在输入框中输入不起作用，以及点击按钮不会改变所选收件人。
 
-Replace these two `// TODO`s with the code to `dispatch` the corresponding actions. To see the expected shape and the type of the actions, check the reducer in `messengerReducer.js`. The reducer is already written so you won't need to change it. You only need to dispatch the actions in `ContactList.js` and `Chat.js`.
+用用于 `dispatch` 对应 action 的代码替换这两个 `// TODO`。要查看 action 的预期形状和类型，请检查 `messengerReducer.js` 中的 reducer。reducer 已经写好了，所以你不需要修改它。你只需要在 `ContactList.js` 和 `Chat.js` 中分发这些 action。
 
 <Hint>
 
-The `dispatch` function is already available in both of these components because it was passed as a prop. So you need to call `dispatch` with the corresponding action object.
+这两个组件中已经可以使用 `dispatch` 函数，因为它是作为 prop 传入的。所以你需要用对应的 action 对象调用 `dispatch`。
 
-To check the action object shape, you can look at the reducer and see which `action` fields it expects to see. For example, the `changed_selection` case in the reducer looks like this:
+要检查 action 对象的形状，你可以查看 reducer，看看它期望看到哪些 `action` 字段。例如，reducer 中的 `changed_selection` 分支是这样的：
 
 ```js
 case 'changed_selection': {
@@ -1120,7 +1120,7 @@ case 'changed_selection': {
 }
 ```
 
-This means that your action object should have a `type: 'changed_selection'`. You also see the `action.contactId` being used, so you need to include a `contactId` property into your action.
+这意味着你的 action 对象应该有 `type: 'changed_selection'`。你还能看到使用了 `action.contactId`，所以你需要在 action 中包含一个 `contactId` 属性。
 
 </Hint>
 
@@ -1182,7 +1182,7 @@ export function messengerReducer(state, action) {
       };
     }
     default: {
-      throw Error('Unknown action: ' + action.type);
+      throw Error('未知的 action: ' + action.type);
     }
   }
 }
@@ -1197,7 +1197,7 @@ export default function ContactList({contacts, selectedId, dispatch}) {
           <li key={contact.id}>
             <button
               onClick={() => {
-                // TODO: dispatch changed_selection
+                // TODO: 分发 changed_selection
               }}>
               {selectedId === contact.id ? <b>{contact.name}</b> : contact.name}
             </button>
@@ -1217,14 +1217,14 @@ export default function Chat({contact, message, dispatch}) {
     <section className="chat">
       <textarea
         value={message}
-        placeholder={'Chat to ' + contact.name}
+        placeholder={'与 ' + contact.name 聊天}
         onChange={(e) => {
-          // TODO: dispatch edited_message
-          // (Read the input value from e.target.value)
+          // TODO: 分发 edited_message
+          // （从 e.target.value 中读取输入值）
         }}
       />
       <br />
-      <button>Send to {contact.email}</button>
+      <button>发送给 {contact.email}</button>
     </section>
   );
 }
@@ -1256,23 +1256,23 @@ textarea {
 
 <Solution>
 
-From the reducer code, you can infer that actions need to look like this:
+从 reducer 代码中，你可以推断 action 需要长这样：
 
 ```js
-// When the user presses "Alice"
+// 当用户点击 "Alice"
 dispatch({
   type: 'changed_selection',
   contactId: 1,
 });
 
-// When user types "Hello!"
+// 当用户输入 "Hello!"
 dispatch({
   type: 'edited_message',
   message: 'Hello!',
 });
 ```
 
-Here is the example updated to dispatch the corresponding messages:
+下面是更新后分发对应消息的示例：
 
 <Sandpack>
 
@@ -1332,7 +1332,7 @@ export function messengerReducer(state, action) {
       };
     }
     default: {
-      throw Error('Unknown action: ' + action.type);
+      throw Error('未知的 action: ' + action.type);
     }
   }
 }
@@ -1370,7 +1370,7 @@ export default function Chat({contact, message, dispatch}) {
     <section className="chat">
       <textarea
         value={message}
-        placeholder={'Chat to ' + contact.name}
+        placeholder={'与 ' + contact.name 聊天}
         onChange={(e) => {
           dispatch({
             type: 'edited_message',
@@ -1379,7 +1379,7 @@ export default function Chat({contact, message, dispatch}) {
         }}
       />
       <br />
-      <button>Send to {contact.email}</button>
+      <button>发送给 {contact.email}</button>
     </section>
   );
 }
@@ -1411,12 +1411,12 @@ textarea {
 
 </Solution>
 
-#### Clear the input on sending a message {/*clear-the-input-on-sending-a-message*/}
+#### 发送消息时清空输入框 {/*clear-the-input-on-sending-a-message*/}
 
-Currently, pressing "Send" doesn't do anything. Add an event handler to the "Send" button that will:
+目前，点击“发送”没有任何作用。给“发送”按钮添加一个事件处理器，让它能够：
 
-1. Show an `alert` with the recipient's email and the message.
-2. Clear the message input.
+1. 弹出一个 `alert`，显示收件人的邮箱和消息。
+2. 清空消息输入框。
 
 <Sandpack>
 
@@ -1476,7 +1476,7 @@ export function messengerReducer(state, action) {
       };
     }
     default: {
-      throw Error('Unknown action: ' + action.type);
+      throw Error('未知的 action: ' + action.type);
     }
   }
 }
@@ -1514,7 +1514,7 @@ export default function Chat({contact, message, dispatch}) {
     <section className="chat">
       <textarea
         value={message}
-        placeholder={'Chat to ' + contact.name}
+        placeholder={'与 ' + contact.name 聊天}
         onChange={(e) => {
           dispatch({
             type: 'edited_message',
@@ -1523,7 +1523,7 @@ export default function Chat({contact, message, dispatch}) {
         }}
       />
       <br />
-      <button>Send to {contact.email}</button>
+      <button>发送给 {contact.email}</button>
     </section>
   );
 }
@@ -1555,7 +1555,7 @@ textarea {
 
 <Solution>
 
-There are a couple of ways you could do it in the "Send" button event handler. One approach is to show an alert and then dispatch an `edited_message` action with an empty `message`:
+你可以在“发送”按钮的事件处理器中用几种方式来实现它。一种方法是先显示 alert，然后分发一个 `edited_message` action，把 `message` 设为空：
 
 <Sandpack>
 
@@ -1615,7 +1615,7 @@ export function messengerReducer(state, action) {
       };
     }
     default: {
-      throw Error('Unknown action: ' + action.type);
+      throw Error('未知的 action: ' + action.type);
     }
   }
 }
@@ -1653,7 +1653,7 @@ export default function Chat({contact, message, dispatch}) {
     <section className="chat">
       <textarea
         value={message}
-        placeholder={'Chat to ' + contact.name}
+        placeholder={'与 ' + contact.name 聊天}
         onChange={(e) => {
           dispatch({
             type: 'edited_message',
@@ -1664,13 +1664,13 @@ export default function Chat({contact, message, dispatch}) {
       <br />
       <button
         onClick={() => {
-          alert(`Sending "${message}" to ${contact.email}`);
+          alert(`发送 "${message}" 到 ${contact.email}`);
           dispatch({
             type: 'edited_message',
             message: '',
           });
         }}>
-        Send to {contact.email}
+        发送给 {contact.email}
       </button>
     </section>
   );
@@ -1701,9 +1701,9 @@ textarea {
 
 </Sandpack>
 
-This works and clears the input when you hit "Send".
+这可以正常工作，并且在你点击“发送”时会清空输入框。
 
-However, _from the user's perspective_, sending a message is a different action than editing the field. To reflect that, you could instead create a _new_ action called `sent_message`, and handle it separately in the reducer:
+不过，_从用户的角度来看_，发送消息和编辑输入框是两个不同的操作。为了体现这一点，你也可以创建一个新的 action，叫做 `sent_message`，并在 reducer 中单独处理它：
 
 <Sandpack>
 
@@ -1769,7 +1769,7 @@ export function messengerReducer(state, action) {
       };
     }
     default: {
-      throw Error('Unknown action: ' + action.type);
+      throw Error('未知的 action: ' + action.type);
     }
   }
 }
@@ -1807,7 +1807,7 @@ export default function Chat({contact, message, dispatch}) {
     <section className="chat">
       <textarea
         value={message}
-        placeholder={'Chat to ' + contact.name}
+        placeholder={'与 ' + contact.name 聊天}
         onChange={(e) => {
           dispatch({
             type: 'edited_message',
@@ -1818,12 +1818,12 @@ export default function Chat({contact, message, dispatch}) {
       <br />
       <button
         onClick={() => {
-          alert(`Sending "${message}" to ${contact.email}`);
+          alert(`发送 "${message}" 到 ${contact.email}`);
           dispatch({
             type: 'sent_message',
           });
         }}>
-        Send to {contact.email}
+        发送给 {contact.email}
       </button>
     </section>
   );
@@ -1854,44 +1854,44 @@ textarea {
 
 </Sandpack>
 
-The resulting behavior is the same. But keep in mind that action types should ideally describe "what the user did" rather than "how you want the state to change". This makes it easier to later add more features.
+最终行为是一样的。但请记住，action 类型最好描述“用户做了什么”，而不是“你希望状态如何改变”。这样以后添加更多功能会更容易。
 
-With either solution, it's important that you **don't** place the `alert` inside a reducer. The reducer should be a pure function--it should only calculate the next state. It should not "do" anything, including displaying messages to the user. That should happen in the event handler. (To help catch mistakes like this, React will call your reducers multiple times in Strict Mode. This is why, if you put an alert in a reducer, it fires twice.)
+无论哪种解决方案，都重要的是你**不要**把 `alert` 放在 reducer 里。reducer 应该是纯函数——它只应计算下一个状态。它不应该“做”任何事情，包括向用户显示消息。这应该发生在事件处理器中。（为了帮助发现这类错误，React 会在 Strict Mode 中多次调用你的 reducer。这就是为什么如果你把 alert 放进 reducer，它会弹出两次。）
 
 </Solution>
 
-#### Restore input values when switching between tabs {/*restore-input-values-when-switching-between-tabs*/}
+#### 在不同标签页之间切换时恢复输入值 {/*restore-input-values-when-switching-between-tabs*/}
 
-In this example, switching between different recipients always clears the text input:
+在这个例子中，在不同收件人之间切换时总是会清空文本输入框：
 
 ```js
 case 'changed_selection': {
   return {
     ...state,
     selectedId: action.contactId,
-    message: '' // Clears the input
+    message: '' // 清空输入框
   };
 ```
 
-This is because you don't want to share a single message draft between several recipients. But it would be better if your app "remembered" a draft for each contact separately, restoring them when you switch contacts.
+这是因为你不希望多个收件人共享同一个消息草稿。但如果应用能分别“记住”每个联系人的草稿，并在切换联系人时恢复它们，那就更好了。
 
-Your task is to change the way the state is structured so that you remember a separate message draft _per contact_. You would need to make a few changes to the reducer, the initial state, and the components.
+你的任务是更改 state 的结构，让你能为 _每个联系人_ 单独记住一份消息草稿。你需要对 reducer、初始 state 和组件做一些修改。
 
 <Hint>
 
-You can structure your state like this:
+你可以把 state 结构设计成这样：
 
 ```js
 export const initialState = {
   selectedId: 0,
   messages: {
-    0: 'Hello, Taylor', // Draft for contactId = 0
-    1: 'Hello, Alice', // Draft for contactId = 1
+    0: 'Hello, Taylor', // contactId = 0 的草稿
+    1: 'Hello, Alice', // contactId = 1 的草稿
   },
 };
 ```
 
-The `[key]: value` [computed property](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer#computed_property_names) syntax can help you update the `messages` object:
+`[key]: value` 的[计算属性](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Object_initializer#computed_property_names)语法可以帮助你更新 `messages` 对象：
 
 ```js
 {
@@ -1966,7 +1966,7 @@ export function messengerReducer(state, action) {
       };
     }
     default: {
-      throw Error('Unknown action: ' + action.type);
+      throw Error('未知的 action: ' + action.type);
     }
   }
 }
@@ -2004,7 +2004,7 @@ export default function Chat({contact, message, dispatch}) {
     <section className="chat">
       <textarea
         value={message}
-        placeholder={'Chat to ' + contact.name}
+        placeholder={'与 ' + contact.name 聊天}
         onChange={(e) => {
           dispatch({
             type: 'edited_message',
@@ -2015,12 +2015,12 @@ export default function Chat({contact, message, dispatch}) {
       <br />
       <button
         onClick={() => {
-          alert(`Sending "${message}" to ${contact.email}`);
+          alert(`发送 "${message}" 到 ${contact.email}`);
           dispatch({
             type: 'sent_message',
           });
         }}>
-        Send to {contact.email}
+        发送给 {contact.email}
       </button>
     </section>
   );
@@ -2053,31 +2053,31 @@ textarea {
 
 <Solution>
 
-You'll need to update the reducer to store and update a separate message draft per contact:
+你需要更新 reducer 来存储并更新每个联系人的独立消息草稿：
 
 ```js
-// When the input is edited
+// 当输入框被编辑时
 case 'edited_message': {
   return {
-    // Keep other state like selection
+    // 保留其他 state，比如选中状态
     ...state,
     messages: {
-      // Keep messages for other contacts
+      // 保留其他联系人的消息
       ...state.messages,
-      // But change the selected contact's message
+      // 但修改当前选中联系人的消息
       [state.selectedId]: action.message
     }
   };
 }
 ```
 
-You would also update the `Messenger` component to read the message for the currently selected contact:
+你还需要更新 `Messenger` 组件，让它读取当前所选联系人的消息：
 
 ```js
 const message = state.messages[state.selectedId];
 ```
 
-Here is the complete solution:
+下面是完整解法：
 
 <Sandpack>
 
@@ -2152,7 +2152,7 @@ export function messengerReducer(state, action) {
       };
     }
     default: {
-      throw Error('Unknown action: ' + action.type);
+      throw Error('未知的 action: ' + action.type);
     }
   }
 }
@@ -2190,7 +2190,7 @@ export default function Chat({contact, message, dispatch}) {
     <section className="chat">
       <textarea
         value={message}
-        placeholder={'Chat to ' + contact.name}
+        placeholder={'与 ' + contact.name 聊天}
         onChange={(e) => {
           dispatch({
             type: 'edited_message',
@@ -2201,12 +2201,12 @@ export default function Chat({contact, message, dispatch}) {
       <br />
       <button
         onClick={() => {
-          alert(`Sending "${message}" to ${contact.email}`);
+          alert(`发送 "${message}" 到 ${contact.email}`);
           dispatch({
             type: 'sent_message',
           });
         }}>
-        Send to {contact.email}
+        发送给 {contact.email}
       </button>
     </section>
   );
@@ -2237,19 +2237,19 @@ textarea {
 
 </Sandpack>
 
-Notably, you didn't need to change any of the event handlers to implement this different behavior. Without a reducer, you would have to change every event handler that updates the state.
+值得注意的是，你并不需要修改任何事件处理器就能实现这种不同的行为。如果没有 reducer，你就必须修改所有会更新状态的事件处理器。
 
 </Solution>
 
-#### Implement `useReducer` from scratch {/*implement-usereducer-from-scratch*/}
+#### 从零实现 `useReducer` {/*implement-usereducer-from-scratch*/}
 
-In the earlier examples, you imported the `useReducer` Hook from React. This time, you will implement _the `useReducer` Hook itself!_ Here is a stub to get you started. It shouldn't take more than 10 lines of code.
+在前面的示例中，你从 React 导入了 `useReducer` Hook。这次，你要自己实现 _`useReducer` Hook 本身！_ 下面有一个起始模板。代码不应该超过 10 行。
 
-To test your changes, try typing into the input or select a contact.
+要测试你的修改，可以尝试在输入框中输入或者选择一个联系人。
 
 <Hint>
 
-Here is a more detailed sketch of the implementation:
+下面是实现的更详细草图：
 
 ```js
 export function useReducer(reducer, initialState) {
@@ -2263,7 +2263,7 @@ export function useReducer(reducer, initialState) {
 }
 ```
 
-Recall that a reducer function takes two arguments--the current state and the action object--and it returns the next state. What should your `dispatch` implementation do with it?
+回忆一下，reducer 函数接受两个参数——当前 state 和 action 对象——然后返回下一个 state。你的 `dispatch` 实现应该如何处理它？
 
 </Hint>
 
@@ -2340,7 +2340,7 @@ export function messengerReducer(state, action) {
       };
     }
     default: {
-      throw Error('Unknown action: ' + action.type);
+      throw Error('未知的 action: ' + action.type);
     }
   }
 }
@@ -2390,7 +2390,7 @@ export default function Chat({contact, message, dispatch}) {
     <section className="chat">
       <textarea
         value={message}
-        placeholder={'Chat to ' + contact.name}
+        placeholder={'与 ' + contact.name 聊天}
         onChange={(e) => {
           dispatch({
             type: 'edited_message',
@@ -2401,12 +2401,12 @@ export default function Chat({contact, message, dispatch}) {
       <br />
       <button
         onClick={() => {
-          alert(`Sending "${message}" to ${contact.email}`);
+          alert(`发送 "${message}" 到 ${contact.email}`);
           dispatch({
             type: 'sent_message',
           });
         }}>
-        Send to {contact.email}
+        发送给 {contact.email}
       </button>
     </section>
   );
@@ -2439,7 +2439,7 @@ textarea {
 
 <Solution>
 
-Dispatching an action calls a reducer with the current state and the action, and stores the result as the next state. This is what it looks like in code:
+分发一个 action 会用当前 state 和 action 调用 reducer，并将结果存储为下一个 state。代码大致如下：
 
 <Sandpack>
 
@@ -2514,7 +2514,7 @@ export function messengerReducer(state, action) {
       };
     }
     default: {
-      throw Error('Unknown action: ' + action.type);
+      throw Error('未知的 action: ' + action.type);
     }
   }
 }
@@ -2567,7 +2567,7 @@ export default function Chat({contact, message, dispatch}) {
     <section className="chat">
       <textarea
         value={message}
-        placeholder={'Chat to ' + contact.name}
+        placeholder={'与 ' + contact.name 聊天}
         onChange={(e) => {
           dispatch({
             type: 'edited_message',
@@ -2578,12 +2578,12 @@ export default function Chat({contact, message, dispatch}) {
       <br />
       <button
         onClick={() => {
-          alert(`Sending "${message}" to ${contact.email}`);
+          alert(`发送 "${message}" 到 ${contact.email}`);
           dispatch({
             type: 'sent_message',
           });
         }}>
-        Send to {contact.email}
+        发送给 {contact.email}
       </button>
     </section>
   );
@@ -2614,7 +2614,7 @@ textarea {
 
 </Sandpack>
 
-Though it doesn't matter in most cases, a slightly more accurate implementation looks like this:
+不过，虽然在大多数情况下都没关系，但一个稍微更准确的实现是这样的：
 
 ```js
 function dispatch(action) {
@@ -2622,7 +2622,7 @@ function dispatch(action) {
 }
 ```
 
-This is because the dispatched actions are queued until the next render, [similar to the updater functions.](/learn/queueing-a-series-of-state-updates)
+这是因为分发的 action 会被排队，直到下一次渲染，[类似于 updater 函数。](/learn/queueing-a-series-of-state-updates)
 
 </Solution>
 

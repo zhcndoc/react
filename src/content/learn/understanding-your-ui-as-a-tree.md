@@ -1,41 +1,41 @@
 ---
-title: Understanding Your UI as a Tree
+title: 将你的 UI 视为一棵树
 ---
 
 <Intro>
 
-Your React app is taking shape with many components being nested within each other. How does React keep track of your app's component structure?
+你的 React 应用正在逐步成形，许多组件彼此嵌套在一起。React 是如何跟踪你应用的组件结构的呢？
 
-React, and many other UI libraries, model UI as a tree. Thinking of your app as a tree is useful for understanding the relationship between components. This understanding will help you debug future concepts like performance and state management.
+React 和许多其他 UI 库一样，都将 UI 建模为一棵树。把你的应用想象成一棵树，有助于理解组件之间的关系。这种理解将帮助你调试未来的一些概念，比如性能和状态管理。
 
 </Intro>
 
 <YouWillLearn>
 
-* How React "sees" component structures
-* What a render tree is and what it is useful for
-* What a module dependency tree is and what it is useful for
+* React 是如何“看到”组件结构的
+* 什么是渲染树，以及它有什么用
+* 什么是模块依赖树，以及它有什么用
 
 </YouWillLearn>
 
-## Your UI as a tree {/*your-ui-as-a-tree*/}
+## 你的 UI 作为一棵树 {/*your-ui-as-a-tree*/}
 
-Trees are a relationship model between items. The UI is often represented using tree structures. For example, browsers use tree structures to model HTML ([DOM](https://developer.mozilla.org/docs/Web/API/Document_Object_Model/Introduction)) and CSS ([CSSOM](https://developer.mozilla.org/docs/Web/API/CSS_Object_Model)). Mobile platforms also use trees to represent their view hierarchy.
+树是一种描述项目之间关系的模型。UI 通常使用树结构来表示。例如，浏览器使用树结构来建模 HTML ([DOM](https://developer.mozilla.org/docs/Web/API/Document_Object_Model/Introduction)) 和 CSS ([CSSOM](https://developer.mozilla.org/docs/Web/API/CSS_Object_Model))。移动平台也使用树来表示它们的视图层级。
 
 <Diagram name="preserving_state_dom_tree" height={193} width={864} alt="Diagram with three sections arranged horizontally. In the first section, there are three rectangles stacked vertically, with labels 'Component A', 'Component B', and 'Component C'. Transitioning to the next pane is an arrow with the React logo on top labeled 'React'. The middle section contains a tree of components, with the root labeled 'A' and two children labeled 'B' and 'C'. The next section is again transitioned using an arrow with the React logo on top labeled 'React DOM'. The third and final section is a wireframe of a browser, containing a tree of 8 nodes, which has only a subset highlighted (indicating the subtree from the middle section).">
 
-React creates a UI tree from your components. In this example, the UI tree is then used to render to the DOM.
+React 会根据你的组件创建一棵 UI 树。在这个例子中，这棵 UI 树随后被用来渲染到 DOM。
 </Diagram>
 
-Like browsers and mobile platforms, React also uses tree structures to manage and model the relationship between components in a React app. These trees are useful tools to understand how data flows through a React app and how to optimize rendering and app size.
+和浏览器以及移动平台一样，React 也使用树结构来管理并建模 React 应用中组件之间的关系。这些树是理解数据如何在 React 应用中流动，以及如何优化渲染和应用体积的有用工具。
 
-## The Render Tree {/*the-render-tree*/}
+## 渲染树 {/*the-render-tree*/}
 
-A major feature of components is the ability to compose components of other components. As we [nest components](/learn/your-first-component#nesting-and-organizing-components), we have the concept of parent and child components, where each parent component may itself be a child of another component.
+组件的一个主要特性是能够组合其他组件。随着我们[嵌套组件](/learn/your-first-component#nesting-and-organizing-components)，就会有父组件和子组件的概念，其中每个父组件本身也可能是另一个组件的子组件。
 
-When we render a React app, we can model this relationship in a tree, known as the render tree.
+当我们渲染一个 React 应用时，我们可以把这种关系建模为一棵树，这棵树被称为渲染树。
 
-Here is a React app that renders inspirational quotes.
+下面是一个渲染激励人心语录的 React 应用。
 
 <Sandpack>
 
@@ -77,9 +77,9 @@ export default function InspirationGenerator({children}) {
 
   return (
     <>
-      <p>Your inspirational quote is:</p>
+      <p>你的励志语录是：</p>
       <FancyText text={quote} />
-      <button onClick={next}>Inspire me again</button>
+      <button onClick={next}>再激励我一次</button>
       {children}
     </>
   );
@@ -94,9 +94,9 @@ export default function Copyright({year}) {
 
 ```js src/quotes.js
 export default [
-  "Don’t let yesterday take up too much of today.” — Will Rogers",
-  "Ambition is putting a ladder against the sky.",
-  "A joy that's shared is a joy made double.",
+  "昨天的事不要占用今天太多的时间。” — Will Rogers",
+  "雄心壮志就是把梯子靠在天空上。",
+  "分享的快乐加倍快乐。",
   ];
 ```
 
@@ -120,32 +120,32 @@ export default [
 
 <Diagram name="render_tree" height={250} width={500} alt="Tree graph with five nodes. Each node represents a component. The root of the tree is App, with two arrows extending from it to 'InspirationGenerator' and 'FancyText'. The arrows are labelled with the word 'renders'. 'InspirationGenerator' node also has two arrows pointing to nodes 'FancyText' and 'Copyright'.">
 
-React creates a *render tree*, a UI tree, composed of the rendered components.
+React 创建了一棵 *渲染树*，也就是由已渲染组件组成的 UI 树。
 
 
 </Diagram>
 
-From the example app, we can construct the above render tree.
+根据这个示例应用，我们可以构建出上面的渲染树。
 
-The tree is composed of nodes, each of which represents a component. `App`, `FancyText`, `Copyright`, to name a few, are all nodes in our tree.
+这棵树由多个节点组成，每个节点都表示一个组件。`App`、`FancyText`、`Copyright`，仅举几例，都是这棵树中的节点。
 
-The root node in a React render tree is the [root component](/learn/importing-and-exporting-components#the-root-component-file) of the app. In this case, the root component is `App` and it is the first component React renders. Each arrow in the tree points from a parent component to a child component.
+React 渲染树中的根节点是应用的[根组件](/learn/importing-and-exporting-components#the-root-component-file)。在这个例子中，根组件是 `App`，它是 React 首先渲染的组件。树中的每个箭头都从父组件指向子组件。
 
 <DeepDive>
 
-#### Where are the HTML tags in the render tree? {/*where-are-the-html-elements-in-the-render-tree*/}
+#### 渲染树中 HTML 标签在哪里？ {/*where-are-the-html-elements-in-the-render-tree*/}
 
-You'll notice in the above render tree, there is no mention of the HTML tags that each component renders. This is because the render tree is only composed of React [components](learn/your-first-component#components-ui-building-blocks).
+你会注意到上面的渲染树中，并没有提到每个组件所渲染的 HTML 标签。这是因为渲染树只由 React 的[组件](learn/your-first-component#components-ui-building-blocks)组成。
 
-React, as a UI framework, is platform agnostic. On react.dev, we showcase examples that render to the web, which uses HTML markup as its UI primitives. But a React app could just as likely render to a mobile or desktop platform, which may use different UI primitives like [UIView](https://developer.apple.com/documentation/uikit/uiview) or [FrameworkElement](https://learn.microsoft.com/en-us/dotnet/api/system.windows.frameworkelement?view=windowsdesktop-7.0).
+React 作为一个 UI 框架，与平台无关。在 react.dev 上，我们展示的是渲染到 Web 的示例，而 Web 使用 HTML 标记作为其 UI 基元。但 React 应用同样也可能渲染到移动端或桌面端平台，而这些平台可能使用不同的 UI 基元，比如 [UIView](https://developer.apple.com/documentation/uikit/uiview) 或 [FrameworkElement](https://learn.microsoft.com/en-us/dotnet/api/system.windows.frameworkelement?view=windowsdesktop-7.0)。
 
-These platform UI primitives are not a part of React. React render trees can provide insight to our React app regardless of what platform your app renders to.
+这些平台 UI 基元并不是 React 的一部分。无论你的应用渲染到哪个平台，React 渲染树都能为我们的 React 应用提供洞察。
 
 </DeepDive>
 
-A render tree represents a single render pass of a React application. With [conditional rendering](/learn/conditional-rendering), a parent component may render different children depending on the data passed.
+渲染树表示 React 应用的一次单独渲染过程。借助[条件渲染](/learn/conditional-rendering)，父组件可以根据传入的数据渲染不同的子组件。
 
-We can update the app to conditionally render either an inspirational quote or color.
+我们可以更新这个应用，使其有条件地渲染一条励志语录或一种颜色。
 
 <Sandpack>
 
@@ -194,12 +194,12 @@ export default function InspirationGenerator({children}) {
 
   return (
     <>
-      <p>Your inspirational {inspiration.type} is:</p>
+      <p>你的励志 {inspiration.type} 是：</p>
       {inspiration.type === 'quote'
       ? <FancyText text={inspiration.value} />
       : <Color value={inspiration.value} />}
 
-      <button onClick={next}>Inspire me again</button>
+      <button onClick={next}>再激励我一次</button>
       {children}
     </>
   );
@@ -214,11 +214,11 @@ export default function Copyright({year}) {
 
 ```js src/inspirations.js
 export default [
-  {type: 'quote', value: "Don’t let yesterday take up too much of today.” — Will Rogers"},
+  {type: 'quote', value: "昨天的事不要占用今天太多的时间。” — Will Rogers"},
   {type: 'color', value: "#B73636"},
-  {type: 'quote', value: "Ambition is putting a ladder against the sky."},
+  {type: 'quote', value: "雄心壮志就是把梯子靠在天空上。"},
   {type: 'color', value: "#256266"},
-  {type: 'quote', value: "A joy that's shared is a joy made double."},
+  {type: 'quote', value: "分享的快乐加倍快乐。"},
   {type: 'color', value: "#F9F2B4"},
 ];
 ```
@@ -247,54 +247,54 @@ export default [
 
 <Diagram name="conditional_render_tree" height={250} width={561} alt="Tree graph with six nodes. The top node of the tree is labelled 'App' with two arrows extending to nodes labelled 'InspirationGenerator' and 'FancyText'. The arrows are solid lines and are labelled with the word 'renders'. 'InspirationGenerator' node also has three arrows. The arrows to nodes 'FancyText' and 'Color' are dashed and labelled with 'renders?'. The last arrow points to the node labelled 'Copyright' and is solid and labelled with 'renders'.">
 
-With conditional rendering, across different renders, the render tree may render different components.
+在条件渲染下，不同的渲染过程中，渲染树可能会渲染不同的组件。
 
 </Diagram>
 
-In this example, depending on what `inspiration.type` is, we may render `<FancyText>` or `<Color>`. The render tree may be different for each render pass.
+在这个例子中，根据 `inspiration.type` 的值不同，我们可能渲染 `<FancyText>` 或 `<Color>`。每次渲染过程中的渲染树都可能不同。
 
-Although render trees may differ across render passes, these trees are generally helpful for identifying what the *top-level* and *leaf components* are in a React app. Top-level components are the components nearest to the root component and affect the rendering performance of all the components beneath them and often contain the most complexity. Leaf components are near the bottom of the tree and have no child components and are often frequently re-rendered.
+尽管渲染树在不同的渲染过程中可能会有所不同，但这类树通常有助于识别 React 应用中的*顶层组件*和*叶子组件*。顶层组件是最接近根组件的组件，会影响其下方所有组件的渲染性能，而且通常包含最多的复杂性。叶子组件位于树的底部，没有子组件，而且通常会频繁重新渲染。
 
-Identifying these categories of components are useful for understanding data flow and performance of your app.
+识别这些组件类别有助于理解应用中的数据流和性能。
 
-## The Module Dependency Tree {/*the-module-dependency-tree*/}
+## 模块依赖树 {/*the-module-dependency-tree*/}
 
-Another relationship in a React app that can be modeled with a tree are an app's module dependencies. As we [break up our components](/learn/importing-and-exporting-components#exporting-and-importing-a-component) and logic into separate files, we create [JS modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) where we may export components, functions, or constants.
+React 应用中的另一种可以用树来建模的关系是应用的模块依赖关系。随着我们将 [组件拆分](/learn/importing-and-exporting-components#exporting-and-importing-a-component) 和逻辑拆分到不同文件中，我们会创建 [JS 模块](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)，并可以在其中导出组件、函数或常量。
 
-Each node in a module dependency tree is a module and each branch represents an `import` statement in that module.
+模块依赖树中的每个节点都是一个模块，每一条分支代表该模块中的一条 `import` 语句。
 
-If we take the previous Inspirations app, we can build a module dependency tree, or dependency tree for short.
+如果我们以之前的 Inspirations 应用为例，就可以构建一棵模块依赖树，简称依赖树。
 
-<Diagram name="module_dependency_tree" height={250} width={658} alt="A tree graph with seven nodes. Each node is labelled with a module name. The top level node of the tree is labelled 'App.js'. There are three arrows pointing to the modules 'InspirationGenerator.js', 'FancyText.js' and 'Copyright.js' and the arrows are labelled with 'imports'. From the 'InspirationGenerator.js' node, there are three arrows that extend to three modules: 'FancyText.js', 'Color.js', and 'inspirations.js'. The arrows are labelled with 'imports'.">
+<Diagram name="module_dependency_tree" height={250} width={658} alt="一棵有七个节点的树状图。每个节点都标注了一个模块名。树的顶层节点标注为 'App.js'。有三条箭头指向模块 'InspirationGenerator.js'、'FancyText.js' 和 'Copyright.js'，箭头上标注着 'imports'。从 'InspirationGenerator.js' 节点出发，有三条箭头延伸到三个模块：'FancyText.js'、'Color.js' 和 'inspirations.js'。箭头上标注着 'imports'。">
 
-The module dependency tree for the Inspirations app.
+Inspirations 应用的模块依赖树。
 
 </Diagram>
 
-The root node of the tree is the root module, also known as the entrypoint file. It often is the module that contains the root component.
+树的根节点是根模块，也称为入口文件。它通常是包含根组件的模块。
 
-Comparing to the render tree of the same app, there are similar structures but some notable differences:
+与同一个应用的渲染树相比，它们有相似的结构，但也有一些显著差异：
 
-* The nodes that make-up the tree represent modules, not components.
-* Non-component modules, like `inspirations.js`, are also represented in this tree. The render tree only encapsulates components.
-* `Copyright.js` appears under `App.js` but in the render tree, `Copyright`, the component, appears as a child of `InspirationGenerator`. This is because `InspirationGenerator` accepts JSX as [children props](/learn/passing-props-to-a-component#passing-jsx-as-children), so it renders `Copyright` as a child component but does not import the module.
+* 构成这棵树的节点表示的是模块，而不是组件。
+* 非组件模块，例如 `inspirations.js`，也会出现在这棵树中。渲染树只包含组件。
+* `Copyright.js` 出现在 `App.js` 下面，但在渲染树中，组件 `Copyright` 则作为 `InspirationGenerator` 的子节点出现。这是因为 `InspirationGenerator` 接受 JSX 作为 [children props](/learn/passing-props-to-a-component#passing-jsx-as-children)，因此它会将 `Copyright` 作为子组件渲染，但并不会导入该模块。
 
-Dependency trees are useful to determine what modules are necessary to run your React app. When building a React app for production, there is typically a build step that will bundle all the necessary JavaScript to ship to the client. The tool responsible for this is called a [bundler](https://developer.mozilla.org/en-US/docs/Learn/Tools_and_testing/Understanding_client-side_tools/Overview#the_modern_tooling_ecosystem), and bundlers will use the dependency tree to determine what modules should be included.
+依赖树有助于确定运行你的 React 应用所必需的模块。在构建用于生产环境的 React 应用时，通常会有一个构建步骤把所有必要的 JavaScript 打包后交付给客户端。负责这项工作的工具称为 [bundler](https://developer.mozilla.org/en-US/docs/Learn/Tools_and_testing/Understanding_client-side_tools/Overview#the_modern_tooling_ecosystem)，而 bundler 会使用依赖树来确定应该包含哪些模块。
 
-As your app grows, often the bundle size does too. Large bundle sizes are expensive for a client to download and run. Large bundle sizes can delay the time for your UI to get drawn. Getting a sense of your app's dependency tree may help with debugging these issues.
+随着应用不断增长，打包体积也常常会随之增大。对于客户端来说，较大的包体积下载和运行成本都很高，也会延迟 UI 的绘制时间。了解应用的依赖树有助于调试这些问题。
 
-[comment]: <> (perhaps we should also deep dive on conditional imports)
+[comment]: <> (或许我们还应该深入讲一下条件导入)
 
 <Recap>
 
-* Trees are a common way to represent the relationship between entities. They are often used to model UI.
-* Render trees represent the nested relationship between React components across a single render.
-* With conditional rendering, the render tree may change across different renders. With different prop values, components may render different children components.
-* Render trees help identify what the top-level and leaf components are. Top-level components affect the rendering performance of all components beneath them and leaf components are often re-rendered frequently. Identifying them is useful for understanding and debugging rendering performance.
-* Dependency trees represent the module dependencies in a React app.
-* Dependency trees are used by build tools to bundle the necessary code to ship an app.
-* Dependency trees are useful for debugging large bundle sizes that slow time to paint and expose opportunities for optimizing what code is bundled.
+* 树是一种表示实体之间关系的常见方式。它们常用于建模 UI。
+* 渲染树表示单次渲染过程中 React 组件之间的嵌套关系。
+* 在条件渲染下，渲染树可能会在不同渲染之间发生变化。随着不同的属性值，组件可能会渲染不同的子组件。
+* 渲染树有助于识别顶层组件和叶子组件。顶层组件会影响其下方所有组件的渲染性能，而叶子组件通常会被频繁重新渲染。识别它们有助于理解和调试渲染性能。
+* 依赖树表示 React 应用中的模块依赖关系。
+* 构建工具会使用依赖树来打包并交付应用所需的代码。
+* 依赖树有助于调试导致首屏绘制变慢的大体积打包文件，并发现可以优化打包代码的机会。
 
 </Recap>
 
-[TODO]: <> (Add challenges)
+[TODO]: <> (添加挑战)

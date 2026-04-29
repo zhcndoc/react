@@ -4,7 +4,7 @@ title: useState
 
 <Intro>
 
-`useState` is a React Hook that lets you add a [state variable](/learn/state-a-components-memory) to your component.
+`useState` 是一个 React Hook，可让你向组件添加一个 [state 变量](/learn/state-a-components-memory)。
 
 ```js
 const [state, setState] = useState(initialState)
@@ -16,11 +16,11 @@ const [state, setState] = useState(initialState)
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `useState(initialState)` {/*usestate*/}
 
-Call `useState` at the top level of your component to declare a [state variable.](/learn/state-a-components-memory)
+在组件顶层调用 `useState` 来声明一个 [state 变量。](/learn/state-a-components-memory)
 
 ```js
 import { useState } from 'react';
@@ -32,32 +32,32 @@ function MyComponent() {
   // ...
 ```
 
-The convention is to name state variables like `[something, setSomething]` using [array destructuring.](https://javascript.info/destructuring-assignment)
+按照约定，state 变量通常命名为 `[something, setSomething]`，并使用 [数组解构。](https://javascript.info/destructuring-assignment)
 
-[See more examples below.](#usage)
+[查看更多示例。](#usage)
 
-#### Parameters {/*parameters*/}
+#### 参数 {/*parameters*/}
 
-* `initialState`: The value you want the state to be initially. It can be a value of any type, but there is a special behavior for functions. This argument is ignored after the initial render.
-  * If you pass a function as `initialState`, it will be treated as an _initializer function_. It should be pure, should take no arguments, and should return a value of any type. React will call your initializer function when initializing the component, and store its return value as the initial state. [See an example below.](#avoiding-recreating-the-initial-state)
+* `initialState`：你希望 state 的初始值。它可以是任何类型的值，但对于函数有特殊行为。这个参数在初次渲染后会被忽略。
+  * 如果你把一个函数作为 `initialState` 传入，它会被当作一个 _initializer function_。它应该是纯函数，不应接受任何参数，并且应返回任意类型的值。React 会在初始化组件时调用你的 initializer function，并将其返回值作为初始 state 存储起来。[查看下面的示例。](#avoiding-recreating-the-initial-state)
 
-#### Returns {/*returns*/}
+#### 返回值 {/*returns*/}
 
-`useState` returns an array with exactly two values:
+`useState` 返回一个恰好包含两个值的数组：
 
-1. The current state. During the first render, it will match the `initialState` you have passed.
-2. The [`set` function](#setstate) that lets you update the state to a different value and trigger a re-render.
+1. 当前的 state。在第一次渲染时，它将与你传入的 `initialState` 相匹配。
+2. 允许你将 state 更新为其他值并触发重新渲染的 [`set` 函数](#setstate)。
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-* `useState` is a Hook, so you can only call it **at the top level of your component** or your own Hooks. You can't call it inside loops or conditions. If you need that, extract a new component and move the state into it.
-* In Strict Mode, React will **call your initializer function twice** in order to [help you find accidental impurities.](#my-initializer-or-updater-function-runs-twice) This is development-only behavior and does not affect production. If your initializer function is pure (as it should be), this should not affect the behavior. The result from one of the calls will be ignored.
+* `useState` 是一个 Hook，因此你只能在**组件顶层**或你自己的 Hooks 中调用它。你不能在循环或条件中调用它。如果你需要这样做，请提取一个新组件并把 state 移到其中。
+* 在 Strict Mode 下，React 会**调用你的 initializer function 两次**，以[帮助你发现意外的副作用。](#my-initializer-or-updater-function-runs-twice) 这是仅开发环境下的行为，不会影响生产环境。如果你的 initializer function 是纯函数（它本来就应该是），这不会影响行为。其中一次调用的结果会被忽略。
 
 ---
 
-### `set` functions, like `setSomething(nextState)` {/*setstate*/}
+### `set` 函数，例如 `setSomething(nextState)` {/*setstate*/}
 
-The `set` function returned by `useState` lets you update the state to a different value and trigger a re-render. You can pass the next state directly, or a function that calculates it from the previous state:
+`useState` 返回的 `set` 函数允许你将 state 更新为不同的值并触发重新渲染。你可以直接传入下一个 state，或者传入一个根据前一个 state 计算出它的函数：
 
 ```js
 const [name, setName] = useState('Edward');
@@ -68,36 +68,36 @@ function handleClick() {
   // ...
 ```
 
-#### Parameters {/*setstate-parameters*/}
+#### 参数 {/*setstate-parameters*/}
 
-* `nextState`: The value that you want the state to be. It can be a value of any type, but there is a special behavior for functions.
-  * If you pass a function as `nextState`, it will be treated as an _updater function_. It must be pure, should take the pending state as its only argument, and should return the next state. React will put your updater function in a queue and re-render your component. During the next render, React will calculate the next state by applying all of the queued updaters to the previous state. [See an example below.](#updating-state-based-on-the-previous-state)
+* `nextState`：你希望 state 变成的值。它可以是任何类型的值，但对于函数有特殊行为。
+  * 如果你把一个函数作为 `nextState` 传入，它会被当作一个 _updater function_。它必须是纯函数，只应接收待处理的 state 作为唯一参数，并应返回下一个 state。React 会把你的 updater function 放入队列并重新渲染你的组件。在下一次渲染时，React 会通过把队列中的所有 updater 依次应用到前一个 state 上来计算下一个 state。[查看下面的示例。](#updating-state-based-on-the-previous-state)
 
-#### Returns {/*setstate-returns*/}
+#### 返回值 {/*setstate-returns*/}
 
-`set` functions do not have a return value.
+`set` 函数没有返回值。
 
-#### Caveats {/*setstate-caveats*/}
+#### 注意事项 {/*setstate-caveats*/}
 
-* The `set` function **only updates the state variable for the *next* render**. If you read the state variable after calling the `set` function, [you will still get the old value](#ive-updated-the-state-but-logging-gives-me-the-old-value) that was on the screen before your call.
+* `set` 函数**只会更新下一次渲染的 state 变量**。如果你在调用 `set` 函数之后读取 state 变量，[你仍然会得到旧值](#ive-updated-the-state-but-logging-gives-me-the-old-value)，也就是你调用之前屏幕上显示的值。
 
-* If the new value you provide is identical to the current `state`, as determined by an [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is) comparison, React will **skip re-rendering the component and its children.** This is an optimization. Although in some cases React may still need to call your component before skipping the children, it shouldn't affect your code.
+* 如果你提供的新值与当前 `state` 完全相同（根据 [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is) 比较判断），React 会**跳过重新渲染该组件及其子组件。** 这是一个优化。虽然在某些情况下，React 可能仍然需要在跳过子组件之前调用你的组件，但这不应该影响你的代码。
 
-* React [batches state updates.](/learn/queueing-a-series-of-state-updates) It updates the screen **after all the event handlers have run** and have called their `set` functions. This prevents multiple re-renders during a single event. In the rare case that you need to force React to update the screen earlier, for example to access the DOM, you can use [`flushSync`.](/reference/react-dom/flushSync)
+* React 会[批量处理 state 更新。](/learn/queueing-a-series-of-state-updates) 它会在**所有事件处理函数运行完并调用了它们的 `set` 函数之后**再更新屏幕。这可以防止在单个事件中发生多次重新渲染。在极少数情况下，如果你需要强制 React 更早地更新屏幕，例如为了访问 DOM，你可以使用 [`flushSync`。](/reference/react-dom/flushSync)
 
-* The `set` function has a stable identity, so you will often see it omitted from Effect dependencies, but including it will not cause the Effect to fire. If the linter lets you omit a dependency without errors, it is safe to do. [Learn more about removing Effect dependencies.](/learn/removing-effect-dependencies#move-dynamic-objects-and-functions-inside-your-effect)
+* `set` 函数具有稳定的身份，因此你经常会看到它被省略在 Effect 依赖项之外，但即使包含它也不会导致 Effect 触发。如果 linter 允许你在不报错的情况下省略某个依赖项，那么这样做是安全的。[了解更多关于移除 Effect 依赖项的内容。](/learn/removing-effect-dependencies#move-dynamic-objects-and-functions-inside-your-effect)
 
-* Calling the `set` function *during rendering* is only allowed from within the currently rendering component. React will discard its output and immediately attempt to render it again with the new state. This pattern is rarely needed, but you can use it to **store information from the previous renders**. [See an example below.](#storing-information-from-previous-renders)
+* 在**渲染期间**调用 `set` 函数只允许在当前正在渲染的组件内部进行。React 会丢弃其输出，并立即尝试使用新 state 重新渲染它。这种模式很少需要，但你可以用它来**存储上一次渲染中的信息**。[查看下面的示例。](#storing-information-from-previous-renders)
 
-* In Strict Mode, React will **call your updater function twice** in order to [help you find accidental impurities.](#my-initializer-or-updater-function-runs-twice) This is development-only behavior and does not affect production. If your updater function is pure (as it should be), this should not affect the behavior. The result from one of the calls will be ignored.
+* 在 Strict Mode 下，React 会**调用你的 updater function 两次**，以[帮助你发现意外的副作用。](#my-initializer-or-updater-function-runs-twice) 这是仅开发环境下的行为，不会影响生产环境。如果你的 updater function 是纯函数（它本来就应该是），这不会影响行为。其中一次调用的结果会被忽略。
 
 ---
 
-## Usage {/*usage*/}
+## 使用 {/*usage*/}
 
-### Adding state to a component {/*adding-state-to-a-component*/}
+### 向组件添加 state {/*adding-state-to-a-component*/}
 
-Call `useState` at the top level of your component to declare one or more [state variables.](/learn/state-a-components-memory)
+在组件顶层调用 `useState`，以声明一个或多个 [state 变量。](/learn/state-a-components-memory)
 
 ```js [[1, 4, "age"], [2, 4, "setAge"], [3, 4, "42"], [1, 5, "name"], [2, 5, "setName"], [3, 5, "'Taylor'"]]
 import { useState } from 'react';
@@ -108,14 +108,14 @@ function MyComponent() {
   // ...
 ```
 
-The convention is to name state variables like `[something, setSomething]` using [array destructuring.](https://javascript.info/destructuring-assignment)
+按照约定，state 变量通常命名为 `[something, setSomething]`，并使用 [数组解构。](https://javascript.info/destructuring-assignment)
 
-`useState` returns an array with exactly two items:
+`useState` 返回一个恰好包含两个项的数组：
 
-1. The <CodeStep step={1}>current state</CodeStep> of this state variable, initially set to the <CodeStep step={3}>initial state</CodeStep> you provided.
-2. The <CodeStep step={2}>`set` function</CodeStep> that lets you change it to any other value in response to interaction.
+1. 这个 state 变量的 <CodeStep step={1}>当前 state</CodeStep>，初始值为你提供的 <CodeStep step={3}>初始 state</CodeStep>。
+2. 允许你根据交互将其更改为其他值的 <CodeStep step={2}>`set` 函数</CodeStep>。
 
-To update what’s on the screen, call the `set` function with some next state:
+要更新屏幕上的内容，请用某个下一个 state 调用 `set` 函数：
 
 ```js [[2, 2, "setName"]]
 function handleClick() {
@@ -123,28 +123,28 @@ function handleClick() {
 }
 ```
 
-React will store the next state, render your component again with the new values, and update the UI.
+React 会保存下一个 state，再次使用新值渲染你的组件，并更新 UI。
 
 <Pitfall>
 
-Calling the `set` function [**does not** change the current state in the already executing code](#ive-updated-the-state-but-logging-gives-me-the-old-value):
+调用 `set` 函数[**不会**改变已在执行中的代码里的当前 state](#ive-updated-the-state-but-logging-gives-me-the-old-value)：
 
 ```js {3}
 function handleClick() {
   setName('Robin');
-  console.log(name); // Still "Taylor"!
+  console.log(name); // 仍然是 "Taylor"！
 }
 ```
 
-It only affects what `useState` will return starting from the *next* render.
+它只会影响从*下一次*渲染开始 `useState` 返回的内容。
 
 </Pitfall>
 
-<Recipes titleText="Basic useState examples" titleId="examples-basic">
+<Recipes titleText="useState 基础示例" titleId="examples-basic">
 
-#### Counter (number) {/*counter-number*/}
+#### 计数器（数字） {/*counter-number*/}
 
-In this example, the `count` state variable holds a number. Clicking the button increments it.
+在这个示例中，`count` state 变量保存一个数字。点击按钮会使其递增。
 
 <Sandpack>
 
@@ -170,9 +170,9 @@ export default function Counter() {
 
 <Solution />
 
-#### Text field (string) {/*text-field-string*/}
+#### 文本输入框（字符串） {/*text-field-string*/}
 
-In this example, the `text` state variable holds a string. When you type, `handleChange` reads the latest input value from the browser input DOM element, and calls `setText` to update the state. This allows you to display the current `text` below.
+在这个示例中，`text` state 变量保存一个字符串。输入时，`handleChange` 会从浏览器输入 DOM 元素中读取最新的输入值，并调用 `setText` 来更新 state。这样你就可以在下方显示当前的 `text`。
 
 <Sandpack>
 
@@ -202,9 +202,9 @@ export default function MyInput() {
 
 <Solution />
 
-#### Checkbox (boolean) {/*checkbox-boolean*/}
+#### 复选框（布尔值） {/*checkbox-boolean*/}
 
-In this example, the `liked` state variable holds a boolean. When you click the input, `setLiked` updates the `liked` state variable with whether the browser checkbox input is checked. The `liked` variable is used to render the text below the checkbox.
+在这个示例中，`liked` state 变量保存一个布尔值。当你点击输入框时，`setLiked` 会根据浏览器复选框输入是否被勾选来更新 `liked` state 变量。`liked` 变量用于渲染复选框下方的文本。
 
 <Sandpack>
 
@@ -238,9 +238,9 @@ export default function MyCheckbox() {
 
 <Solution />
 
-#### Form (two variables) {/*form-two-variables*/}
+#### 表单（两个变量） {/*form-two-variables*/}
 
-You can declare more than one state variable in the same component. Each state variable is completely independent.
+你可以在同一个组件中声明多个 state 变量。每个 state 变量都是完全独立的。
 
 <Sandpack>
 
@@ -278,9 +278,9 @@ button { display: block; margin-top: 10px; }
 
 ---
 
-### Updating state based on the previous state {/*updating-state-based-on-the-previous-state*/}
+### 基于前一个 state 更新 state {/*updating-state-based-on-the-previous-state*/}
 
-Suppose the `age` is `42`. This handler calls `setAge(age + 1)` three times:
+假设 `age` 为 `42`。这个处理函数会三次调用 `setAge(age + 1)`：
 
 ```js
 function handleClick() {
@@ -290,9 +290,9 @@ function handleClick() {
 }
 ```
 
-However, after one click, `age` will only be `43` rather than `45`! This is because calling the `set` function [does not update](/learn/state-as-a-snapshot) the `age` state variable in the already running code. So each `setAge(age + 1)` call becomes `setAge(43)`.
+然而，点击一次之后，`age` 只会变成 `43`，而不是 `45`！这是因为调用 `set` 函数[不会更新](/learn/state-as-a-snapshot)已在运行中的代码里的 `age` state 变量。所以每次 `setAge(age + 1)` 调用都会变成 `setAge(43)`。
 
-To solve this problem, **you may pass an *updater function*** to `setAge` instead of the next state:
+要解决这个问题，你可以向 `setAge` 传入一个 *updater function*，而不是下一个 state：
 
 ```js [[1, 2, "a", 0], [2, 2, "a + 1"], [1, 3, "a", 0], [2, 3, "a + 1"], [1, 4, "a", 0], [2, 4, "a + 1"]]
 function handleClick() {
@@ -302,39 +302,39 @@ function handleClick() {
 }
 ```
 
-Here, `a => a + 1` is your updater function. It takes the <CodeStep step={1}>pending state</CodeStep> and calculates the <CodeStep step={2}>next state</CodeStep> from it.
+这里，`a => a + 1` 就是你的 updater function。它接收 <CodeStep step={1}>待处理的 state</CodeStep>，并基于它计算出 <CodeStep step={2}>下一个 state</CodeStep>。
 
-React puts your updater functions in a [queue.](/learn/queueing-a-series-of-state-updates) Then, during the next render, it will call them in the same order:
+React 会把你的 updater functions 放入[队列。](/learn/queueing-a-series-of-state-updates) 然后在下一次渲染时按相同顺序调用它们：
 
-1. `a => a + 1` will receive `42` as the pending state and return `43` as the next state.
-1. `a => a + 1` will receive `43` as the pending state and return `44` as the next state.
-1. `a => a + 1` will receive `44` as the pending state and return `45` as the next state.
+1. `a => a + 1` 会接收 `42` 作为待处理的 state，并返回 `43` 作为下一个 state。
+1. `a => a + 1` 会接收 `43` 作为待处理的 state，并返回 `44` 作为下一个 state。
+1. `a => a + 1` 会接收 `44` 作为待处理的 state，并返回 `45` 作为下一个 state。
 
-There are no other queued updates, so React will store `45` as the current state in the end.
+队列中没有其他更新，因此 React 最终会将 `45` 保存为当前 state。
 
-By convention, it's common to name the pending state argument for the first letter of the state variable name, like `a` for `age`. However, you may also call it like `prevAge` or something else that you find clearer.
+按照约定，通常会用 state 变量名称的第一个字母来命名待处理的 state 参数，例如用 `a` 表示 `age`。不过，你也可以把它命名为 `prevAge` 或其他你觉得更清晰的名字。
 
-React may [call your updaters twice](#my-initializer-or-updater-function-runs-twice) in development to verify that they are [pure.](/learn/keeping-components-pure)
+React 可能会在开发环境中[调用你的 updaters 两次](#my-initializer-or-updater-function-runs-twice)，以验证它们是否[纯函数。](/learn/keeping-components-pure)
 
 <DeepDive>
 
-#### Is using an updater always preferred? {/*is-using-an-updater-always-preferred*/}
+#### 总是优先使用 updater 吗？ {/*is-using-an-updater-always-preferred*/}
 
-You might hear a recommendation to always write code like `setAge(a => a + 1)` if the state you're setting is calculated from the previous state. There is no harm in it, but it is also not always necessary.
+你可能会听到这样的建议：如果你设置的 state 是从前一个 state 计算出来的，就总是写成 `setAge(a => a + 1)`。这样写没有坏处，但也并不总是必要。
 
-In most cases, there is no difference between these two approaches. React always makes sure that for intentional user actions, like clicks, the `age` state variable would be updated before the next click. This means there is no risk of a click handler seeing a "stale" `age` at the beginning of the event handler.
+在大多数情况下，这两种方式没有区别。React 总是会确保，对于点击这类有意的用户操作，`age` state 变量会在下一次点击之前更新。这意味着，点击处理函数在事件开始时看到“过期”的 `age` 并不会有风险。
 
-However, if you do multiple updates within the same event, updaters can be helpful. They're also helpful if accessing the state variable itself is inconvenient (you might run into this when optimizing re-renders).
+不过，如果你在同一个事件中执行多次更新，updater 会很有帮助。如果直接访问 state 变量本身不方便，它们也很有用（在优化重新渲染时你可能会遇到这种情况）。
 
-If you prefer consistency over slightly more verbose syntax, it's reasonable to always write an updater if the state you're setting is calculated from the previous state. If it's calculated from the previous state of some *other* state variable, you might want to combine them into one object and [use a reducer.](/learn/extracting-state-logic-into-a-reducer)
+如果你更偏好一致性而不是稍微更啰嗦的语法，那么在 state 是由前一个 state 计算出来时，总是写 updater 是合理的。如果它是由某个*其他* state 变量的前一个 state 计算出来的，你可能会想把它们合并成一个对象，并[使用 reducer。](/learn/extracting-state-logic-into-a-reducer)
 
 </DeepDive>
 
-<Recipes titleText="The difference between passing an updater and passing the next state directly" titleId="examples-updater">
+<Recipes titleText="传入 updater 和直接传入下一个 state 的区别" titleId="examples-updater">
 
-#### Passing the updater function {/*passing-the-updater-function*/}
+#### 传入 updater function {/*passing-the-updater-function*/}
 
-This example passes the updater function, so the "+3" button works.
+这个示例传入了 updater function，因此 “+3” 按钮可以正常工作。
 
 <Sandpack>
 
@@ -373,9 +373,9 @@ h1 { display: block; margin: 10px; }
 
 <Solution />
 
-#### Passing the next state directly {/*passing-the-next-state-directly*/}
+#### 直接传入下一个 state {/*passing-the-next-state-directly*/}
 
-This example **does not** pass the updater function, so the "+3" button **doesn't work as intended**.
+这个示例**没有**传入 updater function，因此 “+3” 按钮**不能按预期工作**。
 
 <Sandpack>
 
@@ -418,32 +418,32 @@ h1 { display: block; margin: 10px; }
 
 ---
 
-### Updating objects and arrays in state {/*updating-objects-and-arrays-in-state*/}
+### 更新 state 中的对象和数组 {/*updating-objects-and-arrays-in-state*/}
 
-You can put objects and arrays into state. In React, state is considered read-only, so **you should *replace* it rather than *mutate* your existing objects**. For example, if you have a `form` object in state, don't mutate it:
+你可以把对象和数组放入 state 中。在 React 中，state 被视为只读，因此**你应该*替换*它，而不是*修改*现有对象**。例如，如果你在 state 中有一个 `form` 对象，不要直接修改它：
 
 ```js
-// 🚩 Don't mutate an object in state like this:
+// 🚩 不要像这样修改 state 中的对象：
 form.firstName = 'Taylor';
 ```
 
-Instead, replace the whole object by creating a new one:
+相反，应该通过创建一个新对象来替换整个对象：
 
 ```js
-// ✅ Replace state with a new object
+// ✅ 用一个新对象替换 state
 setForm({
   ...form,
   firstName: 'Taylor'
 });
 ```
 
-Read [updating objects in state](/learn/updating-objects-in-state) and [updating arrays in state](/learn/updating-arrays-in-state) to learn more.
+阅读 [更新 state 中的对象](/learn/updating-objects-in-state) 和 [更新 state 中的数组](/learn/updating-arrays-in-state) 以了解更多。
 
-<Recipes titleText="Examples of objects and arrays in state" titleId="examples-objects">
+<Recipes titleText="state 中对象和数组的示例" titleId="examples-objects">
 
-#### Form (object) {/*form-object*/}
+#### 表单（对象） {/*form-object*/}
 
-In this example, the `form` state variable holds an object. Each input has a change handler that calls `setForm` with the next state of the entire form. The `{ ...form }` spread syntax ensures that the state object is replaced rather than mutated.
+在这个示例中，`form` state 变量保存一个对象。每个输入框都有一个变更处理函数，它会用整个表单的下一个 state 调用 `setForm`。`{ ...form }` 扩展语法确保 state 对象被替换而不是被修改。
 
 <Sandpack>
 
@@ -460,7 +460,7 @@ export default function Form() {
   return (
     <>
       <label>
-        First name:
+        名字：
         <input
           value={form.firstName}
           onChange={e => {
@@ -472,7 +472,7 @@ export default function Form() {
         />
       </label>
       <label>
-        Last name:
+        姓氏：
         <input
           value={form.lastName}
           onChange={e => {
@@ -484,7 +484,7 @@ export default function Form() {
         />
       </label>
       <label>
-        Email:
+        邮箱：
         <input
           value={form.email}
           onChange={e => {
@@ -514,9 +514,9 @@ input { margin-left: 5px; }
 
 <Solution />
 
-#### Form (nested object) {/*form-nested-object*/}
+#### 表单（嵌套对象） {/*form-nested-object*/}
 
-In this example, the state is more nested. When you update nested state, you need to create a copy of the object you're updating, as well as any objects "containing" it on the way upwards. Read [updating a nested object](/learn/updating-objects-in-state#updating-a-nested-object) to learn more.
+在这个示例中，state 更加嵌套。当你更新嵌套 state 时，你需要创建你正在更新的对象的副本，以及沿着向上路径中“包含”它的任何对象。阅读 [更新嵌套对象](/learn/updating-objects-in-state#updating-a-nested-object) 以了解更多。
 
 <Sandpack>
 
@@ -573,28 +573,28 @@ export default function Form() {
   return (
     <>
       <label>
-        Name:
+        名字：
         <input
           value={person.name}
           onChange={handleNameChange}
         />
       </label>
       <label>
-        Title:
+        标题：
         <input
           value={person.artwork.title}
           onChange={handleTitleChange}
         />
       </label>
       <label>
-        City:
+        城市：
         <input
           value={person.artwork.city}
           onChange={handleCityChange}
         />
       </label>
       <label>
-        Image:
+        图片：
         <input
           value={person.artwork.image}
           onChange={handleImageChange}
@@ -602,10 +602,10 @@ export default function Form() {
       </label>
       <p>
         <i>{person.artwork.title}</i>
-        {' by '}
+        {' 作者 '}
         {person.name}
         <br />
-        (located in {person.artwork.city})
+        （位于 {person.artwork.city}）
       </p>
       <img
         src={person.artwork.image}
@@ -626,9 +626,9 @@ img { width: 200px; height: 200px; }
 
 <Solution />
 
-#### List (array) {/*list-array*/}
+#### 列表（数组） {/*list-array*/}
 
-In this example, the `todos` state variable holds an array. Each button handler calls `setTodos` with the next version of that array. The `[...todos]` spread syntax, `todos.map()` and `todos.filter()` ensure the state array is replaced rather than mutated.
+在这个示例中，`todos` state 变量保存一个数组。每个按钮处理函数都会用该数组的下一个版本调用 `setTodos`。`[...todos]` 扩展语法、`todos.map()` 和 `todos.filter()` 确保 state 数组被替换而不是被修改。
 
 <Sandpack>
 
@@ -697,14 +697,14 @@ export default function AddTodo({ onAddTodo }) {
   return (
     <>
       <input
-        placeholder="Add todo"
+        placeholder="添加待办事项"
         value={title}
         onChange={e => setTitle(e.target.value)}
       />
       <button onClick={() => {
         setTitle('');
         onAddTodo(title);
-      }}>Add</button>
+      }}>添加</button>
     </>
   )
 }
@@ -748,7 +748,7 @@ function Task({ todo, onChange, onDelete }) {
             });
           }} />
         <button onClick={() => setIsEditing(false)}>
-          Save
+          保存
         </button>
       </>
     );
@@ -757,7 +757,7 @@ function Task({ todo, onChange, onDelete }) {
       <>
         {todo.title}
         <button onClick={() => setIsEditing(true)}>
-          Edit
+          编辑
         </button>
       </>
     );
@@ -776,7 +776,7 @@ function Task({ todo, onChange, onDelete }) {
       />
       {todoContent}
       <button onClick={() => onDelete(todo.id)}>
-        Delete
+        删除
       </button>
     </label>
   );
@@ -793,9 +793,9 @@ ul, li { margin: 0; padding: 0; }
 
 <Solution />
 
-#### Writing concise update logic with Immer {/*writing-concise-update-logic-with-immer*/}
+#### 使用 Immer 编写简洁的更新逻辑 {/*writing-concise-update-logic-with-immer*/}
 
-If updating arrays and objects without mutation feels tedious, you can use a library like [Immer](https://github.com/immerjs/use-immer) to reduce repetitive code. Immer lets you write concise code as if you were mutating objects, but under the hood it performs immutable updates:
+如果不通过修改来更新数组和对象让你觉得繁琐，你可以使用像 [Immer](https://github.com/immerjs/use-immer) 这样的库来减少重复代码。Immer 允许你像修改对象一样编写简洁的代码，但在底层它会执行不可变更新：
 
 <Sandpack>
 
@@ -884,9 +884,9 @@ function ItemList({ artworks, onToggle }) {
 
 ---
 
-### Avoiding recreating the initial state {/*avoiding-recreating-the-initial-state*/}
+### 避免重新创建初始 state {/*avoiding-recreating-the-initial-state*/}
 
-React saves the initial state once and ignores it on the next renders.
+React 只会保存一次初始 state，并在后续渲染中忽略它。
 
 ```js
 function TodoList() {
@@ -894,9 +894,9 @@ function TodoList() {
   // ...
 ```
 
-Although the result of `createInitialTodos()` is only used for the initial render, you're still calling this function on every render. This can be wasteful if it's creating large arrays or performing expensive calculations.
+虽然 `createInitialTodos()` 的结果只会用于初次渲染，但你仍然在每次渲染时调用了这个函数。如果它创建的是大型数组或执行了昂贵的计算，这会很浪费。
 
-To solve this, you may **pass it as an _initializer_ function** to `useState` instead:
+为了解决这个问题，你可以改为把它作为一个 _initializer_ 函数传给 `useState`：
 
 ```js
 function TodoList() {
@@ -904,15 +904,15 @@ function TodoList() {
   // ...
 ```
 
-Notice that you’re passing `createInitialTodos`, which is the *function itself*, and not `createInitialTodos()`, which is the result of calling it. If you pass a function to `useState`, React will only call it during initialization.
+注意，你传入的是 `createInitialTodos`，也就是*函数本身*，而不是 `createInitialTodos()`，即调用它的结果。如果你向 `useState` 传入一个函数，React 只会在初始化时调用它。
 
-React may [call your initializers twice](#my-initializer-or-updater-function-runs-twice) in development to verify that they are [pure.](/learn/keeping-components-pure)
+React 可能会在开发环境中[调用你的 initializers 两次](#my-initializer-or-updater-function-runs-twice)，以验证它们是否[纯函数。](/learn/keeping-components-pure)
 
-<Recipes titleText="The difference between passing an initializer and passing the initial state directly" titleId="examples-initializer">
+<Recipes titleText="传入 initializer 与直接传入初始 state 的区别" titleId="examples-initializer">
 
-#### Passing the initializer function {/*passing-the-initializer-function*/}
+#### 传入 initializer function {/*passing-the-initializer-function*/}
 
-This example passes the initializer function, so the `createInitialTodos` function only runs during initialization. It does not run when component re-renders, such as when you type into the input.
+这个示例传入了 initializer function，因此 `createInitialTodos` 函数只会在初始化期间运行。它不会在组件重新渲染时运行，例如你在输入框中输入时。
 
 <Sandpack>
 
@@ -963,9 +963,9 @@ export default function TodoList() {
 
 <Solution />
 
-#### Passing the initial state directly {/*passing-the-initial-state-directly*/}
+#### 直接传入初始 state {/*passing-the-initial-state-directly*/}
 
-This example **does not** pass the initializer function, so the `createInitialTodos` function runs on every render, such as when you type into the input. There is no observable difference in behavior, but this code is less efficient.
+这个示例**没有**传入 initializer function，因此 `createInitialTodos` 函数会在每次渲染时运行，例如你在输入框中输入时。行为上没有可观察到的差异，但这段代码效率较低。
 
 <Sandpack>
 
@@ -1020,13 +1020,13 @@ export default function TodoList() {
 
 ---
 
-### Resetting state with a key {/*resetting-state-with-a-key*/}
+### 使用 key 重置 state {/*resetting-state-with-a-key*/}
 
-You'll often encounter the `key` attribute when [rendering lists.](/learn/rendering-lists) However, it also serves another purpose.
+你经常会在[渲染列表](/learn/rendering-lists)时遇到 `key` 属性。不过，它还有另一个用途。
 
-You can **reset a component's state by passing a different `key` to a component.** In this example, the Reset button changes the `version` state variable, which we pass as a `key` to the `Form`. When the `key` changes, React re-creates the `Form` component (and all of its children) from scratch, so its state gets reset.
+你可以通过向组件传递不同的 `key` 来**重置组件的 state。** 在这个示例中，Reset 按钮会更改 `version` state 变量，我们将它作为 `key` 传给 `Form`。当 `key` 改变时，React 会从头重新创建 `Form` 组件（以及它的所有子组件），因此它的 state 会被重置。
 
-Read [preserving and resetting state](/learn/preserving-and-resetting-state) to learn more.
+阅读 [保留和重置 state](/learn/preserving-and-resetting-state) 以了解更多。
 
 <Sandpack>
 
@@ -1042,7 +1042,7 @@ export default function App() {
 
   return (
     <>
-      <button onClick={handleReset}>Reset</button>
+      <button onClick={handleReset}>重置</button>
       <Form key={version} />
     </>
   );
@@ -1071,19 +1071,19 @@ button { display: block; margin-bottom: 20px; }
 
 ---
 
-### Storing information from previous renders {/*storing-information-from-previous-renders*/}
+### 存储上一次渲染中的信息 {/*storing-information-from-previous-renders*/}
 
-Usually, you will update state in event handlers. However, in rare cases you might want to adjust state in response to rendering -- for example, you might want to change a state variable when a prop changes.
+通常，你会在事件处理函数中更新 state。不过，在极少数情况下，你可能希望根据渲染来调整 state——例如，当 prop 改变时你可能想修改某个 state 变量。
 
-In most cases, you don't need this:
+在大多数情况下，你并不需要这样做：
 
-* **If the value you need can be computed entirely from the current props or other state, [remove that redundant state altogether.](/learn/choosing-the-state-structure#avoid-redundant-state)** If you're worried about recomputing too often, the [`useMemo` Hook](/reference/react/useMemo) can help.
-* If you want to reset the entire component tree's state, [pass a different `key` to your component.](#resetting-state-with-a-key)
-* If you can, update all the relevant state in the event handlers.
+* **如果你需要的值可以完全根据当前 props 或其他 state 计算出来，[就把那个冗余 state 完全移除。](/learn/choosing-the-state-structure#avoid-redundant-state)** 如果你担心重新计算太频繁，[`useMemo` Hook](/reference/react/useMemo) 可以帮忙。
+* 如果你想重置整个组件树的 state，[给你的组件传入不同的 `key`。](#resetting-state-with-a-key)
+* 如果可以的话，在事件处理函数中更新所有相关的 state。
 
-In the rare case that none of these apply, there is a pattern you can use to update state based on the values that have been rendered so far, by calling a `set` function while your component is rendering.
+在极少数这些都不适用的情况下，你可以使用一种模式：在组件渲染时调用 `set` 函数，根据到目前为止已经渲染出来的值来更新 state。
 
-Here's an example. This `CountLabel` component displays the `count` prop passed to it:
+下面是一个示例。这个 `CountLabel` 组件显示传入的 `count` prop：
 
 ```js src/CountLabel.js
 export default function CountLabel({ count }) {
@@ -1091,7 +1091,7 @@ export default function CountLabel({ count }) {
 }
 ```
 
-Say you want to show whether the counter has *increased or decreased* since the last change. The `count` prop doesn't tell you this -- you need to keep track of its previous value. Add the `prevCount` state variable to track it. Add another state variable called `trend` to hold whether the count has increased or decreased. Compare `prevCount` with `count`, and if they're not equal, update both `prevCount` and `trend`. Now you can show both the current count prop and *how it has changed since the last render*.
+假设你想显示计数器相较于上一次变化是*增加还是减少*。`count` prop 并不能告诉你这一点——你需要跟踪它的前一个值。添加 `prevCount` state 变量来跟踪它。再添加一个名为 `trend` 的 state 变量来保存计数是增加还是减少。将 `prevCount` 与 `count` 比较，如果它们不相等，就同时更新 `prevCount` 和 `trend`。现在你就可以同时显示当前的 count prop 以及*它自上一次渲染以来发生了怎样的变化*。
 
 <Sandpack>
 
@@ -1104,10 +1104,10 @@ export default function App() {
   return (
     <>
       <button onClick={() => setCount(count + 1)}>
-        Increment
+        增加
       </button>
       <button onClick={() => setCount(count - 1)}>
-        Decrement
+        减少
       </button>
       <CountLabel count={count} />
     </>
@@ -1140,34 +1140,34 @@ button { margin-bottom: 10px; }
 
 </Sandpack>
 
-Note that if you call a `set` function while rendering, it must be inside a condition like `prevCount !== count`, and there must be a call like `setPrevCount(count)` inside of the condition. Otherwise, your component would re-render in a loop until it crashes. Also, you can only update the state of the *currently rendering* component like this. Calling the `set` function of *another* component during rendering is an error. Finally, your `set` call should still [update state without mutation](#updating-objects-and-arrays-in-state) -- this doesn't mean you can break other rules of [pure functions.](/learn/keeping-components-pure)
+请注意，如果你在渲染时调用 `set` 函数，它必须位于类似 `prevCount !== count` 的条件中，并且条件内部必须有类似 `setPrevCount(count)` 的调用。否则，你的组件会陷入循环重新渲染直到崩溃。另外，你只能像这样更新*当前正在渲染*的组件的 state。在渲染期间调用*另一个*组件的 `set` 函数是错误的。最后，你的 `set` 调用仍然应该[在不修改的情况下更新 state](#updating-objects-and-arrays-in-state)——这并不意味着你可以违反 [纯函数。](/learn/keeping-components-pure) 的其他规则。
 
-This pattern can be hard to understand and is usually best avoided. However, it's better than updating state in an effect. When you call the `set` function during render, React will re-render that component immediately after your component exits with a `return` statement, and before rendering the children. This way, children don't need to render twice. The rest of your component function will still execute (and the result will be thrown away). If your condition is below all the Hook calls, you may add an early `return;` to restart rendering earlier.
+这种模式可能很难理解，通常最好避免。不过，它比在 effect 中更新 state 更好。当你在渲染期间调用 `set` 函数时，React 会在你的组件通过 `return` 语句退出之后、渲染子组件之前立即重新渲染该组件。这样，子组件就不需要渲染两次。你组件函数的其余部分仍然会执行（结果会被丢弃）。如果你的条件位于所有 Hook 调用之后，你可以添加一个提前的 `return;` 来更早地重新开始渲染。
 
 ---
 
-## Troubleshooting {/*troubleshooting*/}
+## 故障排除 {/*troubleshooting*/}
 
-### I've updated the state, but logging gives me the old value {/*ive-updated-the-state-but-logging-gives-me-the-old-value*/}
+### 我已经更新了 state，但日志里拿到的还是旧值 {/*ive-updated-the-state-but-logging-gives-me-the-old-value*/}
 
-Calling the `set` function **does not change state in the running code**:
+调用 `set` 函数**不会改变正在运行代码中的状态**：
 
 ```js {4,5,8}
 function handleClick() {
   console.log(count);  // 0
 
-  setCount(count + 1); // Request a re-render with 1
-  console.log(count);  // Still 0!
+  setCount(count + 1); // 请求用 1 重新渲染
+  console.log(count);  // 仍然是 0！
 
   setTimeout(() => {
-    console.log(count); // Also 0!
+    console.log(count); // 还是 0！
   }, 5000);
 }
 ```
 
-This is because [states behaves like a snapshot.](/learn/state-as-a-snapshot) Updating state requests another render with the new state value, but does not affect the `count` JavaScript variable in your already-running event handler.
+这是因为 [state 的行为就像一个快照。](/learn/state-as-a-snapshot) 更新 state 会请求使用新的 state 值进行另一次渲染，但不会影响你已经在运行中的事件处理函数里的 `count` JavaScript 变量。
 
-If you need to use the next state, you can save it in a variable before passing it to the `set` function:
+如果你需要使用下一个 state，可以在传给 `set` 函数之前把它保存到一个变量里：
 
 ```js
 const nextCount = count + 1;
@@ -1179,19 +1179,19 @@ console.log(nextCount); // 1
 
 ---
 
-### I've updated the state, but the screen doesn't update {/*ive-updated-the-state-but-the-screen-doesnt-update*/}
+### 我已经更新了 state，但屏幕没有更新 {/*ive-updated-the-state-but-the-screen-doesnt-update*/}
 
-React will **ignore your update if the next state is equal to the previous state,** as determined by an [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is) comparison. This usually happens when you change an object or an array in state directly:
+如果下一个 state 和上一个 state 相等，React 会根据 [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is) 比较**忽略你的更新**。这通常发生在你直接修改 state 中的对象或数组时：
 
 ```js
-obj.x = 10;  // 🚩 Wrong: mutating existing object
-setObj(obj); // 🚩 Doesn't do anything
+obj.x = 10;  // 🚩 错误：直接修改现有对象
+setObj(obj); // 🚩 什么也不会发生
 ```
 
-You mutated an existing `obj` object and passed it back to `setObj`, so React ignored the update. To fix this, you need to ensure that you're always [_replacing_ objects and arrays in state instead of _mutating_ them](#updating-objects-and-arrays-in-state):
+你修改了现有的 `obj` 对象，并把它传回给 `setObj`，所以 React 忽略了这次更新。要修复这个问题，你需要确保自己总是[_替换_] state 中的对象和数组，而不是[_修改_]它们：([#updating-objects-and-arrays-in-state](#updating-objects-and-arrays-in-state))
 
 ```js
-// ✅ Correct: creating a new object
+// ✅ 正确：创建一个新对象
 setObj({
   ...obj,
   x: 10
@@ -1200,78 +1200,78 @@ setObj({
 
 ---
 
-### I'm getting an error: "Too many re-renders" {/*im-getting-an-error-too-many-re-renders*/}
+### 我遇到了一个错误：“Too many re-renders” {/*im-getting-an-error-too-many-re-renders*/}
 
-You might get an error that says: `Too many re-renders. React limits the number of renders to prevent an infinite loop.` Typically, this means that you're unconditionally setting state *during render*, so your component enters a loop: render, set state (which causes a render), render, set state (which causes a render), and so on. Very often, this is caused by a mistake in specifying an event handler:
+你可能会看到这样的错误：`Too many re-renders. React limits the number of renders to prevent an infinite loop.` 通常这意味着你在 *渲染期间* 无条件地设置了 state，于是你的组件进入了一个循环：渲染、设置 state（这会导致渲染）、渲染、设置 state（这会导致渲染），如此反复。很多时候，这是因为事件处理函数的写法有误：
 
 ```js {1-2}
-// 🚩 Wrong: calls the handler during render
+// 🚩 错误：在渲染期间调用处理函数
 return <button onClick={handleClick()}>Click me</button>
 
-// ✅ Correct: passes down the event handler
+// ✅ 正确：传递事件处理函数
 return <button onClick={handleClick}>Click me</button>
 
-// ✅ Correct: passes down an inline function
+// ✅ 正确：传递内联函数
 return <button onClick={(e) => handleClick(e)}>Click me</button>
 ```
 
-If you can't find the cause of this error, click on the arrow next to the error in the console and look through the JavaScript stack to find the specific `set` function call responsible for the error.
+如果你找不到这个错误的原因，点击控制台中错误旁边的箭头，查看 JavaScript 调用栈，找到导致该错误的具体 `set` 函数调用。
 
 ---
 
-### My initializer or updater function runs twice {/*my-initializer-or-updater-function-runs-twice*/}
+### 我的初始化器或更新器函数运行了两次 {/*my-initializer-or-updater-function-runs-twice*/}
 
-In [Strict Mode](/reference/react/StrictMode), React will call some of your functions twice instead of once:
+在 [严格模式](/reference/react/StrictMode) 下，React 会把你的一些函数调用两次，而不是一次：
 
 ```js {2,5-6,11-12}
 function TodoList() {
-  // This component function will run twice for every render.
+  // 这个组件函数在每次渲染时都会运行两次。
 
   const [todos, setTodos] = useState(() => {
-    // This initializer function will run twice during initialization.
+    // 这个初始化器函数在初始化期间会运行两次。
     return createTodos();
   });
 
   function handleClick() {
     setTodos(prevTodos => {
-      // This updater function will run twice for every click.
+      // 这个更新器函数在每次点击时都会运行两次。
       return [...prevTodos, createTodo()];
     });
   }
   // ...
 ```
 
-This is expected and shouldn't break your code.
+这是预期行为，不会破坏你的代码。
 
-This **development-only** behavior helps you [keep components pure.](/learn/keeping-components-pure) React uses the result of one of the calls, and ignores the result of the other call. As long as your component, initializer, and updater functions are pure, this shouldn't affect your logic. However, if they are accidentally impure, this helps you notice the mistakes.
+这种**仅限开发环境**的行为有助于你[保持组件纯净。](/learn/keeping-components-pure) React 会使用其中一次调用的结果，并忽略另一次调用的结果。只要你的组件、初始化器和更新器函数是纯函数，这就不会影响你的逻辑。不过，如果它们不小心变成了非纯函数，这能帮助你发现错误。
 
-For example, this impure updater function mutates an array in state:
+例如，这个非纯更新器函数会修改 state 中的数组：
 
 ```js {2,3}
 setTodos(prevTodos => {
-  // 🚩 Mistake: mutating state
+  // 🚩 错误：修改 state
   prevTodos.push(createTodo());
 });
 ```
 
-Because React calls your updater function twice, you'll see the todo was added twice, so you'll know that there is a mistake. In this example, you can fix the mistake by [replacing the array instead of mutating it](#updating-objects-and-arrays-in-state):
+因为 React 会把你的更新器函数调用两次，所以你会看到待办事项被添加了两次，这样你就知道这里有错误。在这个例子中，你可以通过[替换数组而不是修改它](#updating-objects-and-arrays-in-state)来修复这个错误：
 
 ```js {2,3}
 setTodos(prevTodos => {
-  // ✅ Correct: replacing with new state
+  // ✅ 正确：替换为新 state
   return [...prevTodos, createTodo()];
 });
 ```
 
-Now that this updater function is pure, calling it an extra time doesn't make a difference in behavior. This is why React calling it twice helps you find mistakes. **Only component, initializer, and updater functions need to be pure.** Event handlers don't need to be pure, so React will never call your event handlers twice.
+现在这个更新器函数是纯的了，额外调用一次也不会改变行为。这就是为什么 React 调用它两次能帮助你发现错误。**只有组件、初始化器和更新器函数需要是纯的。** 事件处理函数不需要是纯的，所以 React 绝不会把你的事件处理函数调用两次。
 
-Read [keeping components pure](/learn/keeping-components-pure) to learn more.
+阅读[保持组件纯净](/learn/keeping-components-pure)了解更多。
 
 ---
 
-### I'm trying to set state to a function, but it gets called instead {/*im-trying-to-set-state-to-a-function-but-it-gets-called-instead*/}
+### 我想把 state 设置为一个函数，但它却被调用了 {/*im-trying-to-set-state-to-a-function-but-it-gets-called-instead*/}
 
-You can't put a function into state like this:
+你不能像这样把一个函数放进 state 里：
 
 ```js
 const [fn, setFn] = useState(someFunction);
@@ -1281,7 +1281,7 @@ function handleClick() {
 }
 ```
 
-Because you're passing a function, React assumes that `someFunction` is an [initializer function](#avoiding-recreating-the-initial-state), and that `someOtherFunction` is an [updater function](#updating-state-based-on-the-previous-state), so it tries to call them and store the result. To actually *store* a function, you have to put `() =>` before them in both cases. Then React will store the functions you pass.
+因为你传递的是一个函数，React 会认为 `someFunction` 是一个[初始化器函数](#avoiding-recreating-the-initial-state)，而 `someOtherFunction` 是一个[更新器函数](#updating-state-based-on-the-previous-state)，所以它会尝试调用它们并存储结果。要真正*存储*一个函数，你必须在这两种情况下都在它们前面加上 `() =>`。这样 React 就会存储你传入的函数。
 
 ```js {1,4}
 const [fn, setFn] = useState(() => someFunction);

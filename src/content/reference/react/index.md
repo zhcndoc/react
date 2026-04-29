@@ -1,57 +1,57 @@
 ---
-title: React Reference Overview
+title: React 参考概览
 ---
 
 <Intro>
 
-This section provides detailed reference documentation for working with React. For an introduction to React, please visit the [Learn](/learn) section.
+本节提供了有关使用 React 的详细参考文档。要了解 React 的介绍，请访问 [Learn](/learn) 部分。
 
 </Intro>
 
-The React reference documentation is broken down into functional subsections:
+React 参考文档被划分为以下功能子部分：
 
 ## React {/*react*/}
 
-Programmatic React features:
+程序化的 React 特性：
 
-* [Hooks](/reference/react/hooks) - Use different React features from your components.
-* [Components](/reference/react/components) - Built-in components that you can use in your JSX.
-* [APIs](/reference/react/apis) - APIs that are useful for defining components.
-* [Directives](/reference/rsc/directives) - Provide instructions to bundlers compatible with React Server Components.
+* [Hooks](/reference/react/hooks) - 在你的组件中使用不同的 React 特性。
+* [Components](/reference/react/components) - 可在你的 JSX 中使用的内置组件。
+* [APIs](/reference/react/apis) - 用于定义组件的有用 API。
+* [Directives](/reference/rsc/directives) - 向与 React Server Components 兼容的打包器提供指令。
 
 ## React DOM {/*react-dom*/}
 
-React DOM contains features that are only supported for web applications (which run in the browser DOM environment). This section is broken into the following:
+React DOM 包含仅受 Web 应用支持的特性（这些应用运行在浏览器 DOM 环境中）。本节分为以下内容：
 
-* [Hooks](/reference/react-dom/hooks) - Hooks for web applications which run in the browser DOM environment.
-* [Components](/reference/react-dom/components) - React supports all of the browser built-in HTML and SVG components.
-* [APIs](/reference/react-dom) - The `react-dom` package contains methods supported only in web applications.
-* [Client APIs](/reference/react-dom/client) - The `react-dom/client` APIs let you render React components on the client (in the browser).
-* [Server APIs](/reference/react-dom/server) - The `react-dom/server` APIs let you render React components to HTML on the server.
-* [Static APIs](/reference/react-dom/static) - The `react-dom/static` APIs let you generate static HTML for React components.
+* [Hooks](/reference/react-dom/hooks) - 适用于运行在浏览器 DOM 环境中的 Web 应用的 Hooks。
+* [Components](/reference/react-dom/components) - React 支持所有浏览器内置的 HTML 和 SVG 组件。
+* [APIs](/reference/react-dom) - `react-dom` 包包含仅在 Web 应用中受支持的方法。
+* [Client APIs](/reference/react-dom/client) - `react-dom/client` API 让你能够在客户端（浏览器中）渲染 React 组件。
+* [Server APIs](/reference/react-dom/server) - `react-dom/server` API 让你能够在服务器上将 React 组件渲染为 HTML。
+* [Static APIs](/reference/react-dom/static) - `react-dom/static` API 让你能够为 React 组件生成静态 HTML。
 
 ## React Compiler {/*react-compiler*/}
 
-The React Compiler is a build-time optimization tool that automatically memoizes your React components and values:
+React Compiler 是一个构建时优化工具，它会自动对你的 React 组件和值进行记忆化：
 
-* [Configuration](/reference/react-compiler/configuration) - Configuration options for React Compiler.
-* [Directives](/reference/react-compiler/directives) - Function-level directives to control compilation.
-* [Compiling Libraries](/reference/react-compiler/compiling-libraries) - Guide for shipping pre-compiled library code.
+* [Configuration](/reference/react-compiler/configuration) - React Compiler 的配置选项。
+* [Directives](/reference/react-compiler/directives) - 用于控制编译的函数级指令。
+* [Compiling Libraries](/reference/react-compiler/compiling-libraries) - 打包预编译库代码的指南。
 
 ## ESLint Plugin React Hooks {/*eslint-plugin-react-hooks*/}
 
-The [ESLint plugin for React Hooks](/reference/eslint-plugin-react-hooks) helps enforce the Rules of React:
+[适用于 React Hooks 的 ESLint 插件](/reference/eslint-plugin-react-hooks) 有助于强制执行 React 规则：
 
-* [Lints](/reference/eslint-plugin-react-hooks) - Detailed documentation for each lint with examples.
+* [Lints](/reference/eslint-plugin-react-hooks) - 每个 lint 的详细文档及示例。
 
 ## Rules of React {/*rules-of-react*/}
 
-React has idioms — or rules — for how to express patterns in a way that is easy to understand and yields high-quality applications:
+React 有一些习惯用法——或者说规则——来以易于理解的方式表达模式，并生成高质量的应用程序：
 
-* [Components and Hooks must be pure](/reference/rules/components-and-hooks-must-be-pure) – Purity makes your code easier to understand, debug, and allows React to automatically optimize your components and hooks correctly.
-* [React calls Components and Hooks](/reference/rules/react-calls-components-and-hooks) – React is responsible for rendering components and hooks when necessary to optimize the user experience.
-* [Rules of Hooks](/reference/rules/rules-of-hooks) – Hooks are defined using JavaScript functions, but they represent a special type of reusable UI logic with restrictions on where they can be called.
+* [Components and Hooks must be pure](/reference/rules/components-and-hooks-must-be-pure) – 纯净性使你的代码更容易理解、调试，并允许 React 正确地自动优化你的组件和 hooks。
+* [React calls Components and Hooks](/reference/rules/react-calls-components-and-hooks) – React 负责在必要时渲染组件和 hooks，以优化用户体验。
+* [Rules of Hooks](/reference/rules/rules-of-hooks) – Hooks 使用 JavaScript 函数定义，但它们表示一种可复用的特殊 UI 逻辑，并对其调用位置有所限制。
 
 ## Legacy APIs {/*legacy-apis*/}
 
-* [Legacy APIs](/reference/react/legacy) - Exported from the `react` package, but not recommended for use in newly written code.
+* [Legacy APIs](/reference/react/legacy) - 从 `react` 包导出，但不建议在新编写的代码中使用。

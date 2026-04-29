@@ -1,20 +1,20 @@
 ---
-title: RSC Sandbox Test
+title: RSC 沙箱测试
 ---
 
-## Basic Server Component {/*basic-server-component*/}
+## 基础服务端组件 {/*basic-server-component*/}
 
 <SandpackRSC>
 
 ```js src/App.js
 export default function App() {
-  return <h1>Hello from a Server Component!</h1>;
+  return <h1>来自服务端组件的问候！</h1>;
 }
 ```
 
 </SandpackRSC>
 
-## Server + Client Components {/*server-client*/}
+## 服务端 + 客户端组件 {/*server-client*/}
 
 <SandpackRSC>
 
@@ -24,8 +24,8 @@ import Counter from './Counter';
 export default function App() {
   return (
     <div>
-      <h1>Server Component</h1>
-      <p>This text is rendered on the server.</p>
+      <h1>服务端组件</h1>
+      <p>这段文本在服务端渲染。</p>
       <Counter />
     </div>
   );
@@ -40,7 +40,7 @@ export default function Counter() {
   const [count, setCount] = useState(0);
   return (
     <button onClick={() => setCount(count + 1)}>
-      Count: {count}
+      计数：{count}
     </button>
   );
 }
@@ -48,7 +48,7 @@ export default function Counter() {
 
 </SandpackRSC>
 
-## Async Server Component with Suspense {/*async-suspense*/}
+## 带有 Suspense 的异步服务端组件 {/*async-suspense*/}
 
 <SandpackRSC>
 
@@ -59,8 +59,8 @@ import Albums from './Albums';
 export default function App() {
   return (
     <div>
-      <h1>Music</h1>
-      <Suspense fallback={<p>Loading albums...</p>}>
+      <h1>音乐</h1>
+      <Suspense fallback={<p>正在加载专辑...</p>}>
         <Albums />
       </Suspense>
     </div>
@@ -88,9 +88,9 @@ export default async function Albums() {
 
 </SandpackRSC>
 
-## Streaming Proof {/*streaming-proof*/}
+## 流式传输证明 {/*streaming-proof*/}
 
-This demo proves streaming is incremental. The shell renders instantly with a `<Suspense>` fallback. After 2 seconds the async component streams in and replaces it — without re-rendering the outer content. The timestamps show the gap.
+此演示证明流式传输是增量式的。外壳会立即渲染，并带有一个 `<Suspense>` 回退内容。2 秒后，异步组件流式传入并替换它——而不会重新渲染外层内容。时间戳显示了这段间隔。
 
 <SandpackRSC>
 
@@ -102,9 +102,9 @@ import Timestamp from './Timestamp';
 export default function App() {
   return (
     <div>
-      <h1>Streaming Proof</h1>
-      <p>Shell rendered at: <Timestamp /></p>
-      <Suspense fallback={<p>⏳ Waiting for data to stream in...</p>}>
+      <h1>流式传输证明</h1>
+      <p>外壳渲染于：<Timestamp /></p>
+      <Suspense fallback={<p>⏳ 等待数据流入...</p>}>
         <SlowData />
       </Suspense>
     </div>
@@ -124,7 +124,7 @@ export default async function SlowData() {
   const items = await fetchData();
   return (
     <div>
-      <p>Data streamed in at: <Timestamp /></p>
+      <p>数据流入于：<Timestamp /></p>
       <ul>
         {items.map(item => (
           <li key={item}>{item}</li>
@@ -145,9 +145,9 @@ export default function Timestamp() {
 
 </SandpackRSC>
 
-## Flight Data Types {/*flight-data-types*/}
+## Flight 数据类型 {/*flight-data-types*/}
 
-This demo passes Map, Set, Date, and BigInt from a server component through the Flight stream to a client component, proving the full Flight protocol type system works end-to-end.
+此演示将 Map、Set、Date 和 BigInt 从服务端组件通过 Flight 流传递给客户端组件，证明完整的 Flight 协议类型系统端到端可用。
 
 <SandpackRSC>
 
@@ -165,7 +165,7 @@ export default function App() {
 
   return (
     <div>
-      <h1>Flight Data Types</h1>
+      <h1>Flight 数据类型</h1>
       <DataViewer map={map} set={set} date={date} big={big} />
     </div>
   );
@@ -195,7 +195,7 @@ export default function DataViewer({ map, set, date, big }) {
     <div>
       {checks.map(([label, passed, render]) => (
         <div key={label} style={{ marginBottom: 12 }}>
-          <strong>{label}: {passed ? 'pass' : 'FAIL'}</strong>
+          <strong>{label}: {passed ? '通过' : '失败'}</strong>
           {render()}
         </div>
       ))}
@@ -206,9 +206,9 @@ export default function DataViewer({ map, set, date, big }) {
 
 </SandpackRSC>
 
-## Promise Streaming with use() {/*promise-streaming-use*/}
+## 使用 use() 进行 Promise 流式传输 {/*promise-streaming-use*/}
 
-The server creates a promise (resolves in 2s) and passes it as a prop through a parent async component that suspends for 3s. When the parent reveals at ~3s, the promise is already resolved — so `use()` returns instantly with no inner fallback. The elapsed time should be ~3000ms (the parent's delay), not ~5000ms (which would mean the promise restarted on the client).
+服务端创建了一个 promise（2 秒后 resolve），并通过一个会挂起 3 秒的父级异步组件将其作为 prop 传递。当父级在约 3 秒时显示出来时，这个 promise 已经 resolved 了——因此 `use()` 会立即返回，不会出现内部回退内容。经过的时间应该约为 3000ms（父级的延迟），而不是约 5000ms（这意味着该 promise 在客户端重新开始了）。
 
 <SandpackRSC>
 
@@ -231,11 +231,11 @@ export default function App() {
   const userPromise = fetchUser();
   return (
     <div>
-      <h1>Promise Streaming</h1>
-      <p>Promise resolves in 2s. Parent suspends for 3s.</p>
-      <Suspense fallback={<p>Outer: waiting for parent (3s)...</p>}>
+      <h1>Promise 流式传输</h1>
+      <p>Promise 2 秒后解析。父级挂起 3 秒。</p>
+      <Suspense fallback={<p>外层：正在等待父级（3 秒）...</p>}>
         <SlowParent>
-          <Suspense fallback={<p>Inner: waiting for data (should not appear!)</p>}>
+          <Suspense fallback={<p>内层：正在等待数据（不应出现！）</p>}>
             <UserCard userPromise={userPromise} serverTime={serverTime} />
           </Suspense>
         </SlowParent>
@@ -271,11 +271,11 @@ export default function UserCard({ userPromise, serverTime }) {
       <strong>{user.name}</strong>
       <p>{user.role}</p>
       <p style={{ fontSize: 13 }}>
-        Rendered {elapsed}ms after server created the promise.
+        在服务端创建该 promise 后经过 {elapsed}ms 渲染。
       </p>
       <p style={{ color: '#666', fontSize: 12 }}>
-        ~3000ms = promise already resolved, waited only for parent.
-        ~5000ms would mean the promise restarted on the client.
+        ~3000ms = promise 已经解析，只等待了父级。
+        ~5000ms 则表示 promise 在客户端重新开始了。
       </p>
     </div>
   );
@@ -284,9 +284,9 @@ export default function UserCard({ userPromise, serverTime }) {
 
 </SandpackRSC>
 
-## Flight Data Types in Server Actions {/*flight-data-types-actions*/}
+## 服务端操作中的 Flight 数据类型 {/*flight-data-types-actions*/}
 
-This demo sends Map, Set, Date, and BigInt from a client component *to* a server action via `encodeReply`/`decodeReply`, then verifies the types survived the round trip.
+此演示通过 `encodeReply`/`decodeReply` 将 Map、Set、Date 和 BigInt 从客户端组件发送到服务端操作，然后验证这些类型在往返过程中是否保留。
 
 <SandpackRSC>
 
@@ -298,19 +298,19 @@ export default async function App() {
   const results = await getResults();
   return (
     <div>
-      <h1>Flight Types in Server Actions</h1>
+      <h1>服务端操作中的 Flight 类型</h1>
       <TestButton testTypes={testTypes} />
       {results ? (
         <div>
           {results.map(r => (
             <div key={r.label} style={{ marginBottom: 12 }}>
-              <strong>{r.label}: {r.ok ? 'pass' : 'FAIL'}</strong>
+              <strong>{r.label}: {r.ok ? '通过' : '失败'}</strong>
               <p>{r.detail}</p>
             </div>
           ))}
         </div>
       ) : (
-        <p>Click the button to send typed data to the server action.</p>
+        <p>点击按钮将带类型的数据发送到服务端操作。</p>
       )}
     </div>
   );
@@ -380,7 +380,7 @@ export default function TestButton({ testTypes }) {
 
   return (
     <button onClick={handleClick} disabled={pending}>
-      {pending ? 'Sending...' : 'Send typed data to server'}
+      {pending ? '正在发送...' : '向服务端发送带类型的数据'}
     </button>
   );
 }
@@ -388,9 +388,9 @@ export default function TestButton({ testTypes }) {
 
 </SandpackRSC>
 
-## Server Action Mutation + Re-render {/*action-mutation-rerender*/}
+## 服务端操作变更 + 重新渲染 {/*action-mutation-rerender*/}
 
-The server action mutates server-side data and returns a confirmation string. The updated list is only visible because the framework automatically re-renders the entire server component tree after the action completes — the server component re-reads the data and streams the new UI to the client.
+服务端操作会修改服务端数据并返回确认字符串。更新后的列表之所以可见，是因为框架会在操作完成后自动重新渲染整个服务端组件树——服务端组件重新读取数据，并将新的 UI 流式传输给客户端。
 
 <SandpackRSC>
 
@@ -403,11 +403,11 @@ export default function App() {
   const todos = getTodos();
   return (
     <div>
-      <h1>Todo List</h1>
+      <h1>待办事项列表</h1>
       <p style={{ color: '#666', fontSize: 13 }}>
-        This list is rendered by a server component
-        reading server-side data. It only updates because
-        the server re-renders after each action.
+        此列表由服务端组件渲染，
+        读取的是服务端数据。它只会更新，因为
+        服务端会在每次操作后重新渲染。
       </p>
       <ul>
         {todos.map((todo, i) => (
@@ -437,9 +437,9 @@ export function addTodo(text) {
 import { addTodo } from './db';
 
 export async function createTodo(text) {
-  if (!text) return 'Please enter a todo.';
+  if (!text) return '请输入一个待办事项。';
   addTodo(text);
-  return 'Added: ' + text;
+  return '已添加：' + text;
 }
 ```
 
@@ -467,15 +467,15 @@ export default function AddTodo({ createTodo }) {
         <input
           value={text}
           onChange={e => setText(e.target.value)}
-          placeholder="New todo"
+          placeholder="新待办事项"
         />
         <button disabled={pending}>
-          {pending ? 'Adding...' : 'Add'}
+          {pending ? '正在添加...' : '添加'}
         </button>
       </form>
       {message && (
         <p style={{ color: '#666', fontSize: 13 }}>
-          Action returned: "{message}"
+          操作返回：“{message}”
         </p>
       )}
     </div>
@@ -485,9 +485,9 @@ export default function AddTodo({ createTodo }) {
 
 </SandpackRSC>
 
-## Inline Server Actions {/*inline-server-actions*/}
+## 行内服务器操作 {/*inline-server-actions*/}
 
-Server actions defined inline inside a server component with `'use server'` on the function body. The action closes over module-level state and is passed as a prop — no separate `actions.js` file needed.
+在服务器组件中内联定义的服务器操作，在函数体内使用 `'use server'`。该操作会闭包捕获模块级状态，并作为 prop 传递——无需单独的 `actions.js` 文件。
 
 <SandpackRSC>
 
@@ -504,8 +504,8 @@ export default function App() {
 
   return (
     <div>
-      <h1>Inline Server Actions</h1>
-      <p>Likes: {count}</p>
+      <h1>行内服务器操作</h1>
+      <p>点赞数：{count}</p>
       <LikeButton addLike={addLike} />
     </div>
   );
@@ -518,7 +518,7 @@ export default function App() {
 export default function LikeButton({ addLike }) {
   return (
     <form action={addLike}>
-      <button type="submit">Like</button>
+      <button type="submit">点赞</button>
     </form>
   );
 }
@@ -526,7 +526,7 @@ export default function LikeButton({ addLike }) {
 
 </SandpackRSC>
 
-## Server Functions {/*server-functions*/}
+## 服务器函数 {/*server-functions*/}
 
 <SandpackRSC>
 
@@ -538,8 +538,8 @@ export default async function App() {
   const count = await getLikeCount();
   return (
     <div>
-      <h1>Server Functions</h1>
-      <p>Likes: {count}</p>
+      <h1>服务器函数</h1>
+      <p>点赞数：{count}</p>
       <LikeButton addLike={addLike} />
     </div>
   );
@@ -566,7 +566,7 @@ export async function getLikeCount() {
 export default function LikeButton({ addLike }) {
   return (
     <form action={addLike}>
-      <button type="submit">Like</button>
+      <button type="submit">点赞</button>
     </form>
   );
 }

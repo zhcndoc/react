@@ -4,83 +4,83 @@ title: refs
 
 <Intro>
 
-Validates correct usage of refs, not reading/writing during render. See the "pitfalls" section in [`useRef()` usage](/reference/react/useRef#usage).
+验证 ref 的正确用法，不要在渲染期间读取/写入。另请参见 [`useRef()` usage](/reference/react/useRef#usage) 中的“pitfalls”部分。
 
 </Intro>
 
-## Rule Details {/*rule-details*/}
+## 规则详情 {/*rule-details*/}
 
-Refs hold values that aren't used for rendering. Unlike state, changing a ref doesn't trigger a re-render. Reading or writing `ref.current` during render breaks React's expectations. Refs might not be initialized when you try to read them, and their values can be stale or inconsistent.
+Refs 保存的是不会用于渲染的值。与 state 不同，修改 ref 不会触发重新渲染。在渲染期间读取或写入 `ref.current` 会破坏 React 的预期。当你尝试读取 ref 时，它们可能尚未初始化，而且其值可能是过时或不一致的。
 
-## How It Detects Refs {/*how-it-detects-refs*/}
+## 它如何检测 Refs {/*how-it-detects-refs*/}
 
-The lint only applies these rules to values it knows are refs. A value is inferred as a ref when the compiler sees any of the following patterns:
+该 lint 只会将这些规则应用到它已知是 ref 的值。编译器在看到以下任一模式时，会推断某个值是 ref：
 
-- Returned from `useRef()` or `React.createRef()`.
+- 从 `useRef()` 或 `React.createRef()` 返回。
 
   ```js
   const scrollRef = useRef(null);
   ```
 
-- An identifier named `ref` or ending in `Ref` that reads from or writes to `.current`.
+- 名称为 `ref` 或以 `Ref` 结尾，并且读取或写入 `.current` 的标识符。
 
   ```js
   buttonRef.current = node;
   ```
 
-- Passed through a JSX `ref` prop (for example `<div ref={someRef} />`).
+- 通过 JSX 的 `ref` 属性传递（例如 `<div ref={someRef} />`）。
 
   ```jsx
   <input ref={inputRef} />
   ```
 
-Once something is marked as a ref, that inference follows the value through assignments, destructuring, or helper calls. This lets the lint surface violations even when `ref.current` is accessed inside another function that received the ref as an argument.
+一旦某个东西被标记为 ref，这种推断就会沿着赋值、解构或辅助调用继续跟随这个值。这使得即使 `ref.current` 是在另一个接收该 ref 作为参数的函数内部被访问，lint 也能指出违规。
 
-## Common Violations {/*common-violations*/}
+## 常见违规 {/*common-violations*/}
 
-- Reading `ref.current` during render
-- Updating `refs` during render
-- Using `refs` for values that should be state
+- 在渲染期间读取 `ref.current`
+- 在渲染期间更新 `refs`
+- 将 `refs` 用于本应使用 state 的值
 
-### Invalid {/*invalid*/}
+### 无效 {/*invalid*/}
 
-Examples of incorrect code for this rule:
+此规则的错误代码示例：
 
 ```js
-// ❌ Reading ref during render
+// ❌ 在渲染期间读取 ref
 function Component() {
   const ref = useRef(0);
-  const value = ref.current; // Don't read during render
+  const value = ref.current; // 不要在渲染期间读取
   return <div>{value}</div>;
 }
 
-// ❌ Modifying ref during render
+// ❌ 在渲染期间修改 ref
 function Component({value}) {
   const ref = useRef(null);
-  ref.current = value; // Don't modify during render
+  ref.current = value; // 不要在渲染期间修改
   return <div />;
 }
 ```
 
-### Valid {/*valid*/}
+### 有效 {/*valid*/}
 
-Examples of correct code for this rule:
+此规则的正确代码示例：
 
 ```js
-// ✅ Read ref in effects/handlers
+// ✅ 在 effects/handlers 中读取 ref
 function Component() {
   const ref = useRef(null);
 
   useEffect(() => {
     if (ref.current) {
-      console.log(ref.current.offsetWidth); // OK in effect
+      console.log(ref.current.offsetWidth); // 在 effect 中是可以的
     }
   });
 
   return <div ref={ref} />;
 }
 
-// ✅ Use state for UI values
+// ✅ 为 UI 值使用 state
 function Component() {
   const [count, setCount] = useState(0);
 
@@ -91,25 +91,25 @@ function Component() {
   );
 }
 
-// ✅ Lazy initialization of ref value
+// ✅ ref 值的惰性初始化
 function Component() {
   const ref = useRef(null);
 
-  // Initialize only once on first use
+  // 仅在第一次使用时初始化一次
   if (ref.current === null) {
-    ref.current = expensiveComputation(); // OK - lazy initialization
+    ref.current = expensiveComputation(); // 可以 - 惰性初始化
   }
 
   const handleClick = () => {
-    console.log(ref.current); // Use the initialized value
+    console.log(ref.current); // 使用已初始化的值
   };
 
   return <button onClick={handleClick}>Click</button>;
 }
 ```
 
-## Troubleshooting {/*troubleshooting*/}
+## 故障排查 {/*troubleshooting*/}
 
-### The lint flagged my plain object with `.current` {/*plain-object-current*/}
+### 该 lint 将我的普通对象与 `.current` 标记为违规 {/*plain-object-current*/}
 
-The name heuristic intentionally treats `ref.current` and `fooRef.current` as real refs. If you're modeling a custom container object, pick a different name (for example, `box`) or move the mutable value into state. Renaming avoids the lint because the compiler stops inferring it as a ref.
+名称启发式会有意将 `ref.current` 和 `fooRef.current` 视为真实的 refs。如果你在建模一个自定义容器对象，请换一个不同的名称（例如 `box`），或者把可变值移入 state。重命名可以避开 lint，因为编译器会停止将其推断为 ref。

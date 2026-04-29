@@ -4,89 +4,89 @@ title: rules-of-hooks
 
 <Intro>
 
-Validates that components and hooks follow the [Rules of Hooks](/reference/rules/rules-of-hooks).
+验证组件和 hooks 是否遵循 [Hook 规则](/reference/rules/rules-of-hooks)。
 
 </Intro>
 
-## Rule Details {/*rule-details*/}
+## 规则详情 {/*rule-details*/}
 
-React relies on the order in which hooks are called to correctly preserve state between renders. Each time your component renders, React expects the exact same hooks to be called in the exact same order. When hooks are called conditionally or in loops, React loses track of which state corresponds to which hook call, leading to bugs like state mismatches and "Rendered fewer/more hooks than expected" errors.
+React 依赖 hooks 的调用顺序，以便在多次渲染之间正确保留状态。每次组件渲染时，React 都期望以完全相同的顺序调用完全相同的 hooks。当 hooks 被条件调用或在循环中调用时，React 会失去对哪个状态对应哪个 hook 调用的跟踪，从而导致诸如状态不匹配以及“比预期渲染了更少/更多的 hooks”之类的错误。
 
-## Common Violations {/*common-violations*/}
+## 常见违规 {/*common-violations*/}
 
-These patterns violate the Rules of Hooks:
+以下模式违反 Hook 规则：
 
-- **Hooks in conditions** (`if`/`else`, ternary, `&&`/`||`)
-- **Hooks in loops** (`for`, `while`, `do-while`)
-- **Hooks after early returns**
-- **Hooks in callbacks/event handlers**
-- **Hooks in async functions**
-- **Hooks in class methods**
-- **Hooks at module level**
+- **条件中的 Hooks**（`if`/`else`、三元运算符、`&&`/`||`）
+- **循环中的 Hooks**（`for`、`while`、`do-while`）
+- **提前返回后的 Hooks**
+- **回调/事件处理器中的 Hooks**
+- **异步函数中的 Hooks**
+- **类方法中的 Hooks**
+- **模块级别的 Hooks**
 
 <Note>
 
 ### `use` hook {/*use-hook*/}
 
-The `use` hook is different from other React hooks. You can call it conditionally and in loops:
+`use` hook 与其他 React hooks 不同。你可以在条件中和循环中调用它：
 
 ```js
-// ✅ `use` can be conditional
+// ✅ `use` 可以是条件调用
 if (shouldFetch) {
   const data = use(fetchPromise);
 }
 
-// ✅ `use` can be in loops
+// ✅ `use` 可以在循环中
 for (const promise of promises) {
   results.push(use(promise));
 }
 ```
 
-However, `use` still has restrictions:
-- Can't be wrapped in try/catch
-- Must be called inside a component or hook
+不过，`use` 仍然有一些限制：
+- 不能被 try/catch 包裹
+- 必须在组件或 hook 内部调用
 
-Learn more: [`use` API Reference](/reference/react/use)
+了解更多：[`use` API 参考](/reference/react/use)
 
 </Note>
 
-### Invalid {/*invalid*/}
+### 无效 {/*invalid*/}
 
-Examples of incorrect code for this rule:
+此规则的错误代码示例：
 
 ```js
-// ❌ Hook in condition
+// ❌ 条件中的 Hook
 if (isLoggedIn) {
   const [user, setUser] = useState(null);
 }
 
-// ❌ Hook after early return
+// ❌ 提前返回后的 Hook
 if (!data) return <Loading />;
 const [processed, setProcessed] = useState(data);
 
-// ❌ Hook in callback
+// ❌ 回调中的 Hook
 <button onClick={() => {
   const [clicked, setClicked] = useState(false);
 }}/>
 
-// ❌ `use` in try/catch
+// ❌ try/catch 中的 `use`
 try {
   const data = use(promise);
 } catch (e) {
-  // error handling
+  // 错误处理
 }
 
-// ❌ Hook at module level
-const globalState = useState(0); // Outside component
+// ❌ 模块级别的 Hook
+const globalState = useState(0); // 在组件外部
 ```
 
-### Valid {/*valid*/}
+### 有效 {/*valid*/}
 
-Examples of correct code for this rule:
+此规则的正确代码示例：
 
 ```js
 function Component({ isSpecial, shouldFetch, fetchPromise }) {
-  // ✅ Hooks at top level
+  // ✅ Hooks 在顶层
   const [count, setCount] = useState(0);
   const [name, setName] = useState('');
 
@@ -95,7 +95,7 @@ function Component({ isSpecial, shouldFetch, fetchPromise }) {
   }
 
   if (shouldFetch) {
-    // ✅ `use` can be conditional
+    // ✅ `use` 可以是条件调用
     const data = use(fetchPromise);
     return <div>{data}</div>;
   }
@@ -104,14 +104,14 @@ function Component({ isSpecial, shouldFetch, fetchPromise }) {
 }
 ```
 
-## Troubleshooting {/*troubleshooting*/}
+## 故障排查 {/*troubleshooting*/}
 
-### I want to fetch data based on some condition {/*conditional-data-fetching*/}
+### 我想根据某个条件获取数据 {/*conditional-data-fetching*/}
 
-You're trying to conditionally call useEffect:
+你正在尝试有条件地调用 useEffect：
 
 ```js
-// ❌ Conditional hook
+// ❌ 条件 Hook
 if (isLoggedIn) {
   useEffect(() => {
     fetchUserData();
@@ -119,10 +119,10 @@ if (isLoggedIn) {
 }
 ```
 
-Call the hook unconditionally, check condition inside:
+无条件地调用 hook，并在内部检查条件：
 
 ```js
-// ✅ Condition inside hook
+// ✅ hook 内部的条件
 useEffect(() => {
   if (isLoggedIn) {
     fetchUserData();
@@ -132,18 +132,18 @@ useEffect(() => {
 
 <Note>
 
-There are better ways to fetch data rather than in a useEffect. Consider using TanStack Query, useSWR, or React Router 6.4+ for data fetching. These solutions handle deduplicating requests, caching responses, and avoiding network waterfalls.
+相比在 useEffect 中获取数据，有更好的方式。可以考虑使用 TanStack Query、useSWR 或 React Router 6.4+ 来获取数据。这些方案可以处理请求去重、响应缓存，以及避免网络瀑布。
 
-Learn more: [Fetching Data](/learn/synchronizing-with-effects#fetching-data)
+了解更多：[获取数据](/learn/synchronizing-with-effects#fetching-data)
 
 </Note>
 
-### I need different state for different scenarios {/*conditional-state-initialization*/}
+### 我需要针对不同场景使用不同的状态 {/*conditional-state-initialization*/}
 
-You're trying to conditionally initialize state:
+你正在尝试有条件地初始化状态：
 
 ```js
-// ❌ Conditional state
+// ❌ 条件状态
 if (userType === 'admin') {
   const [permissions, setPermissions] = useState(adminPerms);
 } else {
@@ -151,18 +151,18 @@ if (userType === 'admin') {
 }
 ```
 
-Always call useState, conditionally set the initial value:
+始终调用 useState，并有条件地设置初始值：
 
 ```js
-// ✅ Conditional initial value
+// ✅ 条件初始值
 const [permissions, setPermissions] = useState(
   userType === 'admin' ? adminPerms : userPerms
 );
 ```
 
-## Options {/*options*/}
+## 选项 {/*options*/}
 
-You can configure custom effect hooks using shared ESLint settings (available in `eslint-plugin-react-hooks` 6.1.1 and later):
+你可以使用共享的 ESLint 设置来配置自定义 effect hooks（适用于 `eslint-plugin-react-hooks` 6.1.1 及更高版本）：
 
 ```js
 {
@@ -174,6 +174,6 @@ You can configure custom effect hooks using shared ESLint settings (available in
 }
 ```
 
-- `additionalEffectHooks`: Regex pattern matching custom hooks that should be treated as effects. This allows `useEffectEvent` and similar event functions to be called from your custom effect hooks.
+- `additionalEffectHooks`：与应被视为 effect 的自定义 hooks 匹配的正则表达式模式。这使得 `useEffectEvent` 和类似的事件函数可以从你的自定义 effect hooks 中调用。
 
-This shared configuration is used by both `rules-of-hooks` and `exhaustive-deps` rules, ensuring consistent behavior across all hook-related linting.
+此共享配置同时用于 `rules-of-hooks` 和 `exhaustive-deps` 规则，确保所有与 hook 相关的 lint 检查行为保持一致。

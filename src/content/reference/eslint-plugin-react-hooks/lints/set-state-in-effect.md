@@ -4,60 +4,60 @@ title: set-state-in-effect
 
 <Intro>
 
-Validates against calling setState synchronously in an effect, which can lead to re-renders that degrade performance.
+验证是否在 effect 中同步调用 setState，因为这会导致重新渲染，从而降低性能。
 
 </Intro>
 
 ## Rule Details {/*rule-details*/}
 
-Setting state immediately inside an effect forces React to restart the entire render cycle. When you update state in an effect, React must re-render your component, apply changes to the DOM, and then run effects again. This creates an extra render pass that could have been avoided by transforming data directly during render or deriving state from props. Transform data at the top level of your component instead. This code will naturally re-run when props or state change without triggering additional render cycles.
+在 effect 内立即设置状态会强制 React 重新开始整个渲染周期。当你在 effect 中更新状态时，React 必须重新渲染你的组件、将更改应用到 DOM，然后再次运行 effects。这会额外增加一次本可以通过在渲染期间直接转换数据或从 props 派生状态来避免的渲染过程。请改为在组件顶层转换数据。这样，当 props 或 state 变化时，这段代码会自然重新执行，而不会触发额外的渲染周期。
 
-Synchronous `setState` calls in effects trigger immediate re-renders before the browser can paint, causing performance issues and visual jank. React has to render twice: once to apply the state update, then again after effects run. This double rendering is wasteful when the same result could be achieved with a single render.
+在 effects 中同步调用 `setState` 会在浏览器绘制之前触发立即重新渲染，从而引发性能问题和视觉卡顿。React 必须渲染两次：一次用于应用状态更新，另一次用于 effects 运行之后。当同样的结果可以通过一次渲染实现时，这种双重渲染就是浪费。
 
-In many cases, you may also not need an effect at all. Please see [You Might Not Need an Effect](/learn/you-might-not-need-an-effect) for more information.
+在许多情况下，你甚至可能根本不需要 effect。更多信息请参见 [You Might Not Need an Effect](/learn/you-might-not-need-an-effect)。
 
 ## Common Violations {/*common-violations*/}
 
-This rule catches several patterns where synchronous setState is used unnecessarily:
+此规则会捕获几种不必要地使用同步 setState 的模式：
 
-- Setting loading state synchronously
-- Deriving state from props in effects
-- Transforming data in effects instead of render
+- 同步设置 loading 状态
+- 在 effects 中从 props 派生状态
+- 在 effects 中转换数据，而不是在 render 中转换
 
 ### Invalid {/*invalid*/}
 
-Examples of incorrect code for this rule:
+此规则的错误代码示例：
 
 ```js
-// ❌ Synchronous setState in effect
+// ❌ 在 effect 中同步 setState
 function Component({data}) {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    setItems(data); // Extra render, use initial state instead
+    setItems(data); // 额外的渲染，应使用初始状态代替
   }, [data]);
 }
 
-// ❌ Setting loading state synchronously
+// ❌ 同步设置 loading 状态
 function Component() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setLoading(true); // Synchronous, causes extra render
+    setLoading(true); // 同步执行，会导致额外渲染
     fetchData().then(() => setLoading(false));
   }, []);
 }
 
-// ❌ Transforming data in effect
+// ❌ 在 effect 中转换数据
 function Component({rawData}) {
   const [processed, setProcessed] = useState([]);
 
   useEffect(() => {
-    setProcessed(rawData.map(transform)); // Should derive in render
+    setProcessed(rawData.map(transform)); // 应在 render 中派生
   }, [rawData]);
 }
 
-// ❌ Deriving state from props
+// ❌ 从 props 派生状态
 function Component({selectedId, items}) {
   const [selected, setSelected] = useState(null);
 
@@ -69,10 +69,10 @@ function Component({selectedId, items}) {
 
 ### Valid {/*valid*/}
 
-Examples of correct code for this rule:
+此规则的正确代码示例：
 
 ```js
-// ✅ setState in an effect is fine if the value comes from a ref
+// ✅ 如果值来自 ref，那么在 effect 中 setState 是可以的
 function Tooltip() {
   const ref = useRef(null);
   const [tooltipHeight, setTooltipHeight] = useState(0);
@@ -83,11 +83,11 @@ function Tooltip() {
   }, []);
 }
 
-// ✅ Calculate during render
+// ✅ 在 render 期间计算
 function Component({selectedId, items}) {
   const selected = items.find(i => i.id === selectedId);
   return <div>{selected?.name}</div>;
 }
 ```
 
-**When something can be calculated from the existing props or state, don't put it in state.** Instead, calculate it during rendering. This makes your code faster, simpler, and less error-prone. Learn more in [You Might Not Need an Effect](/learn/you-might-not-need-an-effect).
+**当某个值可以由现有的 props 或 state 计算得出时，不要把它放进 state。** 相反，请在渲染期间计算它。这会让你的代码更快、更简单，也更不容易出错。更多信息请参见 [You Might Not Need an Effect](/learn/you-might-not-need-an-effect)。

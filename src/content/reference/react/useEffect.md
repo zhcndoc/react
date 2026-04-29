@@ -4,7 +4,7 @@ title: useEffect
 
 <Intro>
 
-`useEffect` is a React Hook that lets you [synchronize a component with an external system.](/learn/synchronizing-with-effects)
+`useEffect` 是一个 React Hook，它允许你[将组件与外部系统同步。](/learn/synchronizing-with-effects)
 
 ```js
 useEffect(setup, dependencies?)
@@ -16,11 +16,11 @@ useEffect(setup, dependencies?)
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `useEffect(setup, dependencies?)` {/*useeffect*/}
 
-Call `useEffect` at the top level of your component to declare an Effect:
+在组件顶层调用 `useEffect` 来声明一个 Effect：
 
 ```js
 import { useState, useEffect } from 'react';
@@ -40,45 +40,45 @@ function ChatRoom({ roomId }) {
 }
 ```
 
-[See more examples below.](#usage)
+[查看下面的更多示例。](#usage)
 
-#### Parameters {/*parameters*/}
+#### 参数 {/*parameters*/}
 
-* `setup`: The function with your Effect's logic. Your setup function may also optionally return a *cleanup* function. When your [component commits](/learn/render-and-commit#step-3-react-commits-changes-to-the-dom), React will run your setup function. After every commit with changed dependencies, React will first run the cleanup function (if you provided it) with the old values, and then run your setup function with the new values. After your component is removed from the DOM, React will run your cleanup function.
+* `setup`：包含你的 Effect 逻辑的函数。你的 setup 函数也可以选择返回一个 *cleanup* 函数。当你的[组件提交](/learn/render-and-commit#step-3-react-commits-changes-to-the-dom)时，React 会运行你的 setup 函数。每次依赖项发生变化并提交后，React 会先使用旧值运行 cleanup 函数（如果你提供了），然后再使用新值运行 setup 函数。当组件从 DOM 中移除后，React 会运行你的 cleanup 函数。
 
-* **optional** `dependencies`: The list of all reactive values referenced inside of the `setup` code. Reactive values include props, state, and all the variables and functions declared directly inside your component body. If your linter is [configured for React](/learn/editor-setup#linting), it will verify that every reactive value is correctly specified as a dependency. The list of dependencies must have a constant number of items and be written inline like `[dep1, dep2, dep3]`. React will compare each dependency with its previous value using the [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is) comparison. If you omit this argument, your Effect will re-run after every commit of the component. [See the difference between passing an array of dependencies, an empty array, and no dependencies at all.](#examples-dependencies)
+* **可选** `dependencies`：`setup` 代码中引用的所有响应式值列表。响应式值包括 props、state，以及直接在组件函数体中声明的所有变量和函数。如果你的 linter 已[为 React 配置](/learn/editor-setup#linting)，它会验证每个响应式值都被正确指定为依赖项。依赖项列表必须具有固定数量的项目，并以内联方式编写，如 `[dep1, dep2, dep3]`。React 会使用 [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is) 比较来对比每个依赖项与其上一次的值。如果你省略这个参数，你的 Effect 会在组件每次提交后重新运行。[查看传入依赖数组、空数组以及完全不传依赖之间的区别。](#examples-dependencies)
 
-#### Returns {/*returns*/}
+#### 返回值 {/*returns*/}
 
-`useEffect` returns `undefined`.
+`useEffect` 返回 `undefined`。
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-* `useEffect` is a Hook, so you can only call it **at the top level of your component** or your own Hooks. You can't call it inside loops or conditions. If you need that, extract a new component and move the state into it.
+* `useEffect` 是一个 Hook，所以你只能在**组件顶层**或你自己的 Hooks 中调用它。你不能在循环或条件中调用它。如果你需要那样做，提取出一个新组件并把状态移到其中。
 
-* If you're **not trying to synchronize with some external system,** [you probably don't need an Effect.](/learn/you-might-not-need-an-effect)
+* 如果你**并不是要与某个外部系统同步，**[你大概不需要 Effect。](/learn/you-might-not-need-an-effect)
 
-* When Strict Mode is on, React will **run one extra development-only setup+cleanup cycle** before the first real setup. This is a stress-test that ensures that your cleanup logic "mirrors" your setup logic and that it stops or undoes whatever the setup is doing. If this causes a problem, [implement the cleanup function.](/learn/synchronizing-with-effects#how-to-handle-the-effect-firing-twice-in-development)
+* 当 Strict Mode 开启时，React 会在第一次真正的 setup 之前，**额外执行一次仅开发环境下的 setup+cleanup 循环**。这是一个压力测试，用来确保你的 cleanup 逻辑“镜像”了 setup 逻辑，并且它能停止或撤销 setup 所做的任何事情。如果这导致问题，[请实现 cleanup 函数。](/learn/synchronizing-with-effects#how-to-handle-the-effect-firing-twice-in-development)
 
-* If some of your dependencies are objects or functions defined inside the component, there is a risk that they will **cause the Effect to re-run more often than needed.** To fix this, remove unnecessary [object](#removing-unnecessary-object-dependencies) and [function](#removing-unnecessary-function-dependencies) dependencies. You can also [extract state updates](#updating-state-based-on-previous-state-from-an-effect) and [non-reactive logic](#reading-the-latest-props-and-state-from-an-effect) outside of your Effect.
+* 如果你的某些依赖是组件内部定义的对象或函数，就有可能**导致 Effect 比需要的更频繁地重新运行。**要修复这个问题，请移除不必要的[对象](#removing-unnecessary-object-dependencies)和[函数](#removing-unnecessary-function-dependencies)依赖。你也可以在 Effect 外部[提取基于之前 state 的更新](#updating-state-based-on-previous-state-from-an-effect)和[非响应式逻辑](#reading-the-latest-props-and-state-from-an-effect)。
 
-* If your Effect wasn't caused by an interaction (like a click), React will generally let the browser **paint the updated screen first before running your Effect.** If your Effect is doing something visual (for example, positioning a tooltip), and the delay is noticeable (for example, it flickers), replace `useEffect` with [`useLayoutEffect`.](/reference/react/useLayoutEffect)
+* 如果你的 Effect 不是由交互（比如点击）触发，React 通常会让浏览器**先绘制更新后的屏幕，再运行你的 Effect。**如果你的 Effect 做的是视觉相关的事情（例如定位 tooltip），而且延迟很明显（例如它闪烁），请用 [`useLayoutEffect` 替代 `useEffect`。](/reference/react/useLayoutEffect)
 
-* If your Effect is caused by an interaction (like a click), **React may run your Effect before the browser paints the updated screen**. This ensures that the result of the Effect can be observed by the event system. Usually, this works as expected. However, if you must defer the work until after paint, such as an `alert()`, you can use `setTimeout`. See [reactwg/react-18/128](https://github.com/reactwg/react-18/discussions/128) for more information.
+* 如果你的 Effect 是由交互（比如点击）触发的，**React 可能会在浏览器绘制更新后的屏幕之前运行你的 Effect**。这可确保事件系统能够观察到 Effect 的结果。通常这会按预期工作。不过，如果你必须把工作延后到绘制之后，比如 `alert()`，可以使用 `setTimeout`。更多信息请参见 [reactwg/react-18/128](https://github.com/reactwg/react-18/discussions/128)。
 
-* Even if your Effect was caused by an interaction (like a click), **React may allow the browser to repaint the screen before processing the state updates inside your Effect.** Usually, this works as expected. However, if you must block the browser from repainting the screen, you need to replace `useEffect` with [`useLayoutEffect`.](/reference/react/useLayoutEffect)
+* 即使你的 Effect 是由交互（比如点击）触发的，**React 也可能允许浏览器在处理 Effect 内部的 state 更新之前重绘屏幕。**通常这会按预期工作。不过，如果你必须阻止浏览器重绘屏幕，需要把 `useEffect` 替换为 [`useLayoutEffect`。](/reference/react/useLayoutEffect)
 
-* Effects **only run on the client.** They don't run during server rendering.
+* Effect **只在客户端运行。**它们不会在服务端渲染期间运行。
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Connecting to an external system {/*connecting-to-an-external-system*/}
+### 连接到外部系统 {/*connecting-to-an-external-system*/}
 
-Some components need to stay connected to the network, some browser API, or a third-party library, while they are displayed on the page. These systems aren't controlled by React, so they are called *external.*
+有些组件在页面上显示时，需要保持连接到网络、某个浏览器 API，或者第三方库。这些系统不受 React 控制，所以它们被称为 *外部* 系统。
 
-To [connect your component to some external system,](/learn/synchronizing-with-effects) call `useEffect` at the top level of your component:
+要[将组件连接到某个外部系统，](/learn/synchronizing-with-effects)请在组件顶层调用 `useEffect`：
 
 ```js [[1, 8, "const connection = createConnection(serverUrl, roomId);"], [1, 9, "connection.connect();"], [2, 11, "connection.disconnect();"], [3, 13, "[serverUrl, roomId]"]]
 import { useState, useEffect } from 'react';
@@ -98,45 +98,45 @@ function ChatRoom({ roomId }) {
 }
 ```
 
-You need to pass two arguments to `useEffect`:
+你需要向 `useEffect` 传入两个参数：
 
-1. A *setup function* with <CodeStep step={1}>setup code</CodeStep> that connects to that system.
-   - It should return a *cleanup function* with <CodeStep step={2}>cleanup code</CodeStep> that disconnects from that system.
-2. A <CodeStep step={3}>list of dependencies</CodeStep> including every value from your component used inside of those functions.
+1. 一个带有 <CodeStep step={1}>setup 代码</CodeStep> 的 *setup 函数*，用于连接到那个系统。
+   - 它应该返回一个带有 <CodeStep step={2}>cleanup 代码</CodeStep> 的 *cleanup 函数*，用于断开与该系统的连接。
+2. 一个包含这些函数内部用到的组件中每个值的 <CodeStep step={3}>依赖列表</CodeStep>。
 
-**React calls your setup and cleanup functions whenever it's necessary, which may happen multiple times:**
+**React 会在必要时调用你的 setup 和 cleanup 函数，这可能会发生多次：**
 
-1. Your <CodeStep step={1}>setup code</CodeStep> runs when your component is added to the page *(mounts)*.
-2. After every commit of your component where the <CodeStep step={3}>dependencies</CodeStep> have changed:
-   - First, your <CodeStep step={2}>cleanup code</CodeStep> runs with the old props and state.
-   - Then, your <CodeStep step={1}>setup code</CodeStep> runs with the new props and state.
-3. Your <CodeStep step={2}>cleanup code</CodeStep> runs one final time after your component is removed from the page *(unmounts).*
+1. 当组件被添加到页面时，你的 <CodeStep step={1}>setup 代码</CodeStep> 会运行 *(mounts)*。
+2. 在组件每次提交后，只要 <CodeStep step={3}>dependencies</CodeStep> 发生了变化：
+   - 首先，你的 <CodeStep step={2}>cleanup 代码</CodeStep> 会使用旧的 props 和 state 运行。
+   - 然后，你的 <CodeStep step={1}>setup 代码</CodeStep> 会使用新的 props 和 state 运行。
+3. 当组件从页面中移除时，你的 <CodeStep step={2}>cleanup 代码</CodeStep> 会最后运行一次 *(unmounts)*。
 
-**Let's illustrate this sequence for the example above.**
+**让我们用上面的示例来说明这个顺序。**
 
-When the `ChatRoom` component above gets added to the page, it will connect to the chat room with the initial `serverUrl` and `roomId`. If either `serverUrl` or `roomId` change as a result of a commit (say, if the user picks a different chat room in a dropdown), your Effect will *disconnect from the previous room, and connect to the next one.* When the `ChatRoom` component is removed from the page, your Effect will disconnect one last time.
+当上面的 `ChatRoom` 组件被添加到页面时，它会使用初始的 `serverUrl` 和 `roomId` 连接到聊天室。如果 `serverUrl` 或 `roomId` 因某次提交而发生变化（例如用户在下拉菜单中选择了不同的聊天室），你的 Effect 会*断开与上一个房间的连接，并连接到下一个房间。*当 `ChatRoom` 组件从页面移除时，你的 Effect 会最后断开一次连接。
 
-**To [help you find bugs,](/learn/synchronizing-with-effects#step-3-add-cleanup-if-needed) in development React runs <CodeStep step={1}>setup</CodeStep> and <CodeStep step={2}>cleanup</CodeStep> one extra time before the <CodeStep step={1}>setup</CodeStep>.** This is a stress-test that verifies your Effect's logic is implemented correctly. If this causes visible issues, your cleanup function is missing some logic. The cleanup function should stop or undo whatever the setup function was doing. The rule of thumb is that the user shouldn't be able to distinguish between the setup being called once (as in production) and a *setup* → *cleanup* → *setup* sequence (as in development). [See common solutions.](/learn/synchronizing-with-effects#how-to-handle-the-effect-firing-twice-in-development)
+**为了[帮助你发现 bug，](/learn/synchronizing-with-effects#step-3-add-cleanup-if-needed)在开发环境中，React 会在 <CodeStep step={1}>setup</CodeStep> 之前额外运行一次 <CodeStep step={2}>cleanup</CodeStep>。**这是一个压力测试，用来验证你的 Effect 逻辑是否正确实现。如果这导致可见的问题，说明你的 cleanup 函数缺少了一些逻辑。cleanup 函数应该停止或撤销 setup 函数所做的一切。经验法则是，用户不应该能分辨出 setup 只运行一次（如生产环境）与 *setup* → *cleanup* → *setup* 这个序列（如开发环境）之间的区别。[查看常见解决方案。](/learn/synchronizing-with-effects#how-to-handle-the-effect-firing-twice-in-development)
 
-**Try to [write every Effect as an independent process](/learn/lifecycle-of-reactive-effects#each-effect-represents-a-separate-synchronization-process) and [think about a single setup/cleanup cycle at a time.](/learn/lifecycle-of-reactive-effects#thinking-from-the-effects-perspective)** It shouldn't matter whether your component is mounting, updating, or unmounting. When your cleanup logic correctly "mirrors" the setup logic, your Effect is resilient to running setup and cleanup as often as needed.
+**尝试[把每个 Effect 都写成一个独立的过程](/learn/lifecycle-of-reactive-effects#each-effect-represents-a-separate-synchronization-process)，并且[每次只考虑一个 setup/cleanup 循环。](/learn/lifecycle-of-reactive-effects#thinking-from-the-effects-perspective)** 组件是在挂载、更新还是卸载都不重要。当你的 cleanup 逻辑正确地“镜像”了 setup 逻辑时，你的 Effect 就能在需要时多次运行 setup 和 cleanup 而保持稳定。
 
 <Note>
 
-An Effect lets you [keep your component synchronized](/learn/synchronizing-with-effects) with some external system (like a chat service). Here, *external system* means any piece of code that's not controlled by React, such as:
+Effect 让你可以[让组件与某个外部系统保持同步](/learn/synchronizing-with-effects)（例如聊天服务）。这里的 *external system* 指任何不受 React 控制的代码，例如：
 
-* A timer managed with <CodeStep step={1}>[`setInterval()`](https://developer.mozilla.org/en-US/docs/Web/API/setInterval)</CodeStep> and <CodeStep step={2}>[`clearInterval()`](https://developer.mozilla.org/en-US/docs/Web/API/clearInterval)</CodeStep>.
-* An event subscription using <CodeStep step={1}>[`window.addEventListener()`](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener)</CodeStep> and <CodeStep step={2}>[`window.removeEventListener()`](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener)</CodeStep>.
-* A third-party animation library with an API like <CodeStep step={1}>`animation.start()`</CodeStep> and <CodeStep step={2}>`animation.reset()`</CodeStep>.
+* 通过 <CodeStep step={1}>[`setInterval()`](https://developer.mozilla.org/en-US/docs/Web/API/setInterval)</CodeStep> 和 <CodeStep step={2}>[`clearInterval()`](https://developer.mozilla.org/en-US/docs/Web/API/clearInterval)</CodeStep> 管理的计时器。
+* 通过 <CodeStep step={1}>[`window.addEventListener()`](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener)</CodeStep> 和 <CodeStep step={2}>[`window.removeEventListener()`](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener)</CodeStep> 实现的事件订阅。
+* 带有类似 <CodeStep step={1}>`animation.start()`</CodeStep> 和 <CodeStep step={2}>`animation.reset()`</CodeStep> API 的第三方动画库。
 
-**If you're not connecting to any external system, [you probably don't need an Effect.](/learn/you-might-not-need-an-effect)**
+**如果你没有连接任何外部系统，[你大概不需要 Effect。](/learn/you-might-not-need-an-effect)**
 
 </Note>
 
-<Recipes titleText="Examples of connecting to an external system" titleId="examples-connecting">
+<Recipes titleText="连接到外部系统的示例" titleId="examples-connecting">
 
-#### Connecting to a chat server {/*connecting-to-a-chat-server*/}
+#### 连接到聊天服务器 {/*connecting-to-a-chat-server*/}
 
-In this example, the `ChatRoom` component uses an Effect to stay connected to an external system defined in `chat.js`. Press "Open chat" to make the `ChatRoom` component appear. This sandbox runs in development mode, so there is an extra connect-and-disconnect cycle, as [explained here.](/learn/synchronizing-with-effects#step-3-add-cleanup-if-needed) Try changing the `roomId` and `serverUrl` using the dropdown and the input, and see how the Effect re-connects to the chat. Press "Close chat" to see the Effect disconnect one last time.
+在这个示例中，`ChatRoom` 组件使用 Effect 来保持与 `chat.js` 中定义的外部系统连接。点击“Open chat”让 `ChatRoom` 组件显示出来。这个沙箱运行在开发模式下，所以会有额外的连接和断开循环，如[此处所解释。](/learn/synchronizing-with-effects#step-3-add-cleanup-if-needed)尝试使用下拉菜单和输入框更改 `roomId` 和 `serverUrl`，看看 Effect 如何重新连接到聊天。点击“Close chat”可以看到 Effect 最后一次断开连接。
 
 <Sandpack>
 
@@ -164,7 +164,7 @@ function ChatRoom({ roomId }) {
           onChange={e => setServerUrl(e.target.value)}
         />
       </label>
-      <h1>Welcome to the {roomId} room!</h1>
+      <h1>欢迎来到 {roomId} 房间！</h1>
     </>
   );
 }
@@ -175,7 +175,7 @@ export default function App() {
   return (
     <>
       <label>
-        Choose the chat room:{' '}
+        选择聊天室：{' '}
         <select
           value={roomId}
           onChange={e => setRoomId(e.target.value)}
@@ -197,7 +197,7 @@ export default function App() {
 
 ```js src/chat.js
 export function createConnection(serverUrl, roomId) {
-  // A real implementation would actually connect to the server
+  // 真实实现会实际连接到服务器
   return {
     connect() {
       console.log('✅ Connecting to "' + roomId + '" room at ' + serverUrl + '...');
@@ -218,9 +218,9 @@ button { margin-left: 10px; }
 
 <Solution />
 
-#### Listening to a global browser event {/*listening-to-a-global-browser-event*/}
+#### 监听全局浏览器事件 {/*listening-to-a-global-browser-event*/}
 
-In this example, the external system is the browser DOM itself. Normally, you'd specify event listeners with JSX, but you can't listen to the global [`window`](https://developer.mozilla.org/en-US/docs/Web/API/Window) object this way. An Effect lets you connect to the `window` object and listen to its events. Listening to the `pointermove` event lets you track the cursor (or finger) position and update the red dot to move with it.
+在这个示例中，外部系统就是浏览器 DOM 本身。通常，你会通过 JSX 指定事件监听器，但不能用这种方式监听全局的 [`window`](https://developer.mozilla.org/en-US/docs/Web/API/Window) 对象。Effect 让你可以连接到 `window` 对象并监听它的事件。监听 `pointermove` 事件可以让你跟踪光标（或手指）的位置，并更新红点让它跟随移动。
 
 <Sandpack>
 
@@ -267,9 +267,9 @@ body {
 
 <Solution />
 
-#### Triggering an animation {/*triggering-an-animation*/}
+#### 触发动画 {/*triggering-an-animation*/}
 
-In this example, the external system is the animation library in `animation.js`. It provides a JavaScript class called `FadeInAnimation` that takes a DOM node as an argument and exposes `start()` and `stop()` methods to control the animation. This component [uses a ref](/learn/manipulating-the-dom-with-refs) to access the underlying DOM node. The Effect reads the DOM node from the ref and automatically starts the animation for that node when the component appears.
+在这个示例中，外部系统是 `animation.js` 中的动画库。它提供了一个名为 `FadeInAnimation` 的 JavaScript 类，它以一个 DOM 节点作为参数，并暴露 `start()` 和 `stop()` 方法来控制动画。这个组件[使用 ref](/learn/manipulating-the-dom-with-refs) 来访问底层 DOM 节点。Effect 从 ref 中读取 DOM 节点，并在组件出现时自动为该节点启动动画。
 
 <Sandpack>
 
@@ -327,11 +327,11 @@ export class FadeInAnimation {
   start(duration) {
     this.duration = duration;
     if (this.duration === 0) {
-      // Jump to end immediately
+      // 立即跳到末尾
       this.onProgress(1);
     } else {
       this.onProgress(0);
-      // Start animating
+      // 开始动画
       this.startTime = performance.now();
       this.frameId = requestAnimationFrame(() => this.onFrame());
     }
@@ -341,7 +341,7 @@ export class FadeInAnimation {
     const progress = Math.min(timePassed / this.duration, 1);
     this.onProgress(progress);
     if (progress < 1) {
-      // We still have more frames to paint
+      // 我们还有更多帧需要绘制
       this.frameId = requestAnimationFrame(() => this.onFrame());
     }
   }
@@ -366,9 +366,9 @@ html, body { min-height: 300px; }
 
 <Solution />
 
-#### Controlling a modal dialog {/*controlling-a-modal-dialog*/}
+#### 控制模态对话框 {/*controlling-a-modal-dialog*/}
 
-In this example, the external system is the browser DOM. The `ModalDialog` component renders a [`<dialog>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog) element. It uses an Effect to synchronize the `isOpen` prop to the [`showModal()`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/showModal) and [`close()`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/close) method calls.
+在这个示例中，外部系统是浏览器 DOM。`ModalDialog` 组件渲染一个 [`<dialog>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog) 元素。它使用 Effect 将 `isOpen` prop 同步到 [`showModal()`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/showModal) 和 [`close()`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/close) 方法调用上。
 
 <Sandpack>
 
@@ -381,14 +381,14 @@ export default function App() {
   return (
     <>
       <button onClick={() => setShow(true)}>
-        Open dialog
+        打开对话框
       </button>
       <ModalDialog isOpen={show}>
-        Hello there!
+        你好！
         <br />
         <button onClick={() => {
           setShow(false);
-        }}>Close</button>
+        }}>关闭</button>
       </ModalDialog>
     </>
   );
@@ -426,9 +426,9 @@ body {
 
 <Solution />
 
-#### Tracking element visibility {/*tracking-element-visibility*/}
+#### 跟踪元素可见性 {/*tracking-element-visibility*/}
 
-In this example, the external system is again the browser DOM. The `App` component displays a long list, then a `Box` component, and then another long list. Scroll the list down. Notice that when all of the `Box` component is fully visible in the viewport, the background color changes to black. To implement this, the `Box` component uses an Effect to manage an [`IntersectionObserver`](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API). This browser API notifies you when the DOM element is visible in the viewport.
+在这个示例中，外部系统同样是浏览器 DOM。`App` 组件先显示一个长列表，然后是一个 `Box` 组件，接着又是另一个长列表。向下滚动列表。注意，当 `Box` 组件完全出现在视口中时，背景颜色会变成黑色。为实现这一点，`Box` 组件使用 Effect 来管理一个 [`IntersectionObserver`](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)。这个浏览器 API 会在 DOM 元素在视口中可见时通知你。
 
 <Sandpack>
 
@@ -452,7 +452,7 @@ function LongSection() {
   for (let i = 0; i < 50; i++) {
     items.push(<li key={i}>Item #{i} (keep scrolling)</li>);
   }
-  return <ul>{items}</ul>
+  return <ul>{items}</ul>;
 }
 ```
 
@@ -502,11 +502,11 @@ export default function Box() {
 
 ---
 
-### Wrapping Effects in custom Hooks {/*wrapping-effects-in-custom-hooks*/}
+### 将 Effects 封装在自定义 Hooks 中 {/*wrapping-effects-in-custom-hooks*/}
 
-Effects are an ["escape hatch":](/learn/escape-hatches) you use them when you need to "step outside React" and when there is no better built-in solution for your use case. If you find yourself often needing to manually write Effects, it's usually a sign that you need to extract some [custom Hooks](/learn/reusing-logic-with-custom-hooks) for common behaviors your components rely on.
+Effects 是一种["逃生舱："](/learn/escape-hatches)当你需要“跳出 React”，且你的用例没有更好的内置方案时，就会用到它们。如果你经常需要手动编写 Effects，这通常意味着你需要为组件依赖的常见行为提取一些[自定义 Hooks](/learn/reusing-logic-with-custom-hooks)。
 
-For example, this `useChatRoom` custom Hook "hides" the logic of your Effect behind a more declarative API:
+例如，这个 `useChatRoom` 自定义 Hook 通过更具声明性的 API “隐藏”了 Effect 的逻辑：
 
 ```js {1,11}
 function useChatRoom({ serverUrl, roomId }) {
@@ -522,7 +522,7 @@ function useChatRoom({ serverUrl, roomId }) {
 }
 ```
 
-Then you can use it from any component like this:
+然后你就可以在任何组件中这样使用它：
 
 ```js {4-7}
 function ChatRoom({ roomId }) {
@@ -535,15 +535,15 @@ function ChatRoom({ roomId }) {
   // ...
 ```
 
-There are also many excellent custom Hooks for every purpose available in the React ecosystem.
+React 生态系统中还有许多适用于各种用途的优秀自定义 Hooks。
 
-[Learn more about wrapping Effects in custom Hooks.](/learn/reusing-logic-with-custom-hooks)
+[了解更多关于将 Effects 封装在自定义 Hooks 中的信息。](/learn/reusing-logic-with-custom-hooks)
 
-<Recipes titleText="Examples of wrapping Effects in custom Hooks" titleId="examples-custom-hooks">
+<Recipes titleText="将 Effects 封装在自定义 Hooks 中的示例" titleId="examples-custom-hooks">
 
-#### Custom `useChatRoom` Hook {/*custom-usechatroom-hook*/}
+#### 自定义 `useChatRoom` Hook {/*custom-usechatroom-hook*/}
 
-This example is identical to one of the [earlier examples,](#examples-connecting) but the logic is extracted to a custom Hook.
+这个示例与[前面的示例](#examples-connecting)中的一个完全相同，只是逻辑被提取到了一个自定义 Hook 中。
 
 <Sandpack>
 
@@ -568,7 +568,7 @@ function ChatRoom({ roomId }) {
           onChange={e => setServerUrl(e.target.value)}
         />
       </label>
-      <h1>Welcome to the {roomId} room!</h1>
+      <h1>欢迎来到 {roomId} 房间！</h1>
     </>
   );
 }
@@ -579,7 +579,7 @@ export default function App() {
   return (
     <>
       <label>
-        Choose the chat room:{' '}
+        选择聊天室：{' '}
         <select
           value={roomId}
           onChange={e => setRoomId(e.target.value)}
@@ -616,7 +616,7 @@ export function useChatRoom({ serverUrl, roomId }) {
 
 ```js src/chat.js
 export function createConnection(serverUrl, roomId) {
-  // A real implementation would actually connect to the server
+  // 真实实现会实际连接到服务器
   return {
     connect() {
       console.log('✅ Connecting to "' + roomId + '" room at ' + serverUrl + '...');
@@ -637,9 +637,9 @@ button { margin-left: 10px; }
 
 <Solution />
 
-#### Custom `useWindowListener` Hook {/*custom-usewindowlistener-hook*/}
+#### 自定义 `useWindowListener` Hook {/*custom-usewindowlistener-hook*/}
 
-This example is identical to one of the [earlier examples,](#examples-connecting) but the logic is extracted to a custom Hook.
+这个示例与[前面的示例](#examples-connecting)中的一个完全相同，只是逻辑被提取到了一个自定义 Hook 中。
 
 <Sandpack>
 
@@ -694,9 +694,9 @@ body {
 
 <Solution />
 
-#### Custom `useIntersectionObserver` Hook {/*custom-useintersectionobserver-hook*/}
+#### 自定义 `useIntersectionObserver` Hook {/*custom-useintersectionobserver-hook*/}
 
-This example is identical to one of the [earlier examples,](#examples-connecting) but the logic is partially extracted to a custom Hook.
+这个示例与[前面的示例](#examples-connecting)中的一个完全相同，只是逻辑部分提取到了一个自定义 Hook 中。
 
 <Sandpack>
 
@@ -720,7 +720,7 @@ function LongSection() {
   for (let i = 0; i < 50; i++) {
     items.push(<li key={i}>Item #{i} (keep scrolling)</li>);
   }
-  return <ul>{items}</ul>
+  return <ul>{items}</ul>;
 }
 ```
 
@@ -786,11 +786,11 @@ export function useIntersectionObserver(ref) {
 
 ---
 
-### Controlling a non-React widget {/*controlling-a-non-react-widget*/}
+### 控制非 React 组件 {/*controlling-a-non-react-widget*/}
 
-Sometimes, you want to keep an external system synchronized to some prop or state of your component.
+有时，你希望让某个外部系统与你组件的某个 prop 或 state 保持同步。
 
-For example, if you have a third-party map widget or a video player component written without React, you can use an Effect to call methods on it that make its state match the current state of your React component. This Effect creates an instance of a `MapWidget` class defined in `map-widget.js`. When you change the `zoomLevel` prop of the `Map` component, the Effect calls the `setZoom()` on the class instance to keep it synchronized:
+例如，如果你有一个第三方地图组件或一个没有用 React 编写的视频播放器组件，你可以使用 Effect 调用它的方法，让它的状态与 React 组件的当前状态一致。这个 Effect 会创建一个定义在 `map-widget.js` 中的 `MapWidget` 类实例。当你更改 `Map` 组件的 `zoomLevel` prop 时，Effect 会调用该类实例上的 `setZoom()`，以保持同步：
 
 <Sandpack>
 
@@ -820,7 +820,7 @@ export default function App() {
   const [zoomLevel, setZoomLevel] = useState(0);
   return (
     <>
-      Zoom level: {zoomLevel}x
+      缩放级别：{zoomLevel}x
       <button onClick={() => setZoomLevel(zoomLevel + 1)}>+</button>
       <button onClick={() => setZoomLevel(zoomLevel - 1)}>-</button>
       <hr />
@@ -890,15 +890,15 @@ button { margin: 5px; }
 
 </Sandpack>
 
-In this example, a cleanup function is not needed because the `MapWidget` class manages only the DOM node that was passed to it. After the `Map` React component is removed from the tree, both the DOM node and the `MapWidget` class instance will be automatically garbage-collected by the browser JavaScript engine.
+在这个示例中，不需要 cleanup 函数，因为 `MapWidget` 类只管理传给它的 DOM 节点。当 `Map` React 组件从树中移除后，该 DOM 节点和 `MapWidget` 类实例都会被浏览器 JavaScript 引擎自动垃圾回收。
 
 ---
 
-### Fetching data with Effects {/*fetching-data-with-effects*/}
+### 使用 Effects 获取数据 {/*fetching-data-with-effects*/}
 
-You can use an Effect to fetch data for your component. Note that [if you use a framework,](/learn/creating-a-react-app#full-stack-frameworks) using your framework's data fetching mechanism will be a lot more efficient than writing Effects manually.
+你可以使用 Effect 为组件获取数据。注意，[如果你使用框架，](/learn/creating-a-react-app#full-stack-frameworks)使用框架自带的数据获取机制会比手动编写 Effects 高效得多。
 
-If you want to fetch data from an Effect manually, your code might look like this:
+如果你想手动在 Effect 中获取数据，你的代码可能会像这样：
 
 ```js
 import { useState, useEffect } from 'react';
@@ -924,7 +924,7 @@ export default function Page() {
   // ...
 ```
 
-Note the `ignore` variable which is initialized to `false`, and is set to `true` during cleanup. This ensures [your code doesn't suffer from "race conditions":](https://maxrozen.com/race-conditions-fetching-data-react-with-useeffect) network responses may arrive in a different order than you sent them.
+注意 `ignore` 变量，它初始值为 `false`，并在 cleanup 时被设为 `true`。这可确保[你的代码不会出现“竞态条件”：](https://maxrozen.com/race-conditions-fetching-data-react-with-useeffect)网络响应到达的顺序可能与发送顺序不同。
 
 <Sandpack>
 
@@ -978,7 +978,7 @@ export async function fetchBio(person) {
 
 </Sandpack>
 
-You can also rewrite using the [`async` / `await`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function) syntax, but you still need to provide a cleanup function:
+你也可以使用 [`async` / `await`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function) 语法重写，但仍然需要提供 cleanup 函数：
 
 <Sandpack>
 
@@ -1034,50 +1034,50 @@ export async function fetchBio(person) {
 
 </Sandpack>
 
-Writing data fetching directly in Effects gets repetitive and makes it difficult to add optimizations like caching and server rendering later. [It's easier to use a custom Hook--either your own or maintained by the community.](/learn/reusing-logic-with-custom-hooks#when-to-use-custom-hooks)
+直接在 Effects 中编写数据获取会变得重复，并且以后很难再添加缓存和服务端渲染等优化。[更简单的做法是使用自定义 Hook——无论是你自己写的还是社区维护的。](/learn/reusing-logic-with-custom-hooks#when-to-use-custom-hooks)
 
 <DeepDive>
 
-#### What are good alternatives to data fetching in Effects? {/*what-are-good-alternatives-to-data-fetching-in-effects*/}
+#### 在 Effects 中获取数据的更好替代方案是什么？ {/*what-are-good-alternatives-to-data-fetching-in-effects*/}
 
-Writing `fetch` calls inside Effects is a [popular way to fetch data](https://www.robinwieruch.de/react-hooks-fetch-data/), especially in fully client-side apps. This is, however, a very manual approach and it has significant downsides:
+在 Effects 中编写 `fetch` 调用是一种[很流行的数据获取方式](https://www.robinwieruch.de/react-hooks-fetch-data/)，尤其是在完全由客户端渲染的应用中。不过，这是一种非常手工的做法，而且有明显缺点：
 
-- **Effects don't run on the server.** This means that the initial server-rendered HTML will only include a loading state with no data. The client computer will have to download all JavaScript and render your app only to discover that now it needs to load the data. This is not very efficient.
-- **Fetching directly in Effects makes it easy to create "network waterfalls".** You render the parent component, it fetches some data, renders the child components, and then they start fetching their data. If the network is not very fast, this is significantly slower than fetching all data in parallel.
-- **Fetching directly in Effects usually means you don't preload or cache data.** For example, if the component unmounts and then mounts again, it would have to fetch the data again.
-- **It's not very ergonomic.** There's quite a bit of boilerplate code involved when writing `fetch` calls in a way that doesn't suffer from bugs like [race conditions.](https://maxrozen.com/race-conditions-fetching-data-react-with-useeffect)
+- **Effects 不会在服务端运行。**这意味着初始的服务端渲染 HTML 里只会包含没有数据的加载状态。客户端计算机必须下载所有 JavaScript 并渲染你的应用，最终才发现它现在还需要加载数据。这并不高效。
+- **直接在 Effects 中获取数据很容易造成“网络瀑布”。**你先渲染父组件，它获取一些数据，再渲染子组件，然后子组件又开始获取自己的数据。如果网络不够快，这会明显慢于并行获取所有数据。
+- **直接在 Effects 中获取数据通常意味着你不会预加载或缓存数据。**例如，如果组件卸载后再挂载，就必须再次获取数据。
+- **这在开发体验上并不理想。**以不会出现像[竞态条件。](https://maxrozen.com/race-conditions-fetching-data-react-with-useeffect)这类 bug 的方式编写 `fetch` 调用，需要不少样板代码。
 
-This list of downsides is not specific to React. It applies to fetching data on mount with any library. Like with routing, data fetching is not trivial to do well, so we recommend the following approaches:
+这份缺点列表并不只针对 React。它适用于任何库中在挂载时获取数据的做法。和路由一样，数据获取并不容易做好，因此我们建议以下方法：
 
-- **If you use a [framework](/learn/creating-a-react-app#full-stack-frameworks), use its built-in data fetching mechanism.** Modern React frameworks have integrated data fetching mechanisms that are efficient and don't suffer from the above pitfalls.
-- **Otherwise, consider using or building a client-side cache.** Popular open source solutions include [TanStack Query](https://tanstack.com/query/latest/), [useSWR](https://swr.vercel.app/), and [React Router 6.4+.](https://beta.reactrouter.com/en/main/start/overview) You can build your own solution too, in which case you would use Effects under the hood but also add logic for deduplicating requests, caching responses, and avoiding network waterfalls (by preloading data or hoisting data requirements to routes).
+- **如果你使用[框架](/learn/creating-a-react-app#full-stack-frameworks)，请使用它内置的数据获取机制。**现代 React 框架集成了高效的数据获取机制，而且不会有上面这些问题。
+- **否则，可以考虑使用或构建一个客户端缓存。**流行的开源方案包括 [TanStack Query](https://tanstack.com/query/latest/)、[useSWR](https://swr.vercel.app/) 和 [React Router 6.4+。](https://beta.reactrouter.com/en/main/start/overview)你也可以自己构建方案，在这种情况下，底层仍会使用 Effects，但还会增加请求去重、响应缓存，以及通过预加载数据或将数据需求上提到路由来避免网络瀑布的逻辑。
 
-You can continue fetching data directly in Effects if neither of these approaches suit you.
+如果这两种方案都不适合你，你仍然可以继续直接在 Effects 中获取数据。
 
 </DeepDive>
 
 ---
 
-### Specifying reactive dependencies {/*specifying-reactive-dependencies*/}
+### 指定响应式依赖 {/*specifying-reactive-dependencies*/}
 
-**Notice that you can't "choose" the dependencies of your Effect.** Every <CodeStep step={2}>reactive value</CodeStep> used by your Effect's code must be declared as a dependency. Your Effect's dependency list is determined by the surrounding code:
+**注意，你不能“选择”Effect 的依赖项。**Effect 代码中使用的每个<CodeStep step={2}>响应式值</CodeStep>都必须声明为依赖项。Effect 的依赖列表由周围代码决定：
 
 ```js [[2, 1, "roomId"], [2, 2, "serverUrl"], [2, 5, "serverUrl"], [2, 5, "roomId"], [2, 8, "serverUrl"], [2, 8, "roomId"]]
-function ChatRoom({ roomId }) { // This is a reactive value
-  const [serverUrl, setServerUrl] = useState('https://localhost:1234'); // This is a reactive value too
+function ChatRoom({ roomId }) { // 这是一个响应式值
+  const [serverUrl, setServerUrl] = useState('https://localhost:1234'); // 这也是一个响应式值
 
   useEffect(() => {
-    const connection = createConnection(serverUrl, roomId); // This Effect reads these reactive values
+    const connection = createConnection(serverUrl, roomId); // 这个 Effect 读取这些响应式值
     connection.connect();
     return () => connection.disconnect();
-  }, [serverUrl, roomId]); // ✅ So you must specify them as dependencies of your Effect
+  }, [serverUrl, roomId]); // ✅ 所以你必须把它们指定为 Effect 的依赖项
   // ...
 }
 ```
 
-If either `serverUrl` or `roomId` change, your Effect will reconnect to the chat using the new values.
+如果 `serverUrl` 或 `roomId` 发生变化，你的 Effect 会使用新值重新连接到聊天室。
 
-**[Reactive values](/learn/lifecycle-of-reactive-effects#effects-react-to-reactive-values) include props and all variables and functions declared directly inside of your component.** Since `roomId` and `serverUrl` are reactive values, you can't remove them from the dependencies. If you try to omit them and [your linter is correctly configured for React,](/learn/editor-setup#linting) the linter will flag this as a mistake you need to fix:
+**[响应式值](/learn/lifecycle-of-reactive-effects#effects-react-to-reactive-values)包括 props 以及直接在组件中声明的所有变量和函数。**由于 `roomId` 和 `serverUrl` 是响应式值，你不能把它们从依赖项中移除。如果你试图省略它们，而[你的 linter 已正确为 React 配置，](/learn/editor-setup#linting)linter 会把这标记为需要修复的错误：
 
 ```js {8}
 function ChatRoom({ roomId }) {
@@ -1092,68 +1092,68 @@ function ChatRoom({ roomId }) {
 }
 ```
 
-**To remove a dependency, you need to ["prove" to the linter that it *doesn't need* to be a dependency.](/learn/removing-effect-dependencies#removing-unnecessary-dependencies)** For example, you can move `serverUrl` out of your component to prove that it's not reactive and won't change on re-renders:
+**要移除一个依赖，你需要[向 linter“证明”它*不需要*成为依赖。](/learn/removing-effect-dependencies#removing-unnecessary-dependencies)**例如，你可以把 `serverUrl` 移到组件外部，以证明它不是响应式的，不会在重新渲染时改变：
 
 ```js {1,8}
-const serverUrl = 'https://localhost:1234'; // Not a reactive value anymore
+const serverUrl = 'https://localhost:1234'; // 不再是响应式值了
 
 function ChatRoom({ roomId }) {
   useEffect(() => {
     const connection = createConnection(serverUrl, roomId);
     connection.connect();
     return () => connection.disconnect();
-  }, [roomId]); // ✅ All dependencies declared
+  }, [roomId]); // ✅ 所有依赖项都已声明
   // ...
 }
 ```
 
-Now that `serverUrl` is not a reactive value (and can't change on a re-render), it doesn't need to be a dependency. **If your Effect's code doesn't use any reactive values, its dependency list should be empty (`[]`):**
+现在 `serverUrl` 不是响应式值了（并且不会在重新渲染时变化），所以它不需要作为依赖项。**如果你的 Effect 代码没有使用任何响应式值，它的依赖列表应该为空（`[]`）：**
 
 ```js {1,2,9}
-const serverUrl = 'https://localhost:1234'; // Not a reactive value anymore
-const roomId = 'music'; // Not a reactive value anymore
+const serverUrl = 'https://localhost:1234'; // 不再是响应式值了
+const roomId = 'music'; // 不再是响应式值了
 
 function ChatRoom() {
   useEffect(() => {
     const connection = createConnection(serverUrl, roomId);
     connection.connect();
     return () => connection.disconnect();
-  }, []); // ✅ All dependencies declared
+  }, []); // ✅ 所有依赖项都已声明
   // ...
 }
 ```
 
-[An Effect with empty dependencies](/learn/lifecycle-of-reactive-effects#what-an-effect-with-empty-dependencies-means) doesn't re-run when any of your component's props or state change.
+[具有空依赖项的 Effect](/learn/lifecycle-of-reactive-effects#what-an-effect-with-empty-dependencies-means)不会在组件的 props 或 state 发生变化时重新运行。
 
 <Pitfall>
 
-If you have an existing codebase, you might have some Effects that suppress the linter like this:
+如果你已有现有代码库，可能会有一些 Effects 像这样抑制了 linter：
 
 ```js {3-4}
 useEffect(() => {
   // ...
-  // 🔴 Avoid suppressing the linter like this:
+  // 🔴 避免像这样抑制 linter：
   // eslint-ignore-next-line react-hooks/exhaustive-deps
 }, []);
 ```
 
-**When dependencies don't match the code, there is a high risk of introducing bugs.** By suppressing the linter, you "lie" to React about the values your Effect depends on. [Instead, prove they're unnecessary.](/learn/removing-effect-dependencies#removing-unnecessary-dependencies)
+**当依赖项与代码不匹配时，很容易引入 bug。**通过抑制 linter，你是在对 React“撒谎”，隐瞒了你的 Effect 依赖哪些值。[相反，应该证明这些依赖是不必要的。](/learn/removing-effect-dependencies#removing-unnecessary-dependencies)
 
 </Pitfall>
 
-<Recipes titleText="Examples of passing reactive dependencies" titleId="examples-dependencies">
+<Recipes titleText="传递响应式依赖的示例" titleId="examples-dependencies">
 
-#### Passing a dependency array {/*passing-a-dependency-array*/}
+#### 传递依赖数组 {/*passing-a-dependency-array*/}
 
-If you specify the dependencies, your Effect runs **after the initial commit _and_ after commits with changed dependencies.**
+如果你指定了依赖项，你的 Effect 会在**初始提交之后，以及依赖项变化后的提交之后**运行。
 
 ```js {3}
 useEffect(() => {
   // ...
-}, [a, b]); // Runs again if a or b are different
+}, [a, b]); // 如果 a 或 b 不同，就会再次运行
 ```
 
-In the below example, `serverUrl` and `roomId` are [reactive values,](/learn/lifecycle-of-reactive-effects#effects-react-to-reactive-values) so they both must be specified as dependencies. As a result, selecting a different room in the dropdown or editing the server URL input causes the chat to re-connect. However, since `message` isn't used in the Effect (and so it isn't a dependency), editing the message doesn't re-connect to the chat.
+在下面的示例中，`serverUrl` 和 `roomId` 是[响应式值，](/learn/lifecycle-of-reactive-effects#effects-react-to-reactive-values)因此它们都必须被指定为依赖项。因此，在下拉菜单中选择不同的房间或编辑服务器 URL 输入框，都会导致聊天重新连接。不过，由于 `message` 没有在 Effect 中使用（因此它不是依赖项），编辑消息不会导致重新连接到聊天室。
 
 <Sandpack>
 
@@ -1182,9 +1182,9 @@ function ChatRoom({ roomId }) {
           onChange={e => setServerUrl(e.target.value)}
         />
       </label>
-      <h1>Welcome to the {roomId} room!</h1>
+      <h1>欢迎来到 {roomId} 房间！</h1>
       <label>
-        Your message:{' '}
+        你的消息：{' '}
         <input value={message} onChange={e => setMessage(e.target.value)} />
       </label>
     </>
@@ -1197,7 +1197,7 @@ export default function App() {
   return (
     <>
       <label>
-        Choose the chat room:{' '}
+        选择聊天室：{' '}
         <select
           value={roomId}
           onChange={e => setRoomId(e.target.value)}
@@ -1219,7 +1219,7 @@ export default function App() {
 
 ```js src/chat.js
 export function createConnection(serverUrl, roomId) {
-  // A real implementation would actually connect to the server
+  // 真实实现会实际连接到服务器
   return {
     connect() {
       console.log('✅ Connecting to "' + roomId + '" room at ' + serverUrl + '...');
@@ -1240,20 +1240,20 @@ button { margin-left: 5px; }
 
 <Solution />
 
-#### Passing an empty dependency array {/*passing-an-empty-dependency-array*/}
+#### 传递空依赖数组 {/*passing-an-empty-dependency-array*/}
 
-If your Effect truly doesn't use any reactive values, it will only run **after the initial commit.**
+如果你的 Effect 确实没有使用任何响应式值，它只会在**初始提交之后运行。**
 
 ```js {3}
 useEffect(() => {
   // ...
-}, []); // Does not run again (except once in development)
+}, []); // 不会再次运行（开发环境中除外）
 ```
 
-**Even with empty dependencies, setup and cleanup will [run one extra time in development](/learn/synchronizing-with-effects#how-to-handle-the-effect-firing-twice-in-development) to help you find bugs.**
+**即使依赖为空，setup 和 cleanup 也会[在开发环境中额外运行一次](/learn/synchronizing-with-effects#how-to-handle-the-effect-firing-twice-in-development)来帮助你发现 bug。**
 
 
-In this example, both `serverUrl` and `roomId` are hardcoded. Since they're declared outside the component, they are not reactive values, and so they aren't dependencies. The dependency list is empty, so the Effect doesn't re-run on re-renders.
+在这个示例中，`serverUrl` 和 `roomId` 都是硬编码的。由于它们声明在组件外部，所以它们不是响应式值，因此也不是依赖项。依赖列表为空，所以 Effect 不会在重新渲染时重新运行。
 
 <Sandpack>
 
@@ -1275,9 +1275,9 @@ function ChatRoom() {
 
   return (
     <>
-      <h1>Welcome to the {roomId} room!</h1>
+      <h1>欢迎来到 {roomId} 房间！</h1>
       <label>
-        Your message:{' '}
+        你的消息：{' '}
         <input value={message} onChange={e => setMessage(e.target.value)} />
       </label>
     </>
@@ -1300,7 +1300,7 @@ export default function App() {
 
 ```js src/chat.js
 export function createConnection(serverUrl, roomId) {
-  // A real implementation would actually connect to the server
+  // 真实实现会实际连接到服务器
   return {
     connect() {
       console.log('✅ Connecting to "' + roomId + '" room at ' + serverUrl + '...');
@@ -1317,17 +1317,17 @@ export function createConnection(serverUrl, roomId) {
 <Solution />
 
 
-#### Passing no dependency array at all {/*passing-no-dependency-array-at-all*/}
+#### 完全不传依赖数组 {/*passing-no-dependency-array-at-all*/}
 
-If you pass no dependency array at all, your Effect runs **after every single commit** of your component.
+如果你完全不传依赖数组，你的 Effect 会在组件的**每一次提交之后**运行。
 
 ```js {3}
 useEffect(() => {
   // ...
-}); // Always runs again
+}); // 总是会再次运行
 ```
 
-In this example, the Effect re-runs when you change `serverUrl` and `roomId`, which is sensible. However, it *also* re-runs when you change the `message`, which is probably undesirable. This is why usually you'll specify the dependency array.
+在这个示例中，当你更改 `serverUrl` 和 `roomId` 时，Effect 会重新运行，这是合理的。不过，当你更改 `message` 时，它**也**会重新运行，这通常是不希望的。这就是为什么通常要指定依赖数组。
 
 <Sandpack>
 
@@ -1345,7 +1345,7 @@ function ChatRoom({ roomId }) {
     return () => {
       connection.disconnect();
     };
-  }); // No dependency array at all
+  }); // 完全没有依赖数组
 
   return (
     <>
@@ -1356,9 +1356,9 @@ function ChatRoom({ roomId }) {
           onChange={e => setServerUrl(e.target.value)}
         />
       </label>
-      <h1>Welcome to the {roomId} room!</h1>
+      <h1>欢迎来到 {roomId} 房间！</h1>
       <label>
-        Your message:{' '}
+        你的消息：{' '}
         <input value={message} onChange={e => setMessage(e.target.value)} />
       </label>
     </>
@@ -1371,7 +1371,7 @@ export default function App() {
   return (
     <>
       <label>
-        Choose the chat room:{' '}
+        选择聊天室：{' '}
         <select
           value={roomId}
           onChange={e => setRoomId(e.target.value)}
@@ -1393,7 +1393,7 @@ export default function App() {
 
 ```js src/chat.js
 export function createConnection(serverUrl, roomId) {
-  // A real implementation would actually connect to the server
+  // 真实实现会实际连接到服务器
   return {
     connect() {
       console.log('✅ Connecting to "' + roomId + '" room at ' + serverUrl + '...');
@@ -1418,9 +1418,9 @@ button { margin-left: 5px; }
 
 ---
 
-### Updating state based on previous state from an Effect {/*updating-state-based-on-previous-state-from-an-effect*/}
+### 基于 Effect 中之前的 state 更新 state {/*updating-state-based-on-previous-state-from-an-effect*/}
 
-When you want to update state based on previous state from an Effect, you might run into a problem:
+当你想基于 Effect 中之前的 state 来更新 state 时，可能会遇到一个问题：
 
 ```js {6,9}
 function Counter() {
@@ -1428,17 +1428,17 @@ function Counter() {
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setCount(count + 1); // You want to increment the counter every second...
+      setCount(count + 1); // 你希望每秒给计数器加 1...
     }, 1000)
     return () => clearInterval(intervalId);
-  }, [count]); // 🚩 ... but specifying `count` as a dependency always resets the interval.
+  }, [count]); // 🚩 ... 但将 `count` 指定为依赖项会始终重置这个定时器。
   // ...
 }
 ```
 
-Since `count` is a reactive value, it must be specified in the list of dependencies. However, that causes the Effect to cleanup and setup again every time the `count` changes. This is not ideal.
+由于 `count` 是一个响应式值，它必须被指定在依赖列表中。然而，这会导致 Effect 在 `count` 每次变化时都重新执行 cleanup 和 setup。这并不理想。
 
-To fix this, [pass the `c => c + 1` state updater](/reference/react/useState#updating-state-based-on-the-previous-state) to `setCount`:
+要修复这个问题，可以[传入 `c => c + 1` 这个 state 更新器](/reference/react/useState#updating-state-based-on-the-previous-state)给 `setCount`：
 
 <Sandpack>
 
@@ -1450,10 +1450,10 @@ export default function Counter() {
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setCount(c => c + 1); // ✅ Pass a state updater
+      setCount(c => c + 1); // ✅ 传入一个 state 更新器
     }, 1000);
     return () => clearInterval(intervalId);
-  }, []); // ✅ Now count is not a dependency
+  }, []); // ✅ 现在 count 不是依赖项了
 
   return <h1>{count}</h1>;
 }
@@ -1473,14 +1473,14 @@ body {
 
 </Sandpack>
 
-Now that you're passing `c => c + 1` instead of `count + 1`, [your Effect no longer needs to depend on `count`.](/learn/removing-effect-dependencies#are-you-reading-some-state-to-calculate-the-next-state) As a result of this fix, it won't need to cleanup and setup the interval again every time the `count` changes.
+现在你传入的是 `c => c + 1` 而不是 `count + 1`，[你的 Effect 就不再需要依赖 `count` 了。](/learn/removing-effect-dependencies#are-you-reading-some-state-to-calculate-the-next-state)这样一来，它就不需要在 `count` 每次变化时都重新 cleanup 和 setup 这个定时器了。
 
 ---
 
 
-### Removing unnecessary object dependencies {/*removing-unnecessary-object-dependencies*/}
+### 移除不必要的对象依赖 {/*removing-unnecessary-object-dependencies*/}
 
-If your Effect depends on an object or a function created during rendering, it might run too often. For example, this Effect re-connects after every commit because the `options` object is [different for every render:](/learn/removing-effect-dependencies#does-some-reactive-value-change-unintentionally)
+如果你的 Effect 依赖于渲染期间创建的对象或函数，它可能会运行得过于频繁。例如，这个 Effect 会在每次提交后重新连接，因为 `options` 对象[每次渲染都不同：](/learn/removing-effect-dependencies#does-some-reactive-value-change-unintentionally)
 
 ```js {6-9,12,15}
 const serverUrl = 'https://localhost:1234';
@@ -1488,20 +1488,20 @@ const serverUrl = 'https://localhost:1234';
 function ChatRoom({ roomId }) {
   const [message, setMessage] = useState('');
 
-  const options = { // 🚩 This object is created from scratch on every re-render
+  const options = { // 🚩 这个对象在每次重新渲染时都会全新创建
     serverUrl: serverUrl,
     roomId: roomId
   };
 
   useEffect(() => {
-    const connection = createConnection(options); // It's used inside the Effect
+    const connection = createConnection(options); // 它在 Effect 内部被使用
     connection.connect();
     return () => connection.disconnect();
-  }, [options]); // 🚩 As a result, these dependencies are always different on a commit
+  }, [options]); // 🚩 因此，这些依赖项在每次提交时都总是不同
   // ...
 ```
 
-Avoid using an object created during rendering as a dependency. Instead, create the object inside the Effect:
+避免将渲染期间创建的对象作为依赖项。相反，把对象创建放到 Effect 内部：
 
 <Sandpack>
 
@@ -1526,7 +1526,7 @@ function ChatRoom({ roomId }) {
 
   return (
     <>
-      <h1>Welcome to the {roomId} room!</h1>
+      <h1>欢迎来到 {roomId} 聊天室！</h1>
       <input value={message} onChange={e => setMessage(e.target.value)} />
     </>
   );
@@ -1537,7 +1537,7 @@ export default function App() {
   return (
     <>
       <label>
-        Choose the chat room:{' '}
+        选择聊天室：{' '}
         <select
           value={roomId}
           onChange={e => setRoomId(e.target.value)}
@@ -1556,13 +1556,13 @@ export default function App() {
 
 ```js src/chat.js
 export function createConnection({ serverUrl, roomId }) {
-  // A real implementation would actually connect to the server
+  // 真实实现会实际连接到服务器
   return {
     connect() {
-      console.log('✅ Connecting to "' + roomId + '" room at ' + serverUrl + '...');
+      console.log('✅ 正在连接到 "' + roomId + '" 聊天室，地址为 ' + serverUrl + '...');
     },
     disconnect() {
-      console.log('❌ Disconnected from "' + roomId + '" room at ' + serverUrl);
+      console.log('❌ 已断开与 "' + roomId + '" 聊天室的连接，地址为 ' + serverUrl);
     }
   };
 }
@@ -1575,21 +1575,21 @@ button { margin-left: 10px; }
 
 </Sandpack>
 
-Now that you create the `options` object inside the Effect, the Effect itself only depends on the `roomId` string.
+现在你在 Effect 内部创建了 `options` 对象，Effect 本身只依赖于 `roomId` 字符串。
 
-With this fix, typing into the input doesn't reconnect the chat. Unlike an object which gets re-created, a string like `roomId` doesn't change unless you set it to another value. [Read more about removing dependencies.](/learn/removing-effect-dependencies)
+通过这个修复，在输入框中输入内容不会再重新连接聊天。与会被重新创建的对象不同，像 `roomId` 这样的字符串除非你把它设置为另一个值，否则不会改变。[阅读更多关于移除依赖项的内容。](/learn/removing-effect-dependencies)
 
 ---
 
-### Removing unnecessary function dependencies {/*removing-unnecessary-function-dependencies*/}
+### 移除不必要的函数依赖项 {/*removing-unnecessary-function-dependencies*/}
 
-If your Effect depends on an object or a function created during rendering, it might run too often. For example, this Effect re-connects after every commit because the `createOptions` function is [different for every render:](/learn/removing-effect-dependencies#does-some-reactive-value-change-unintentionally)
+如果你的 Effect 依赖于在渲染期间创建的对象或函数，它可能会运行得过于频繁。例如，这个 Effect 会在每次提交后重新连接，因为 `createOptions` 函数[每次渲染都不同：](/learn/removing-effect-dependencies#does-some-reactive-value-change-unintentionally)
 
 ```js {4-9,12,16}
 function ChatRoom({ roomId }) {
   const [message, setMessage] = useState('');
 
-  function createOptions() { // 🚩 This function is created from scratch on every re-render
+  function createOptions() { // 🚩 这个函数在每次重新渲染时都会全新创建
     return {
       serverUrl: serverUrl,
       roomId: roomId
@@ -1597,17 +1597,17 @@ function ChatRoom({ roomId }) {
   }
 
   useEffect(() => {
-    const options = createOptions(); // It's used inside the Effect
+    const options = createOptions(); // 它在 Effect 内部被使用
     const connection = createConnection();
     connection.connect();
     return () => connection.disconnect();
-  }, [createOptions]); // 🚩 As a result, these dependencies are always different on a commit
+  }, [createOptions]); // 🚩 结果是，这些依赖项在提交时总是不同的
   // ...
 ```
 
-By itself, creating a function from scratch on every re-render is not a problem. You don't need to optimize that. However, if you use it as a dependency of your Effect, it will cause your Effect to re-run after every commit.
+每次重新渲染时从头创建一个函数本身不是问题。你不需要优化这一点。但是，如果你把它作为 Effect 的依赖项，就会导致你的 Effect 在每次提交后重新运行。
 
-Avoid using a function created during rendering as a dependency. Instead, declare it inside the Effect:
+避免将渲染期间创建的函数作为依赖项。相反，把它声明在 Effect 内部：
 
 <Sandpack>
 
@@ -1636,7 +1636,7 @@ function ChatRoom({ roomId }) {
 
   return (
     <>
-      <h1>Welcome to the {roomId} room!</h1>
+      <h1>欢迎来到 {roomId} 聊天室！</h1>
       <input value={message} onChange={e => setMessage(e.target.value)} />
     </>
   );
@@ -1647,7 +1647,7 @@ export default function App() {
   return (
     <>
       <label>
-        Choose the chat room:{' '}
+        选择聊天室：{' '}
         <select
           value={roomId}
           onChange={e => setRoomId(e.target.value)}
@@ -1666,13 +1666,13 @@ export default function App() {
 
 ```js src/chat.js
 export function createConnection({ serverUrl, roomId }) {
-  // A real implementation would actually connect to the server
+  // 真实实现会实际连接到服务器
   return {
     connect() {
-      console.log('✅ Connecting to "' + roomId + '" room at ' + serverUrl + '...');
+      console.log('✅ 正在连接到 "' + roomId + '" 聊天室，地址为 ' + serverUrl + '...');
     },
     disconnect() {
-      console.log('❌ Disconnected from "' + roomId + '" room at ' + serverUrl);
+      console.log('❌ 已断开与 "' + roomId + '" 聊天室的连接，地址为 ' + serverUrl);
     }
   };
 }
@@ -1685,26 +1685,26 @@ button { margin-left: 10px; }
 
 </Sandpack>
 
-Now that you define the `createOptions` function inside the Effect, the Effect itself only depends on the `roomId` string. With this fix, typing into the input doesn't reconnect the chat. Unlike a function which gets re-created, a string like `roomId` doesn't change unless you set it to another value. [Read more about removing dependencies.](/learn/removing-effect-dependencies)
+现在你把 `createOptions` 函数定义在 Effect 内部，Effect 本身只依赖于 `roomId` 字符串。通过这个修复，在输入框中输入内容不会再重新连接聊天。与会被重新创建的函数不同，像 `roomId` 这样的字符串除非你把它设置为另一个值，否则不会改变。[阅读更多关于移除依赖项的内容。](/learn/removing-effect-dependencies)
 
 ---
 
-### Reading the latest props and state from an Effect {/*reading-the-latest-props-and-state-from-an-effect*/}
+### 从 Effect 中读取最新的 props 和 state {/*reading-the-latest-props-and-state-from-an-effect*/}
 
-By default, when you read a reactive value from an Effect, you have to add it as a dependency. This ensures that your Effect "reacts" to every change of that value. For most dependencies, that's the behavior you want.
+默认情况下，当你从 Effect 中读取一个响应式值时，必须把它添加为依赖项。这能确保你的 Effect 会对该值的每次变化“做出反应”。对于大多数依赖项来说，这就是你想要的行为。
 
-**However, sometimes you'll want to read the *latest* props and state from an Effect without "reacting" to them.** For example, imagine you want to log the number of the items in the shopping cart for every page visit:
+**不过，有时你会希望从 Effect 中读取 *最新* 的 props 和 state，但又不想对它们“做出反应”。** 例如，假设你想在每次页面访问时记录购物车中的商品数量：
 
 ```js {3}
 function Page({ url, shoppingCart }) {
   useEffect(() => {
     logVisit(url, shoppingCart.length);
-  }, [url, shoppingCart]); // ✅ All dependencies declared
+  }, [url, shoppingCart]); // ✅ 声明了所有依赖项
   // ...
 }
 ```
 
-**What if you want to log a new page visit after every `url` change, but *not* if only the `shoppingCart` changes?** You can't exclude `shoppingCart` from dependencies without breaking the [reactivity rules.](#specifying-reactive-dependencies) However, you can express that you *don't want* a piece of code to "react" to changes even though it is called from inside an Effect. [Declare an *Effect Event*](/learn/separating-events-from-effects#declaring-an-effect-event) with the [`useEffectEvent`](/reference/react/useEffectEvent) Hook, and move the code reading `shoppingCart` inside of it:
+**如果你想在每次 `url` 变化后记录一次新的页面访问，但 *不* 希望仅仅因为 `shoppingCart` 变化就记录呢？** 你不能在不破坏[响应性规则](#specifying-reactive-dependencies)的前提下把 `shoppingCart` 从依赖项中排除。不过，你可以表达出你*不希望*某段代码对变化“做出反应”，即使它是在 Effect 内部被调用的。使用 [`useEffectEvent`](/reference/react/useEffectEvent) Hook [声明一个 *Effect Event*](/learn/separating-events-from-effects#declaring-an-effect-event)，并把读取 `shoppingCart` 的代码移到其中：
 
 ```js {2-4,7,8}
 function Page({ url, shoppingCart }) {
@@ -1714,26 +1714,25 @@ function Page({ url, shoppingCart }) {
 
   useEffect(() => {
     onVisit(url);
-  }, [url]); // ✅ All dependencies declared
+  }, [url]); // ✅ 声明了所有依赖项
   // ...
 }
 ```
 
-**Effect Events are not reactive and must always be omitted from dependencies of your Effect.** This is what lets you put non-reactive code (where you can read the latest value of some props and state) inside of them. By reading `shoppingCart` inside of `onVisit`, you ensure that `shoppingCart` won't re-run your Effect.
+**Effect Event 不是响应式的，必须始终从你的 Effect 依赖项中省略。** 这正是它们能让你把非响应式代码（在其中你可以读取某些 props 和 state 的最新值）放进去的原因。通过在 `onVisit` 内部读取 `shoppingCart`，你可以确保 `shoppingCart` 不会让你的 Effect 重新运行。
 
-[Read more about how Effect Events let you separate reactive and non-reactive code.](/learn/separating-events-from-effects#reading-latest-props-and-state-with-effect-events)
+[阅读更多关于 Effect Event 如何让你分离响应式和非响应式代码的内容。](/learn/separating-events-from-effects#reading-latest-props-and-state-with-effect-events)
 
 
 ---
 
-### Displaying different content on the server and the client {/*displaying-different-content-on-the-server-and-the-client*/}
+### 在服务端和客户端显示不同的内容 {/*displaying-different-content-on-the-server-and-the-client*/}
 
-If your app uses server rendering (either [directly](/reference/react-dom/server) or via a [framework](/learn/creating-a-react-app#full-stack-frameworks)), your component will render in two different environments. On the server, it will render to produce the initial HTML. On the client, React will run the rendering code again so that it can attach your event handlers to that HTML. This is why, for [hydration](/reference/react-dom/client/hydrateRoot#hydrating-server-rendered-html) to work, your initial render output must be identical on the client and the server.
+如果你的应用使用服务器渲染（无论是[直接使用](/reference/react-dom/server)，还是通过[框架](/learn/creating-a-react-app#full-stack-frameworks)），你的组件会在两个不同的环境中渲染。在服务器上，它会渲染以生成初始 HTML。在客户端上，React 会再次运行渲染代码，以便它可以把事件处理器附加到该 HTML 上。这就是为什么要让[水合](/reference/react-dom/client/hydrateRoot#hydrating-server-rendered-html)正常工作，你的初始渲染输出在客户端和服务器上必须完全一致。
 
-In rare cases, you might need to display different content on the client. For example, if your app reads some data from [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage), it can't possibly do that on the server. Here is how you could implement this:
+在少数情况下，你可能需要在客户端显示不同的内容。例如，如果你的应用从 [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) 中读取某些数据，那么它不可能在服务器上完成。下面是你可以如何实现这一点：
 
-
-{/* TODO(@poteto) - investigate potential false positives in react compiler validation */}
+{/* TODO(@poteto) - 调查 react compiler 验证中潜在的误报 */}
 ```js {expectedErrors: {'react-compiler': [5]}}
 function MyComponent() {
   const [didMount, setDidMount] = useState(false);
@@ -1743,44 +1742,44 @@ function MyComponent() {
   }, []);
 
   if (didMount) {
-    // ... return client-only JSX ...
+    // ... 返回仅客户端的 JSX ...
   }  else {
-    // ... return initial JSX ...
+    // ... 返回初始 JSX ...
   }
 }
 ```
 
-While the app is loading, the user will see the initial render output. Then, when it's loaded and hydrated, your Effect will run and set `didMount` to `true`, triggering a re-render. This will switch to the client-only render output. Effects don't run on the server, so this is why `didMount` was `false` during the initial server render.
+在应用加载期间，用户会看到初始渲染输出。然后，当它加载并完成水合后，你的 Effect 会运行并将 `didMount` 设为 `true`，触发一次重新渲染。这将切换为仅客户端的渲染输出。Effect 不会在服务器上运行，所以这就是为什么在初始服务器渲染期间 `didMount` 是 `false`。
 
-Use this pattern sparingly. Keep in mind that users with a slow connection will see the initial content for quite a bit of time--potentially, many seconds--so you don't want to make jarring changes to your component's appearance. In many cases, you can avoid the need for this by conditionally showing different things with CSS.
-
----
-
-## Troubleshooting {/*troubleshooting*/}
-
-### My Effect runs twice when the component mounts {/*my-effect-runs-twice-when-the-component-mounts*/}
-
-When Strict Mode is on, in development, React runs setup and cleanup one extra time before the actual setup.
-
-This is a stress-test that verifies your Effect’s logic is implemented correctly. If this causes visible issues, your cleanup function is missing some logic. The cleanup function should stop or undo whatever the setup function was doing. The rule of thumb is that the user shouldn’t be able to distinguish between the setup being called once (as in production) and a setup → cleanup → setup sequence (as in development).
-
-Read more about [how this helps find bugs](/learn/synchronizing-with-effects#step-3-add-cleanup-if-needed) and [how to fix your logic.](/learn/synchronizing-with-effects#how-to-handle-the-effect-firing-twice-in-development)
+请谨慎使用这种模式。请记住，网速较慢的用户会在相当长的一段时间内看到初始内容——可能是很多秒——所以你不希望对组件外观做出突兀的变化。在很多情况下，你可以通过使用 CSS 有条件地显示不同内容来避免这种需求。
 
 ---
 
-### My Effect runs after every re-render {/*my-effect-runs-after-every-re-render*/}
+## 故障排除 {/*troubleshooting*/}
 
-First, check that you haven't forgotten to specify the dependency array:
+### 我的 Effect 在组件挂载时运行了两次 {/*my-effect-runs-twice-when-the-component-mounts*/}
+
+当 Strict Mode 开启时，在开发环境中，React 会在实际设置之前额外执行一次设置和清理。
+
+这是一个压力测试，用于验证你的 Effect 逻辑是否正确实现。如果这导致了可见问题，说明你的清理函数缺少了一些逻辑。清理函数应该停止或撤销设置函数所做的一切。经验法则是，用户不应该能够区分“只调用一次 setup”（如生产环境）和“setup → cleanup → setup”序列（如开发环境）。
+
+阅读更多关于[这如何帮助发现 bug](/learn/synchronizing-with-effects#step-3-add-cleanup-if-needed)以及[如何修复你的逻辑。](/learn/synchronizing-with-effects#how-to-handle-the-effect-firing-twice-in-development)
+
+---
+
+### 我的 Effect 在每次重新渲染后运行 {/*my-effect-runs-after-every-re-render*/}
+
+首先，检查你是否忘记指定依赖数组：
 
 ```js {3}
 useEffect(() => {
   // ...
-}); // 🚩 No dependency array: re-runs after every commit!
+}); // 🚩 没有依赖数组：每次提交后都会重新运行！
 ```
 
-If you've specified the dependency array but your Effect still re-runs in a loop, it's because one of your dependencies is different on every re-render.
+如果你已经指定了依赖数组，但你的 Effect 仍然在循环中重新运行，那是因为你的某个依赖项在每次重新渲染时都不同。
 
-You can debug this problem by manually logging your dependencies to the console:
+你可以通过手动将依赖项打印到控制台来调试这个问题：
 
 ```js {5}
   useEffect(() => {
@@ -1790,58 +1789,58 @@ You can debug this problem by manually logging your dependencies to the console:
   console.log([serverUrl, roomId]);
 ```
 
-You can then right-click on the arrays from different re-renders in the console and select "Store as a global variable" for both of them. Assuming the first one got saved as `temp1` and the second one got saved as `temp2`, you can then use the browser console to check whether each dependency in both arrays is the same:
+然后你可以在控制台中右键点击不同重新渲染对应的数组，并为它们都选择“存储为全局变量”。假设第一个被保存为 `temp1`，第二个被保存为 `temp2`，那么你就可以在浏览器控制台中检查两个数组中的每个依赖项是否相同：
 
 ```js
-Object.is(temp1[0], temp2[0]); // Is the first dependency the same between the arrays?
-Object.is(temp1[1], temp2[1]); // Is the second dependency the same between the arrays?
-Object.is(temp1[2], temp2[2]); // ... and so on for every dependency ...
+Object.is(temp1[0], temp2[0]); // 第一个依赖项在两个数组之间是否相同？
+Object.is(temp1[1], temp2[1]); // 第二个依赖项是否相同？
+Object.is(temp1[2], temp2[2]); // ……依此类推，检查每个依赖项……
 ```
 
-When you find the dependency that is different on every re-render, you can usually fix it in one of these ways:
+当你找到每次重新渲染都不同的依赖项后，通常可以用以下几种方式之一修复它：
 
-- [Updating state based on previous state from an Effect](#updating-state-based-on-previous-state-from-an-effect)
-- [Removing unnecessary object dependencies](#removing-unnecessary-object-dependencies)
-- [Removing unnecessary function dependencies](#removing-unnecessary-function-dependencies)
-- [Reading the latest props and state from an Effect](#reading-the-latest-props-and-state-from-an-effect)
+- [基于 Effect 中上一次状态来更新 state](#updating-state-based-on-previous-state-from-an-effect)
+- [移除不必要的对象依赖项](#removing-unnecessary-object-dependencies)
+- [移除不必要的函数依赖项](#removing-unnecessary-function-dependencies)
+- [从 Effect 中读取最新的 props 和 state](#reading-the-latest-props-and-state-from-an-effect)
 
-As a last resort (if these methods didn't help), wrap its creation with [`useMemo`](/reference/react/useMemo#memoizing-a-dependency-of-another-hook) or [`useCallback`](/reference/react/useCallback#preventing-an-effect-from-firing-too-often) (for functions).
-
----
-
-### My Effect keeps re-running in an infinite cycle {/*my-effect-keeps-re-running-in-an-infinite-cycle*/}
-
-If your Effect runs in an infinite cycle, these two things must be true:
-
-- Your Effect is updating some state.
-- That state leads to a re-render, which causes the Effect's dependencies to change.
-
-Before you start fixing the problem, ask yourself whether your Effect is connecting to some external system (like DOM, network, a third-party widget, and so on). Why does your Effect need to set state? Does it synchronize with that external system? Or are you trying to manage your application's data flow with it?
-
-If there is no external system, consider whether [removing the Effect altogether](/learn/you-might-not-need-an-effect) would simplify your logic.
-
-If you're genuinely synchronizing with some external system, think about why and under what conditions your Effect should update the state. Has something changed that affects your component's visual output? If you need to keep track of some data that isn't used by rendering, a [ref](/reference/react/useRef#referencing-a-value-with-a-ref) (which doesn't trigger re-renders) might be more appropriate. Verify your Effect doesn't update the state (and trigger re-renders) more than needed.
-
-Finally, if your Effect is updating the state at the right time, but there is still a loop, it's because that state update leads to one of the Effect's dependencies changing. [Read how to debug dependency changes.](/reference/react/useEffect#my-effect-runs-after-every-re-render)
+作为最后的手段（如果这些方法都没有帮助），可以用 [`useMemo`](/reference/react/useMemo#memoizing-a-dependency-of-another-hook) 或 [`useCallback`](/reference/react/useCallback#preventing-an-effect-from-firing-too-often)（针对函数）包裹它的创建过程。
 
 ---
 
-### My cleanup logic runs even though my component didn't unmount {/*my-cleanup-logic-runs-even-though-my-component-didnt-unmount*/}
+### 我的 Effect 一直在无限循环中重新运行 {/*my-effect-keeps-re-running-in-an-infinite-cycle*/}
 
-The cleanup function runs not only during unmount, but before every re-render with changed dependencies. Additionally, in development, React [runs setup+cleanup one extra time immediately after component mounts.](#my-effect-runs-twice-when-the-component-mounts)
+如果你的 Effect 在一个无限循环中运行，必须同时满足以下两点：
 
-If you have cleanup code without corresponding setup code, it's usually a code smell:
+- 你的 Effect 正在更新某些 state。
+- 该 state 导致重新渲染，而这又使 Effect 的依赖项发生变化。
+
+在开始修复问题之前，先问问自己你的 Effect 是否正在连接某个外部系统（例如 DOM、网络、第三方小部件等）。你的 Effect 为什么需要设置 state？它是在与那个外部系统同步吗？还是你试图用它来管理应用的数据流？
+
+如果没有外部系统，可以考虑是否[完全移除 Effect](/learn/you-might-not-need-an-effect)会让你的逻辑更简单。
+
+如果你确实是在与某个外部系统同步，请思考为什么以及在什么条件下你的 Effect 应该更新 state。是否有某些变化影响了组件的视觉输出？如果你需要跟踪一些不会用于渲染的数据，那么一个 [ref](/reference/react/useRef#referencing-a-value-with-a-ref)（不会触发重新渲染）可能更合适。确认你的 Effect 没有比必要时更多地更新 state（并触发重新渲染）。
+
+最后，如果你的 Effect 在正确的时间更新了 state，但仍然存在循环，那是因为这次 state 更新导致了 Effect 的某个依赖项发生变化。[阅读如何调试依赖项变化。](/reference/react/useEffect#my-effect-runs-after-every-re-render)
+
+---
+
+### 我的清理逻辑在组件没有卸载的情况下也运行了 {/*my-cleanup-logic-runs-even-though-my-component-didnt-unmount*/}
+
+清理函数不仅会在卸载时运行，还会在每次依赖项变化导致重新渲染之前运行。此外，在开发环境中，React 会在组件挂载后立即额外执行一次 setup+cleanup。[运行 setup+cleanup。](#my-effect-runs-twice-when-the-component-mounts)
+
+如果你有清理代码却没有相应的设置代码，这通常是一个代码异味：
 
 ```js {2-5}
 useEffect(() => {
-  // 🔴 Avoid: Cleanup logic without corresponding setup logic
+  // 🔴 避免：只有清理逻辑，没有对应的设置逻辑
   return () => {
     doSomething();
   };
 }, []);
 ```
 
-Your cleanup logic should be "symmetrical" to the setup logic, and should stop or undo whatever setup did:
+你的清理逻辑应该与设置逻辑“对称”，并且应该停止或撤销设置所做的一切：
 
 ```js {2-3,5}
   useEffect(() => {
@@ -1853,10 +1852,10 @@ Your cleanup logic should be "symmetrical" to the setup logic, and should stop o
   }, [serverUrl, roomId]);
 ```
 
-[Learn how the Effect lifecycle is different from the component's lifecycle.](/learn/lifecycle-of-reactive-effects#the-lifecycle-of-an-effect)
+[了解 Effect 生命周期与组件生命周期的不同。](/learn/lifecycle-of-reactive-effects#the-lifecycle-of-an-effect)
 
 ---
 
-### My Effect does something visual, and I see a flicker before it runs {/*my-effect-does-something-visual-and-i-see-a-flicker-before-it-runs*/}
+### 我的 Effect 做了某些视觉上的事，并且我看到在它运行前有闪烁 {/*my-effect-does-something-visual-and-i-see-a-flicker-before-it-runs*/}
 
-If your Effect must block the browser from [painting the screen,](/learn/render-and-commit#epilogue-browser-paint) replace `useEffect` with [`useLayoutEffect`](/reference/react/useLayoutEffect). Note that **this shouldn't be needed for the vast majority of Effects.** You'll only need this if it's crucial to run your Effect before the browser paint: for example, to measure and position a tooltip before the user sees it.
+如果你的 Effect 必须阻止浏览器[绘制屏幕，](/learn/render-and-commit#epilogue-browser-paint)请用 [`useLayoutEffect`](/reference/react/useLayoutEffect) 替换 `useEffect`。请注意，**绝大多数 Effect 都不需要这样做。** 只有在必须让 Effect 在浏览器绘制之前运行时才需要这样做：例如，在用户看到工具提示之前测量并定位它。

@@ -4,13 +4,13 @@ title: cloneElement
 
 <Pitfall>
 
-Using `cloneElement` is uncommon and can lead to fragile code. [See common alternatives.](#alternatives)
+使用 `cloneElement` 并不常见，而且可能导致代码脆弱。[查看常见替代方案。](#alternatives)
 
 </Pitfall>
 
 <Intro>
 
-`cloneElement` lets you create a new React element using another element as a starting point.
+`cloneElement` 允许你基于另一个元素作为起点来创建一个新的 React 元素。
 
 ```js
 const clonedElement = cloneElement(element, props, ...children)
@@ -22,11 +22,11 @@ const clonedElement = cloneElement(element, props, ...children)
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `cloneElement(element, props, ...children)` {/*cloneelement*/}
 
-Call `cloneElement` to create a React element based on the `element`, but with different `props` and `children`:
+调用 `cloneElement` 可基于 `element` 创建一个 React 元素，但使用不同的 `props` 和 `children`：
 
 ```js
 import { cloneElement } from 'react';
@@ -43,44 +43,44 @@ const clonedElement = cloneElement(
 console.log(clonedElement); // <Row title="Cabbage" isHighlighted={true}>Goodbye</Row>
 ```
 
-[See more examples below.](#usage)
+[查看更多示例。](#usage)
 
-#### Parameters {/*parameters*/}
+#### 参数 {/*parameters*/}
 
-* `element`: The `element` argument must be a valid React element. For example, it could be a JSX node like `<Something />`, the result of calling [`createElement`](/reference/react/createElement), or the result of another `cloneElement` call.
+* `element`：`element` 参数必须是一个有效的 React 元素。例如，它可以是像 `<Something />` 这样的 JSX 节点、调用 [`createElement`](/reference/react/createElement) 的结果，或者另一次 `cloneElement` 调用的结果。
 
-* `props`: The `props` argument must either be an object or `null`. If you pass `null`, the cloned element will retain all of the original `element.props`. Otherwise, for every prop in the `props` object, the returned element will "prefer" the value from `props` over the value from `element.props`. The rest of the props will be filled from the original `element.props`. If you pass `props.key` or `props.ref`, they will replace the original ones.
+* `props`：`props` 参数必须是一个对象或者 `null`。如果你传入 `null`，克隆后的元素将保留原始 `element.props` 的全部内容。否则，对于 `props` 对象中的每个 prop，返回的元素都会“优先”采用 `props` 中的值，而不是 `element.props` 中的值。其余的 props 将从原始的 `element.props` 中补齐。如果你传入 `props.key` 或 `props.ref`，它们将替换原有的值。
 
-* **optional** `...children`: Zero or more child nodes. They can be any React nodes, including React elements, strings, numbers, [portals](/reference/react-dom/createPortal), empty nodes (`null`, `undefined`, `true`, and `false`), and arrays of React nodes. If you don't pass any `...children` arguments, the original `element.props.children` will be preserved.
+* **可选** `...children`：零个或多个子节点。它们可以是任何 React 节点，包括 React 元素、字符串、数字、[portal](/reference/react-dom/createPortal)、空节点（`null`、`undefined`、`true` 和 `false`）以及 React 节点数组。如果你没有传入任何 `...children` 参数，原始的 `element.props.children` 将被保留。
 
-#### Returns {/*returns*/}
+#### 返回值 {/*returns*/}
 
-`cloneElement` returns a React element object with a few properties:
+`cloneElement` 返回一个带有若干属性的 React 元素对象：
 
-* `type`: Same as `element.type`.
-* `props`: The result of shallowly merging `element.props` with the overriding `props` you have passed.
-* `ref`: The original `element.ref`, unless it was overridden by `props.ref`.
-* `key`: The original `element.key`, unless it was overridden by `props.key`.
+* `type`：与 `element.type` 相同。
+* `props`：将 `element.props` 与你传入的覆盖 `props` 进行浅合并后的结果。
+* `ref`：原始的 `element.ref`，除非它被 `props.ref` 覆盖。
+* `key`：原始的 `element.key`，除非它被 `props.key` 覆盖。
 
-Usually, you'll return the element from your component or make it a child of another element. Although you may read the element's properties, it's best to treat every element as opaque after it's created, and only render it.
+通常，你会从组件中返回这个元素，或者把它作为另一个元素的子元素。虽然你可以读取元素的属性，但最好在元素创建后把它当作不透明对象，只负责渲染它。
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-* Cloning an element **does not modify the original element.**
+* 克隆一个元素**不会修改原始元素。**
 
-* You should only **pass children as multiple arguments to `cloneElement` if they are all statically known,** like `cloneElement(element, null, child1, child2, child3)`. If your children are dynamic, pass the entire array as the third argument: `cloneElement(element, null, listItems)`. This ensures that React will [warn you about missing `key`s](/learn/rendering-lists#keeping-list-items-in-order-with-key) for any dynamic lists. For static lists this is not necessary because they never reorder.
+* 只有在 children **都是静态已知的情况下，才应将它们作为多个参数传入 `cloneElement`，**例如 `cloneElement(element, null, child1, child2, child3)`。如果 children 是动态的，请将整个数组作为第三个参数传入：`cloneElement(element, null, listItems)`。这样可以确保 React 会对任何动态列表中缺失的 `key` 发出[警告](/learn/rendering-lists#keeping-list-items-in-order-with-key)。对于静态列表来说，这不是必须的，因为它们不会重新排序。
 
-* `cloneElement` makes it harder to trace the data flow, so **try the [alternatives](#alternatives) instead.**
+* `cloneElement` 会让追踪数据流变得更困难，因此**请尝试改用 [替代方案](#alternatives)。**
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
-### Overriding props of an element {/*overriding-props-of-an-element*/}
+### 覆盖元素的 props {/*overriding-props-of-an-element*/}
 
-To override the props of some <CodeStep step={1}>React element</CodeStep>, pass it to `cloneElement` with the <CodeStep step={2}>props you want to override</CodeStep>:
+要覆盖某个 <CodeStep step={1}>React 元素</CodeStep> 的 props，请将它传给 `cloneElement`，并带上你想要覆盖的 <CodeStep step={2}>props</CodeStep>：
 
-```js [[1, 5, "<Row title=\\"Cabbage\\" />"], [2, 6, "{ isHighlighted: true }"], [3, 4, "clonedElement"]]
+```js {1,7}
 import { cloneElement } from 'react';
 
 // ...
@@ -90,11 +90,11 @@ const clonedElement = cloneElement(
 );
 ```
 
-Here, the resulting <CodeStep step={3}>cloned element</CodeStep> will be `<Row title="Cabbage" isHighlighted={true} />`.
+这里得到的 <CodeStep step={3}>克隆元素</CodeStep> 将是 `<Row title="Cabbage" isHighlighted={true} />`。
 
-**Let's walk through an example to see when it's useful.**
+**让我们通过一个例子来看看它什么时候有用。**
 
-Imagine a `List` component that renders its [`children`](/learn/passing-props-to-a-component#passing-jsx-as-children) as a list of selectable rows with a "Next" button that changes which row is selected. The `List` component needs to render the selected `Row` differently, so it clones every `<Row>` child that it has received, and adds an extra `isHighlighted: true` or `isHighlighted: false` prop:
+假设有一个 `List` 组件，它将自己的 [`children`](/learn/passing-props-to-a-component#passing-jsx-as-children) 渲染为可选择的行列表，并带有一个“Next”按钮，用于改变当前选中的行。`List` 组件需要以不同方式渲染被选中的 `Row`，因此它会克隆收到的每个 `<Row>` 子元素，并额外添加一个 `isHighlighted: true` 或 `isHighlighted: false` prop：
 
 ```js {6-8}
 export default function List({ children }) {
@@ -108,7 +108,7 @@ export default function List({ children }) {
       )}
 ```
 
-Let's say the original JSX received by `List` looks like this:
+假设 `List` 接收到的原始 JSX 如下所示：
 
 ```js {2-4}
 <List>
@@ -118,7 +118,7 @@ Let's say the original JSX received by `List` looks like this:
 </List>
 ```
 
-By cloning its children, the `List` can pass extra information to every `Row` inside. The result looks like this:
+通过克隆它的 children，`List` 可以向内部的每个 `Row` 传递额外信息。结果看起来像这样：
 
 ```js {4,8,12}
 <List>
@@ -137,7 +137,7 @@ By cloning its children, the `List` can pass extra information to every `Row` in
 </List>
 ```
 
-Notice how pressing "Next" updates the state of the `List`, and highlights a different row:
+注意点击“Next”后会更新 `List` 的状态，并高亮另一行：
 
 <Sandpack>
 
@@ -232,21 +232,21 @@ button {
 
 </Sandpack>
 
-To summarize, the `List` cloned the `<Row />` elements it received and added an extra prop to them.
+总之，`List` 克隆了它接收到的 `<Row />` 元素，并向它们添加了一个额外的 prop。
 
 <Pitfall>
 
-Cloning children makes it hard to tell how the data flows through your app. Try one of the [alternatives.](#alternatives)
+克隆 children 会让你难以看清数据在应用中的流动方式。请尝试使用[替代方案。](#alternatives)
 
 </Pitfall>
 
 ---
 
-## Alternatives {/*alternatives*/}
+## 替代方案 {/*alternatives*/}
 
-### Passing data with a render prop {/*passing-data-with-a-render-prop*/}
+### 使用 render prop 传递数据 {/*passing-data-with-a-render-prop*/}
 
-Instead of using `cloneElement`, consider accepting a *render prop* like `renderItem`. Here, `List` receives `renderItem` as a prop. `List` calls `renderItem` for every item and passes `isHighlighted` as an argument:
+与其使用 `cloneElement`，不如考虑接收一个类似 `renderItem` 的 *render prop*。在这里，`List` 将 `renderItem` 作为 prop 接收。`List` 会为每个条目调用 `renderItem`，并将 `isHighlighted` 作为参数传入：
 
 ```js {1,7}
 export default function List({ items, renderItem }) {
@@ -259,7 +259,7 @@ export default function List({ items, renderItem }) {
       })}
 ```
 
-The `renderItem` prop is called a "render prop" because it's a prop that specifies how to render something. For example, you can pass a `renderItem` implementation that renders a `<Row>` with the given `isHighlighted` value:
+`renderItem` 这个 prop 被称为“render prop”，因为它是一个用来指定如何渲染某物的 prop。例如，你可以传入一个 `renderItem` 的实现，它会使用给定的 `isHighlighted` 值来渲染一个 `<Row>`：
 
 ```js {3,7}
 <List
@@ -274,7 +274,7 @@ The `renderItem` prop is called a "render prop" because it's a prop that specifi
 />
 ```
 
-The end result is the same as with `cloneElement`:
+最终结果与使用 `cloneElement` 时相同：
 
 ```js {4,8,12}
 <List>
@@ -293,7 +293,7 @@ The end result is the same as with `cloneElement`:
 </List>
 ```
 
-However, you can clearly trace where the `isHighlighted` value is coming from.
+不过，你可以清楚地追踪 `isHighlighted` 的值来自哪里。
 
 <Sandpack>
 
@@ -389,22 +389,22 @@ button {
 
 </Sandpack>
 
-This pattern is preferred to `cloneElement` because it is more explicit.
+这种模式比 `cloneElement` 更推荐，因为它更明确。
 
 ---
 
-### Passing data through context {/*passing-data-through-context*/}
+### 通过 context 传递数据 {/*passing-data-through-context*/}
 
-Another alternative to `cloneElement` is to [pass data through context.](/learn/passing-data-deeply-with-context)
+`cloneElement` 的另一种替代方案是[通过 context 传递数据。](/learn/passing-data-deeply-with-context)
 
 
-For example, you can call [`createContext`](/reference/react/createContext) to define a `HighlightContext`:
+例如，你可以调用 [`createContext`](/reference/react/createContext) 来定义一个 `HighlightContext`：
 
 ```js
 export const HighlightContext = createContext(false);
 ```
 
-Your `List` component can wrap every item it renders into a `HighlightContext` provider:
+你的 `List` 组件可以把它渲染的每个条目包裹在一个 `HighlightContext` provider 中：
 
 ```js {8,10}
 export default function List({ items, renderItem }) {
@@ -421,7 +421,7 @@ export default function List({ items, renderItem }) {
       })}
 ```
 
-With this approach, `Row` does not need to receive an `isHighlighted` prop at all. Instead, it reads the context:
+采用这种方式后，`Row` 根本不需要接收 `isHighlighted` prop。相反，它直接读取 context：
 
 ```js src/Row.js {2}
 export default function Row({ title }) {
@@ -429,7 +429,7 @@ export default function Row({ title }) {
   // ...
 ```
 
-This allows the calling component to not know or worry about passing `isHighlighted` to `<Row>`:
+这样调用方组件就不需要知道，也不用担心把 `isHighlighted` 传给 `<Row>`：
 
 ```js {4}
 <List
@@ -440,7 +440,7 @@ This allows the calling component to not know or worry about passing `isHighligh
 />
 ```
 
-Instead, `List` and `Row` coordinate the highlighting logic through context.
+取而代之的是，`List` 和 `Row` 通过 context 协同实现高亮逻辑。
 
 <Sandpack>
 
@@ -550,13 +550,13 @@ button {
 
 </Sandpack>
 
-[Learn more about passing data through context.](/reference/react/useContext#passing-data-deeply-into-the-tree)
+[了解更多关于通过 context 传递数据的内容。](/reference/react/useContext#passing-data-deeply-into-the-tree)
 
 ---
 
-### Extracting logic into a custom Hook {/*extracting-logic-into-a-custom-hook*/}
+### 将逻辑提取到自定义 Hook 中 {/*extracting-logic-into-a-custom-hook*/}
 
-Another approach you can try is to extract the "non-visual" logic into your own Hook, and use the information returned by your Hook to decide what to render. For example, you could write a `useList` custom Hook like this:
+你还可以尝试的另一种方法是将“非可视化”逻辑提取到你自己的 Hook 中，并使用 Hook 返回的信息来决定渲染什么。例如，你可以编写一个 `useList` 自定义 Hook，如下所示：
 
 ```js
 import { useState } from 'react';
@@ -575,7 +575,7 @@ export default function useList(items) {
 }
 ```
 
-Then you could use it like this:
+然后你可以像这样使用它：
 
 ```js {2,9,13}
 export default function App() {
@@ -598,7 +598,7 @@ export default function App() {
 }
 ```
 
-The data flow is explicit, but the state is inside the `useList` custom Hook that you can use from any component:
+数据流是显式的，但状态位于 `useList` 自定义 Hook 内，你可以在任何组件中使用它：
 
 <Sandpack>
 
@@ -691,4 +691,4 @@ button {
 
 </Sandpack>
 
-This approach is particularly useful if you want to reuse this logic between different components.
+如果你想在不同组件之间复用这段逻辑，这种方法尤其有用。

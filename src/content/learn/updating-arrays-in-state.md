@@ -1,52 +1,52 @@
 ---
-title: Updating Arrays in State
+title: 在状态中更新数组
 ---
 
 <Intro>
 
-Arrays are mutable in JavaScript, but you should treat them as immutable when you store them in state. Just like with objects, when you want to update an array stored in state, you need to create a new one (or make a copy of an existing one), and then set state to use the new array.
+数组在 JavaScript 中是可变的，但当你把它们存储在状态中时，应该把它们当作不可变的。和对象一样，当你想更新存储在状态中的数组时，你需要创建一个新的数组（或者复制现有数组），然后将状态设置为使用这个新数组。
 
 </Intro>
 
 <YouWillLearn>
 
-- How to add, remove, or change items in an array in React state
-- How to update an object inside of an array
-- How to make array copying less repetitive with Immer
+- 如何在 React 状态中的数组里添加、删除或更改项目
+- 如何更新数组中的对象
+- 如何使用 Immer 让数组复制变得不那么重复
 
 </YouWillLearn>
 
-## Updating arrays without mutation {/*updating-arrays-without-mutation*/}
+## 更新数组而不发生突变 {/*updating-arrays-without-mutation*/}
 
-In JavaScript, arrays are just another kind of object. [Like with objects](/learn/updating-objects-in-state), **you should treat arrays in React state as read-only.** This means that you shouldn't reassign items inside an array like `arr[0] = 'bird'`, and you also shouldn't use methods that mutate the array, such as `push()` and `pop()`.
+在 JavaScript 中，数组只是另一种对象。[和对象一样](/learn/updating-objects-in-state)，**你应该把 React 状态中的数组视为只读。** 这意味着你不应该像 `arr[0] = 'bird'` 这样重新赋值数组中的项，也不应该使用会修改数组的方法，比如 `push()` 和 `pop()`。
 
-Instead, every time you want to update an array, you'll want to pass a *new* array to your state setting function. To do that, you can create a new array from the original array in your state by calling its non-mutating methods like `filter()` and `map()`. Then you can set your state to the resulting new array.
+相反，每当你想更新一个数组时，都应该把一个*新*数组传递给状态设置函数。为此，你可以通过调用不改变原数组的方法（例如 `filter()` 和 `map()`），从状态中的原始数组创建一个新数组。然后你就可以将状态设置为得到的新数组。
 
-Here is a reference table of common array operations. When dealing with arrays inside React state, you will need to avoid the methods in the left column, and instead prefer the methods in the right column:
+下面是常见数组操作的参考表。当处理 React 状态中的数组时，你需要避免左侧的这些方法，而更倾向于右侧的方法：
 
-|           | avoid (mutates the array)           | prefer (returns a new array)                                        |
+|           | 避免（会修改数组）                  | 更推荐（返回新数组）                                                |
 | --------- | ----------------------------------- | ------------------------------------------------------------------- |
-| adding    | `push`, `unshift`                   | `concat`, `[...arr]` spread syntax ([example](#adding-to-an-array)) |
-| removing  | `pop`, `shift`, `splice`            | `filter`, `slice` ([example](#removing-from-an-array))              |
-| replacing | `splice`, `arr[i] = ...` assignment | `map` ([example](#replacing-items-in-an-array))                     |
-| sorting   | `reverse`, `sort`                   | copy the array first ([example](#making-other-changes-to-an-array)) |
+| 添加      | `push`, `unshift`                   | `concat`, `[...arr]` 扩展语法 ([示例](#adding-to-an-array))         |
+| 删除      | `pop`, `shift`, `splice`            | `filter`, `slice` ([示例](#removing-from-an-array))                |
+| 替换      | `splice`, `arr[i] = ...` 赋值       | `map` ([示例](#replacing-items-in-an-array))                       |
+| 排序      | `reverse`, `sort`                   | 先复制数组 ([示例](#making-other-changes-to-an-array))              |
 
-Alternatively, you can [use Immer](#write-concise-update-logic-with-immer) which lets you use methods from both columns.
+或者，你也可以[使用 Immer](#write-concise-update-logic-with-immer)，这样你就能同时使用两列中的方法。
 
 <Pitfall>
 
-Unfortunately, [`slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice) and [`splice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice) are named similarly but are very different:
+不幸的是，[`slice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice) 和 [`splice`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice) 的名字很相似，但它们非常不同：
 
-* `slice` lets you copy an array or a part of it.
-* `splice` **mutates** the array (to insert or delete items).
+* `slice` 可以让你复制数组或其中的一部分。
+* `splice` 会**修改**数组（用于插入或删除项目）。
 
-In React, you will be using `slice` (no `p`!) a lot more often because you don't want to mutate objects or arrays in state. [Updating Objects](/learn/updating-objects-in-state) explains what mutation is and why it's not recommended for state.
+在 React 中，你会更常用 `slice`（没有 `p`！），因为你不想修改状态中的对象或数组。[更新对象](/learn/updating-objects-in-state) 解释了什么是突变，以及为什么不建议在状态中使用它。
 
 </Pitfall>
 
-### Adding to an array {/*adding-to-an-array*/}
+### 向数组中添加内容 {/*adding-to-an-array*/}
 
-`push()` will mutate an array, which you don't want:
+`push()` 会修改数组，这不是你想要的：
 
 <Sandpack>
 
@@ -61,7 +61,7 @@ export default function List() {
 
   return (
     <>
-      <h1>Inspiring sculptors:</h1>
+      <h1>鼓舞人心的雕塑家：</h1>
       <input
         value={name}
         onChange={e => setName(e.target.value)}
@@ -71,7 +71,7 @@ export default function List() {
           id: nextId++,
           name: name,
         });
-      }}>Add</button>
+      }}>添加</button>
       <ul>
         {artists.map(artist => (
           <li key={artist.id}>{artist.name}</li>
@@ -88,18 +88,18 @@ button { margin-left: 5px; }
 
 </Sandpack>
 
-Instead, create a *new* array which contains the existing items *and* a new item at the end. There are multiple ways to do this, but the easiest one is to use the `...` [array spread](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#spread_in_array_literals) syntax:
+相反，创建一个包含现有项目*以及*末尾新项目的*新*数组。有多种方法可以做到这一点，但最简单的方法是使用 `...` [数组展开](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax#spread_in_array_literals)语法：
 
 ```js
-setArtists( // Replace the state
-  [ // with a new array
-    ...artists, // that contains all the old items
-    { id: nextId++, name: name } // and one new item at the end
+setArtists( // 替换状态
+  [ // 为一个新数组
+    ...artists, // 它包含所有旧项目
+    { id: nextId++, name: name } // 以及末尾的一个新项目
   ]
 );
 ```
 
-Now it works correctly:
+现在它可以正确工作了：
 
 <Sandpack>
 
@@ -114,7 +114,7 @@ export default function List() {
 
   return (
     <>
-      <h1>Inspiring sculptors:</h1>
+      <h1>鼓舞人心的雕塑家：</h1>
       <input
         value={name}
         onChange={e => setName(e.target.value)}
@@ -124,7 +124,7 @@ export default function List() {
           ...artists,
           { id: nextId++, name: name }
         ]);
-      }}>Add</button>
+      }}>添加</button>
       <ul>
         {artists.map(artist => (
           <li key={artist.id}>{artist.name}</li>
@@ -141,20 +141,20 @@ button { margin-left: 5px; }
 
 </Sandpack>
 
-The array spread syntax also lets you prepend an item by placing it *before* the original `...artists`:
+数组展开语法还允许你通过把项目放在原始 `...artists` 的*前面*来在开头插入一个项目：
 
 ```js
 setArtists([
   { id: nextId++, name: name },
-  ...artists // Put old items at the end
+  ...artists // 把旧项目放到末尾
 ]);
 ```
 
-In this way, spread can do the job of both `push()` by adding to the end of an array and `unshift()` by adding to the beginning of an array. Try it in the sandbox above!
+这样，展开语法既可以通过在数组末尾添加内容来实现 `push()` 的效果，也可以通过在数组开头添加内容来实现 `unshift()` 的效果。在上面的沙盒里试试吧！
 
-### Removing from an array {/*removing-from-an-array*/}
+### 从数组中删除内容 {/*removing-from-an-array*/}
 
-The easiest way to remove an item from an array is to *filter it out*. In other words, you will produce a new array that will not contain that item. To do this, use the `filter` method, for example:
+从数组中移除项目最简单的方法是*把它过滤掉*。换句话说，你将生成一个不包含该项目的新数组。为此，请使用 `filter` 方法，例如：
 
 <Sandpack>
 
@@ -174,7 +174,7 @@ export default function List() {
 
   return (
     <>
-      <h1>Inspiring sculptors:</h1>
+      <h1>鼓舞人心的雕塑家：</h1>
       <ul>
         {artists.map(artist => (
           <li key={artist.id}>
@@ -186,7 +186,7 @@ export default function List() {
                 )
               );
             }}>
-              Delete
+              删除
             </button>
           </li>
         ))}
@@ -198,7 +198,7 @@ export default function List() {
 
 </Sandpack>
 
-Click the "Delete" button a few times, and look at its click handler.
+点击几次“删除”按钮，看看它的点击处理函数。
 
 ```js
 setArtists(
@@ -206,13 +206,13 @@ setArtists(
 );
 ```
 
-Here, `artists.filter(a => a.id !== artist.id)` means "create an array that consists of those `artists` whose IDs are different from `artist.id`". In other words, each artist's "Delete" button will filter _that_ artist out of the array, and then request a re-render with the resulting array. Note that `filter` does not modify the original array.
+这里，`artists.filter(a => a.id !== artist.id)` 的意思是“创建一个数组，由那些 ID 与 `artist.id` 不同的 `artists` 组成”。换句话说，每个艺术家的“删除”按钮都会把该艺术家过滤出数组，然后请求用结果数组重新渲染。注意，`filter` 不会修改原始数组。
 
-### Transforming an array {/*transforming-an-array*/}
+### 转换数组 {/*transforming-an-array*/}
 
-If you want to change some or all items of the array, you can use `map()` to create a **new** array. The function you will pass to `map` can decide what to do with each item, based on its data or its index (or both).
+如果你想更改数组中的部分或全部项目，可以使用 `map()` 创建一个**新**数组。你传给 `map` 的函数可以根据每个项目的数据或索引（或两者）决定如何处理该项目。
 
-In this example, an array holds coordinates of two circles and a square. When you press the button, it moves only the circles down by 50 pixels. It does this by producing a new array of data using `map()`:
+在这个例子中，一个数组保存了两个圆和一个正方形的坐标。当你按下按钮时，它只会把圆向下移动 50 像素。它通过使用 `map()` 生成一个新的数据数组来实现这一点：
 
 <Sandpack>
 
@@ -233,24 +233,24 @@ export default function ShapeEditor() {
   function handleClick() {
     const nextShapes = shapes.map(shape => {
       if (shape.type === 'square') {
-        // No change
+        // 没有变化
         return shape;
       } else {
-        // Return a new circle 50px below
+        // 返回一个向下 50px 的新圆
         return {
           ...shape,
           y: shape.y + 50,
         };
       }
     });
-    // Re-render with the new array
+    // 使用新数组重新渲染
     setShapes(nextShapes);
   }
 
   return (
     <>
       <button onClick={handleClick}>
-        Move circles down!
+        向下移动圆形！
       </button>
       {shapes.map(shape => (
         <div
@@ -278,11 +278,11 @@ body { height: 300px; }
 
 </Sandpack>
 
-### Replacing items in an array {/*replacing-items-in-an-array*/}
+### 替换数组中的项目 {/*replacing-items-in-an-array*/}
 
-It is particularly common to want to replace one or more items in an array. Assignments like `arr[0] = 'bird'` are mutating the original array, so instead you'll want to use `map` for this as well.
+在数组中替换一个或多个项目尤其常见。像 `arr[0] = 'bird'` 这样的赋值会修改原始数组，所以你同样应该为此使用 `map`。
 
-To replace an item, create a new array with `map`. Inside your `map` call, you will receive the item index as the second argument. Use it to decide whether to return the original item (the first argument) or something else:
+要替换一个项目，可以使用 `map` 创建一个新数组。在你的 `map` 调用中，你会在第二个参数中得到项目索引。利用它来决定返回原始项目（第一个参数）还是其他内容：
 
 <Sandpack>
 
@@ -301,10 +301,10 @@ export default function CounterList() {
   function handleIncrementClick(index) {
     const nextCounters = counters.map((c, i) => {
       if (i === index) {
-        // Increment the clicked counter
+        // 增加被点击的计数器
         return c + 1;
       } else {
-        // The rest haven't changed
+        // 其余的都没有改变
         return c;
       }
     });
@@ -332,11 +332,11 @@ button { margin: 5px; }
 
 </Sandpack>
 
-### Inserting into an array {/*inserting-into-an-array*/}
+### 插入到数组中 {/*inserting-into-an-array*/}
 
-Sometimes, you may want to insert an item at a particular position that's neither at the beginning nor at the end. To do this, you can use the `...` array spread syntax together with the `slice()` method. The `slice()` method lets you cut a "slice" of the array. To insert an item, you will create an array that spreads the slice _before_ the insertion point, then the new item, and then the rest of the original array.
+有时，你可能想在一个既不在开头也不在末尾的特定位置插入项目。为此，你可以将 `...` 数组展开语法与 `slice()` 方法一起使用。`slice()` 方法可以让你切出数组的一“片”。要插入一个项目，你需要创建一个数组：先展开插入点之前的切片，然后是新项目，最后是原始数组的其余部分。
 
-In this example, the Insert button always inserts at the index `1`:
+在这个例子中，Insert 按钮总是在索引 `1` 处插入：
 
 <Sandpack>
 
@@ -357,13 +357,13 @@ export default function List() {
   );
 
   function handleClick() {
-    const insertAt = 1; // Could be any index
+    const insertAt = 1; // 可以是任意索引
     const nextArtists = [
-      // Items before the insertion point:
+      // 插入点之前的项目：
       ...artists.slice(0, insertAt),
-      // New item:
+      // 新项目：
       { id: nextId++, name: name },
-      // Items after the insertion point:
+      // 插入点之后的项目：
       ...artists.slice(insertAt)
     ];
     setArtists(nextArtists);
@@ -372,13 +372,13 @@ export default function List() {
 
   return (
     <>
-      <h1>Inspiring sculptors:</h1>
+      <h1>鼓舞人心的雕塑家：</h1>
       <input
         value={name}
         onChange={e => setName(e.target.value)}
       />
       <button onClick={handleClick}>
-        Insert
+        插入
       </button>
       <ul>
         {artists.map(artist => (
@@ -396,13 +396,13 @@ button { margin-left: 5px; }
 
 </Sandpack>
 
-### Making other changes to an array {/*making-other-changes-to-an-array*/}
+### 对数组进行其他更改 {/*making-other-changes-to-an-array*/}
 
-There are some things you can't do with the spread syntax and non-mutating methods like `map()` and `filter()` alone. For example, you may want to reverse or sort an array. The JavaScript `reverse()` and `sort()` methods are mutating the original array, so you can't use them directly.
+有些事情你无法仅靠展开语法以及像 `map()` 和 `filter()` 这样的非变异方法来完成。例如，你可能想反转或排序一个数组。JavaScript 的 `reverse()` 和 `sort()` 方法会修改原始数组，所以你不能直接使用它们。
 
-**However, you can copy the array first, and then make changes to it.**
+**不过，你可以先复制数组，然后再对它进行修改。**
 
-For example:
+例如：
 
 <Sandpack>
 
@@ -427,7 +427,7 @@ export default function List() {
   return (
     <>
       <button onClick={handleClick}>
-        Reverse
+        反转
       </button>
       <ul>
         {list.map(artwork => (
@@ -441,25 +441,25 @@ export default function List() {
 
 </Sandpack>
 
-Here, you use the `[...list]` spread syntax to create a copy of the original array first. Now that you have a copy, you can use mutating methods like `nextList.reverse()` or `nextList.sort()`, or even assign individual items with `nextList[0] = "something"`.
+这里，你先使用 `[...list]` 展开语法创建原始数组的副本。既然你已经有了副本，就可以使用像 `nextList.reverse()` 或 `nextList.sort()` 这样的会修改数组的方法，甚至可以通过 `nextList[0] = "something"` 逐项赋值。
 
-However, **even if you copy an array, you can't mutate existing items _inside_ of it directly.** This is because copying is shallow--the new array will contain the same items as the original one. So if you modify an object inside the copied array, you are mutating the existing state. For example, code like this is a problem.
+不过，**即使你复制了一个数组，也不能直接修改其中已有的项目。** 这是因为复制是浅拷贝——新数组仍然会包含与原数组相同的项目。所以如果你修改了复制数组中的某个对象，就等于修改了现有状态。例如，下面这样的代码就是有问题的：
 
 ```js
 const nextList = [...list];
-nextList[0].seen = true; // Problem: mutates list[0]
+nextList[0].seen = true; // 问题：修改了 list[0]
 setList(nextList);
 ```
 
-Although `nextList` and `list` are two different arrays, **`nextList[0]` and `list[0]` point to the same object.** So by changing `nextList[0].seen`, you are also changing `list[0].seen`. This is a state mutation, which you should avoid! You can solve this issue in a similar way to [updating nested JavaScript objects](/learn/updating-objects-in-state#updating-a-nested-object)--by copying individual items you want to change instead of mutating them. Here's how.
+尽管 `nextList` 和 `list` 是两个不同的数组，**`nextList[0]` 和 `list[0]` 指向的是同一个对象。** 所以当你改变 `nextList[0].seen` 时，也同时改变了 `list[0].seen`。这是一种状态突变，你应该避免！你可以用类似于[更新嵌套的 JavaScript 对象](/learn/updating-objects-in-state#updating-a-nested-object)的方式来解决这个问题——复制你想要更改的单个项目，而不是直接修改它们。下面是做法。
 
-## Updating objects inside arrays {/*updating-objects-inside-arrays*/}
+## 更新数组中的对象 {/*updating-objects-inside-arrays*/}
 
-Objects are not _really_ located "inside" arrays. They might appear to be "inside" in code, but each object in an array is a separate value, to which the array "points". This is why you need to be careful when changing nested fields like `list[0]`. Another person's artwork list may point to the same element of the array!
+对象其实并不 _真的_ 位于数组“内部”。它们在代码中看起来像是“在里面”，但数组中的每个对象都是一个独立的值，而数组只是“指向”它。正因如此，当你修改像 `list[0]` 这样的嵌套字段时要格外小心。别人的艺术品列表可能也指向数组中的同一个元素！
 
-**When updating nested state, you need to create copies from the point where you want to update, and all the way up to the top level.** Let's see how this works.
+**当更新嵌套状态时，你需要从你想要更新的那个位置开始创建副本，一直创建到顶层。** 我们来看看这是如何工作的。
 
-In this example, two separate artwork lists have the same initial state. They are supposed to be isolated, but because of a mutation, their state is accidentally shared, and checking a box in one list affects the other list:
+在这个例子中，两个独立的艺术品列表有着相同的初始状态。它们本应彼此隔离，但由于一次突变，它们的状态意外地被共享了，在一个列表里勾选复选框会影响另一个列表：
 
 <Sandpack>
 
@@ -499,12 +499,12 @@ export default function BucketList() {
 
   return (
     <>
-      <h1>Art Bucket List</h1>
-      <h2>My list of art to see:</h2>
+      <h1>艺术待办清单</h1>
+      <h2>我想看的艺术作品列表：</h2>
       <ItemList
         artworks={myList}
         onToggle={handleToggleMyList} />
-      <h2>Your list of art to see:</h2>
+      <h2>你想看的艺术作品列表：</h2>
       <ItemList
         artworks={yourList}
         onToggle={handleToggleYourList} />
@@ -539,34 +539,34 @@ function ItemList({ artworks, onToggle }) {
 
 </Sandpack>
 
-The problem is in code like this:
+问题出在这样的代码里：
 
 ```js
 const myNextList = [...myList];
 const artwork = myNextList.find(a => a.id === artworkId);
-artwork.seen = nextSeen; // Problem: mutates an existing item
+artwork.seen = nextSeen; // 问题：修改了现有项
 setMyList(myNextList);
 ```
 
-Although the `myNextList` array itself is new, the *items themselves* are the same as in the original `myList` array. So changing `artwork.seen` changes the *original* artwork item. That artwork item is also in `yourList`, which causes the bug. Bugs like this can be difficult to think about, but thankfully they disappear if you avoid mutating state.
+虽然 `myNextList` 数组本身是新的，但其中的 *项目本身* 和原来的 `myList` 数组里的是同一个对象。所以修改 `artwork.seen` 实际上修改的是 *原始* 的 artwork 项。这个 artwork 项也在 `yourList` 中，于是就引发了这个 bug。这样的 bug 可能很难一下子想明白，但幸运的是，只要避免直接修改状态，它们就会消失。
 
-**You can use `map` to substitute an old item with its updated version without mutation.**
+**你可以使用 `map` 用更新后的版本替换旧项，而无需修改原对象。**
 
 ```js
 setMyList(myList.map(artwork => {
   if (artwork.id === artworkId) {
-    // Create a *new* object with changes
+    // 创建一个带有修改的新对象
     return { ...artwork, seen: nextSeen };
   } else {
-    // No changes
+    // 没有变化
     return artwork;
   }
 }));
 ```
 
-Here, `...` is the object spread syntax used to [create a copy of an object.](/learn/updating-objects-in-state#copying-objects-with-the-spread-syntax)
+这里的 `...` 是对象展开语法，用于[创建对象副本。](/learn/updating-objects-in-state#copying-objects-with-the-spread-syntax)
 
-With this approach, none of the existing state items are being mutated, and the bug is fixed:
+采用这种方式后，现有状态项都没有被修改，bug 也就修复了：
 
 <Sandpack>
 
@@ -589,10 +589,10 @@ export default function BucketList() {
   function handleToggleMyList(artworkId, nextSeen) {
     setMyList(myList.map(artwork => {
       if (artwork.id === artworkId) {
-        // Create a *new* object with changes
+        // 创建一个带有修改的新对象
         return { ...artwork, seen: nextSeen };
       } else {
-        // No changes
+        // 没有变化
         return artwork;
       }
     }));
@@ -601,10 +601,10 @@ export default function BucketList() {
   function handleToggleYourList(artworkId, nextSeen) {
     setYourList(yourList.map(artwork => {
       if (artwork.id === artworkId) {
-        // Create a *new* object with changes
+        // 创建一个带有修改的新对象
         return { ...artwork, seen: nextSeen };
       } else {
-        // No changes
+        // 没有变化
         return artwork;
       }
     }));
@@ -612,12 +612,12 @@ export default function BucketList() {
 
   return (
     <>
-      <h1>Art Bucket List</h1>
-      <h2>My list of art to see:</h2>
+      <h1>艺术待办清单</h1>
+      <h2>我想看的艺术作品列表：</h2>
       <ItemList
         artworks={myList}
         onToggle={handleToggleMyList} />
-      <h2>Your list of art to see:</h2>
+      <h2>你想看的艺术作品列表：</h2>
       <ItemList
         artworks={yourList}
         onToggle={handleToggleYourList} />
@@ -652,16 +652,16 @@ function ItemList({ artworks, onToggle }) {
 
 </Sandpack>
 
-In general, **you should only mutate objects that you have just created.** If you were inserting a *new* artwork, you could mutate it, but if you're dealing with something that's already in state, you need to make a copy.
+一般来说，**你只应该修改刚刚创建的对象。** 如果你是在插入一个*新*的艺术作品，你可以修改它，但如果你处理的是已经存在于状态中的内容，就需要先创建副本。
 
-### Write concise update logic with Immer {/*write-concise-update-logic-with-immer*/}
+### 使用 Immer 编写简洁的更新逻辑 {/*write-concise-update-logic-with-immer*/}
 
-Updating nested arrays without mutation can get a little bit repetitive. [Just as with objects](/learn/updating-objects-in-state#write-concise-update-logic-with-immer):
+在不修改原对象的情况下更新嵌套数组，可能会有点重复。和[对象一样](/learn/updating-objects-in-state#write-concise-update-logic-with-immer)：
 
-- Generally, you shouldn't need to update state more than a couple of levels deep. If your state objects are very deep, you might want to [restructure them differently](/learn/choosing-the-state-structure#avoid-deeply-nested-state) so that they are flat.
-- If you don't want to change your state structure, you might prefer to use [Immer](https://github.com/immerjs/use-immer), which lets you write using the convenient but mutating syntax and takes care of producing the copies for you.
+- 一般来说，你不需要把状态更新到超过两三层深。如果你的状态对象非常深，你可能需要[以不同方式重构它们](/learn/choosing-the-state-structure#avoid-deeply-nested-state)，让它们变成扁平结构。
+- 如果你不想改变状态结构，你可能更倾向于使用 [Immer](https://github.com/immerjs/use-immer)，它允许你使用方便但看似可变的语法来编写代码，并负责为你生成副本。
 
-Here is the Art Bucket List example rewritten with Immer:
+下面是使用 Immer 重写后的艺术待办清单示例：
 
 <Sandpack>
 
@@ -704,12 +704,12 @@ export default function BucketList() {
 
   return (
     <>
-      <h1>Art Bucket List</h1>
-      <h2>My list of art to see:</h2>
+      <h1>艺术待办清单</h1>
+      <h2>我想看的艺术作品列表：</h2>
       <ItemList
         artworks={myList}
         onToggle={handleToggleMyList} />
-      <h2>Your list of art to see:</h2>
+      <h2>你想看的艺术作品列表：</h2>
       <ItemList
         artworks={yourList}
         onToggle={handleToggleYourList} />
@@ -762,7 +762,7 @@ function ItemList({ artworks, onToggle }) {
 
 </Sandpack>
 
-Note how with Immer, **mutation like `artwork.seen = nextSeen` is now okay:**
+注意在 Immer 中，**像 `artwork.seen = nextSeen` 这样的修改现在是可以的：**
 
 ```js
 updateMyTodos(draft => {
@@ -771,17 +771,17 @@ updateMyTodos(draft => {
 });
 ```
 
-This is because you're not mutating the _original_ state, but you're mutating a special `draft` object provided by Immer. Similarly, you can apply mutating methods like `push()` and `pop()` to the content of the `draft`.
+这是因为你修改的不是 _原始_ 状态，而是 Immer 提供的一个特殊 `draft` 对象。同样地，你也可以对 `draft` 的内容使用像 `push()` 和 `pop()` 这样的可变方法。
 
-Behind the scenes, Immer always constructs the next state from scratch according to the changes that you've done to the `draft`. This keeps your event handlers very concise without ever mutating state.
+在内部，Immer 会根据你对 `draft` 所做的更改，从头开始构建下一个状态。这样一来，你的事件处理函数就能保持非常简洁，同时又不会修改状态。
 
 <Recap>
 
-- You can put arrays into state, but you can't change them.
-- Instead of mutating an array, create a *new* version of it, and update the state to it.
-- You can use the `[...arr, newItem]` array spread syntax to create arrays with new items.
-- You can use `filter()` and `map()` to create new arrays with filtered or transformed items.
-- You can use Immer to keep your code concise.
+- 你可以把数组放进状态里，但不能修改它们。
+- 不要直接修改数组，而是创建它的一个 *新* 版本，并把状态更新为这个新版本。
+- 你可以使用 `[...arr, newItem]` 这种数组展开语法来创建包含新项的数组。
+- 你可以使用 `filter()` 和 `map()` 来创建经过过滤或转换的新数组。
+- 你可以使用 Immer 来保持代码简洁。
 
 </Recap>
 
@@ -789,9 +789,9 @@ Behind the scenes, Immer always constructs the next state from scratch according
 
 <Challenges>
 
-#### Update an item in the shopping cart {/*update-an-item-in-the-shopping-cart*/}
+#### 更新购物车中的一项 {/*update-an-item-in-the-shopping-cart*/}
 
-Fill in the `handleIncreaseClick` logic so that pressing "+" increases the corresponding number:
+补全 `handleIncreaseClick` 的逻辑，以便按下 "+" 时增加对应的数量：
 
 <Sandpack>
 
@@ -849,7 +849,7 @@ button { margin: 5px; }
 
 <Solution>
 
-You can use the `map` function to create a new array, and then use the `...` object spread syntax to create a copy of the changed object for the new array:
+你可以使用 `map` 函数创建一个新数组，然后使用 `...` 对象展开语法为新数组中发生变化的对象创建副本：
 
 <Sandpack>
 
@@ -916,9 +916,9 @@ button { margin: 5px; }
 
 </Solution>
 
-#### Remove an item from the shopping cart {/*remove-an-item-from-the-shopping-cart*/}
+#### 从购物车中移除一项 {/*remove-an-item-from-the-shopping-cart*/}
 
-This shopping cart has a working "+" button, but the "–" button doesn't do anything. You need to add an event handler to it so that pressing it decreases the `count` of the corresponding product. If you press "–" when the count is 1, the product should automatically get removed from the cart. Make sure it never shows 0.
+这个购物车有一个可用的 "+" 按钮，但 "–" 按钮没有任何作用。你需要给它添加一个事件处理函数，这样按下它时会减少对应商品的 `count`。如果在 `count` 为 1 时按下 "–"，则该商品应自动从购物车中移除。确保它绝不会显示 0。
 
 <Sandpack>
 
@@ -988,7 +988,7 @@ button { margin: 5px; }
 
 <Solution>
 
-You can first use `map` to produce a new array, and then `filter` to remove products with a `count` set to `0`:
+你可以先使用 `map` 生成一个新数组，然后使用 `filter` 移除 `count` 设为 `0` 的商品：
 
 <Sandpack>
 
@@ -1077,9 +1077,9 @@ button { margin: 5px; }
 
 </Solution>
 
-#### Fix the mutations using non-mutative methods {/*fix-the-mutations-using-non-mutative-methods*/}
+#### 使用非突变方法修复突变 {/*fix-the-mutations-using-non-mutative-methods*/}
 
-In this example, all of the event handlers in `App.js` use mutation. As a result, editing and deleting todos doesn't work. Rewrite `handleAddTodo`, `handleChangeTodo`, and `handleDeleteTodo` to use the non-mutative methods:
+在这个示例中，`App.js` 中所有事件处理函数都使用了突变。因此，编辑和删除待办事项都无法工作。请将 `handleAddTodo`、`handleChangeTodo` 和 `handleDeleteTodo` 重写为使用非突变方法：
 
 <Sandpack>
 
@@ -1242,7 +1242,7 @@ ul, li { margin: 0; padding: 0; }
 
 <Solution>
 
-In `handleAddTodo`, you can use the array spread syntax. In `handleChangeTodo`, you can create a new array with `map`. In `handleDeleteTodo`, you can create a new array with `filter`. Now the list works correctly:
+在 `handleAddTodo` 中，你可以使用数组展开语法。在 `handleChangeTodo` 中，你可以使用 `map` 创建新数组。在 `handleDeleteTodo` 中，你可以使用 `filter` 创建新数组。现在列表可以正常工作了：
 
 <Sandpack>
 
@@ -1410,9 +1410,9 @@ ul, li { margin: 0; padding: 0; }
 </Solution>
 
 
-#### Fix the mutations using Immer {/*fix-the-mutations-using-immer*/}
+#### 使用 Immer 修复突变 {/*fix-the-mutations-using-immer*/}
 
-This is the same example as in the previous challenge. This time, fix the mutations by using Immer. For your convenience, `useImmer` is already imported, so you need to change the `todos` state variable to use it.
+这和上一个挑战中的示例是一样的。这次，请使用 Immer 来修复这些突变。为方便起见，`useImmer` 已经导入好了，所以你只需要把 `todos` 状态变量改为使用它。
 
 <Sandpack>
 
@@ -1594,7 +1594,7 @@ ul, li { margin: 0; padding: 0; }
 
 <Solution>
 
-With Immer, you can write code in the mutative fashion, as long as you're only mutating parts of the `draft` that Immer gives you. Here, all mutations are performed on the `draft` so the code works:
+使用 Immer 时，你可以用可变的方式编写代码，只要你修改的是 Immer 提供给你的 `draft` 的一部分即可。这里，所有修改都发生在 `draft` 上，所以代码可以正常工作：
 
 <Sandpack>
 
@@ -1780,9 +1780,9 @@ ul, li { margin: 0; padding: 0; }
 
 </Sandpack>
 
-You can also mix and match the mutative and non-mutative approaches with Immer.
+你也可以在 Immer 中混合使用可变和不可变两种方式。
 
-For example, in this version `handleAddTodo` is implemented by mutating the Immer `draft`, while `handleChangeTodo` and `handleDeleteTodo` use the non-mutative `map` and `filter` methods:
+例如，在这个版本里，`handleAddTodo` 通过修改 Immer 的 `draft` 来实现，而 `handleChangeTodo` 和 `handleDeleteTodo` 则使用非突变的 `map` 和 `filter` 方法：
 
 <Sandpack>
 
@@ -1965,7 +1965,7 @@ ul, li { margin: 0; padding: 0; }
 
 </Sandpack>
 
-With Immer, you can pick the style that feels the most natural for each separate case.
+使用 Immer 时，你可以为每个具体情况选择最自然的写法。
 
 </Solution>
 

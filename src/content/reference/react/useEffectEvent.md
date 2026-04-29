@@ -4,7 +4,7 @@ title: useEffectEvent
 
 <Intro>
 
-`useEffectEvent` is a React Hook that lets you separate events from Effects.
+`useEffectEvent` 是一个 React Hook，它让你可以将事件与 Effects 分离。
 
 ```js
 const onEvent = useEffectEvent(callback)
@@ -16,83 +16,83 @@ const onEvent = useEffectEvent(callback)
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `useEffectEvent(callback)` {/*useeffectevent*/}
 
-Call `useEffectEvent` at the top level of your component to create an Effect Event.
+在组件顶层调用 `useEffectEvent` 来创建一个 Effect Event。
 
 ```js {4,6}
 import { useEffectEvent, useEffect } from 'react';
 
 function ChatRoom({ roomId, theme }) {
   const onConnected = useEffectEvent(() => {
-    showNotification('Connected!', theme);
+    showNotification('已连接！', theme);
   });
 }
 ```
 
-Effect Events are a part of your Effect logic, but they behave more like an event handler. They always “see” the latest values from render (like props and state) without re-synchronizing your Effect, so they're excluded from Effect dependencies. See [Separating Events from Effects](/learn/separating-events-from-effects#extracting-non-reactive-logic-out-of-effects) to learn more.
+Effect Events 是你 Effect 逻辑的一部分，但它们的行为更像事件处理函数。它们总是能“看到”渲染中的最新值（例如 props 和 state），而不会重新同步你的 Effect，因此它们会被排除在 Effect 依赖项之外。查看[将事件与 Effects 分离](/learn/separating-events-from-effects#extracting-non-reactive-logic-out-of-effects)以了解更多。
 
-[See more examples below.](#usage)
+[查看更多示例。](#usage)
 
-#### Parameters {/*parameters*/}
+#### 参数 {/*parameters*/}
 
-* `callback`: A function containing the logic for your Effect Event. The function can accept any number of arguments and return any value. When you call the returned Effect Event function, the `callback` always accesses the latest committed values from render at the time of the call.
+* `callback`：包含你的 Effect Event 逻辑的函数。该函数可以接受任意数量的参数并返回任意值。当你调用返回的 Effect Event 函数时，`callback` 总是在调用时访问最近一次提交的渲染值。
 
-#### Returns {/*returns*/}
+#### 返回值 {/*returns*/}
 
-`useEffectEvent` returns an Effect Event function with the same type signature as your `callback`.
+`useEffectEvent` 返回一个 Effect Event 函数，其类型签名与 `callback` 相同。
 
-You can call this function inside `useEffect`, `useLayoutEffect`, `useInsertionEffect`, or from within other Effect Events in the same component.
+你可以在 `useEffect`、`useLayoutEffect`、`useInsertionEffect` 中调用这个函数，或者在同一组件内的其他 Effect Events 中调用它。
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-* `useEffectEvent` is a Hook, so you can only call it **at the top level of your component** or your own Hooks. You can't call it inside loops or conditions. If you need that, extract a new component and move the Effect Event into it.
-* Effect Events can only be called from inside Effects or other Effect Events. Do not call them during rendering or pass them to other components or Hooks. The [`eslint-plugin-react-hooks`](/reference/eslint-plugin-react-hooks) linter enforces this restriction.
-* Do not use `useEffectEvent` to avoid specifying dependencies in your Effect's dependency array. This hides bugs and makes your code harder to understand. Only use it for logic that is genuinely an event fired from Effects.
-* Effect Event functions do not have a stable identity. Their identity intentionally changes on every render.
+* `useEffectEvent` 是一个 Hook，所以你只能在**组件顶层**或你自己的 Hooks 中调用它。你不能在循环或条件语句中调用它。如果你需要这样做，请拆分出一个新组件，并把 Effect Event 放进去。
+* Effect Events 只能从 Effects 或其他 Effect Events 内部调用。不要在渲染期间调用它们，也不要把它们传给其他组件或 Hooks。[`eslint-plugin-react-hooks`](/reference/eslint-plugin-react-hooks) 规则会强制执行这一限制。
+* 不要使用 `useEffectEvent` 来逃避在 Effect 依赖数组中声明依赖。这会隐藏 bug，并让代码更难理解。只在它确实用于从 Effects 触发的事件逻辑时使用。
+* Effect Event 函数没有稳定的标识。它们的标识会在每次渲染时有意改变。
 
 <DeepDive>
 
-#### Why are Effect Events not stable? {/*why-are-effect-events-not-stable*/}
+#### 为什么 Effect Events 不是稳定的？ {/*why-are-effect-events-not-stable*/}
 
-Unlike `set` functions from `useState` or refs, Effect Event functions do not have a stable identity. Their identity intentionally changes on every render:
+与来自 `useState` 的 `set` 函数或 refs 不同，Effect Event 函数没有稳定的标识。它们的标识会在每次渲染时有意改变：
 
 ```js
-// 🔴 Wrong: including Effect Event in dependencies
+// 🔴 错误：将 Effect Event 包含在依赖项中
 useEffect(() => {
   onSomething();
-}, [onSomething]); // ESLint will warn about this
+}, [onSomething]); // ESLint 会对此发出警告
 ```
 
-This is a deliberate design choice. Effect Events are meant to be called only from within Effects in the same component. Since you can only call them locally and cannot pass them to other components or include them in dependency arrays, a stable identity would serve no purpose, and would actually mask bugs.
+这是一个刻意的设计选择。Effect Events 只应从同一组件内的 Effects 中调用。由于你只能在本地调用它们，不能将它们传给其他组件，也不能把它们放进依赖数组中，因此稳定的标识并没有用途，反而会掩盖 bug。
 
-The non-stable identity acts as a runtime assertion: if your code incorrectly depends on the function identity, you'll see the Effect re-running on every render, making the bug obvious.
+这种不稳定的标识充当了运行时断言：如果你的代码错误地依赖于函数标识，你会看到 Effect 在每次渲染时都重新运行，从而让 bug 变得明显。
 
-This design reinforces that Effect Events conceptually belong to a particular effect, and are not a general purpose API to opt-out of reactivity.
+这种设计进一步强化了这样一个概念：Effect Events 在概念上属于某个特定的 effect，而不是一个用于规避响应性的通用 API。
 
 </DeepDive>
 
 ---
 
-## Usage {/*usage*/}
+## 用法 {/*usage*/}
 
 
-### Using an event in an Effect {/*using-an-event-in-an-effect*/}
+### 在 Effect 中使用事件 {/*using-an-event-in-an-effect*/}
 
-Call `useEffectEvent` at the top level of your component to create an *Effect Event*:
+在组件顶层调用 `useEffectEvent` 来创建一个 *Effect Event*：
 
 
 ```js [[1, 1, "onConnected"]]
 const onConnected = useEffectEvent(() => {
   if (!muted) {
-    showNotification('Connected!');
+    showNotification('已连接！');
   }
 });
 ```
 
-`useEffectEvent` accepts an `event callback` and returns an <CodeStep step={1}>Effect Event</CodeStep>. The Effect Event is a function that can be called inside of Effects without re-connecting the Effect:
+`useEffectEvent` 接受一个 `event callback` 并返回一个 <CodeStep step={1}>Effect Event</CodeStep>。Effect Event 是一个可以在 Effects 内部调用而不会导致 Effect 重新连接的函数：
 
 ```js [[1, 3, "onConnected"]]
 useEffect(() => {
@@ -105,38 +105,38 @@ useEffect(() => {
 }, [roomId]);
 ```
 
-Since `onConnected` is an <CodeStep step={1}>Effect Event</CodeStep>, `muted` and `onConnect` are not in the Effect dependencies.
+由于 `onConnected` 是一个 <CodeStep step={1}>Effect Event</CodeStep>，`muted` 和 `onConnect` 不需要出现在 Effect 依赖项中。
 
 <Pitfall>
 
-##### Don't use Effect Events to skip dependencies {/*pitfall-skip-dependencies*/}
+##### 不要使用 Effect Events 来跳过依赖项 {/*pitfall-skip-dependencies*/}
 
-It might be tempting to use `useEffectEvent` to avoid listing dependencies that you think are "unnecessary." However, this hides bugs and makes your code harder to understand:
+你可能会想用 `useEffectEvent` 来避免列出你认为“没必要”的依赖项。然而，这会隐藏 bug，并让代码更难理解：
 
 ```js
-// 🔴 Wrong: Using Effect Events to hide dependencies
+// 🔴 错误：使用 Effect Events 来隐藏依赖项
 const logVisit = useEffectEvent(() => {
   log(pageUrl);
 });
 
 useEffect(() => {
   logVisit()
-}, []); // Missing pageUrl means you miss logs
+}, []); // 缺少 pageUrl 会导致你漏记日志
 ```
 
-If a value should cause your Effect to re-run, keep it as a dependency. Only use Effect Events for logic that genuinely should not re-trigger your Effect.
+如果某个值应该让你的 Effect 重新运行，就把它保留为依赖项。只有在确实不应该重新触发 Effect 的逻辑中才使用 Effect Events。
 
-See [Separating Events from Effects](/learn/separating-events-from-effects) to learn more.
+查看[将事件与 Effects 分离](/learn/separating-events-from-effects)以了解更多。
 
 </Pitfall>
 
 ---
 
-### Using a timer with latest values {/*using-a-timer-with-latest-values*/}
+### 在定时器中使用最新值 {/*using-a-timer-with-latest-values*/}
 
-When you use `setInterval` or `setTimeout` in an Effect, you often want to read the latest values from render without restarting the timer whenever those values change.
+当你在 Effect 中使用 `setInterval` 或 `setTimeout` 时，你通常希望在回调中读取渲染中的最新值，而不是在这些值变化时重启定时器。
 
-This counter increments `count` by the current `increment` value every second. The `onTick` Effect Event reads the latest `count` and `increment` without causing the interval to restart:
+这个计数器每秒会按照当前 `increment` 的值增加 `count`。`onTick` Effect Event 会读取最新的 `count` 和 `increment`，而不会导致间隔重新开始：
 
 <Sandpack>
 
@@ -163,12 +163,12 @@ export default function Timer() {
   return (
     <>
       <h1>
-        Counter: {count}
-        <button onClick={() => setCount(0)}>Reset</button>
+        计数器：{count}
+        <button onClick={() => setCount(0)}>重置</button>
       </h1>
       <hr />
       <p>
-        Every second, increment by:
+        每秒增加：
         <button disabled={increment === 0} onClick={() => {
           setIncrement(i => i - 1);
         }}>–</button>
@@ -188,15 +188,15 @@ button { margin: 10px; }
 
 </Sandpack>
 
-Try changing the increment value while the timer is running. The counter immediately uses the new increment value, but the timer keeps ticking smoothly without restarting.
+尝试在定时器运行时更改 increment 的值。计数器会立即使用新的 increment 值，但定时器会继续平稳地运行，而不会重启。
 
 ---
 
-### Using an event listener with latest values {/*using-an-event-listener-with-latest-values*/}
+### 在事件监听器中使用最新值 {/*using-an-event-listener-with-latest-values*/}
 
-When you set up an event listener in an Effect, you often need to read the latest values from render in the callback. Without `useEffectEvent`, you would need to include the values in your dependencies, causing the listener to be removed and re-added on every change.
+当你在 Effect 中设置事件监听器时，通常需要在回调中读取渲染中的最新值。若没有 `useEffectEvent`，你就需要把这些值包含在依赖项中，这会导致监听器在每次变化时被移除并重新添加。
 
-This example shows a dot that follows the cursor, but only when "Can move" is checked. The `onMove` Effect Event always reads the latest `canMove` value without re-running the Effect:
+这个示例展示了一个会跟随光标移动的点，但仅在勾选“允许移动”时生效。`onMove` Effect Event 总是会读取最新的 `canMove` 值，而不会重新运行 Effect：
 
 <Sandpack>
 
@@ -226,7 +226,7 @@ export default function App() {
           checked={canMove}
           onChange={e => setCanMove(e.target.checked)}
         />
-        The dot is allowed to move
+        允许点移动
       </label>
       <hr />
       <div style={{
@@ -254,15 +254,15 @@ body {
 
 </Sandpack>
 
-Toggle the checkbox and move your cursor. The dot responds immediately to the checkbox state, but the event listener is only set up once when the component mounts.
+切换复选框并移动鼠标。点会立即响应复选框状态，但事件监听器只会在组件挂载时设置一次。
 
 ---
 
-### Avoid reconnecting to external systems {/*showing-a-notification-without-reconnecting*/}
+### 避免重新连接外部系统 {/*showing-a-notification-without-reconnecting*/}
 
-A common use case for `useEffectEvent` is when you want to do something in response to an Effect, but that "something" depends on a value you don't want to react to.
+`useEffectEvent` 的一个常见用例是：当你想在 Effect 响应中做某件事，但那件事依赖于一个你不希望对其产生响应的值。
 
-In this example, a chat component connects to a room and shows a notification when connected. The user can mute notifications with a checkbox. However, you don't want to reconnect to the chat room every time the user changes the settings:
+在这个示例中，一个聊天组件连接到房间，并在连接后显示通知。用户可以通过复选框将通知静音。不过，你并不希望用户每次更改设置时都重新连接到聊天房间：
 
 <Sandpack>
 
@@ -290,26 +290,26 @@ import { showNotification } from './notifications.js';
 
 function ChatRoom({ roomId, muted }) {
   const onConnected = useEffectEvent((roomId) => {
-    console.log('✅ Connected to ' + roomId + ' (muted: ' + muted + ')');
+    console.log('✅ 已连接到 ' + roomId + '（静音：' + muted + '）');
     if (!muted) {
-      showNotification('Connected to ' + roomId);
+      showNotification('已连接到 ' + roomId);
     }
   });
 
   useEffect(() => {
     const connection = createConnection(roomId);
-    console.log('⏳ Connecting to ' + roomId + '...');
+    console.log('⏳ 正在连接到 ' + roomId + '...');
     connection.on('connected', () => {
       onConnected(roomId);
     });
     connection.connect();
     return () => {
-      console.log('❌ Disconnected from ' + roomId);
+      console.log('❌ 已与 ' + roomId + ' 断开连接');
       connection.disconnect();
     }
   }, [roomId]);
 
-  return <h1>Welcome to the {roomId} room!</h1>;
+  return <h1>欢迎来到 {roomId} 房间！</h1>;
 }
 
 export default function App() {
@@ -318,7 +318,7 @@ export default function App() {
   return (
     <>
       <label>
-        Choose the chat room:{' '}
+        选择聊天房间：{' '}
         <select
           value={roomId}
           onChange={e => setRoomId(e.target.value)}
@@ -334,7 +334,7 @@ export default function App() {
           checked={muted}
           onChange={e => setMuted(e.target.checked)}
         />
-        Mute notifications
+        静音通知
       </label>
       <hr />
       <ChatRoom
@@ -350,7 +350,7 @@ export default function App() {
 const serverUrl = 'https://localhost:1234';
 
 export function createConnection(roomId) {
-  // A real implementation would actually connect to the server
+  // 一个真实的实现实际上会连接到服务器
   let connectedCallback;
   let timeout;
   return {
@@ -401,13 +401,13 @@ label { display: block; margin-top: 10px; }
 
 </Sandpack>
 
-Try switching rooms. The chat reconnects and shows a notification. Now mute the notifications. Since `muted` is read inside the Effect Event rather than the Effect, the chat stays connected.
+尝试切换房间。聊天会重新连接并显示通知。现在将通知静音。由于 `muted` 是在 Effect Event 中读取的，而不是在 Effect 中读取的，所以聊天会保持连接。
 
 ---
 
-### Using Effect Events in custom Hooks {/*using-effect-events-in-custom-hooks*/}
+### 在自定义 Hooks 中使用 Effect Events {/*using-effect-events-in-custom-hooks*/}
 
-You can use `useEffectEvent` inside your own custom Hooks. This lets you create reusable Hooks that encapsulate Effects while keeping some values non-reactive:
+你可以在自己的自定义 Hooks 中使用 `useEffectEvent`。这让你可以创建可复用的 Hooks，在封装 Effects 的同时保持某些值为非响应式：
 
 <Sandpack>
 
@@ -437,8 +437,8 @@ function Counter({ incrementBy }) {
 
   return (
     <div>
-      <h2>Count: {count}</h2>
-      <p>Incrementing by {incrementBy} every second</p>
+      <h2>计数：{count}</h2>
+      <p>每秒增加 {incrementBy}</p>
     </div>
   );
 }
@@ -449,7 +449,7 @@ export default function App() {
   return (
     <>
       <label>
-        Increment by:{' '}
+        每次增加：{' '}
         <select
           value={incrementBy}
           onChange={(e) => setIncrementBy(Number(e.target.value))}
@@ -472,15 +472,15 @@ label { display: block; margin-bottom: 8px; }
 
 </Sandpack>
 
-In this example, `useInterval` is a custom Hook that sets up an interval. The `callback` passed to it is wrapped in an Effect Event, so the interval does not reset even if a new `callback` is passed in every render.
+在这个示例中，`useInterval` 是一个设置定时器的自定义 Hook。传给它的 `callback` 会被包装在一个 Effect Event 中，因此即使每次渲染都会传入一个新的 `callback`，定时器也不会重置。
 
 ---
 
-## Troubleshooting {/*troubleshooting*/}
+## 故障排除 {/*troubleshooting*/}
 
-### I'm getting an error: "A function wrapped in useEffectEvent can't be called during rendering" {/*cant-call-during-rendering*/}
+### 我遇到一个错误："A function wrapped in useEffectEvent can't be called during rendering" {/*cant-call-during-rendering*/}
 
-This error means you're calling an Effect Event function during the render phase of your component. Effect Events can only be called from inside Effects or other Effect Events.
+这个错误意味着你在组件的渲染阶段调用了一个 Effect Event 函数。Effect Event 只能从 Effect 或其他 Effect Event 内部调用。
 
 ```js
 function MyComponent({ data }) {
@@ -488,10 +488,10 @@ function MyComponent({ data }) {
     console.log(data);
   });
 
-  // 🔴 Wrong: calling during render
+  // 🔴 错误：在渲染期间调用
   onLog();
 
-  // ✅ Correct: call from an Effect
+  // ✅ 正确：从 Effect 中调用
   useEffect(() => {
     onLog();
   }, []);
@@ -500,55 +500,55 @@ function MyComponent({ data }) {
 }
 ```
 
-If you need to run logic during render, don't wrap it in `useEffectEvent`. Call the logic directly or move it into an Effect.
+如果你需要在渲染期间运行逻辑，不要把它包装到 `useEffectEvent` 中。直接调用这段逻辑，或者把它移到 Effect 里。
 
 ---
 
-### I'm getting a lint error: "Functions returned from useEffectEvent must not be included in the dependency array" {/*effect-event-in-deps*/}
+### 我遇到一个 lint 错误："Functions returned from useEffectEvent must not be included in the dependency array" {/*effect-event-in-deps*/}
 
-If you see a warning like "Functions returned from `useEffectEvent` must not be included in the dependency array", remove the Effect Event from your dependencies:
+如果你看到类似 "Functions returned from `useEffectEvent` must not be included in the dependency array" 的警告，请从依赖项中移除这个 Effect Event：
 
 ```js
 const onSomething = useEffectEvent(() => {
   // ...
 });
 
-// 🔴 Wrong: Effect Event in dependencies
+// 🔴 错误：依赖项中包含 Effect Event
 useEffect(() => {
   onSomething();
 }, [onSomething]);
 
-// ✅ Correct: no Effect Event in dependencies
+// ✅ 正确：依赖项中不包含 Effect Event
 useEffect(() => {
   onSomething();
 }, []);
 ```
 
-Effect Events are designed to be called from Effects without being listed as dependencies. The linter enforces this because the function identity is [intentionally not stable](#why-are-effect-events-not-stable). Including it would cause your Effect to re-run on every render.
+Effect Event 的设计是可以在 Effect 中调用，而不必把它列为依赖项。lint 工具会强制这样做，因为这个函数的身份 [有意地不稳定](#why-are-effect-events-not-stable)。如果把它包含进去，你的 Effect 就会在每次渲染时重新运行。
 
 ---
 
-### I'm getting a lint error: "... is a function created with useEffectEvent, and can only be called from Effects" {/*effect-event-called-outside-effect*/}
+### 我遇到一个 lint 错误："... is a function created with useEffectEvent, and can only be called from Effects" {/*effect-event-called-outside-effect*/}
 
-If you see a warning like "... is a function created with React Hook `useEffectEvent`, and can only be called from Effects and Effect Events", you're calling the function from the wrong place:
+如果你看到类似 "... is a function created with React Hook `useEffectEvent`, and can only be called from Effects and Effect Events" 的警告，说明你调用这个函数的位置不对：
 
 ```js
 const onSomething = useEffectEvent(() => {
   console.log(value);
 });
 
-// 🔴 Wrong: calling from event handler
+// 🔴 错误：从事件处理器中调用
 function handleClick() {
   onSomething();
 }
 
-// 🔴 Wrong: passing to child component
+// 🔴 错误：传递给子组件
 return <Child onSomething={onSomething} />;
 
-// ✅ Correct: calling from Effect
+// ✅ 正确：从 Effect 中调用
 useEffect(() => {
   onSomething();
 }, []);
 ```
 
-Effect Events are specifically designed to be used in Effects local to the component they're defined in. If you need a callback for event handlers or to pass to children, use a regular function or `useCallback` instead.
+Effect Event 的专门用途是在其定义所在组件内部的 Effect 中使用。如果你需要一个用于事件处理器的回调，或者需要传递给子组件，请改用普通函数或 `useCallback`。

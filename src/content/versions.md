@@ -53,17 +53,32 @@ title: React 版本
 - [React Compiler 案例研究](https://www.youtube.com/watch?v=lvhPq5chokM)
 - [React 19 深入解析：协调 HTML](https://www.youtube.com/watch?v=IBBN-s77YSI)
 
-**发布**
-- [v19.2.1（2025 年 12 月）](https://github.com/facebook/react/blob/main/CHANGELOG.md#1922-dec-11-2025)
-- [v19.2.1（2025 年 12 月）](https://github.com/facebook/react/blob/main/CHANGELOG.md#1921-dec-3-2025)
-- [v19.2.0（2025 年 10 月）](https://github.com/facebook/react/blob/main/CHANGELOG.md#1920-october-1st-2025)
-- [v19.1.3（2025 年 12 月）](https://github.com/facebook/react/blob/main/CHANGELOG.md#1913-dec-11-2025)
-- [v19.1.2（2025 年 12 月）](https://github.com/facebook/react/blob/main/CHANGELOG.md#1912-dec-3-2025)
-- [v19.1.1（2025 年 7 月）](https://github.com/facebook/react/blob/main/CHANGELOG.md#1911-july-28-2025)
-- [v19.1.0（2025 年 3 月）](https://github.com/facebook/react/blob/main/CHANGELOG.md#1910-march-28-2025)
-- [v19.0.2（2025 年 12 月）](https://github.com/facebook/react/blob/main/CHANGELOG.md#1902-dec-11-2025)
-- [v19.0.1（2025 年 12 月）](https://github.com/facebook/react/blob/main/CHANGELOG.md#1901-dec-3-2025)
-- [v19.0.0（2024 年 12 月）](https://github.com/facebook/react/blob/main/CHANGELOG.md#1900-december-5-2024)
+**发布版本**
+- [v19.2.7 (2026年6月)](https://github.com/facebook/react/blob/main/CHANGELOG.md#1927-june-1-2026)
+- [v19.2.6 (2026年5月)](https://github.com/facebook/react/blob/main/CHANGELOG.md#1926-may-6-2026)
+- [v19.2.5 (2026年3月)](https://github.com/facebook/react/blob/main/CHANGELOG.md#1925-march-18-2026)
+- [v19.2.4 (2026年1月)](https://github.com/facebook/react/blob/main/CHANGELOG.md#1924-jan-26-2026)
+- [v19.2.3 (2025年12月)](https://github.com/facebook/react/blob/main/CHANGELOG.md#1923-dec-11-2025)
+- [v19.2.2 (2025年12月)](https://github.com/facebook/react/blob/main/CHANGELOG.md#1922-dec-11-2025)
+- [v19.2.1 (2025年12月)](https://github.com/facebook/react/blob/main/CHANGELOG.md#1921-dec-3-2025)
+- [v19.2.0 (2025年10月)](https://github.com/facebook/react/blob/main/CHANGELOG.md#1920-october-1st-2025)
+- [v19.1.8 (2026年6月)](https://github.com/facebook/react/blob/main/CHANGELOG.md#1918-june-1-2026)
+- [v19.1.7 (2026年5月)](https://github.com/facebook/react/blob/main/CHANGELOG.md#1917-may-6-2026)
+- [v19.1.6 (2026年3月)](https://github.com/facebook/react/blob/main/CHANGELOG.md#1916-march-18-2026)
+- [v19.1.5 (2026年1月)](https://github.com/facebook/react/blob/main/CHANGELOG.md#1915-jan-26-2026)
+- [v19.1.4 (2025年12月)](https://github.com/facebook/react/blob/main/CHANGELOG.md#1914-dec-11-2025)
+- [v19.1.3 (2025年12月)](https://github.com/facebook/react/blob/main/CHANGELOG.md#1913-dec-11-2025)
+- [v19.1.2 (2025年12月)](https://github.com/facebook/react/blob/main/CHANGELOG.md#1912-dec-3-2025)
+- [v19.1.1 (2025年7月)](https://github.com/facebook/react/blob/main/CHANGELOG.md#1911-july-28-2025)
+- [v19.1.0 (2025年3月)](https://github.com/facebook/react/blob/main/CHANGELOG.md#1910-march-28-2025)
+- [v19.0.7 (2026年6月)](https://github.com/facebook/react/blob/main/CHANGELOG.md#1907-june-1-2026)
+- [v19.0.6 (2026年5月)](https://github.com/facebook/react/blob/main/CHANGELOG.md#1906-may-6-2026)
+- [v19.0.5 (2026年3月)](https://github.com/facebook/react/blob/main/CHANGELOG.md#1905-march-18-2026)
+- [v19.0.4 (2026年1月)](https://github.com/facebook/react/blob/main/CHANGELOG.md#1904-jan-26-2026)
+- [v19.0.3 (2025年12月)](https://github.com/facebook/react/blob/main/CHANGELOG.md#1903-dec-11-2025)
+- [v19.0.2 (2025年12月)](https://github.com/facebook/react/blob/main/CHANGELOG.md#1902-dec-11-2025)
+- [v19.0.1 (2025年12月)](https://github.com/facebook/react/blob/main/CHANGELOG.md#1901-dec-3-2025)
+- [v19.0.0 (2024年12月)](https://github.com/facebook/react/blob/main/CHANGELOG.md#1900-december-5-2024)
 
 ### React 18 {/*react-18*/}
 
@@ -228,7 +243,7 @@ title: React 版本
 - [React v0.13 RC2](https://legacy.reactjs.org/blog/2015/03/03/react-v0.13-rc2.html)
 - [React v0.13 RC](https://legacy.reactjs.org/blog/2015/02/24/react-v0.13-rc1.html)
 - [React v0.13.0 Beta 1](https://legacy.reactjs.org/blog/2015/01/27/react-v0.13.0-beta-1.html)
-- [简化 React Elements](https://legacy.reactjs.org/blog/2015/02/24/streamlining-react-elements.html)
+- [简化 React 元素](https://legacy.reactjs.org/blog/2015/02/24/streamlining-react-elements.html)
 - [介绍 Relay 和 GraphQL](https://legacy.reactjs.org/blog/2015/02/20/introducing-relay-and-graphql.html)
 - [介绍 React Native](https://legacy.reactjs.org/blog/2015/03/26/introducing-react-native.html)
 - [React v0.13.1](https://legacy.reactjs.org/blog/2015/03/16/react-v0.13.1.html)
@@ -277,18 +292,18 @@ title: React 版本
 - [React v0.10 RC](https://legacy.reactjs.org/blog/2014/03/19/react-v0.10-rc1.html)
 - [React v0.9](https://legacy.reactjs.org/blog/2014/02/20/react-v0.9.html)
 - [React v0.9 RC](https://legacy.reactjs.org/blog/2014/02/16/react-v0.9-rc1.html)
-- [React Chrome Developer Tools](https://legacy.reactjs.org/blog/2014/01/02/react-chrome-developer-tools.html)
+- [React Chrome 开发者工具](https://legacy.reactjs.org/blog/2014/01/02/react-chrome-developer-tools.html)
 - [React v0.8](https://legacy.reactjs.org/blog/2013/12/19/react-v0.8.0.html)
 - [React v0.5.2，v0.4.2](https://legacy.reactjs.org/blog/2013/12/18/react-v0.5.2-v0.4.2.html)
 - [React v0.5.1](https://legacy.reactjs.org/blog/2013/10/29/react-v0-5-1.html)
 - [React v0.5](https://legacy.reactjs.org/blog/2013/10/16/react-v0.5.0.html)
 - [React v0.4.1](https://legacy.reactjs.org/blog/2013/07/26/react-v0-4-1.html)
 - [React v0.4.0](https://legacy.reactjs.org/blog/2013/07/17/react-v0-4-0.html)
-- [React v0.4 新特性：Prop 验证和默认值](https://legacy.reactjs.org/blog/2013/07/11/react-v0-4-prop-validation-and-default-values.html)
+- [React v0.4 新特性：Prop 校验和默认值](https://legacy.reactjs.org/blog/2013/07/11/react-v0-4-prop-validation-and-default-values.html)
 - [React v0.4 新特性：默认自动绑定](https://legacy.reactjs.org/blog/2013/07/02/react-v0-4-autobind-by-default.html)
-- [React v0.3.3](https://legacy.reactjs.org/blog/2013/07/02/react-v0-4-autobind-by-default.html)
+- [React v0.3.3](https://legacy.reactjs.org/blog/2013/06/21/react-v0-3-3.html)
 
-**发布**
+**发布版本**
 - [v0.10.0（2014 年 3 月）](https://github.com/facebook/react/blob/main/CHANGELOG.md#0100-march-21-2014)
 - [v0.9.0（2014 年 2 月）](https://github.com/facebook/react/blob/main/CHANGELOG.md#090-february-20-2014)
 - [v0.8.0（2013 年 12 月）](https://github.com/facebook/react/blob/main/CHANGELOG.md#080-december-19-2013)
@@ -300,14 +315,14 @@ title: React 版本
 - [v0.3.3（2013 年 6 月）](https://github.com/facebook/react/blob/main/CHANGELOG.md#033-june-20-2013)
 - [v0.3.2（2013 年 5 月）](https://github.com/facebook/react/blob/main/CHANGELOG.md#032-may-31-2013)
 - [v0.3.1（2013 年 5 月）](https://github.com/facebook/react/blob/main/CHANGELOG.md#031-may-30-2013)
-- [v0.3.0（2013 年 5 月）](https://github.com/facebook/react/blob/main/CHANGELOG.md#031-may-30-2013)
+- [v0.3.0（2013 年 5 月）](https://github.com/facebook/react/blob/main/CHANGELOG.md#030-may-29-2013)
 
-### 初始提交 {/*initial-commit*/}
+### Initial commit {/*initial-commit*/}
 
-React 于 2013 年 5 月 29 日开源。初始提交是：[`75897c`：首次公开发布](https://github.com/facebook/react/commit/75897c2dcd1dd3a6ca46284dd37e13d22b4b16b4)
+React was open-sourced on May 29, 2013. The initial commit is: [`75897c`: Initial public release](https://github.com/facebook/react/commit/75897c2dcd1dd3a6ca46284dd37e13d22b4b16b4)
 
-参见第一篇博客文章：[我们为什么构建 React？](https://legacy.reactjs.org/blog/2013/06/05/why-react.html)
+See the first blog post: [Why did we build React?](https://legacy.reactjs.org/blog/2013/06/05/why-react.html)
 
-React 于 2013 年在 Facebook 西雅图开源：
+React was open-sourced in Facebook Seattle in 2013:
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/XxVg_s8xAms?si=466vSJrnXTn05j9A" title="YouTube 视频播放器" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/XxVg_s8xAms?si=466vSJrnXTn05j9A" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>

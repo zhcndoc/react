@@ -48,9 +48,47 @@ title: "<form>"
 
 ## 用法 {/*usage*/}
 
-### 在客户端处理表单提交 {/*handle-form-submission-on-the-client*/}
+### 使用事件处理函数处理表单提交 {/*handle-form-submission-with-an-event-handler*/}
 
-向 form 的 `action` 属性传递一个函数，以便在表单提交时运行该函数。[`formData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) 会作为参数传递给该函数，因此你可以访问表单提交的数据。这与传统的 [HTML action](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#action) 不同，后者只接受 URL。在 `action` 函数成功执行后，表单中所有非受控字段元素都会被重置。
+将一个函数传递给 `onSubmit` 事件处理函数，以便在表单提交时运行代码。默认情况下，浏览器会将表单数据发送到当前 URL 并刷新页面，因此请调用 [`e.preventDefault()`](https://developer.mozilla.org/en-US/docs/Web/API/Event/preventDefault) 来覆盖这种行为。
+
+这个示例使用 [`new FormData(e.target)`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) 读取已提交的值，它会按每个字段的 `name` 收集所有字段。这使这些输入保持为[非受控](/reference/react-dom/components/input#reading-the-input-values-when-submitting-a-form)。如果你改为[使用 state 控制输入](/reference/react-dom/components/input#controlling-an-input-with-a-state-variable)，那么在提交时应从该 state 中读取，而不是从 `FormData` 中读取。
+
+<Sandpack>
+
+```js src/App.js
+export default function Search() {
+  function handleSubmit(e) {
+    // 阻止浏览器重新加载页面
+    e.preventDefault();
+
+    // 读取表单数据
+    const form = e.target;
+    const formData = new FormData(form);
+    const query = formData.get("query");
+    alert(`You searched for '${query}'`);
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input name="query" />
+      <button type="submit">Search</button>
+    </form>
+  );
+}
+```
+
+</Sandpack>
+
+<Note>
+
+使用 `onSubmit` 读取表单数据在 React 的每个版本中都有效，并且可以直接访问[提交事件](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/submit_event)，因此你可以调用 `e.preventDefault()` 并自行读取数据。将函数传递给 `action` 属性则会在 [Transition](/reference/react/useTransition) 中运行提交。然后 React 会跟踪待处理状态，将抛出的错误发送到最近的错误边界，并使表单能够与 [`useActionState`](/reference/react/useActionState) 和 [`useOptimistic`](/reference/react/useOptimistic) 配合工作。`action` 也可以是一个[服务器函数](/reference/rsc/server-functions)，而 `onSubmit` 不支持这一点。
+
+</Note>
+
+### 使用 `action` 属性处理表单提交 {/*handle-form-submission-with-an-action-prop*/}
+
+将一个函数传递给表单的 `action` 属性，以便在表单提交时运行该函数。`[`formData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData)` 将作为参数传递给函数，因此你可以访问表单提交的数据。这与传统的 [HTML action](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#action) 不同，后者只接受 URL。与 `onSubmit` 不同，`action` 会在 [Transition](/reference/react/useTransition) 中运行，并且不需要调用 `e.preventDefault()`。在 `action` 函数成功后，表单中所有非受控字段元素都会被重置。
 
 <Sandpack>
 

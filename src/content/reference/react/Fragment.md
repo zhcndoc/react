@@ -6,7 +6,7 @@ title: <Fragment> (<>...</>)
 
 `<Fragment>`，通常通过 `<>...</>` 语法使用，可让你将元素分组而无需额外的包装节点。
 
-<Canary> Fragment 还可以接受 refs，这使得你可以在不添加包装元素的情况下与底层 DOM 节点交互。请参阅下方的参考与用法。</Canary>
+<Canary>Fragment 还可以接受 refs，这使你能够在不添加包装元素的情况下与底层 DOM 节点交互。</Canary>
 
 ```js
 <>
@@ -29,44 +29,259 @@ title: <Fragment> (<>...</>)
 
 #### 属性 {/*props*/}
 
-- **可选** `key`：使用显式 `<Fragment>` 语法声明的 Fragment 可以具有 [keys.](/learn/rendering-lists#keeping-list-items-in-order-with-key)
-- <CanaryBadge />  **可选** `ref`：一个 ref 对象（例如来自 [`useRef`](/reference/react/useRef)）或 [回调函数](/reference/react-dom/components/common#ref-callback)。React 会提供一个 `FragmentInstance` 作为 ref 值，其中实现了用于与被 Fragment 包裹的 DOM 节点交互的方法。
-
-### <CanaryBadge /> FragmentInstance {/*fragmentinstance*/}
-
-当你向 fragment 传入 ref 时，React 会提供一个 `FragmentInstance` 对象，其中包含用于与被 fragment 包裹的 DOM 节点交互的方法：
-
-**事件处理方法：**
-- `addEventListener(type, listener, options?)`：向 Fragment 的所有一级 DOM 子节点添加事件监听器。
-- `removeEventListener(type, listener, options?)`：从 Fragment 的所有一级 DOM 子节点移除事件监听器。
-- `dispatchEvent(event)`：向 Fragment 的一个虚拟子节点分发事件，以调用任何已添加的监听器，并且可以冒泡到 DOM 父节点。
-
-**布局方法：**
-- `compareDocumentPosition(otherNode)`：比较 Fragment 与另一个节点在文档中的位置。
-  - 如果 Fragment 有子节点，则返回原生的 `compareDocumentPosition` 值。
-  - 空 Fragment 会尝试比较 React 树中的位置，并包含 `Node.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC`。
-  - 由于 portal 或其他插入方式导致 React 树与 DOM 树中的关系不同的元素，其值为 `Node.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC`。
-- `getClientRects()`：返回一个由 `DOMRect` 对象组成的扁平数组，表示所有子节点的边界矩形。
-- `getRootNode()`：返回包含 Fragment 父 DOM 节点的根节点。
-
-**焦点管理方法：**
-- `focus(options?)`：使 Fragment 中第一个可聚焦的 DOM 节点获得焦点。会优先对嵌套子节点进行深度优先的聚焦尝试。
-- `focusLast(options?)`：使 Fragment 中最后一个可聚焦的 DOM 节点获得焦点。会优先对嵌套子节点进行深度优先的聚焦尝试。
-- `blur()`：如果 `document.activeElement` 位于 Fragment 内，则移除焦点。
-
-**观察者方法：**
-- `observeUsing(observer)`：使用 IntersectionObserver 或 ResizeObserver 开始观察 Fragment 的 DOM 子节点。
-- `unobserveUsing(observer)`：使用指定的观察器停止观察 Fragment 的 DOM 子节点。
+- **可选** `key`: 以显式 `<Fragment>` 语法声明的 Fragments 可以有 [keys.](/learn/rendering-lists#keeping-list-items-in-order-with-key)
+- <CanaryBadge /> **可选** `ref`: 一个 ref 对象（例如来自 [`useRef`](/reference/react/useRef)）或 [回调函数](/reference/react-dom/components/common#ref-callback)。React 会提供一个 `FragmentInstance` 作为 ref 值，它实现了用于与被 Fragment 包裹的 DOM 节点交互的方法。
 
 #### 注意事项 {/*caveats*/}
 
-- 如果你想向 Fragment 传递 `key`，就不能使用 `<>...</>` 语法。你必须显式地从 `'react'` 导入 `Fragment`，并渲染 `<Fragment key={yourKey}>...</Fragment>`。
+* 如果你想向 Fragment 传递 `key`，就不能使用 `<>...</>` 语法。你必须显式地从 `'react'` 中导入 `Fragment`，并渲染 `<Fragment key={yourKey}>...</Fragment>`。
 
-- 当你从渲染 `<><Child /></>` 切换到 `[<Child />]` 或反过来，或者从渲染 `<><Child /></>` 切换到 `<Child />` 再切回来时，React 不会 [重置状态](/learn/preserving-and-resetting-state)。这只在单层深度下有效：例如，从 `<><><Child /></></>` 切换到 `<Child />` 会重置状态。精确语义请参见 [这里。](https://gist.github.com/clemmy/b3ef00f9507909429d8aa0d3ee4f986b)
+* 当你从渲染 `<><Child /></>` 切换到 `[<Child />]` 或切换回来，或者当你从渲染 `<><Child /></>` 切换到 `<Child />` 再切换回来时，React 不会[重置状态](/learn/preserving-and-resetting-state)。这只在单层深度时有效：例如，从 `<><><Child /></></>` 切换到 `<Child />` 会重置状态。请参阅这里的精确语义[。](https://gist.github.com/clemmy/b3ef00f9507909429d8aa0d3ee4f986b)
 
-- <CanaryBadge /> 如果你想向 Fragment 传递 `ref`，就不能使用 `<>...</>` 语法。你必须显式地从 `'react'` 导入 `Fragment`，并渲染 `<Fragment ref={yourRef}>...</Fragment>`。
+* <CanaryBadge /> 如果你想向 Fragment 传递 `ref`，就不能使用 `<>...</>` 语法。你必须显式地从 `'react'` 中导入 `Fragment`，并渲染 `<Fragment ref={yourRef}>...</Fragment>`。
 
 ---
+
+### <CanaryBadge /> `FragmentInstance` {/*fragmentinstance*/}
+
+当你将 `ref` 传给一个 Fragment 时，React 会提供一个 `FragmentInstance` 对象。它实现了一些用于与 Fragment 包裹的一级 DOM 子节点交互的方法。
+
+* [`addEventListener`](#addeventlistener) 和 [`removeEventListener`](#removeeventlistener) 管理所有一级 DOM 子节点上的事件监听器。
+* [`dispatchEvent`](#dispatchevent) 在 Fragment 上派发事件，该事件可以冒泡到 DOM 父节点。
+* [`focus`](#focus)、[`focusLast`](#focuslast) 和 [`blur`](#blur) 按深度优先方式管理所有嵌套子节点的焦点。
+* [`observeUsing`](#observeusing) 和 [`unobserveUsing`](#unobserveusing) 绑定和解除绑定 `IntersectionObserver` 或 `ResizeObserver` 实例。
+* [`getClientRects`](#getclientrects) 返回所有一级 DOM 子节点的边界矩形。
+* [`getRootNode`](#getrootnode) 返回 Fragment 父节点的根节点。
+* [`compareDocumentPosition`](#comparedocumentposition) 比较 Fragment 与另一个节点的位置。
+* [`scrollIntoView`](#scrollintoview) 将 Fragment 的子节点滚动到视图中。
+
+---
+
+#### `addEventListener(type, listener, options?)` {/*addeventlistener*/}
+
+向 Fragment 的所有一级 DOM 子节点添加事件监听器。
+
+```js
+fragmentRef.current.addEventListener('click', handleClick);
+```
+
+##### 参数 {/*addeventlistener-parameters*/}
+
+* `type`：表示要监听的事件类型的字符串（例如 `'click'`、`'focus'`）。
+* `listener`：事件处理函数。
+* **可选** `options`：用于捕获阶段的选项对象或布尔值，符合 [DOM `addEventListener` API.](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener)
+
+##### 返回值 {/*addeventlistener-returns*/}
+
+`addEventListener` 不返回任何内容（`undefined`）。
+
+---
+
+#### `removeEventListener(type, listener, options?)` {/*removeeventlistener*/}
+
+从 Fragment 的所有一级 DOM 子节点中移除事件监听器。
+
+```js
+fragmentRef.current.removeEventListener('click', handleClick);
+```
+
+##### 参数 {/*removeeventlistener-parameters*/}
+
+* `type`：事件类型字符串。
+* `listener`：要移除的事件处理函数。
+* **可选** `options`：选项对象或布尔值，符合 [DOM `removeEventListener` API.](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener)
+
+##### 返回值 {/*removeeventlistener-returns*/}
+
+`removeEventListener` 不返回任何内容（`undefined`）。
+
+---
+
+#### `dispatchEvent(event)` {/*dispatchevent*/}
+
+在 Fragment 上派发一个事件。已添加的事件监听器会被调用，并且该事件可以冒泡到 Fragment 的 DOM 父节点。
+
+```js
+fragmentRef.current.dispatchEvent(new Event('custom', { bubbles: true }));
+```
+
+##### 参数 {/*dispatchevent-parameters*/}
+
+* `event`：要派发的一个 [`Event`](https://developer.mozilla.org/en-US/docs/Web/API/Event) 对象。如果 `bubbles` 为 `true`，事件会冒泡到 Fragment 的父 DOM 节点。
+
+##### 返回值 {/*dispatchevent-returns*/}
+
+如果事件未被取消，则返回 `true`；如果调用了 `preventDefault()`，则返回 `false`。
+
+---
+
+#### `focus(options?)` {/*focus*/}
+
+将焦点设置到 Fragment 中第一个可聚焦的 DOM 节点。与对 DOM 元素调用 `element.focus()` 不同，此方法会按深度优先方式搜索 *所有* 嵌套子节点，直到找到一个可聚焦元素——不仅仅是该元素本身或它的直接子节点。
+
+```js
+fragmentRef.current.focus();
+```
+
+##### 参数 {/*focus-parameters*/}
+
+* **可选** `options`：一个 [`FocusOptions`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus#options) 对象（例如 `{ preventScroll: true }`）。
+
+##### 返回值 {/*focus-returns*/}
+
+`focus` 不返回任何内容（`undefined`）。
+
+---
+
+#### `focusLast(options?)` {/*focuslast*/}
+
+将焦点设置到 Fragment 中最后一个可聚焦的 DOM 节点。按深度优先方式搜索嵌套子节点，然后反向遍历。
+
+```js
+fragmentRef.current.focusLast();
+```
+
+##### 参数 {/*focuslast-parameters*/}
+
+* **可选** `options`：一个 [`FocusOptions`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/focus#options) 对象。
+
+##### 返回值 {/*focuslast-returns*/}
+
+`focusLast` 不返回任何内容（`undefined`）。
+
+---
+
+#### `blur()` {/*blur*/}
+
+如果当前活动元素位于 Fragment 内，则移除其焦点。如果 `document.activeElement` 不在 Fragment 内，`blur` 不执行任何操作。
+
+```js
+fragmentRef.current.blur();
+```
+
+##### 返回值 {/*blur-returns*/}
+
+`blur` 不返回任何内容（`undefined`）。
+
+---
+
+#### `observeUsing(observer)` {/*observeusing*/}
+
+使用提供的观察器开始观察 Fragment 的所有一级 DOM 子节点。
+
+```js
+const observer = new IntersectionObserver(callback, options);
+fragmentRef.current.observeUsing(observer);
+```
+
+##### 参数 {/*observeusing-parameters*/}
+
+* `observer`：一个 [`IntersectionObserver`](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver) 或 [`ResizeObserver`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver) 实例。
+
+##### 返回值 {/*observeusing-returns*/}
+
+`observeUsing` 不返回任何内容（`undefined`）。
+
+---
+
+#### `unobserveUsing(observer)` {/*unobserveusing*/}
+
+停止使用指定观察器观察 Fragment 的 DOM 子节点。
+
+```js
+fragmentRef.current.unobserveUsing(observer);
+```
+
+##### 参数 {/*unobserveusing-parameters*/}
+
+* `observer`：之前传给 [`observeUsing`](#observeusing) 的同一个 `IntersectionObserver` 或 `ResizeObserver` 实例。
+
+##### 返回值 {/*unobserveusing-returns*/}
+
+`unobserveUsing` 不返回任何内容（`undefined`）。
+
+---
+
+#### `getClientRects()` {/*getclientrects*/}
+
+返回一个由 [`DOMRect`](https://developer.mozilla.org/en-US/docs/Web/API/DOMRect) 对象组成的扁平数组，表示所有一级 DOM 子节点的边界矩形。
+
+```js
+const rects = fragmentRef.current.getClientRects();
+```
+
+##### 返回值 {/*getclientrects-returns*/}
+
+一个包含所有子节点边界矩形的 `Array<DOMRect>`。
+
+---
+
+#### `getRootNode(options?)` {/*getrootnode*/}
+
+返回包含 Fragment 父 DOM 节点的根节点，行为与 [`Node.getRootNode()`](https://developer.mozilla.org/en-US/docs/Web/API/Node/getRootNode) 一致。
+
+```js
+const root = fragmentRef.current.getRootNode();
+```
+
+##### 参数 {/*getrootnode-parameters*/}
+
+* **可选** `options`：一个带有 `composed` 布尔属性的对象，符合 [DOM `getRootNode` API.](https://developer.mozilla.org/en-US/docs/Web/API/Node/getRootNode#options)
+
+##### 返回值 {/*getrootnode-returns*/}
+
+一个 `Document`、`ShadowRoot`，或者在没有父 DOM 节点时返回 `FragmentInstance` 本身。
+
+---
+
+#### `compareDocumentPosition(otherNode)` {/*comparedocumentposition*/}
+
+比较 Fragment 与另一个节点在文档中的位置，返回一个与 [`Node.compareDocumentPosition()`](https://developer.mozilla.org/en-US/docs/Web/API/Node/compareDocumentPosition) 行为一致的位掩码。
+
+```js
+const position = fragmentRef.current.compareDocumentPosition(otherElement);
+```
+
+##### 参数 {/*comparedocumentposition-parameters*/}
+
+* `otherNode`：要进行比较的 DOM 节点。
+
+##### 返回值 {/*comparedocumentposition-returns*/}
+
+一个 [位置标志](https://developer.mozilla.org/en-US/docs/Web/API/Node/compareDocumentPosition#return_value) 的位掩码。空 Fragment 和通过 [portal](/reference/react-dom/createPortal) 渲染子节点的 Fragment，结果中包含 `Node.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC`。
+
+---
+
+#### `scrollIntoView(alignToTop?)` {/*scrollintoview*/}
+
+将 Fragment 的子节点滚动到视图中。当 `alignToTop` 为 `true` 或省略时，会滚动以将第一个子节点与可滚动祖先元素的顶部对齐。当 `alignToTop` 为 `false` 时，会滚动以将最后一个子节点与底部对齐。
+
+```js
+fragmentRef.current.scrollIntoView();
+```
+
+##### 参数 {/*scrollintoview-parameters*/}
+
+* **可选** `alignToTop`：一个布尔值。如果为 `true`（默认值），会将第一个子节点滚动到可滚动区域顶部。如果为 `false`，会将最后一个子节点滚动到底部。与 [`Element.scrollIntoView()`](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView) 不同，此方法不接受 `ScrollIntoViewOptions` 对象。
+
+##### 返回值 {/*scrollintoview-returns*/}
+
+`scrollIntoView` 不返回任何内容（`undefined`）。
+
+##### 注意事项 {/*scrollintoview-caveats*/}
+
+* `scrollIntoView` 不接受选项对象。传入该对象会抛出错误。请改用 `alignToTop` 布尔值。
+* 当 Fragment 没有子节点时，`scrollIntoView` 会回退为将最近的兄弟节点或父节点滚动到视图中。
+
+---
+
+#### `FragmentInstance` 注意事项 {/*fragmentinstance-caveats*/}
+
+* 作用于子节点的方法（例如 `addEventListener`、`observeUsing` 和 `getClientRects`）只会作用于 Fragment 的*一级宿主（DOM）子节点*。它们不会直接作用于嵌套在另一个 DOM 元素中的子节点。
+* `focus` 和 `focusLast` 会按深度优先方式搜索嵌套子节点中的可聚焦元素，不同于事件和观察器方法，它们只作用于一级宿主子节点。
+* `observeUsing` 不适用于文本节点。如果 Fragment 只包含文本子节点，React 会在开发环境中记录警告。
+* React 不会将通过 `addEventListener` 添加的事件监听器应用到隐藏的 [`<Activity>`](/reference/react/Activity) 树。当 `Activity` 边界从隐藏切换为可见时，监听器会自动应用。
+* 带有 `ref` 的 Fragment 的每个一级 DOM 子节点都会获得一个 `reactFragments` 属性——一个包含所有拥有该元素的 Fragment 实例的 `Set<FragmentInstance>`。这使得可以在多个 Fragment 之间缓存共享的观察器。[缓存全局 IntersectionObserver](#caching-global-intersection-observer)
 
 ## 用法 {/*usage*/}
 
@@ -242,47 +457,312 @@ function PostBody({ body }) {
 
 ---
 
-### <CanaryBadge /> 使用 Fragment refs 进行 DOM 交互 {/*using-fragment-refs-for-dom-interaction*/}
+### <CanaryBadge /> 在没有包装元素的情况下添加事件监听器 {/*adding-event-listeners-without-wrapper*/}
 
-Fragment refs 允许你在不添加额外包装元素的情况下与被 Fragment 包裹的 DOM 节点交互。这对于事件处理、可见性跟踪、焦点管理，以及替代已弃用的模式（如 `ReactDOM.findDOMNode()`）都很有用。
+Fragment `ref` 允许你在不添加包装 DOM 节点的情况下，给一组元素添加事件监听器。使用 [ref 回调](/reference/react-dom/components/common#ref-callback) 来挂载并清理监听器：
+
+<Sandpack>
 
 ```js
-import { Fragment } from 'react';
+import { Fragment, useState, useRef, useEffect } from 'react';
 
 function ClickableFragment({ children, onClick }) {
+  const fragmentRef = useRef(null);
+  useEffect(() => {
+    const fragmentInstance = fragmentRef.current;
+    if (fragmentInstance === null) {
+      return;
+    }
+    fragmentInstance.addEventListener('click', onClick);
+    return () => {
+      fragmentInstance.removeEventListener(
+        'click',
+        onClick
+      );
+    };
+  }, [onClick])
   return (
-    <Fragment ref={fragmentInstance => {
-      fragmentInstance.addEventListener('click', handleClick);
-      return () => fragmentInstance.removeEventListener('click', handleClick);
-    }}>
+    <Fragment ref={fragmentRef}>
       {children}
     </Fragment>
   );
 }
+
+export default function App() {
+  const [clicks, setClicks] = useState(0);
+
+  return (
+    <>
+      <p>总点击次数：{clicks}</p>
+      <ClickableFragment onClick={() => {
+        setClicks(c => c + 1);
+      }}>
+        <button>按钮 A</button>
+        <button>按钮 B</button>
+        <button>按钮 C</button>
+      </ClickableFragment>
+    </>
+  );
+}
 ```
+
+```json package.json hidden
+{
+  "dependencies": {
+    "react": "canary",
+    "react-dom": "canary",
+    "react-scripts": "latest"
+  }
+}
+```
+
+</Sandpack>
+
+`addEventListener` 调用会将监听器应用到 Fragment 的每个第一层 DOM 子节点。当前动态添加或移除子节点时，`FragmentInstance` 会自动添加或移除该监听器。
+
+<DeepDive>
+
+#### Fragment ref 会指向哪些子元素？ {/*which-children-does-a-fragment-ref-target*/}
+
+`FragmentInstance` 会指向 Fragment 的**第一层宿主（DOM）子节点**。考虑这棵树：
+
+```js
+<Fragment ref={ref}>
+  <div id="A" />
+  <Wrapper>
+    <div id="B">
+      <div id="C" />
+    </div>
+  </Wrapper>
+  <div id="D" />
+</Fragment>
+```
+
+`Wrapper` 是一个 React 组件，所以 `FragmentInstance` 会穿过它去查找 DOM 节点。被指向的子节点是 `A`、`B` 和 `D`。`C` 不会被指向，因为它嵌套在 DOM 元素 `B` 内部。
+
+像 `addEventListener`、`observeUsing` 和 `getClientRects` 这样的方法，作用于这些第一层 DOM 子节点。`focus` 和 `focusLast` 则不同——它们会以深度优先的方式搜索*所有*嵌套子节点，以找到可聚焦的元素。
+
+</DeepDive>
+
 ---
 
-### <CanaryBadge /> 使用 Fragment refs 跟踪可见性 {/*tracking-visibility-with-fragment-refs*/}
+### <CanaryBadge /> 在一组元素之间管理焦点 {/*managing-focus-across-elements*/}
 
-Fragment refs 对可见性跟踪和交叉观察很有用。这使你能够在不要求子组件暴露 refs 的情况下监测内容何时变得可见：
+Fragment `ref` 提供了 `focus`、`focusLast` 和 `blur` 方法，可作用于 Fragment 内的所有 DOM 节点：
 
-```js {19,21,31-34}
-import { Fragment, useRef, useLayoutEffect } from 'react';
+<Sandpack>
 
-function VisibilityObserverFragment({ threshold = 0.5, onVisibilityChange, children }) {
+```js
+import { Fragment, useRef } from 'react';
+
+function FormFields({ children }) {
+  const fragmentRef = useRef(null);
+
+  return (
+    <>
+      <div className="buttons">
+        <button onClick={() => {
+          fragmentRef.current.focus();
+        }}>
+          聚焦第一个
+        </button>
+        <button onClick={() => {
+          fragmentRef.current.focusLast();
+        }}>
+          聚焦最后一个
+        </button>
+        <button onClick={() => {
+          fragmentRef.current.blur();
+        }}>
+          取消聚焦
+        </button>
+      </div>
+      <Fragment ref={fragmentRef}>
+        {children}
+      </Fragment>
+    </>
+  );
+}
+
+// 即使这些输入框是深层嵌套的，
+// focus() 也会按深度优先搜索来找到它们。
+export default function App() {
+  return (
+    <FormFields>
+      <fieldset>
+        <legend>Shipping</legend>
+        <label>
+          Street: <input name="street" />
+        </label>
+        <label>
+          City: <input name="city" />
+        </label>
+      </fieldset>
+    </FormFields>
+  );
+}
+```
+
+```css
+.buttons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+label {
+  display: inline-block;
+}
+```
+
+```json package.json hidden
+{
+  "dependencies": {
+    "react": "canary",
+    "react-dom": "canary",
+    "react-scripts": "latest"
+  }
+}
+```
+
+</Sandpack>
+
+调用 `focus()` 会聚焦 `street` 输入框——即使它嵌套在 `<fieldset>` 和 `<label>` 里面。`focus()` 会以深度优先的方式搜索所有嵌套子节点，而不只是 Fragment 的直接子节点。`focusLast()` 以相反的顺序执行相同的操作，而 `blur()` 会在当前聚焦的元素位于 Fragment 内时移除焦点。
+
+---
+
+### <CanaryBadge /> 将一组元素滚动到视图中 {/*scrolling-group-into-view*/}
+
+使用 `scrollIntoView` 可以在不使用包装元素的情况下，将 Fragment 的子元素滚动到视图中。传入 `true`（或省略该参数）会将第一个子元素滚动到顶部。传入 `false` 会将最后一个子元素滚动到底部：
+
+<Sandpack>
+
+```js
+import { Fragment, useRef } from 'react';
+
+function ScrollableSection({ children }) {
+  const fragmentRef = useRef(null);
+
+  return (
+    <>
+      <div className="buttons">
+        <button onClick={() => {
+          fragmentRef.current.scrollIntoView();
+        }}>
+          滚动到顶部
+        </button>
+        <button onClick={() => {
+          fragmentRef.current.scrollIntoView(false);
+        }}>
+          滚动到底部
+        </button>
+      </div>
+      <div className="container">
+        <Fragment ref={fragmentRef}>
+          {children}
+        </Fragment>
+      </div>
+    </>
+  );
+}
+
+const items = [];
+for (let i = 1; i <= 25; i++) {
+  items.push('项目 ' + i);
+}
+
+export default function App() {
+  return (
+    <ScrollableSection>
+      <h3>部分开头</h3>
+      {items.map((item) => (
+        <p key={item}>{item}</p>
+      ))}
+      <h3>部分结尾</h3>
+    </ScrollableSection>
+  );
+}
+```
+
+```css
+.buttons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.container {
+  height: 200px;
+  overflow-y: auto;
+  border: 2px solid #c4c4c4;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+h3 {
+  margin: 4px 0;
+  /* 内边距用于处理滚动时全局固定导航栏的偏移，例如 */
+  padding-top: 4em;
+  color: #1a73e8;
+}
+
+p {
+  margin: 4px 0;
+}
+```
+
+```json package.json hidden
+{
+  "dependencies": {
+    "react": "canary",
+    "react-dom": "canary",
+    "react-scripts": "latest"
+  }
+}
+```
+
+</Sandpack>
+
+---
+
+### <CanaryBadge /> 在没有包装元素的情况下观察可见性 {/*observing-visibility-without-wrapper*/}
+
+使用 `observeUsing` 将 `IntersectionObserver` 附加到 Fragment 的所有一级 DOM 子元素上。这让你可以在不要求子组件暴露 `ref` 或添加包装元素的情况下跟踪可见性：
+
+<Sandpack>
+
+```js
+import {
+  Fragment,
+  useRef,
+  useLayoutEffect,
+  useState,
+} from 'react';
+import Card from './Card';
+
+function VisibleGroup({ onVisibilityChange, children }) {
   const fragmentRef = useRef(null);
 
   useLayoutEffect(() => {
+    const visibleElements = new Set();
     const observer = new IntersectionObserver(
       (entries) => {
-        onVisibilityChange(entries.some(entry => entry.isIntersecting))
-      },
-      { threshold }
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            visibleElements.add(e.target);
+          } else {
+            visibleElements.delete(e.target);
+          }
+        });
+        onVisibilityChange(visibleElements.size > 0);
+      }
     );
-
-    fragmentRef.current.observeUsing(observer);
-    return () => fragmentRef.current.unobserveUsing(observer);
-  }, [threshold, onVisibilityChange]);
+    const fragmentInstance = fragmentRef.current;
+    fragmentInstance.observeUsing(observer);
+    return () => {
+      fragmentInstance.unobserveUsing(observer);
+    };
+  }, [onVisibilityChange]);
 
   return (
     <Fragment ref={fragmentRef}>
@@ -291,38 +771,258 @@ function VisibilityObserverFragment({ threshold = 0.5, onVisibilityChange, child
   );
 }
 
-function MyComponent() {
-  const handleVisibilityChange = (isVisible) => {
-    console.log('组件是', isVisible ? '可见' : '隐藏');
-  };
+export default function App() {
+  const [isVisible, setIsVisible] = useState(true);
 
   return (
-    <VisibilityObserverFragment onVisibilityChange={handleVisibilityChange}>
-      <SomeThirdPartyComponent />
-      <AnotherComponent />
-    </VisibilityObserverFragment>
+    <div className={isVisible ? 'page visible' : 'page'}>
+      <div className="filler">向下滚动</div>
+      <VisibleGroup onVisibilityChange={setIsVisible}>
+        <Card title="第一部分" />
+        <Card title="第二部分" />
+      </VisibleGroup>
+      <div className="filler">向上滚动</div>
+    </div>
   );
 }
 ```
 
-这种模式是基于 Effect 的可见性日志记录的一种替代方案，而在大多数情况下，这属于反模式。仅仅依赖 Effects 并不能保证渲染出的组件对用户是可观察的。
+```css
+.page {
+  transition: background 0.3s;
+}
+
+.page.visible {
+  background: #d4edda;
+}
+
+.filler {
+  height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #aaa;
+  font-size: 14px;
+}
+
+.card {
+  padding: 16px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin: 8px 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  font-weight: 600;
+  font-size: 14px;
+}
+```
+
+```js src/Card.js hidden
+export default function Card({ title }) {
+  return <div className="card">{title}</div>;
+}
+```
+
+```json package.json hidden
+{
+  "dependencies": {
+    "react": "canary",
+    "react-dom": "canary",
+    "react-scripts": "latest"
+  }
+}
+```
+
+</Sandpack>
 
 ---
 
-### <CanaryBadge /> 使用 Fragment refs 进行焦点管理 {/*focus-management-with-fragment-refs*/}
+### <CanaryBadge /> 缓存全局 IntersectionObserver {/*caching-global-intersection-observer*/}
 
-Fragment refs 提供可跨 Fragment 内所有 DOM 节点工作的焦点管理方法：
+对于有许多 observer 的网站，一个常见的性能优化是：按配置共享一个 `IntersectionObserver`，并根据哪个元素发生交叉，将其条目路由到正确的回调。带有 `ref` 的 Fragment 通过 `reactFragments` 属性支持同样的模式。
 
-```js
-import { Fragment, useRef } from 'react';
+带有 `ref` 的 Fragment 的每个一级 DOM 子元素都有一个 `reactFragments` 属性：一个包含该元素的 `FragmentInstance` 对象的 `Set`。当共享的 observer 触发时，你可以使用这个属性查找哪个 `FragmentInstance` 拥有发生交叉的元素，并执行正确的回调。
 
-function FocusFragment({ children }) {
+<Sandpack>
+
+```js src/App.js active
+import { useState, useCallback } from 'react';
+import ObservedGroup from './ObservedGroup';
+import Card from './Card';
+
+export default function App() {
+  const [bgColor, setBgColor] = useState(null);
+
+  const onGreen = useCallback((entry) => {
+    if (entry.isIntersecting) {
+      setBgColor('#d4edda');
+    }
+  }, []);
+
+  const onBlue = useCallback((entry) => {
+    if (entry.isIntersecting) {
+      setBgColor('#cce5ff');
+    }
+  }, []);
+
   return (
-    <Fragment ref={(fragmentInstance) => fragmentInstance?.focus()}>
+    <div className="page" style={{
+      background: bgColor || 'white',
+    }}>
+      <div className="filler">向下滚动</div>
+      <ObservedGroup onIntersection={onGreen}>
+        <Card title="绿色区域" className="green" />
+      </ObservedGroup>
+      <div className="filler" />
+      <ObservedGroup onIntersection={onBlue}>
+        <Card title="蓝色区域" className="blue" />
+      </ObservedGroup>
+      <div className="filler">向上滚动</div>
+    </div>
+  );
+}
+```
+
+```js src/ObservedGroup.js
+import {
+  Fragment,
+  useRef,
+  useLayoutEffect,
+} from 'react';
+
+const callbackMap = new WeakMap();
+const observerCache = new Map();
+
+function getOptionsKey(options) {
+  const root = options?.root ?? null;
+  const rootMargin = options?.rootMargin ?? '0px';
+  const threshold = options?.threshold ?? 0;
+  return `${rootMargin}|${threshold}`;
+}
+
+function getSharedObserver(
+  fragmentInstance,
+  onIntersection,
+  options,
+) {
+  // 为
+  // fragmentInstance 注册这个回调。
+  const existing =
+    callbackMap.get(fragmentInstance);
+  callbackMap.set(
+    fragmentInstance,
+    existing
+      ? [...existing, onIntersection]
+      : [onIntersection],
+  );
+
+  const key = getOptionsKey(options);
+  if (observerCache.has(key)) {
+    return observerCache.get(key);
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        // 查找哪些 FragmentInstance 拥有
+        // 这个元素。
+        const fragmentInstances =
+          entry.target.reactFragments;
+        if (fragmentInstances) {
+          for (const inst of fragmentInstances) {
+            const callbacks =
+              callbackMap.get(inst) || [];
+            callbacks.forEach(cb => cb(entry));
+          }
+        }
+      }
+    },
+    options,
+  );
+
+  observerCache.set(key, observer);
+  return observer;
+}
+
+export default function ObservedGroup({
+  onIntersection,
+  options,
+  children,
+}) {
+  const fragmentRef = useRef(null);
+
+  useLayoutEffect(() => {
+    const fragmentInstance = fragmentRef.current;
+    const observer = getSharedObserver(
+      fragmentInstance,
+      onIntersection,
+      options,
+    );
+    fragmentInstance.observeUsing(observer);
+    return () => {
+      fragmentInstance.unobserveUsing(observer);
+      callbackMap.delete(fragmentInstance);
+    };
+  }, [onIntersection, options]);
+
+  return (
+    <Fragment ref={fragmentRef}>
       {children}
     </Fragment>
   );
 }
 ```
 
-`focus()` 方法会使 Fragment 内第一个可聚焦元素获得焦点，而 `focusLast()` 会使最后一个可聚焦元素获得焦点。
+```css
+.page {
+  transition: background 0.3s;
+}
+
+.filler {
+  height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #aaa;
+  font-size: 14px;
+}
+
+.card {
+  padding: 16px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin: 0 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.card.green {
+  border-left: 3px solid #28a745;
+}
+
+.card.blue {
+  border-left: 3px solid #007bff;
+}
+```
+
+```js src/Card.js hidden
+export default function Card({ title, className }) {
+  return <div className={'card' + (className ? ' ' + className : '')}>{title}</div>;
+}
+```
+
+```json package.json hidden
+{
+  "dependencies": {
+    "react": "canary",
+    "react-dom": "canary",
+    "react-scripts": "latest"
+  }
+}
+```
+
+</Sandpack>
+
+多个使用相同选项的 `ObservedGroup` 组件会复用一个 `IntersectionObserver`。当任一区域滚动进入视野时，共享的 observer 会触发，并使用 `reactFragments` 将条目路由到正确的回调。

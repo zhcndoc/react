@@ -4,7 +4,7 @@ title: useContext
 
 <Intro>
 
-`useContext` 是一个 React Hook，它让你可以从组件中读取并订阅 [context](/learn/passing-data-deeply-with-context)。
+`useContext` 是一个 React Hook，它让你可以从组件中读取并订阅 [上下文](/learn/passing-data-deeply-with-context)。
 
 ```js
 const value = useContext(SomeContext)
@@ -20,7 +20,7 @@ const value = useContext(SomeContext)
 
 ### `useContext(SomeContext)` {/*usecontext*/}
 
-在组件的顶层调用 `useContext`，以读取并订阅 [context。](/learn/passing-data-deeply-with-context)
+在组件的顶层调用 `useContext`，以读取并订阅 [上下文。](/learn/passing-data-deeply-with-context)
 
 ```js
 import { useContext } from 'react';
@@ -34,17 +34,17 @@ function MyComponent() {
 
 #### 参数 {/*parameters*/}
 
-* `SomeContext`：你之前通过 [`createContext`](/reference/react/createContext) 创建的 context。context 本身并不保存信息，它只表示你可以向组件提供或从组件读取的信息类型。
+* `SomeContext`：你之前通过 [`createContext`](/reference/react/createContext) 创建的上下文。上下文本身并不保存信息，它只表示你可以向组件提供或从组件读取的信息类型。
 
 #### 返回值 {/*returns*/}
 
-`useContext` 返回调用该 Hook 的组件对应的 context 值。它由调用组件在树中上方最近的 `SomeContext` 提供者传入的 `value` 决定。如果没有这样的提供者，那么返回值将是你为该 context 传给 [`createContext`](/reference/react/createContext) 的 `defaultValue`。返回值始终是最新的。如果某个 context 发生变化，React 会自动重新渲染读取该 context 的组件。
+`useContext` 返回调用该 Hook 的组件对应的上下文值。它由调用组件在树中上方最近的 `SomeContext` 提供者传入的 `value` 决定。如果没有这样的提供者，那么返回值将是你为该上下文传给 [`createContext`](/reference/react/createContext) 的 `defaultValue`。返回值始终是最新的。如果某个上下文发生变化，React 会自动重新渲染读取该上下文的组件。
 
 #### 注意事项 {/*caveats*/}
 
 * 组件中的 `useContext()` 调用不会受到*同一*组件返回的提供者影响。对应的 `<Context>` **需要位于**调用 `useContext()` 的组件**上方**。
-* React 会从接收不同 `value` 的提供者开始，**自动重新渲染**所有使用某个特定 context 的子组件。前后两个值会通过 [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is) 进行比较。使用 [`memo`](/reference/react/memo) 跳过重新渲染，并不会阻止子组件接收新的 context 值。
-* 如果你的构建系统在输出中产生了重复模块（使用符号链接时可能发生），这会破坏 context。通过 context 传值只有在你用于提供 context 的 `SomeContext` 和用于读取它的 `SomeContext` **确实是*同一个*对象**时才有效，这一点由 `===` 比较决定。
+* React 会从接收不同 `value` 的提供者开始，**自动重新渲染**所有使用某个特定上下文的子组件。前后两个值会通过 [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is) 进行比较。使用 [`memo`](/reference/react/memo) 跳过重新渲染，并不会阻止子组件接收新的上下文值。
+* 如果你的构建系统在输出中产生了重复模块（使用符号链接时可能发生），这会破坏上下文。通过上下文传值只有在你用于提供上下文的 `SomeContext` 和用于读取它的 `SomeContext` **确实是*同一个*对象**时才有效，这一点由 `===` 比较决定。
 
 ---
 
@@ -53,7 +53,7 @@ function MyComponent() {
 
 ### 将数据深入传递到树中 {/*passing-data-deeply-into-the-tree*/}
 
-在组件的顶层调用 `useContext`，以读取并订阅 [context。](/learn/passing-data-deeply-with-context)
+在组件的顶层调用 `useContext`，以读取并订阅 [上下文。](/learn/passing-data-deeply-with-context)
 
 ```js [[2, 4, "theme"], [1, 4, "ThemeContext"]]
 import { useContext } from 'react';
@@ -63,9 +63,9 @@ function Button() {
   // ...
 ```
 
-`useContext` 会返回你传入的 <CodeStep step={2}>context 值</CodeStep>，对应于 <CodeStep step={1}>context</CodeStep>。为了确定 context 值，React 会搜索组件树，并找到该特定 context **上方最近的 context 提供者**。
+`useContext` 会返回你传入的 <CodeStep step={2}>上下文值</CodeStep>，对应于 <CodeStep step={1}>上下文</CodeStep>。为了确定上下文值，React 会搜索组件树，并找到该特定上下文 **上方最近的上下文提供者**。
 
-要向 `Button` 传递 context，请将它或其某个父组件包裹在对应的 context 提供者中：
+要向 `Button` 传递上下文，请将它或它的某个父组件包裹在对应的上下文提供者中：
 
 ```js [[1, 3, "ThemeContext"], [2, 3, "\\"dark\\""], [1, 5, "ThemeContext"]]
 function MyPage() {
@@ -826,7 +826,7 @@ const initialTasks = [
 ```
 
 ```js src/AddTask.js
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { useTasksDispatch } from './TasksContext.js';
 
 export default function AddTask() {
@@ -835,7 +835,7 @@ export default function AddTask() {
   return (
     <>
       <input
-        placeholder="Add task"
+        placeholder="添加任务"
         value={text}
         onChange={e => setText(e.target.value)}
       />
@@ -855,7 +855,7 @@ let nextId = 3;
 ```
 
 ```js src/TaskList.js
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { useTasks, useTasksDispatch } from './TasksContext.js';
 
 export default function TaskList() {
@@ -949,13 +949,13 @@ ul, li { margin: 0; padding: 0; }
 
 ### 指定回退默认值 {/*specifying-a-fallback-default-value*/}
 
-如果 React 在父组件树中找不到该特定 <CodeStep step={1}>context</CodeStep> 的任何提供者，那么 `useContext()` 返回的 context 值将等于你在[创建该 context](/reference/react/createContext) 时指定的 <CodeStep step={3}>默认值</CodeStep>：
+如果 React 在父组件树中找不到该特定 <CodeStep step={1}>上下文</CodeStep> 的任何提供者，那么 `useContext()` 返回的上下文值将等于你在[创建该上下文](/reference/react/createContext)时指定的 <CodeStep step={3}>默认值</CodeStep>：
 
 ```js [[1, 1, "ThemeContext"], [3, 1, "null"]]
 const ThemeContext = createContext(null);
 ```
 
-默认值**永远不会改变**。如果你想更新 context，请像[上面所述](#updating-data-passed-via-context)那样将它与 state 一起使用。
+默认值**永远不会改变**。如果你想更新上下文，请像[上面所述](#updating-data-passed-via-context)那样将它与 state 一起使用。
 
 通常，与其使用 `null`，不如使用更有意义的默认值，例如：
 
@@ -1384,4 +1384,4 @@ function MyApp() {
 </ThemeContext>
 ```
 
-请注意，[`createContext(defaultValue)` 调用中的默认值](#specifying-a-fallback-default-value) 只有在**上方完全没有匹配的提供者**时才会使用。 如果父级树中的某处存在 `<SomeContext value={undefined}>` 组件，那么调用 `useContext(SomeContext)` 的组件*将会*收到 `undefined` 作为上下文值。
+请注意，[`createContext(defaultValue)` 调用中的默认值](#specifying-a-fallback-default-value) 只有在**上方完全没有匹配的提供者**时才会使用。如果父级树中的某处存在 `<SomeContext value={undefined}>` 组件，那么调用 `useContext(SomeContext)` 的组件*将会*收到 `undefined` 作为上下文值。

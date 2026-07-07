@@ -284,10 +284,10 @@ body {
 ![CodeSandbox with starter code](../images/tutorial/react-starter-code-codesandbox.png)
 
 1. _Files_ 区域，里面有一个文件列表，例如 `src` 文件夹中的 `App.js`、`index.js`、`styles.css`，以及一个名为 `public` 的文件夹
-1. _code editor_，你会在这里看到所选文件的源代码
-1. _browser_ 区域，你会在这里看到你编写的代码将如何显示
+1. _代码编辑器_，你会在这里看到所选文件的源代码
+1. _浏览器_ 区域，你会在这里看到你编写的代码将如何显示
 
-`App.js` 文件应该已经在 _Files_ 区域中被选中。_code editor_ 中该文件的内容应该是：
+`App.js` 文件应该已经在 _Files_ 区域中被选中。_代码编辑器_ 中该文件的内容应该是：
 
 ```jsx
 export default function Square() {
@@ -295,7 +295,7 @@ export default function Square() {
 }
 ```
 
-_browser_ 区域应该显示一个方块，里面有一个 X，如下所示：
+_浏览器_ 区域应该显示一个方块，里面有一个 X，如下所示：
 
 ![x-filled square](../images/tutorial/x-filled-square.png)
 
@@ -555,7 +555,7 @@ export default function Board() {
 
 让我们看看效果：
 
-![one-filled board](../images/tutorial/board-filled-with-ones.png)
+![一个填充了数字 1 的棋盘](../images/tutorial/board-filled-with-ones.png)
 
 哎呀！你丢失了之前的编号方块。现在每个方块都显示 "1"。要修复这个问题，你将使用 *props*，把每个方块应该具有的值从父组件（`Board`）传递给子组件（`Square`）。
 
@@ -579,7 +579,7 @@ function Square({ value }) {
 
 糟糕，这不是你想要的效果：
 
-![value-filled board](../images/tutorial/board-filled-with-value.png)
+![填充了 value 的棋盘](../images/tutorial/board-filled-with-value.png)
 
 你想渲染的是组件中的 JavaScript 变量 `value`，而不是单词 "value"。要从 JSX “进入 JavaScript”，你需要使用花括号。在 JSX 中像这样把 `value` 放在花括号里：
 
@@ -591,7 +591,7 @@ function Square({ value }) {
 
 现在，你应该会看到一个空棋盘：
 
-![empty board](../images/tutorial/empty-board.png)
+![空棋盘](../images/tutorial/empty-board.png)
 
 这是因为 `Board` 组件还没有把 `value` prop 传给它渲染的每个 `Square` 组件。为了解决这个问题，你需要给 `Board` 组件渲染的每个 `Square` 组件添加 `value` prop：
 
@@ -621,7 +621,7 @@ export default function Board() {
 
 现在你应该又能看到一个数字网格了：
 
-![tic-tac-toe board filled with numbers 1 through 9](../images/tutorial/number-filled-board.png)
+![用 1 到 9 的数字填充的井字棋棋盘](../images/tutorial/number-filled-board.png)
 
 你更新后的代码应该如下所示：
 
@@ -899,19 +899,20 @@ body {
 
 ### React 开发者工具 {/*react-developer-tools*/}
 
-React DevTools 可以让你查看 React 组件的 props 和 state。你可以在 CodeSandbox 的 _browser_ 区域底部找到 React DevTools 标签页：
+React 开发者工具可让你查看 React 组件的 props 和 state。它作为 [Chrome](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en)、[Firefox](https://addons.mozilla.org/en-US/firefox/addon/react-devtools/) 和 [Edge](https://microsoftedge.microsoft.com/addons/detail/react-developer-tools/gpphkfbcpidddadnkolkpfckpihlkkil) 浏览器扩展提供。
 
-![React DevTools in CodeSandbox](../images/tutorial/codesandbox-devtools.png)
+安装后，使用 React 的网站在浏览器开发者工具中会出现一个新的 *Components* 选项卡。如果你正在 CodeSandbox 中跟着操作，你需要先在新标签页中打开你的沙盒预览：
 
-要检查屏幕上的某个特定组件，请使用 React DevTools 左上角的按钮：
+![在新标签页中打开](../images/tutorial/sandbox-new-tab.png)
 
-![Selecting components on the page with React DevTools](../images/tutorial/devtools-select.gif)
+然后，在预览页面上，打开浏览器的 DevTools 并找到 *Components* 选项卡：
 
-<Note>
+![components 标签页](../images/tutorial/components-tab.png)
 
-对于本地开发，React DevTools 作为浏览器扩展可用于 [Chrome](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en)、[Firefox](https://addons.mozilla.org/en-US/firefox/addon/react-devtools/) 和 [Edge](https://microsoftedge.microsoft.com/addons/detail/react-developer-tools/gpphkfbcpidddadnkolkpfckpihlkkil)。安装后，使用 React 的网站上，你的浏览器开发者工具中会出现 *Components* 标签页。
+要检查屏幕上的特定组件，请使用 Components 选项卡左上角的按钮：
 
-</Note>
+![使用 devtools 检查](../images/tutorial/devtools-inspect.gif)
+
 
 ## 完成游戏 {/*completing-the-game*/}
 
@@ -2043,15 +2044,15 @@ export default function Game() {
   }
 
   function jumpTo(nextMove) {
-    // TODO
+    // 待办事项
   }
 
   const moves = history.map((squares, move) => {
     let description;
     if (move > 0) {
-      description = 'Go to move #' + move;
+      description = '前往第 #' + move + ' 步';
     } else {
-      description = 'Go to game start';
+      description = '前往游戏开始';
     }
     return (
       <li>
@@ -2111,9 +2112,9 @@ function Board({ xIsNext, squares, onPlay }) {
   const winner = calculateWinner(squares);
   let status;
   if (winner) {
-    status = 'Winner: ' + winner;
+    status = '获胜者：' + winner;
   } else {
-    status = 'Next player: ' + (xIsNext ? 'X' : 'O');
+    status = '下一位玩家：' + (xIsNext ? 'X' : 'O');
   }
 
   return (
@@ -2149,15 +2150,15 @@ export default function Game() {
   }
 
   function jumpTo(nextMove) {
-    // TODO
+    // 待办事项
   }
 
   const moves = history.map((squares, move) => {
     let description;
     if (move > 0) {
-      description = 'Go to move #' + move;
+      description = '前往第 #' + move + ' 步';
     } else {
-      description = 'Go to game start';
+      description = '前往游戏开始';
     }
     return (
       <li>
@@ -2339,9 +2340,9 @@ function Board({ xIsNext, squares, onPlay }) {
   const winner = calculateWinner(squares);
   let status;
   if (winner) {
-    status = 'Winner: ' + winner;
+    status = '获胜者：' + winner;
   } else {
-    status = 'Next player: ' + (xIsNext ? 'X' : 'O');
+    status = '下一位玩家：' + (xIsNext ? 'X' : 'O');
   }
 
   return (
@@ -2383,9 +2384,9 @@ export default function Game() {
   const moves = history.map((squares, move) => {
     let description;
     if (move > 0) {
-      description = 'Go to move #' + move;
+      description = '转到第 #' + move 步';
     } else {
-      description = 'Go to game start';
+      description = '回到游戏开始';
     }
     return (
       <li key={move}>
@@ -2560,9 +2561,9 @@ function Board({ xIsNext, squares, onPlay }) {
   const winner = calculateWinner(squares);
   let status;
   if (winner) {
-    status = 'Winner: ' + winner;
+    status = '获胜者：' + winner;
   } else {
-    status = 'Next player: ' + (xIsNext ? 'X' : 'O');
+    status = '下一位玩家：' + (xIsNext ? 'X' : 'O');
   }
 
   return (
@@ -2608,9 +2609,9 @@ export default function Game() {
   const moves = history.map((squares, move) => {
     let description;
     if (move > 0) {
-      description = 'Go to move #' + move;
+      description = '转到第 #' + move + ' 步';
     } else {
-      description = 'Go to game start';
+      description = '回到游戏开始';
     }
     return (
       <li key={move}>
@@ -2770,9 +2771,9 @@ function Board({ xIsNext, squares, onPlay }) {
   const winner = calculateWinner(squares);
   let status;
   if (winner) {
-    status = 'Winner: ' + winner;
+    status = '获胜者：' + winner;
   } else {
-    status = 'Next player: ' + (xIsNext ? 'X' : 'O');
+    status = '下一位玩家：' + (xIsNext ? 'X' : 'O');
   }
 
   return (
@@ -2816,9 +2817,9 @@ export default function Game() {
   const moves = history.map((squares, move) => {
     let description;
     if (move > 0) {
-      description = 'Go to move #' + move;
+      description = '前往第 #' + move + ' 步';
     } else {
-      description = 'Go to game start';
+      description = '前往游戏开始';
     }
     return (
       <li key={move}>

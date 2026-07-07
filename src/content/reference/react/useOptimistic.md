@@ -83,7 +83,7 @@ function handleClick() {
 
 #### 乐观状态如何工作 {/*how-optimistic-state-works*/}
 
-`useOptimistic` 允许你在 Action 执行期间显示一个临时值：
+`useOptimistic` 允许你在 Action 进行期间显示一个临时值：
 
 ```js
 const [value, setValue] = useState('a');
@@ -239,9 +239,9 @@ export default function EditName({ name, action }) {
 
   return (
     <form action={submitAction}>
-      <p>Your name is: {optimisticName}</p>
+      <p>你的名字是：{optimisticName}</p>
       <p>
-        <label>Change it: </label>
+        <label>修改为： </label>
         <input
           type="text"
           name="name"
@@ -390,28 +390,28 @@ export default function App() {
   function handleClick() {
     startTransition(async () => {
       const newValue = !optimisticIsLiked
-      console.log('⏳ setting optimistic state: ' + newValue);
+      console.log('⏳ 设置乐观状态：' + newValue);
 
       setOptimisticIsLiked(newValue);
       const updatedValue = await toggleLike(newValue);
 
       startTransition(() => {
-        console.log('⏳ setting real state: ' + updatedValue );
+        console.log('⏳ 设置真实状态：' + updatedValue );
         setIsLiked(updatedValue);
       });
     });
   }
 
   if (optimisticIsLiked !== isLiked) {
-    console.log('✅ rendering optimistic state: ' + optimisticIsLiked);
+    console.log('✅ 渲染乐观状态：' + optimisticIsLiked);
   } else {
-    console.log('✅ rendering real value: ' + optimisticIsLiked);
+    console.log('✅ 渲染真实值：' + optimisticIsLiked);
   }
 
 
   return (
     <button onClick={handleClick}>
-      {optimisticIsLiked ? '❤️ Unlike' : '🤍 Like'}
+      {optimisticIsLiked ? '❤️ 取消点赞' : '🤍 点赞'}
     </button>
   );
 }
@@ -585,7 +585,7 @@ import TodoList from './TodoList';
 
 export default function App() {
   const [todos, setTodos] = useState([
-    { id: 1, text: 'Learn React' }
+    { id: 1, text: '学习 React' }
   ]);
 
   async function addTodoAction(newTodo) {
@@ -621,11 +621,11 @@ export default function TodoList({ todos, addTodoAction }) {
 
   return (
     <div>
-      <button onClick={() => handleAddTodo('New todo')}>Add Todo</button>
+      <button onClick={() => handleAddTodo('新待办事项')}>添加待办事项</button>
       <ul>
         {optimisticTodos.map(todo => (
           <li key={todo.id}>
-            {todo.text} {todo.pending && "(Adding...)"}
+            {todo.text} {todo.pending && "(添加中...)"}
           </li>
         ))}
       </ul>
@@ -767,21 +767,21 @@ export default function ShoppingCart({ cart, cartActions }) {
 
   return (
     <div>
-      <h2>Shopping Cart</h2>
+      <h2>购物车</h2>
       <div style={{ marginBottom: 16 }}>
         <button onClick={() => handleAdd({
           id: 1, name: 'T-Shirt', price: 25
         })}>
-          Add T-Shirt ($25)
+          添加 T 恤（$25）
         </button>{' '}
         <button onClick={() => handleAdd({
           id: 2, name: 'Mug', price: 15
         })}>
-          Add Mug ($15)
+          添加杯子（$15）
         </button>
       </div>
       {optimisticCart.length === 0 ? (
-        <p>Your cart is empty</p>
+        <p>你的购物车是空的</p>
       ) : (
         <ul>
           {optimisticCart.map(item => (
@@ -793,14 +793,14 @@ export default function ShoppingCart({ cart, cartActions }) {
                 onClick={() => handleRemove(item.id)}
                 style={{ marginLeft: 8 }}
               >
-                Remove
+                移除
               </button>
               {item.pending && ' ...'}
             </li>
           ))}
         </ul>
       )}
-      <p><strong>Total: ${total}</strong></p>
+      <p><strong>总计：${total}</strong></p>
     </div>
   );
 }
@@ -886,7 +886,7 @@ export default function ItemList({ items, deleteAction }) {
 
   return (
     <div>
-      <h2>Your Items</h2>
+      <h2>你的项目</h2>
       <ul>
         {optimisticItems.map(item => (
           <li
@@ -903,7 +903,7 @@ export default function ItemList({ items, deleteAction }) {
               disabled={item.deleting}
               style={{ marginLeft: 8 }}
             >
-              {item.deleting ? 'Deleting...' : 'Delete'}
+              {item.deleting ? '正在删除...' : '删除'}
             </button>
           </li>
         ))}
@@ -923,14 +923,14 @@ export async function deleteItem(id) {
   await new Promise((res) => setTimeout(res, 1000));
   // 项目 3 始终失败，用于演示错误恢复
   if (id === 3) {
-    throw new Error('Cannot delete. Permission denied.');
+    throw new Error('无法删除。权限被拒绝。');
   }
 }
 ```
 
 </Sandpack>
 
-试着删除 “Deploy to production”。当删除失败时，该项目会自动重新出现在列表中。
+试着删除 “部署到生产环境”。当删除失败时，该项目会自动重新出现在列表中。
 
 ---
 

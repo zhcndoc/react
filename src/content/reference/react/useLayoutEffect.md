@@ -47,7 +47,7 @@ function Tooltip() {
 
 #### 参数 {/*parameters*/}
 
-* `setup`：包含你的 Effect 逻辑的函数。你的 setup 函数也可以选择返回一个 *清理* 函数。在你的 [组件提交](/learn/render-and-commit#step-3-react-commits-changes-to-the-dom) 之前，React 会运行你的 setup 函数。每次依赖项发生变化并提交后，React 会先使用旧值运行清理函数（如果你提供了它），然后再使用新值运行你的 setup 函数。在你的组件从 DOM 中移除之前，React 会运行你的清理函数。
+* `setup`：包含你的 Effect 逻辑的函数。你的 setup 函数也可以选择返回一个 *cleanup* 函数。在你的[组件提交](/learn/render-and-commit#step-3-react-commits-changes-to-the-dom)到 DOM 之后、浏览器重绘屏幕之前，React 会运行你的 setup 函数。在每次依赖项变化后的提交中，React 会先运行清理函数（如果你提供了），并使用旧值，然后再使用新值运行你的 setup 函数。在你的组件从 DOM 中移除之前，React 会运行你的清理函数。
 
 * **可选** `dependencies`：在 `setup` 代码中引用的所有响应式值的列表。响应式值包括 props、state，以及所有直接在组件函数体内声明的变量和函数。如果你的 linter 已为 [React 配置](/learn/editor-setup#linting)，它会验证每个响应式值都被正确指定为依赖项。依赖项列表必须具有固定数量的项目，并且像 `[dep1, dep2, dep3]` 这样内联编写。React 会使用 [`Object.is`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is) 比较来将每个依赖项与其上一次的值进行比较。如果你省略此参数，你的 Effect 将在组件的每次提交后重新运行。
 
@@ -122,29 +122,29 @@ export default function App() {
       <ButtonWithTooltip
         tooltipContent={
           <div>
-            This tooltip does not fit above the button.
+            这个提示无法放在按钮上方。
             <br />
-            This is why it's displayed below instead!
+            所以它会显示在下方！
           </div>
         }
       >
-        Hover over me (tooltip above)
+        将鼠标悬停在我上方（提示在上方）
       </ButtonWithTooltip>
       <div style={{ height: 50 }} />
       <ButtonWithTooltip
         tooltipContent={
-          <div>This tooltip fits above the button</div>
+          <div>这个提示可以放在按钮上方</div>
         }
       >
-        Hover over me (tooltip below)
+        将鼠标悬停在我上方（提示在下方）
       </ButtonWithTooltip>
       <div style={{ height: 50 }} />
       <ButtonWithTooltip
         tooltipContent={
-          <div>This tooltip fits above the button</div>
+          <div>这个提示可以放在按钮上方</div>
         }
       >
-        Hover over me (tooltip below)
+        将鼠标悬停在我上方（提示在下方）
       </ButtonWithTooltip>
     </div>
   );
@@ -272,29 +272,29 @@ export default function App() {
       <ButtonWithTooltip
         tooltipContent={
           <div>
-            This tooltip does not fit above the button.
+            这个提示无法放在按钮上方。
             <br />
-            This is why it's displayed below instead!
+            所以它会显示在下方！
           </div>
         }
       >
-        Hover over me (tooltip above)
+        将鼠标悬停在我上方（提示在上方）
       </ButtonWithTooltip>
       <div style={{ height: 50 }} />
       <ButtonWithTooltip
         tooltipContent={
-          <div>This tooltip fits above the button</div>
+          <div>这个提示可以放在按钮上方</div>
         }
       >
-        Hover over me (tooltip below)
+        将鼠标悬停在我上方（提示在下方）
       </ButtonWithTooltip>
       <div style={{ height: 50 }} />
       <ButtonWithTooltip
         tooltipContent={
-          <div>This tooltip fits above the button</div>
+          <div>这个提示可以放在按钮上方</div>
         }
       >
-        Hover over me (tooltip below)
+        将鼠标悬停在我上方（提示在下方）
       </ButtonWithTooltip>
     </div>
   );
@@ -419,67 +419,31 @@ export default function App() {
       <ButtonWithTooltip
         tooltipContent={
           <div>
-            This tooltip does not fit above the button.
+            这个提示无法放在按钮上方。
             <br />
-            This is why it's displayed below instead!
+            所以它会显示在下方！
           </div>
         }
       >
-        Hover over me (tooltip above)
+        将鼠标悬停在我上方（提示在上方）
       </ButtonWithTooltip>
       <div style={{ height: 50 }} />
       <ButtonWithTooltip
         tooltipContent={
-          <div>This tooltip fits above the button</div>
+          <div>这个提示可以放在按钮上方</div>
         }
       >
-        Hover over me (tooltip below)
+        将鼠标悬停在我上方（提示在下方）
       </ButtonWithTooltip>
       <div style={{ height: 50 }} />
       <ButtonWithTooltip
         tooltipContent={
-          <div>This tooltip fits above the button</div>
+          <div>这个提示可以放在按钮上方</div>
         }
       >
-        Hover over me (tooltip below)
+        将鼠标悬停在我上方（提示在下方）
       </ButtonWithTooltip>
     </div>
-  );
-}
-```
-
-```js src/ButtonWithTooltip.js
-import { useState, useRef } from 'react';
-import Tooltip from './Tooltip.js';
-
-export default function ButtonWithTooltip({ tooltipContent, ...rest }) {
-  const [targetRect, setTargetRect] = useState(null);
-  const buttonRef = useRef(null);
-  return (
-    <>
-      <button
-        {...rest}
-        ref={buttonRef}
-        onPointerEnter={() => {
-          const rect = buttonRef.current.getBoundingClientRect();
-          setTargetRect({
-            left: rect.left,
-            top: rect.top,
-            right: rect.right,
-            bottom: rect.bottom,
-          });
-        }}
-        onPointerLeave={() => {
-          setTargetRect(null);
-        }}
-      />
-      {targetRect !== null && (
-        <Tooltip targetRect={targetRect}>
-          {tooltipContent}
-        </Tooltip>
-      )
-    }
-    </>
   );
 }
 ```
@@ -562,29 +526,29 @@ export default function App() {
       <ButtonWithTooltip
         tooltipContent={
           <div>
-            This tooltip does not fit above the button.
+            这个提示无法放在按钮上方。
             <br />
-            This is why it's displayed below instead!
+            所以它会显示在下方！
           </div>
         }
       >
-        Hover over me (tooltip above)
+        将鼠标悬停在我上方（提示在上方）
       </ButtonWithTooltip>
       <div style={{ height: 50 }} />
       <ButtonWithTooltip
         tooltipContent={
-          <div>This tooltip fits above the button</div>
+          <div>这个提示可以放在按钮上方</div>
         }
       >
-        Hover over me (tooltip below)
+        将鼠标悬停在我上方（提示在下方）
       </ButtonWithTooltip>
       <div style={{ height: 50 }} />
       <ButtonWithTooltip
         tooltipContent={
-          <div>This tooltip fits above the button</div>
+          <div>这个提示可以放在按钮上方</div>
         }
       >
-        Hover over me (tooltip below)
+        将鼠标悬停在我上方（提示在下方）
       </ButtonWithTooltip>
     </div>
   );

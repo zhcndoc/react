@@ -3097,7 +3097,7 @@ root.render(
 
 </Sandpack>
 
-默认情况下，React 会自动为每个参与过渡的元素生成唯一的 `name`（参见 [<ViewTransition> 的工作原理](/reference/react/ViewTransition#how-does-viewtransition-work)）。当 React 看到一个过渡中带有 `name` 的 `<ViewTransition>` 被移除，同时又添加了一个相同 `name` 的新 `<ViewTransition>` 时，它会激活共享元素过渡。
+默认情况下，React 会自动为每个参与过渡的元素生成唯一的 `name`（参见 [`<ViewTransition>` 的工作原理](/reference/react/ViewTransition#how-does-viewtransition-work)）。当 React 看到一个过渡中带有 `name` 的 `<ViewTransition>` 被移除，同时又添加了一个相同 `name` 的新 `<ViewTransition>` 时，它会激活共享元素过渡。
 
 更多信息请参见 [为共享元素添加动画](/reference/react/ViewTransition#animating-a-shared-element) 的文档。
 

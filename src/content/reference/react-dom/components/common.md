@@ -14,232 +14,9 @@ title: "常见组件（例如 <div>）"
 
 ## 参考 {/*reference*/}
 
-### 常见组件（例如 `<div>`） {/*common*/}
-
-```js
-<div className="wrapper">一些内容</div>
-```
-
-[查看更多示例。](#usage)
-
-#### 属性 {/*common-props*/}
-
-所有内置组件都支持这些特殊的 React 属性：
-
-* `children`：一个 React 节点（一个元素、字符串、数字、[portal，](/reference/react-dom/createPortal)一个空节点如 `null`、`undefined` 和布尔值，或其他 React 节点的数组）。指定组件内部的内容。当你使用 JSX 时，通常会通过嵌套标签（如 `<div><span /></div>`）隐式指定 `children` 属性。
-
-* `dangerouslySetInnerHTML`：一个形如 `{ __html: '<p>some html</p>' }` 的对象，内部包含原始 HTML 字符串。它会覆盖 DOM 节点的 [`innerHTML`](https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML) 属性，并在其中显示传入的 HTML。应极其谨慎地使用！如果其中的 HTML 不可信（例如基于用户数据），就有引入 [XSS](https://en.wikipedia.org/wiki/Cross-site_scripting) 漏洞的风险。[阅读更多关于使用 `dangerouslySetInnerHTML` 的内容。](#dangerously-setting-the-inner-html)
-
-* `ref`：来自 [`useRef`](/reference/react/useRef) 或 [`createRef`](/reference/react/createRef) 的 ref 对象，或一个 [`ref` 回调函数，](#ref-callback)或用于 [旧版 refs 的字符串。](https://reactjs.org/docs/refs-and-the-dom.html#legacy-api-string-refs)你的 ref 将填充为该节点的 DOM 元素。[阅读更多关于使用 refs 操作 DOM 的内容。](#manipulating-a-dom-node-with-a-ref)
-
-* `suppressContentEditableWarning`：一个布尔值。如果为 `true`，则会抑制 React 在元素同时具有 `children` 和 `contentEditable={true}` 时显示的警告（这两者通常不能一起工作）。当你构建一个手动管理 `contentEditable` 内容的文本输入库时可使用此项。
+* `style`：一个包含 CSS 样式的对象，例如 `{ fontWeight: 'bold', margin: 20 }`。与 DOM 的 [`style`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style) 属性类似，CSS 属性名需要使用 `camelCase` 形式，例如使用 `fontWeight` 而不是 `font-weight`。你可以将字符串或数字作为值传入。如果传入数字，例如 `width: 100`，React 会自动在值后追加 `px`（“像素”），除非它是[无单位属性。](https://github.com/react/react/blob/81d4ee9ca5c405dce62f64e61506b8e155f38d8d/packages/react-dom-bindings/src/shared/CSSProperty.js#L8-L57)我们建议仅在无法提前确定样式值的动态样式中使用 `style`。在其他情况下，使用 `className` 应用普通 CSS 类会更高效。[阅读更多关于 `className` 和 `style` 的内容。](#applying-css-styles)
 
 * `suppressHydrationWarning`：一个布尔值。如果你使用 [服务端渲染，](/reference/react-dom/server)通常当服务端和客户端渲染出不同内容时会出现警告。在某些罕见情况下（如时间戳），要保证完全一致非常困难甚至不可能。如果将 `suppressHydrationWarning` 设为 `true`，React 将不会就该元素的属性和内容不匹配发出警告。它只作用于一层深度，并且 предназначляется 作为一种逃生出口。不要过度使用它。[阅读关于抑制 hydration 错误的内容。](/reference/react-dom/client/hydrateRoot#suppressing-unavoidable-hydration-mismatch-errors)
-
-* `style`：一个包含 CSS 样式的对象，例如 `{ fontWeight: 'bold', margin: 20 }`。类似于 DOM 的 [`style`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style) 属性，CSS 属性名需要写成 `camelCase`，例如用 `fontWeight` 而不是 `font-weight`。你可以传入字符串或数字作为值。如果传入数字，例如 `width: 100`，React 会自动在值后追加 `px`（“像素”），除非它是一个 [无单位属性。](https://github.com/facebook/react/blob/81d4ee9ca5c405dce62f64e61506b8e155f38d8d/packages/react-dom-bindings/src/shared/CSSProperty.js#L8-L57)我们建议仅在你事先不知道样式值的动态样式中使用 `style`。在其他情况下，使用 `className` 应用普通 CSS 类会更高效。[阅读更多关于 `className` 和 `style` 的内容。](#applying-css-styles)
-
-所有这些标准 DOM 属性也都支持用于所有内置组件：
-
-* [`accessKey`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/accesskey)：一个字符串。指定该元素的键盘快捷键。[通常不推荐使用。](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/accesskey#accessibility_concerns)
-* [`aria-*`](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes)：ARIA 属性让你为该元素指定可访问性树信息。完整参考请参见 [ARIA 属性](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes)。在 React 中，所有 ARIA 属性名都与 HTML 中完全相同。
-* [`autoCapitalize`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/autocapitalize)：一个字符串。指定用户输入是否以及如何首字母大写。
-* [`className`](https://developer.mozilla.org/en-US/docs/Web/API/Element/className)：一个字符串。指定元素的 CSS 类名。[阅读更多关于应用 CSS 样式的内容。](#applying-css-styles)
-* [`contentEditable`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/contenteditable)：一个布尔值。如果为 `true`，浏览器允许用户直接编辑渲染出的元素。这用于实现像 [Lexical.](https://lexical.dev/) 这样的富文本输入库。如果你尝试向 `contentEditable={true}` 的元素传递 React 子元素，React 会发出警告，因为在用户编辑后 React 将无法更新其内容。
-* [`data-*`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/data-*): 数据属性让你可以为元素附加一些字符串数据，例如 `data-fruit="banana"`。在 React 中，它们并不常用，因为你通常会改为从 props 或 state 中读取数据。
-* [`dir`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/dir)：`'ltr'` 或 `'rtl'`。指定元素的文本方向。
-* [`draggable`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/draggable)：一个布尔值。指定元素是否可拖拽。[HTML 拖放 API](https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API) 的一部分。
-* [`enterKeyHint`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/enterKeyHint)：一个字符串。指定虚拟键盘上回车键应显示的动作。
-* [`htmlFor`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLLabelElement/htmlFor)：一个字符串。对于 [`<label>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label) 和 [`<output>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/output)，可让你[将标签与某个控件关联起来。](/reference/react-dom/components/input#providing-a-label-for-an-input)与 [`for` HTML 属性](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/for) 相同。React 使用标准 DOM 属性名（`htmlFor`），而不是 HTML 属性名。
-* [`hidden`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/hidden)：一个布尔值或字符串。指定元素是否应隐藏。
-* [`id`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/id)：一个字符串。指定该元素的唯一标识符，可用于稍后查找它或将其与其他元素关联。使用 [`useId`](/reference/react/useId) 生成它，以避免多个相同组件实例之间的冲突。
-* [`is`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/is)：一个字符串。如果指定，组件将表现得像一个 [自定义元素。](/reference/react-dom/components#custom-html-elements)
-* [`inputMode`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/inputmode)：一个字符串。指定要显示的键盘类型（例如文本、数字或电话）。
-* [`itemProp`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/itemprop)：一个字符串。指定该元素在结构化数据爬虫中代表哪个属性。
-* [`lang`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/lang)：一个字符串。指定元素的语言。
-* [`onAnimationEnd`](https://developer.mozilla.org/en-US/docs/Web/API/Element/animationend_event)：一个 [`AnimationEvent` 处理函数](#animationevent-handler)。在 CSS 动画完成时触发。
-* `onAnimationEndCapture`：`onAnimationEnd` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onAnimationIteration`](https://developer.mozilla.org/en-US/docs/Web/API/Element/animationiteration_event)：一个 [`AnimationEvent` 处理函数](#animationevent-handler)。在某次 CSS 动画迭代结束、下一次开始时触发。
-* `onAnimationIterationCapture`：`onAnimationIteration` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onAnimationStart`](https://developer.mozilla.org/en-US/docs/Web/API/Element/animationstart_event)：一个 [`AnimationEvent` 处理函数](#animationevent-handler)。在 CSS 动画开始时触发。
-* `onAnimationStartCapture`：`onAnimationStart`，但在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发。
-* [`onAuxClick`](https://developer.mozilla.org/en-US/docs/Web/API/Element/auxclick_event)：一个 [`MouseEvent` 处理函数](#mouseevent-handler)。在点击非主按键指针按钮时触发。
-* `onAuxClickCapture`：`onAuxClick` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onBeforeInput`](https://developer.mozilla.org/en-US/docs/Web/API/Element/beforeinput_event)：一个 [`InputEvent` 处理函数](#inputevent-handler)。在可编辑元素的值被修改之前触发。React 目前还*没有*使用原生的 [`beforeinput`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/beforeinput_event) 事件，而是尝试使用其他事件来进行 polyfill。
-* `onBeforeInputCapture`：`onBeforeInput` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* `onBlur`：一个 [`FocusEvent` 处理函数](#focusevent-handler)。在元素失去焦点时触发。与内置浏览器的 [`blur`](https://developer.mozilla.org/en-US/docs/Web/API/Element/blur_event) 事件不同，在 React 中 `onBlur` 事件会冒泡。
-* `onBlurCapture`：`onBlur` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onClick`](https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event)：一个 [`MouseEvent` 处理函数](#mouseevent-handler)。在指针设备的主按钮被点击时触发。
-* `onClickCapture`：`onClick` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onCompositionStart`](https://developer.mozilla.org/en-US/docs/Web/API/Element/compositionstart_event)：一个 [`CompositionEvent` 处理函数](#compositionevent-handler)。在 [输入法编辑器](https://developer.mozilla.org/en-US/docs/Glossary/Input_method_editor) 开始新的组合会话时触发。
-* `onCompositionStartCapture`：`onCompositionStart` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onCompositionEnd`](https://developer.mozilla.org/en-US/docs/Web/API/Element/compositionend_event)：一个 [`CompositionEvent` 处理函数](#compositionevent-handler)。在 [输入法编辑器](https://developer.mozilla.org/en-US/docs/Glossary/Input_method_editor) 完成或取消一个组合会话时触发。
-* `onCompositionEndCapture`：`onCompositionEnd` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onCompositionUpdate`](https://developer.mozilla.org/en-US/docs/Web/API/Element/compositionupdate_event)：一个 [`CompositionEvent` 处理函数](#compositionevent-handler)。在 [输入法编辑器](https://developer.mozilla.org/en-US/docs/Glossary/Input_method_editor) 接收到新字符时触发。
-* `onCompositionUpdateCapture`：`onCompositionUpdate` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onContextMenu`](https://developer.mozilla.org/en-US/docs/Web/API/Element/contextmenu_event)：一个 [`MouseEvent` 处理函数](#mouseevent-handler)。在用户尝试打开上下文菜单时触发。
-* `onContextMenuCapture`：`onContextMenu` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onCopy`](https://developer.mozilla.org/en-US/docs/Web/API/Element/copy_event)：一个 [`ClipboardEvent` 处理函数](#clipboardevent-handler)。在用户尝试将内容复制到剪贴板时触发。
-* `onCopyCapture`：`onCopy` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onCut`](https://developer.mozilla.org/en-US/docs/Web/API/Element/cut_event)：一个 [`ClipboardEvent` 处理函数](#clipboardevent-handler)。在用户尝试将内容剪切到剪贴板时触发。
-* `onCutCapture`：`onCut` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* `onDoubleClick`：一个 [`MouseEvent` 处理函数](#mouseevent-handler)。在用户双击时触发。对应于浏览器的 [`dblclick` 事件。](https://developer.mozilla.org/en-US/docs/Web/API/Element/dblclick_event)
-* `onDoubleClickCapture`：`onDoubleClick` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onDrag`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/drag_event)：一个 [`DragEvent` 处理函数](#dragevent-handler)。在用户拖动某物时触发。
-* `onDragCapture`：`onDrag` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onDragEnd`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dragend_event)：一个 [`DragEvent` 处理函数](#dragevent-handler)。在用户停止拖动某物时触发。
-* `onDragEndCapture`：`onDragEnd` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onDragEnter`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dragenter_event)：一个 [`DragEvent` 处理函数](#dragevent-handler)。在拖拽内容进入有效放置目标时触发。
-* `onDragEnterCapture`：`onDragEnter` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onDragOver`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dragover_event)：一个 [`DragEvent` 处理函数](#dragevent-handler)。在拖拽内容悬停于有效放置目标上时触发。你必须在这里调用 `e.preventDefault()` 才能允许放置。
-* `onDragOverCapture`：`onDragOver` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onDragStart`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dragstart_event)：一个 [`DragEvent` 处理函数](#dragevent-handler)。在用户开始拖动元素时触发。
-* `onDragStartCapture`：`onDragStart` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onDrop`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/drop_event)：一个 [`DragEvent` 处理函数](#dragevent-handler)。在某物被放到有效放置目标上时触发。
-* `onDropCapture`：`onDrop` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* `onFocus`：一个 [`FocusEvent` 处理函数](#focusevent-handler)。在元素获得焦点时触发。与内置浏览器的 [`focus`](https://developer.mozilla.org/en-US/docs/Web/API/Element/focus_event) 事件不同，在 React 中 `onFocus` 事件会冒泡。
-* `onFocusCapture`：`onFocus` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onGotPointerCapture`](https://developer.mozilla.org/en-US/docs/Web/API/Element/gotpointercapture_event)：一个 [`PointerEvent` 处理函数](#pointerevent-handler)。在元素以编程方式捕获指针时触发。
-* `onGotPointerCaptureCapture`：`onGotPointerCapture` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onKeyDown`](https://developer.mozilla.org/en-US/docs/Web/API/Element/keydown_event)：一个 [`KeyboardEvent` 处理函数](#keyboardevent-handler)。在按下按键时触发。
-* `onKeyDownCapture`：`onKeyDown` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onKeyPress`](https://developer.mozilla.org/en-US/docs/Web/API/Element/keypress_event)：一个 [`KeyboardEvent` 处理函数](#keyboardevent-handler)。已弃用。请改用 `onKeyDown` 或 `onBeforeInput`。
-* `onKeyPressCapture`：`onKeyPress` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onKeyUp`](https://developer.mozilla.org/en-US/docs/Web/API/Element/keyup_event)：一个 [`KeyboardEvent` 处理函数](#keyboardevent-handler)。在按键释放时触发。
-* `onKeyUpCapture`：`onKeyUp` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onLostPointerCapture`](https://developer.mozilla.org/en-US/docs/Web/API/Element/lostpointercapture_event)：一个 [`PointerEvent` 处理函数](#pointerevent-handler)。在元素停止捕获指针时触发。
-* `onLostPointerCaptureCapture`：`onLostPointerCapture` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onMouseDown`](https://developer.mozilla.org/en-US/docs/Web/API/Element/mousedown_event)：一个 [`MouseEvent` 处理函数](#mouseevent-handler)。在指针按下时触发。
-* `onMouseDownCapture`：`onMouseDown` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onMouseEnter`](https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseenter_event)：一个 [`MouseEvent` 处理函数](#mouseevent-handler)。在指针移入元素内部时触发。没有捕获阶段。相反，`onMouseLeave` 和 `onMouseEnter` 会从离开的元素传播到进入的元素。
-* [`onMouseLeave`](https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseleave_event)：一个 [`MouseEvent` 处理函数](#mouseevent-handler)。在指针移出元素外部时触发。没有捕获阶段。相反，`onMouseLeave` 和 `onMouseEnter` 会从离开的元素传播到进入的元素。
-* [`onMouseMove`](https://developer.mozilla.org/en-US/docs/Web/API/Element/mousemove_event)：一个 [`MouseEvent` 处理函数](#mouseevent-handler)。在指针改变坐标时触发。
-* `onMouseMoveCapture`：`onMouseMove` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onMouseOut`](https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseout_event)：一个 [`MouseEvent` 处理函数](#mouseevent-handler)。在指针移出元素外部，或者移入其子元素时触发。
-* `onMouseOutCapture`：`onMouseOut` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onMouseUp`](https://developer.mozilla.org/en-US/docs/Web/API/Element/mouseup_event)：一个 [`MouseEvent` 处理函数](#mouseevent-handler)。在指针释放时触发。
-* `onMouseUpCapture`：`onMouseUp` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onPointerCancel`](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointercancel_event)：一个 [`PointerEvent` 处理函数](#pointerevent-handler)。当浏览器取消指针交互时触发。
-* `onPointerCancelCapture`：`onPointerCancel` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onPointerDown`](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerdown_event)：一个 [`PointerEvent` 处理函数](#pointerevent-handler)。当指针变为活跃状态时触发。
-* `onPointerDownCapture`：`onPointerDown` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onPointerEnter`](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerenter_event)：一个 [`PointerEvent` 处理函数](#pointerevent-handler)。在指针移入元素内部时触发。没有捕获阶段。相反，`onPointerLeave` 和 `onPointerEnter` 会从离开的元素传播到进入的元素。
-* [`onPointerLeave`](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerleave_event)：一个 [`PointerEvent` 处理函数](#pointerevent-handler)。在指针移出元素外部时触发。没有捕获阶段。相反，`onPointerLeave` 和 `onPointerEnter` 会从离开的元素传播到进入的元素。
-* [`onPointerMove`](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointermove_event)：一个 [`PointerEvent` 处理函数](#pointerevent-handler)。在指针改变坐标时触发。
-* `onPointerMoveCapture`：`onPointerMove` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onPointerOut`](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerout_event)：一个 [`PointerEvent` 处理函数](#pointerevent-handler)。在指针移出元素外部、指针交互被取消时，以及[其他一些原因。](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerout_event)触发。
-* `onPointerOutCapture`：`onPointerOut` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onPointerUp`](https://developer.mozilla.org/en-US/docs/Web/API/Element/pointerup_event)：一个 [`PointerEvent` 处理函数](#pointerevent-handler)。当指针不再处于活动状态时触发。
-* `onPointerUpCapture`：`onPointerUp` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onPaste`](https://developer.mozilla.org/en-US/docs/Web/API/Element/paste_event)：一个 [`ClipboardEvent` 处理函数](#clipboardevent-handler)。在用户尝试从剪贴板粘贴内容时触发。
-* `onPasteCapture`：`onPaste` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onScroll`](https://developer.mozilla.org/en-US/docs/Web/API/Element/scroll_event)：一个 [`Event` 处理函数](#event-handler)。在元素滚动时触发。此事件不会冒泡。
-* `onScrollCapture`：`onScroll` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onSelect`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/select_event)：一个 [`Event` 处理函数](#event-handler)。在输入框等可编辑元素中的选区发生变化后触发。React 也扩展了 `onSelect` 事件，使其同样可用于 `contentEditable={true}` 元素。此外，React 还将其扩展为在空选区和编辑时触发（这可能会影响选区）。
-* `onSelectCapture`：`onSelect` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onTouchCancel`](https://developer.mozilla.org/en-US/docs/Web/API/Element/touchcancel_event)：一个 [`TouchEvent` 处理函数](#touchevent-handler)。在浏览器取消触摸交互时触发。
-* `onTouchCancelCapture`：`onTouchCancel` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onTouchEnd`](https://developer.mozilla.org/en-US/docs/Web/API/Element/touchend_event)：一个 [`TouchEvent` 处理函数](#touchevent-handler)。在一个或多个触点被移除时触发。
-* `onTouchEndCapture`：`onTouchEnd` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onTouchMove`](https://developer.mozilla.org/en-US/docs/Web/API/Element/touchmove_event)：一个 [`TouchEvent` 处理函数](#touchevent-handler)。在一个或多个触点移动时触发。
-* `onTouchMoveCapture`：`onTouchMove` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onTouchStart`](https://developer.mozilla.org/en-US/docs/Web/API/Element/touchstart_event)：一个 [`TouchEvent` 处理函数](#touchevent-handler)。在一个或多个触点被放置时触发。
-* `onTouchStartCapture`：`onTouchStart` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onTransitionEnd`](https://developer.mozilla.org/en-US/docs/Web/API/Element/transitionend_event)：一个 [`TransitionEvent` 处理函数](#transitionevent-handler)。在 CSS 过渡完成时触发。
-* `onTransitionEndCapture`：`onTransitionEnd` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onWheel`](https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event)：一个 [`WheelEvent` 处理函数](#wheelevent-handler)。在用户旋转滚轮按钮时触发。
-* `onWheelCapture`：`onWheel` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`role`](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles)：一个字符串。为辅助技术显式指定元素角色。
-* [`slot`](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles)：一个字符串。在使用 shadow DOM 时指定槽名称。在 React 中，通常通过将 JSX 作为 props 传入来实现等价模式，例如 `<Layout left={<Sidebar />} right={<Content />} />`。
-* [`spellCheck`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/spellcheck)：一个布尔值或 `null`。如果显式设为 `true` 或 `false`，则启用或禁用拼写检查。
-* [`tabIndex`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/tabindex)：一个数字。覆盖默认的 Tab 键行为。[避免使用 `-1` 和 `0` 以外的值。](https://www.tpgi.com/using-the-tabindex-attribute/)
-* [`title`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/title)：一个字符串。指定元素的工具提示文本。
-* [`translate`](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/translate)：`'yes'` 或 `'no'`。传入 `'no'` 会将元素内容排除在翻译之外。
-
-你也可以将自定义属性作为 props 传入，例如 `mycustomprop="someValue"`。这在与第三方库集成时很有用。自定义属性名必须是小写且不能以 `on` 开头。其值会被转换为字符串。如果传入 `null` 或 `undefined`，自定义属性会被移除。
-
-这些事件只会在 [`<form>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form) 元素上触发：
-
-* [`onReset`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/reset_event)：一个 [`Event` 处理函数](#event-handler)。在表单被重置时触发。
-* `onResetCapture`：`onReset` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onSubmit`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/submit_event)：一个 [`Event` 处理函数](#event-handler)。在表单被提交时触发。
-* `onSubmitCapture`：`onSubmit` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-
-这些事件只会在 [`<dialog>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog) 元素上触发。与浏览器事件不同，它们在 React 中会冒泡：
-
-* [`onCancel`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/cancel_event)：一个 [`Event` 处理函数](#event-handler)。在用户尝试关闭对话框时触发。
-* `onCancelCapture`：`onCancel` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onClose`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDialogElement/close_event)：一个 [`Event` 处理函数](#event-handler)。在对话框关闭时触发。
-* `onCloseCapture`：`onClose` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-
-这些事件只会在 [`<details>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details) 元素上触发。与浏览器事件不同，它们在 React 中会冒泡：
-
-* [`onToggle`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLDetailsElement/toggle_event)：一个 [`Event` 处理函数](#event-handler)。在用户切换 details 时触发。
-* `onToggleCapture`：`onToggle` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-
-这些事件会在 [`<img>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img)、[`<iframe>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe)、[`<object>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/object)、[`<embed>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/embed)、[`<link>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/link) 和 [SVG `<image>`](https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/SVG_Image_Tag) 元素上触发。与浏览器事件不同，它们在 React 中会冒泡：
-
-* `onLoad`：一个 [`Event` 处理函数](#event-handler)。在资源加载完成时触发。
-* `onLoadCapture`：`onLoad` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onError`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/error_event)：一个 [`Event` 处理函数](#event-handler)。在资源无法加载时触发。
-* `onErrorCapture`：`onError` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-
-这些事件会在诸如 [`<audio>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/audio) 和 [`<video>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video) 等资源上触发。与浏览器事件不同，它们在 React 中会冒泡：
-
-* [`onAbort`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/abort_event)：一个 [`Event` 处理函数](#event-handler)。在资源尚未完全加载、但不是由于错误导致时触发。
-* `onAbortCapture`：`onAbort` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onCanPlay`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/canplay_event)：一个 [`Event` 处理函数](#event-handler)。在有足够数据开始播放、但不足以在不缓冲的情况下播放到结尾时触发。
-* `onCanPlayCapture`：`onCanPlay` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onCanPlayThrough`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/canplaythrough_event)：一个 [`Event` 处理函数](#event-handler)。在有足够数据、很可能可以在无需缓冲直到结束的情况下开始播放时触发。
-* `onCanPlayThroughCapture`：`onCanPlayThrough` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onDurationChange`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/durationchange_event)：一个 [`Event` 处理函数](#event-handler)。在媒体时长更新时触发。
-* `onDurationChangeCapture`：`onDurationChange` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onEmptied`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/emptied_event)：一个 [`Event` 处理函数](#event-handler)。在媒体变为空时触发。
-* `onEmptiedCapture`：`onEmptied` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onEncrypted`](https://w3c.github.io/encrypted-media/#dom-evt-encrypted)：一个 [`Event` 处理函数](#event-handler)。在浏览器遇到加密媒体时触发。
-* `onEncryptedCapture`：`onEncrypted` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onEnded`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/ended_event)：一个 [`Event` 处理函数](#event-handler)。在播放因没有剩余内容可播放而停止时触发。
-* `onEndedCapture`：`onEnded` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onError`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/error_event)：一个 [`Event` 处理函数](#event-handler)。在资源无法加载时触发。
-* `onErrorCapture`：`onError` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onLoadedData`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/loadeddata_event)：一个 [`Event` 处理函数](#event-handler)。在当前播放帧加载完成时触发。
-* `onLoadedDataCapture`：`onLoadedData` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onLoadedMetadata`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/loadedmetadata_event)：一个 [`Event` 处理函数](#event-handler)。在元数据加载完成时触发。
-* `onLoadedMetadataCapture`：`onLoadedMetadata` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onLoadStart`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/loadstart_event)：一个 [`Event` 处理函数](#event-handler)。在浏览器开始加载资源时触发。
-* `onLoadStartCapture`：`onLoadStart` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onPause`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/pause_event)：一个 [`Event` 处理函数](#event-handler)。在媒体暂停时触发。
-* `onPauseCapture`：`onPause` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onPlay`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/play_event)：一个 [`Event` 处理函数](#event-handler)。在媒体不再暂停时触发。
-* `onPlayCapture`：`onPlay` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onPlaying`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/playing_event)：一个 [`Event` 处理函数](#event-handler)。在媒体开始或重新开始播放时触发。
-* `onPlayingCapture`：`onPlaying` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onProgress`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/progress_event)：一个 [`Event` 处理函数](#event-handler)。在资源加载期间周期性触发。
-* `onProgressCapture`：`onProgress` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onRateChange`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/ratechange_event)：一个 [`Event` 处理函数](#event-handler)。在播放速率变化时触发。
-* `onRateChangeCapture`：`onRateChange` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* `onResize`：一个 [`Event` 处理函数](#event-handler)。在视频尺寸变化时触发。
-* `onResizeCapture`：`onResize` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onSeeked`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/seeked_event)：一个 [`Event` 处理函数](#event-handler)。在一次 seek 操作完成时触发。
-* `onSeekedCapture`：`onSeeked` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onSeeking`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/seeking_event)：一个 [`Event` 处理函数](#event-handler)。在一次 seek 操作开始时触发。
-* `onSeekingCapture`：`onSeeking` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onStalled`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/stalled_event)：一个 [`Event` 处理函数](#event-handler)。在浏览器等待数据但一直未能加载时触发。
-* `onStalledCapture`：`onStalled` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onSuspend`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/suspend_event)：一个 [`Event` 处理函数](#event-handler)。在加载资源被挂起时触发。
-* `onSuspendCapture`：`onSuspend` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onTimeUpdate`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/timeupdate_event)：一个 [`Event` 处理函数](#event-handler)。在当前播放时间更新时触发。
-* `onTimeUpdateCapture`：`onTimeUpdate` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onVolumeChange`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/volumechange_event)：一个 [`Event` 处理函数](#event-handler)。在音量变化时触发。
-* `onVolumeChangeCapture`：`onVolumeChange` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-* [`onWaiting`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/waiting_event)：一个 [`Event` 处理函数](#event-handler)。在因临时缺少数据而停止播放时触发。
-* `onWaitingCapture`：`onWaiting` 的一个在 [捕获阶段。](/learn/responding-to-events#capture-phase-events)触发的版本。
-
-#### 注意事项 {/*common-caveats*/}
-
-- 你不能同时传入 `children` 和 `dangerouslySetInnerHTML`。
-- 某些事件（如 `onAbort` 和 `onLoad`）在浏览器中不会冒泡，但在 React 中会冒泡。
-
----
 
 ### `ref` 回调函数 {/*ref-callback*/}
 
@@ -275,11 +52,11 @@ title: "常见组件（例如 <div>）"
 
 #### 返回值 {/*returns*/}
 
-* **可选** `cleanup function`：当 `ref` 被解绑时，React 会调用清理函数。如果 `ref` 回调没有返回函数，那么当 `ref` 被解绑时，React 会再次以 `null` 作为参数调用该回调。此行为将在未来版本中移除。
+* **可选** `清理函数`：当 `ref` 被解绑时，React 会调用清理函数。如果 `ref` 回调没有返回函数，那么当 `ref` 被解绑时，React 会再次以 `null` 作为参数调用该回调。此行为将在未来版本中移除。
 
 #### 注意事项 {/*caveats*/}
 
-* 当启用 Strict Mode 时，React 会在第一次真实的 setup 之前，**额外执行一次仅开发环境可见的 setup+cleanup 循环**。这是一个压力测试，用于确保你的清理逻辑能“镜像”你的 setup 逻辑，并停止或撤销 setup 所做的一切。如果这造成问题，请实现清理函数。
+* 当启用 Strict Mode 时，React 会在第一次真实的设置之前，**额外执行一次仅开发环境可见的设置+清理循环**。这是一个压力测试，用于确保你的清理逻辑能“镜像”你的设置逻辑，并停止或撤销设置所做的一切。如果这造成问题，请实现清理函数。
 * 当你传入一个*不同的* `ref` 回调时，如果提供了清理函数，React 会调用*之前*回调的清理函数。如果没有定义清理函数，`ref` 回调将以 `null` 作为参数被调用。*下一个*函数将以 DOM 节点作为参数被调用。
 
 ---
@@ -294,7 +71,7 @@ title: "常见组件（例如 <div>）"
 }} />
 ```
 
-它遵循底层 DOM 事件相同的标准，但修复了一些浏览器不一致问题。
+它遵循与底层 DOM 事件相同的标准，但修复了一些浏览器不一致问题。
 
 某些 React 事件不会直接映射到浏览器的原生事件。例如在 `onMouseLeave` 中，`e.nativeEvent` 会指向一个 `mouseout` 事件。具体映射并不是公共 API 的一部分，未来可能会改变。如果你出于某些原因需要底层浏览器事件，请从 `e.nativeEvent` 读取。
 

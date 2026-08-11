@@ -10,7 +10,7 @@ React 拥有数百万开发者组成的社区。在本页中，我们列出了�
 
 ## 行为准则 {/*code-of-conduct*/}
 
-在参与 React 社区之前，[请阅读我们的行为准则。](https://github.com/facebook/react/blob/main/CODE_OF_CONDUCT.md) 我们采用了 [Contributor Covenant](https://www.contributor-covenant.org/)，并且我们期望所有社区成员都遵守其中的准则。
+在参与 React 社区之前，[请阅读我们的行为准则。](https://github.com/react/react/blob/main/CODE_OF_CONDUCT.md) 我们采用了[贡献者公约](https://www.contributor-covenant.org/)，并期望所有社区成员遵守其中的准则。
 
 ## Stack Overflow {/*stack-overflow*/}
 
@@ -25,7 +25,7 @@ Stack Overflow 是一个很受欢迎的论坛，适合提出代码级问题，�
 * [DEV 的 React 社区](https://dev.to/t/react)
 * [Hashnode 的 React 社区](https://hashnode.com/n/reactjs)
 * [Reactiflux 在线聊天](https://discord.gg/reactiflux)
-* [Reddit 的 React 社区](https://www.reddit.com/r/reactjs/)
+* [Reddit 的 React 社区](https://www.reddit.com/r/reactjs/)。
 
 ## 新闻 {/*news*/}
 

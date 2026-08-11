@@ -1,13 +1,13 @@
 ---
-title: "React Server Components 中的拒绝服务与源代码泄露"
-author: The React Team
+title: "React 服务端组件中的拒绝服务与源代码泄露"
+author: React 团队
 date: 2025/12/11
-description: 安全研究人员在尝试利用上周关键漏洞的补丁时，发现并披露了 React Server Components 中另外两个漏洞。高危漏洞拒绝服务（CVE-2025-55184）和中危漏洞源代码泄露（CVE-2025-55183）
+description: 安全研究人员在尝试利用上周关键漏洞的补丁时，发现并披露了 React 服务端组件中的另外两个漏洞。高危漏洞拒绝服务（CVE-2025-55184）和中危漏洞源代码泄露（CVE-2025-55183）
 
 
 ---
 
-2025 年 12 月 11 日，作者：[The React Team](/community/team)
+2025 年 12 月 11 日，作者：[React 团队](/community/team)
 
 _更新于 2026 年 1 月 26 日。_
 
@@ -15,7 +15,7 @@ _更新于 2026 年 1 月 26 日。_
 
 <Intro>
 
-安全研究人员在尝试利用上周关键漏洞的补丁时，发现并披露了 React Server Components 中另外两个漏洞。
+安全研究人员在尝试利用上周关键漏洞的补丁时，发现并披露了 React 服务端组件中的另外两个漏洞。
 
 **这些新漏洞不允许远程代码执行。** React2Shell 的补丁在缓解远程代码执行利用方面仍然有效。
 
@@ -98,7 +98,7 @@ _更新于 2026 年 1 月 26 日。_
 
 这对于缓解安全通告是必要的，但你不需要更新 `react` 和 `react-dom`，因此不会在 React Native 中引起版本不匹配错误。
 
-更多信息请参见 [这个 issue](https://github.com/facebook/react-native/issues/54772#issuecomment-3617929832)。
+更多信息请参见[此问题](https://github.com/react/react-native/issues/54772#issuecomment-3617929832)。
 
 ---
 
@@ -132,7 +132,7 @@ _更新于 2026 年 1 月 26 日。_
 
 ## 高危：拒绝服务 {/*high-severity-denial-of-service*/}
 
-**CVEs:** [CVE-2025-55184](https://www.cve.org/CVERecord?id=CVE-2025-55184) 和 [CVE-2025-67779](https://www.cve.org/CVERecord?id=CVE-2025-67779)
+**CVE:** [CVE-2025-55184](https://www.cve.org/CVERecord?id=CVE-2025-55184) 和 [CVE-2025-67779](https://www.cve.org/CVERecord?id=CVE-2025-67779)
 **基础分数:** 7.5（高）
 
 安全研究人员发现，可以构造并发送恶意 HTTP 请求到任何 Server Functions 端点，当 React 对其反序列化时，可能导致一个无限循环，从而挂起服务器进程并消耗 CPU。即使你的应用没有实现任何 React Server Function 端点，如果你的应用支持 React Server Components，也仍然可能存在漏洞。

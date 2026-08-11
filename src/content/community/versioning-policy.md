@@ -134,9 +134,9 @@ React 的所有变更在发布给公众之前都会经过广泛的内部测试�
   ```console
   yarn upgrade react@canary react-dom@canary
   ```
-- 用更新后的包运行你的测试套件。
-- 如果一切通过，太好了！你可以预期你的项目将兼容下一个 React 次版本发布。
-- 如果出现意外问题，请通过 [提交 issue](https://github.com/facebook/react/issues) 告诉我们。
+- 针对更新后的软件包运行你的测试套件。
+- 如果全部通过，那就太好了！你可以预期你的项目能够与下一个 React 次版本发布配合使用。
+- 如果出现意外问题，请通过[提交 issue](https://github.com/react/react/issues)告知我们。
 
 使用这种工作流的项目有 Next.js。你可以参考他们的 [CircleCI 配置](https://github.com/zeit/next.js/blob/c0a1c0f93966fe33edd93fb53e5fafb0dcd80a9e/.circleci/config.yml) 作为示例。
 
@@ -166,4 +166,4 @@ Experimental 中的发布会以 npm 上的 `experimental` 标签发布。版本�
 
 当我们准备宣布新的实验时，我们会发布到 [React 博客](/blog)，但这并不意味着我们会公开宣传每一个实验。
 
-你始终可以参考我们公开的 GitHub 仓库的 [历史记录](https://github.com/facebook/react/commits/main)，以获取完整的变更列表。
+你始终可以参考我们公开 GitHub 仓库的[历史记录](https://github.com/react/react/commits/main)，以获取完整的变更列表。

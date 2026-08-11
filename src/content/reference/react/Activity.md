@@ -302,13 +302,13 @@ export default function App() {
         isActive={activeTab === 'home'}
         onClick={() => setActiveTab('home')}
       >
-        Home
+        主页
       </TabButton>
       <TabButton
         isActive={activeTab === 'contact'}
         onClick={() => setActiveTab('contact')}
       >
-        Contact
+        联系
       </TabButton>
 
       <hr />
@@ -337,7 +337,7 @@ export default function TabButton({ onClick, children, isActive }) {
 ```js src/Home.js
 export default function Home() {
   return (
-    <p>Welcome to my profile!</p>
+    <p>欢迎来到我的个人资料页！</p>
   );
 }
 ```
@@ -346,11 +346,11 @@ export default function Home() {
 export default function Contact() {
   return (
     <div>
-      <p>Send me a message!</p>
+      <p>给我发送消息！</p>
 
       <textarea />
 
-      <p>You can find me online here:</p>
+      <p>你可以在这里找到我的在线联系方式：</p>
       <ul>
         <li>admin@mysite.com</li>
         <li>+123456789</li>
@@ -390,13 +390,13 @@ export default function App() {
         isActive={activeTab === 'home'}
         onClick={() => setActiveTab('home')}
       >
-        Home
+        主页
       </TabButton>
       <TabButton
         isActive={activeTab === 'contact'}
         onClick={() => setActiveTab('contact')}
       >
-        Contact
+        联系
       </TabButton>
 
       <hr />
@@ -429,7 +429,7 @@ export default function TabButton({ onClick, children, isActive }) {
 ```js src/Home.js
 export default function Home() {
   return (
-    <p>Welcome to my profile!</p>
+    <p>欢迎来到我的个人资料页！</p>
   );
 }
 ```
@@ -438,11 +438,11 @@ export default function Home() {
 export default function Contact() {
   return (
     <div>
-      <p>Send me a message!</p>
+      <p>给我发送消息！</p>
 
       <textarea />
 
-      <p>You can find me online here:</p>
+      <p>你可以在这里找到我的在线联系方式：</p>
       <ul>
         <li>admin@mysite.com</li>
         <li>+123456789</li>
@@ -755,17 +755,7 @@ video { width: 300px; margin-top: 10px; aspect-ratio: 16/9; }
 
 <Note>
 
-**只有支持 Suspense 的数据源才会在预渲染期间被获取。** 它们包括：
-
-- 使用支持 Suspense 的框架进行数据获取，例如 [Relay](https://relay.dev/docs/guided-tour/rendering/loading-states/) 和 [Next.js](https://nextjs.org/docs/app/building-your-application/routing/loading-ui-and-streaming#streaming-with-suspense)
-- 使用 [`lazy`](/reference/react/lazy) 懒加载组件代码
-- 使用 [`use`](/reference/react/use) 读取缓存 Promise 的值
-
-Activity **不会**检测在 Effect 中获取的数据。
-
-上面 `Posts` 组件中如何加载数据，具体取决于你的框架。如果你使用支持 Suspense 的框架，你可以在其数据获取文档中找到详细信息。
-
-目前尚不支持在不使用特定框架的情况下进行支持 Suspense 的数据获取。实现支持 Suspense 的数据源所需的条件是不稳定且未文档化的。React 的未来版本将提供一个用于将数据源与 Suspense 集成的官方 API。
+只有从[会激活 Suspense 边界的来源](/reference/react/Suspense#what-activates-a-suspense-boundary)读取的数据（例如，使用 [`use`](/reference/react/use) 读取的 Promise）才会在预渲染期间获取。Activity 无法检测在 Effect 内部获取的数据。
 
 </Note>
 
@@ -916,7 +906,7 @@ Activity 边界会通过将其子组件设为 `display: none` 并清理它们的
 
 但在某些情况下，隐藏组件的行为会与卸载组件不同。最明显的是，由于隐藏组件的 DOM 并未被销毁，来自该 DOM 的任何副作用都会持续存在，即使组件已经被隐藏也是如此。
 
-例如，考虑一个 `<video>` 标签。通常它不需要任何清理，因为即使你正在播放视频，卸载该标签也会停止浏览器中的视频和音频播放。试着播放下面这个示例中的视频，然后按 Home：
+例如，考虑一个 `<video>` 标签。通常它不需要任何清理，因为即使你正在播放视频，卸载该标签也会停止浏览器中的视频和音频播放。试着播放下面这个示例中的视频，然后按“首页”：
 
 <Sandpack>
 
@@ -935,13 +925,13 @@ export default function App() {
         isActive={activeTab === 'home'}
         onClick={() => setActiveTab('home')}
       >
-        Home
+        首页
       </TabButton>
       <TabButton
         isActive={activeTab === 'video'}
         onClick={() => setActiveTab('video')}
       >
-        Video
+        视频
       </TabButton>
 
       <hr />
@@ -1024,13 +1014,13 @@ export default function App() {
         isActive={activeTab === 'home'}
         onClick={() => setActiveTab('home')}
       >
-        Home
+        首页
       </TabButton>
       <TabButton
         isActive={activeTab === 'video'}
         onClick={() => setActiveTab('video')}
       >
-        Video
+        视频
       </TabButton>
 
       <hr />
@@ -1122,7 +1112,7 @@ export default function VideoTab() {
 
 我们使用 `useLayoutEffect` 而不是 `useEffect`，因为从概念上讲，清理代码与组件 UI 在视觉上被隐藏这件事是绑定的。如果使用普通的 effect，这段代码可能会因为（比如说）重新挂起的 Suspense 边界或视图过渡而被延迟。
 
-让我们看看新的行为。试着播放视频，切换到 Home 标签页，然后再切回 Video 标签页：
+让我们看看新的行为。试着播放视频，切换到“首页”标签页，然后再切回“视频”标签页：
 
 <Sandpack>
 
@@ -1141,13 +1131,13 @@ export default function App() {
         isActive={activeTab === 'home'}
         onClick={() => setActiveTab('home')}
       >
-        Home
+        首页
       </TabButton>
       <TabButton
         isActive={activeTab === 'video'}
         onClick={() => setActiveTab('video')}
       >
-        Video
+        视频
       </TabButton>
 
       <hr />

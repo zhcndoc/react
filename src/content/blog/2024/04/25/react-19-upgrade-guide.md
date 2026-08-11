@@ -24,21 +24,21 @@ React 19 新增的改进需要一些破坏性变更，但我们已经尽力让�
 
 我们建议先升级到 React 18.3，以便在升级到 React 19 之前帮助识别任何问题。
 
-有关 18.3 中变更的列表，请参见 [发布说明](https://github.com/facebook/react/blob/main/CHANGELOG.md#1830-april-25-2024)。
+有关 18.3 中变更的列表，请参阅[发布说明](https://github.com/react/react/blob/main/CHANGELOG.md#1830-april-25-2024)。
 
 </Note>
 
 在这篇文章中，我们将指导你完成升级到 React 19 的步骤：
 
 - [安装](#installing)
-- [Codemod](#codemods)
+- [代码转换](#codemods)
 - [破坏性变更](#breaking-changes)
 - [新的弃用项](#new-deprecations)
 - [值得注意的变更](#notable-changes)
 - [TypeScript 变更](#typescript-changes)
 - [更新日志](#changelog)
 
-如果你想帮助我们测试 React 19，请按照本升级指南中的步骤操作，并[报告你遇到的任何问题](https://github.com/facebook/react/issues/new?assignees=&labels=React+19&projects=&template=19.md&title=%5BReact+19%5D)。有关 React 19 新增功能的列表，请参见 [React 19 发布文章](/blog/2024/12/05/react-19)。
+如果你愿意帮助我们测试 React 19，请按照本升级指南中的步骤操作，并[报告](https://github.com/react/react/issues/new?assignees=&labels=React+19&projects=&template=19.md&title=%5BReact+19%5D)你遇到的任何问题。有关 React 19 中新增功能的列表，请参阅 [React 19 发布文章](/blog/2024/12/05/react-19)。
 
 ---
 ## 安装 {/*installing*/}
@@ -91,7 +91,7 @@ yarn add --exact @types/react@^19.0.0 @types/react-dom@^19.0.0
 
 我们还为最常见的替换提供了一个 codemod。请参见下方的 [TypeScript 变更](#typescript-changes)。
 
-## Codemods {/*codemods*/}
+## 代码迁移工具 {/*codemods*/}
 
 为了帮助升级，我们与 [codemod.com](https://codemod.com) 团队合作发布了 codemod，它们会自动将你的代码更新为 React 19 中许多新的 API 和模式。
 
@@ -100,7 +100,7 @@ yarn add --exact @types/react@^19.0.0 @types/react-dom@^19.0.0
 
 <Note>
 
-#### 运行所有 React 19 codemod {/*run-all-react-19-codemods*/}
+#### 运行所有 React 19 代码迁移工具 {/*run-all-react-19-codemods*/}
 
 使用 React 19 的 `codemod` 配方运行本指南中列出的所有 codemod：
 
@@ -256,7 +256,7 @@ class Child extends React.Component {
 #### 移除：字符串 refs {/*removed-string-refs*/}
 字符串 refs 已在 [2018 年 3 月（v16.3.0）](https://legacy.reactjs.org/blog/2018/03/27/update-on-async-rendering.html) 中弃用。
 
-类组件在被 ref 回调替代之前支持字符串 refs，原因是其[有多个缺点](https://github.com/facebook/react/issues/1373)。在 React 19 中，我们将移除字符串 refs，以使 React 更简单、更易理解。
+类组件之前支持字符串 refs，但由于其[多种缺点](https://github.com/react/react/issues/1373)，后来被 ref 回调取代。在 React 19 中，我们将移除字符串 refs，使 React 更简单、更易于理解。
 
 如果你仍在类组件中使用字符串 refs，你需要迁移到 ref 回调：
 
@@ -515,7 +515,7 @@ React 19 支持将 [`ref` 作为属性](/blog/2024/04/25/react-19#ref-as-a-prop)
 
 ### 已弃用：`react-test-renderer` {/*deprecated-react-test-renderer*/}
 
-我们正在弃用 `react-test-renderer`，因为它实现了自己的一套渲染器环境，与用户实际使用的环境不一致，会促进对实现细节的测试，并且依赖对 React 内部实现的 introspection。
+我们正在弃用 `react-test-renderer`，因为它实现了自己的一套渲染器环境，与用户实际使用的环境不一致，会促进对实现细节的测试，并且依赖对 React 内部实现的内省。
 
 测试渲染器是在还没有像 [React Testing Library](https://testing-library.com) 这样更可行的测试策略之前创建的，而我们现在建议改用现代测试库。
 
@@ -535,13 +535,13 @@ React 19 包含了对 Strict Mode 的若干修复和改进。
 
 在 React 19 中，当组件挂起时，React 会立即提交最近的 Suspense 边界的 fallback，而不会等待整个兄弟树渲染完成。在 fallback 提交后，React 会为挂起的兄弟节点安排另一次渲染，以便“预热”树中其余部分的懒加载请求：
 
-<Diagram name="prerender" height={162} width={1270} alt="Diagram showing a tree of three components, one parent labeled Accordion and two children labeled Panel. Both Panel components contain isActive with value false.">
+<Diagram name="prerender" height={162} width={1270} alt="展示一个由三个组件组成的树状图：一个标记为 Accordion 的父组件和两个标记为 Panel 的子组件。两个 Panel 组件都包含值为 false 的 isActive。">
 
 此前，当组件挂起时，会先渲染挂起的兄弟节点，然后再提交 fallback。
 
 </Diagram>
 
-<Diagram name="prewarm" height={162} width={1270} alt="The same diagram as the previous, with the isActive of the first child Panel component highlighted indicating a click with the isActive value set to true. The second Panel component still contains value false." >
+<Diagram name="prewarm" height={162} width={1270} alt="与上一个图示相同，但第一个子 Panel 组件中的 isActive 被高亮，表示发生了一次点击，其 isActive 值被设置为 true。第二个 Panel 组件仍包含值 false。" >
 
 在 React 19 中，当组件挂起时，会先提交 fallback，然后再渲染挂起的兄弟节点。
 
@@ -669,7 +669,7 @@ type Example = ReactElement["props"];
 //   ^? 以前是 'any'，现在是 'unknown'
 ```
 
-只有在你有大量依赖于不安全访问元素 props 的旧代码时，才需要这个改动。元素 introspection 只是一种逃生舱口，你应通过显式的 `any` 明确表示你的 props 访问是不安全的。
+只有在你有大量依赖于不安全访问元素 props 的旧代码时，才需要这个改动。元素内省只是一种逃生舱口，你应通过显式的 `any` 明确表示你的 props 访问是不安全的。
 
 ### TypeScript 中的 JSX 命名空间 {/*the-jsx-namespace-in-typescript*/}
 此更改已包含在 `react-19` codemod 预设中，名称为 [`scoped-jsx`](https://github.com/eps1lon/types-react-codemod#scoped-jsx)
@@ -728,24 +728,24 @@ const reducer = (state: State, action: Action) => state;
 
 ### 其他破坏性变更 {/*other-breaking-changes*/}
 
-- **react-dom**: `src` 和 `href` 中的 javascript URL 会报错 [#26507](https://github.com/facebook/react/pull/26507)
-- **react-dom**: 从 `onRecoverableError` 中移除 `errorInfo.digest` [#28222](https://github.com/facebook/react/pull/28222)
-- **react-dom**: 移除 `unstable_flushControlled` [#26397](https://github.com/facebook/react/pull/26397)
-- **react-dom**: 移除 `unstable_createEventHandle` [#28271](https://github.com/facebook/react/pull/28271)
-- **react-dom**: 移除 `unstable_renderSubtreeIntoContainer` [#28271](https://github.com/facebook/react/pull/28271)
-- **react-dom**: 移除 `unstable_runWithPriority` [#28271](https://github.com/facebook/react/pull/28271)
-- **react-is**: 从 `react-is` 中移除已弃用的方法 [28224](https://github.com/facebook/react/pull/28224)
+- **react-dom**：`src` 和 `href` 中的 JavaScript URL 报错 [#26507](https://github.com/react/react/pull/26507)
+- **react-dom**：从 `onRecoverableError` 中移除 `errorInfo.digest` [#28222](https://github.com/react/react/pull/28222)
+- **react-dom**：移除 `unstable_flushControlled` [#26397](https://github.com/react/react/pull/26397)
+- **react-dom**：移除 `unstable_createEventHandle` [#28271](https://github.com/react/react/pull/28271)
+- **react-dom**：移除 `unstable_renderSubtreeIntoContainer` [#28271](https://github.com/react/react/pull/28271)
+- **react-dom**：移除 `unstable_runWithPriority` [#28271](https://github.com/react/react/pull/28271)
+- **react-is**：从 `react-is` 中移除已弃用的方法 [28224](https://github.com/react/react/pull/28224)
 
 ### 其他值得注意的变更 {/*other-notable-changes*/}
 
-- **react**: 批量同步、默认和连续的 lanes [#25700](https://github.com/facebook/react/pull/25700)
-- **react**: 不再预渲染已挂起组件的兄弟组件 [#26380](https://github.com/facebook/react/pull/26380)
-- **react**: 检测由渲染阶段更新导致的无限更新循环 [#26625](https://github.com/facebook/react/pull/26625)
-- **react-dom**: popstate 中的过渡现在是同步的 [#26025](https://github.com/facebook/react/pull/26025)
-- **react-dom**: 移除 SSR 期间的布局效果警告 [#26395](https://github.com/facebook/react/pull/26395)
-- **react-dom**: 对 src/href 为空字符串时发出警告且不再设置为空字符串（锚点标签除外） [#28124](https://github.com/facebook/react/pull/28124)
+- **react**：批处理同步、默认和连续 lanes [#25700](https://github.com/react/react/pull/25700)
+- **react**：不再预渲染被挂起组件的兄弟组件 [#26380](https://github.com/react/react/pull/26380)
+- **react**：检测由渲染阶段更新导致的无限更新循环 [#26625](https://github.com/react/react/pull/26625)
+- **react-dom**：popstate 中的 transitions 现在是同步的 [#26025](https://github.com/react/react/pull/26025)
+- **react-dom**：移除 SSR 期间关于 layout effect 的警告 [#26395](https://github.com/react/react/pull/26395)
+- **react-dom**：对空的 `src`/`href` 发出警告且不再设置为空字符串（锚点标签除外） [#28124](https://github.com/react/react/pull/28124)
 
-完整的变更列表请参阅 [更新日志](https://github.com/facebook/react/blob/main/CHANGELOG.md#1900-december-5-2024)。
+完整的变更列表请参阅[更新日志](https://github.com/react/react/blob/main/CHANGELOG.md#1900-december-5-2024)。
 
 ---
 

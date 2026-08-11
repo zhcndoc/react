@@ -132,7 +132,7 @@ export default defineConfig([
 }
 ```
 
-要启用 React Compiler 规则，我们建议使用 `recommended` 预设。你也可以查看 [README](https://github.com/facebook/react/blob/main/packages/eslint-plugin-react-hooks/README.md) 获取更多说明。以下是我们在 React Conf 上展示的一些示例：
+要启用 React Compiler 规则，我们建议使用 `recommended` 预设。你也可以查看 [README](https://github.com/react/react/blob/main/packages/eslint-plugin-react-hooks/README.md) 了解更多说明。以下是我们在 React Conf 上介绍的一些示例：
 
 - 使用 [`set-state-in-render`](/reference/eslint-plugin-react-hooks/lints/set-state-in-render) 捕捉会导致渲染循环的 `setState` 模式。
 - 通过 [`set-state-in-effect`](/reference/eslint-plugin-react-hooks/lints/set-state-in-effect) 标记 effect 中的昂贵工作。

@@ -352,7 +352,7 @@ export function Footer() {
           <FooterLink href="/community" isHeader={true}>
             社区
           </FooterLink>
-          <FooterLink href="https://github.com/facebook/react/blob/main/CODE_OF_CONDUCT.md">
+          <FooterLink href="https://github.com/react/react/blob/main/CODE_OF_CONDUCT.md">
             行为准则
           </FooterLink>
           <FooterLink href="/community/team">认识团队</FooterLink>
@@ -392,7 +392,7 @@ export function Footer() {
             </ExternalLink>
             <ExternalLink
               aria-label="React on Github"
-              href="https://github.com/facebook/react"
+              href="https://github.com/react/react"
               className={socialLinkClasses}>
               <IconGitHub />
             </ExternalLink>

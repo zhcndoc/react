@@ -24,15 +24,42 @@ title: <Suspense>
 ### `<Suspense>` {/*suspense*/}
 
 #### 属性 {/*props*/}
-* `children`：你打算渲染的实际 UI。如果 `children` 在渲染时挂起，Suspense 边界将切换为渲染 `fallback`。
-* `fallback`：如果实际 UI 还未完成加载，用来替代渲染的备用 UI。任何有效的 React 节点都可以接受，不过在实践中，回退界面通常是一个轻量级占位视图，例如加载中的转圈器或骨架屏。当 `children` 挂起时，Suspense 会自动切换到 `fallback`；当数据准备好后，再切换回 `children`。如果 `fallback` 在渲染时挂起，它会激活最近的父级 Suspense 边界。
+* `children`：你打算渲染的实际 UI。如果 `children` 在渲染过程中暂停，Suspense 边界将切换为渲染 `fallback`。
+* `fallback`：如果实际 UI 尚未加载完成，则替代实际 UI 进行渲染的 UI。接受任何有效的 React 节点，但在实践中，`fallback` 通常是一个轻量级的占位视图，例如加载指示器或骨架屏。当 `children` 暂停时，Suspense 会自动切换为 `fallback`，数据准备就绪后再切换回 `children`。如果 `fallback` 在渲染过程中暂停，它将激活最近的父级 Suspense 边界。
+* <ExperimentalBadge /> **可选** `defer`：一个布尔值。当为 `true` 时，即使 `children` 中没有任何内容暂停，React 也可能先显示 `fallback`，稍后再渲染或流式传输 `children`。用于渲染成本较高的内容。默认为 `false`。
 
 #### 注意事项 {/*caveats*/}
 
-- 对于那些在第一次挂载之前就挂起的渲染，React 不会保留任何状态。当组件加载完成后，React 会从头重新尝试渲染挂起的树。
-- 如果 Suspense 曾经显示过该树的内容，但随后它再次挂起，则会再次显示 `fallback`，除非导致它挂起的更新是由 [`startTransition`](/reference/react/startTransition) 或 [`useDeferredValue`](/reference/react/useDeferredValue) 引起的。
-- 如果 React 需要隐藏已经可见的内容，因为它再次挂起了，那么它会清理内容树中的 [布局 Effect](/reference/react/useLayoutEffect)。当内容再次准备好显示时，React 会再次触发布局 Effect。这可以确保测量 DOM 布局的 Effect 不会在内容被隐藏时尝试这么做。
-- React 在底层包含了一些优化，例如与 Suspense 集成的 *流式服务端渲染* 和 *选择性 Hydration*。阅读 [架构概览](https://github.com/reactwg/react-18/discussions/37) 并观看 [技术演讲](https://www.youtube.com/watch?v=pj5N-Khihgc) 了解更多。
+- Suspense 无法检测在 Effect 或事件处理函数中获取数据的情况。它只会在[下面列出的情况](#what-activates-a-suspense-boundary)下激活。
+- 对于在首次挂载前就暂停的渲染，React 不会保留其任何状态。组件加载完成后，React 将从头开始重新渲染暂停的树。
+- 如果 Suspense 正在显示该树的内容，但随后再次暂停，除非导致该更新的操作是由 [`startTransition`](/reference/react/startTransition) 或 [`useDeferredValue`](/reference/react/useDeferredValue) 引起的，否则将再次显示 `fallback`。
+- React 每 300 毫秒最多显示一次暂停的内容，该时间从上次显示开始计算。在此时间窗口内准备就绪的边界会[一起显示](/blog/2025/10/01/react-19-2#batching-suspense-boundaries-for-ssr)，而不是逐个显示。
+- 如果 React 需要隐藏已经可见的内容，因为它再次暂停了，React 将清理内容树中的[布局 Effect](/reference/react/useLayoutEffect)。内容准备好再次显示时，React 将再次触发布局 Effect。这可以确保测量 DOM 布局的 Effect 不会在内容隐藏时尝试执行此操作。
+- React 包含与 Suspense 集成的底层优化，例如*流式服务器渲染*和*选择性水合*。阅读[架构概览](https://github.com/reactwg/react-18/discussions/37)并观看[技术演讲](https://www.youtube.com/watch?v=pj5N-Khihgc)以了解更多信息。
+
+---
+
+### 什么会激活 Suspense 边界 {/*what-activates-a-suspense-boundary*/}
+
+Suspense 边界会等待其内容准备就绪后再显示内容。以下任一情况都会使边界无法显示其内容：
+
+- 使用 [`lazy`](/reference/react/lazy) 延迟加载组件代码。
+- 使用 [`use`](/reference/react/use) 读取 Promise，包括从[服务器组件](/reference/rsc/server-components)流式传输的数据，或通过[支持 Suspense 的框架](#suspense-enabled-frameworks)加载的数据。
+- 加载使用 [`<link rel="stylesheet">` 和 `precedence` 属性渲染的样式表。](/reference/react-dom/components/link#special-rendering-behavior)React 会阻塞边界，直到样式表加载完成，但有超时限制。[参见下面的示例。](#waiting-for-a-stylesheet-to-load)
+- 在流式服务器渲染期间等待大型边界的 HTML 到达。发送 HTML 需要时间，因此即使其中没有任何内容暂停，包含足够内容的边界也会被激活。React 会随着 HTML 的到达显示内容。
+- <CanaryBadge /> 加载字体。默认情况下，Suspense 不会等待字体，但在 [`<ViewTransition>`](/reference/react/ViewTransition) 更新期间，会等待新字体加载完成，但有超时限制，以避免文本使用后备字体闪烁。[参见下面的示例。](#waiting-for-a-font-to-load)
+- <CanaryBadge /> 加载图片。默认情况下，Suspense 不会等待图片，但在 [`<ViewTransition>`](/reference/react/ViewTransition) 更新期间，React 会阻塞边界，直到图片加载完成，但有超时限制。添加 `onLoad` 处理函数可以让特定图片不受此行为影响。[参见下面的示例。](#waiting-for-an-image-to-load)
+- <ExperimentalBadge /> 在 [`<Suspense defer>`](#props) 边界内执行 CPU 密集型渲染工作。
+
+<Note>
+
+#### 支持 Suspense 的框架 {/*suspense-enabled-frameworks*/}
+
+*支持 Suspense 的框架*提供了一种在组件中读取数据的方式，并以此激活最近的 Suspense 边界。加载数据的具体方式取决于你使用的框架，详情请参阅其文档。在底层，支持 Suspense 的框架会维护一个 Promise 缓存，并调用 [`use`](/reference/react/use) 来暂停于某个 Promise。
+
+不使用框架时，只要 Promise 已[缓存，以便在多次渲染之间复用同一个实例](/reference/react/use#caching-promises-for-client-components)，你也可以直接使用 `use` 读取 Promise。
+
+</Note>
 
 ---
 
@@ -203,23 +230,256 @@ async function getAlbums() {
 
 </Sandpack>
 
-<Note>
+相比之下，在 `use` 外部获取数据的代码（例如在 Effect 内部获取数据）不会激活边界：
 
-**只有支持 Suspense 的数据源才会激活 Suspense 组件。** 它们包括：
+<Sandpack>
 
-- 使用像 [Relay](https://relay.dev/docs/guided-tour/rendering/loading-states/) 和 [Next.js](https://nextjs.org/docs/app/building-your-application/routing/loading-ui-and-streaming#streaming-with-suspense) 这样的支持 Suspense 的框架进行数据获取
-- 使用 [`lazy`](/reference/react/lazy) 懒加载组件代码
-- 使用 [`use`](/reference/react/use) 读取缓存 Promise 的值
+```js src/App.js hidden
+import { useState } from 'react';
+import ArtistPage from './ArtistPage.js';
 
-Suspense **不会** 检测在 Effect 或事件处理函数内部获取的数据。
+export default function App() {
+  const [show, setShow] = useState(false);
+  if (show) {
+    return (
+      <ArtistPage
+        artist={{
+          id: 'the-beatles',
+          name: 'The Beatles',
+        }}
+      />
+    );
+  } else {
+    return (
+      <button onClick={() => setShow(true)}>
+        Open The Beatles artist page
+      </button>
+    );
+  }
+}
+```
 
-上面 `Albums` 组件中加载数据的具体方式取决于你的框架。如果你使用支持 Suspense 的框架，你会在其数据获取文档中找到详细说明。
+```js src/ArtistPage.js active
+import { Suspense } from 'react';
+import EffectAlbums from './EffectAlbums.js';
 
-目前尚不支持在不使用有明确约定框架的情况下进行支持 Suspense 的数据获取。实现支持 Suspense 的数据源所需的条件是不稳定且没有文档记录的。用于将数据源与 Suspense 集成的官方 API 将在 React 的未来版本中发布。
+export default function ArtistPage({ artist }) {
+  return (
+    <>
+      <h1>{artist.name}</h1>
+      <Suspense fallback={<Loading />}>
+        <EffectAlbums artistId={artist.id} />
+      </Suspense>
+    </>
+  );
+}
 
-</Note>
+function Loading() {
+  return <h2>🌀 Loading...</h2>;
+}
+```
 
----
+```js src/EffectAlbums.js
+import { useState, useEffect } from 'react';
+import { fetchData } from './data.js';
+
+export default function EffectAlbums({ artistId }) {
+  const [albums, setAlbums] = useState([]);
+
+  useEffect(() => {
+    let active = true;
+    fetchData(`/${artistId}/albums`).then(result => {
+      if (active) {
+        setAlbums(result);
+      }
+    });
+    return () => {
+      active = false;
+    };
+  }, [artistId]);
+
+  // Suspense 无法看到这次数据获取，因此它的回退界面
+  // 永远不会显示。列表会保持为空，直到数据到达。
+  return (
+    <ul>
+      {albums.map(album => (
+        <li key={album.id}>
+          {album.title} ({album.year})
+        </li>
+      ))}
+    </ul>
+  );
+}
+```
+
+```js src/data.js hidden
+// 注意：你如何进行数据获取取决于
+// 你与 Suspense 一起使用的框架。
+// 通常，缓存逻辑会在框架内部。
+
+let cache = new Map();
+
+export function fetchData(url) {
+  if (!cache.has(url)) {
+    cache.set(url, getData(url));
+  }
+  return cache.get(url);
+}
+
+async function getData(url) {
+  if (url === '/the-beatles/albums') {
+    return await getAlbums();
+  } else {
+    throw Error('Not implemented');
+  }
+}
+
+async function getAlbums() {
+  // 添加一个假的延迟，让等待更明显。
+  await new Promise(resolve => {
+    setTimeout(resolve, 3000);
+  });
+
+  return [{
+    id: 13,
+    title: 'Let It Be',
+    year: 1970
+  }, {
+    id: 12,
+    title: 'Abbey Road',
+    year: 1969
+  }, {
+    id: 11,
+    title: 'Yellow Submarine',
+    year: 1969
+  }, {
+    id: 10,
+    title: 'The Beatles',
+    year: 1968
+  }, {
+    id: 9,
+    title: 'Magical Mystery Tour',
+    year: 1967
+  }, {
+    id: 8,
+    title: 'Sgt. Pepper\'s Lonely Hearts Club Band',
+    year: 1967
+  }, {
+    id: 7,
+    title: 'Revolver',
+    year: 1966
+  }, {
+    id: 6,
+    title: 'Rubber Soul',
+    year: 1965
+  }, {
+    id: 5,
+    title: 'Help!',
+    year: 1965
+  }, {
+    id: 4,
+    title: 'Beatles For Sale',
+    year: 1964
+  }, {
+    id: 3,
+    title: 'A Hard Day\'s Night',
+    year: 1964
+  }, {
+    id: 2,
+    title: 'With The Beatles',
+    year: 1963
+  }, {
+    id: 1,
+    title: 'Please Please Me',
+    year: 1963
+  }];
+}
+```
+
+</Sandpack>
+
+在流式服务器渲染期间，当边界的 HTML 仍在传输时，该边界也会被激活。使用任何流式服务器渲染 API 时，React 会先发送带有 `fallback` 的[外壳](/reference/react-dom/server/renderToPipeableStream#specifying-what-goes-into-the-shell)，然后传输每个边界的 HTML，并在内容到达后替换其 `fallback`。点击“渲染页面”即可观察页面逐步传输：
+
+<Sandpack>
+
+```js src/App.js hidden
+```
+
+```html public/index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>流式 SSR</title>
+</head>
+<body>
+  <button id="render">Render the page</button>
+  <br /><br />
+  <iframe id="container" style="width: 100%; height: 180px; border: 1px solid #aaa;"></iframe>
+</body>
+</html>
+```
+
+```js src/index.js
+import { flushReadableStreamToFrame } from './demo-helpers.js';
+import { Suspense, use } from 'react';
+import { renderToReadableStream } from 'react-dom/server';
+
+let posts = null;
+
+function Posts() {
+  const text = use(posts.promise);
+  return <p>{text}</p>;
+}
+
+function ProfilePage() {
+  return (
+    <html>
+      <body>
+        <h1>Alice</h1>
+        <p>Photographer and traveler.</p>
+        <Suspense fallback={<p>⌛ Loading posts...</p>}>
+          <Posts />
+        </Suspense>
+      </body>
+    </html>
+  );
+}
+
+async function main(frame) {
+  posts = Promise.withResolvers();
+  const stream = await renderToReadableStream(<ProfilePage />);
+
+  // 帖子会在外壳传输完成后解析，因此 React
+  // 会传输它们的 HTML，并替换回退界面。
+  setTimeout(() => {
+    posts.resolve(
+      'Just got back from two weeks along the coast. The drive ' +
+      'was longer than expected, but every stop was worth it. ' +
+      'A full write-up and more photos are coming soon.'
+    );
+  }, 1500);
+
+  await flushReadableStreamToFrame(stream, frame);
+}
+
+document.getElementById('render').addEventListener('click', () => {
+  main(document.getElementById('container'));
+});
+```
+
+```js src/demo-helpers.js hidden
+export async function flushReadableStreamToFrame(readable, frame) {
+  const doc = frame.contentWindow.document;
+  const decoder = new TextDecoder();
+  for await (const chunk of readable) {
+    doc.write(decoder.decode(chunk, { stream: true }));
+  }
+  doc.close();
+}
+```
+
+</Sandpack>
 
 ### 一次性一起显示内容 {/*revealing-content-together-at-once*/}
 
@@ -258,7 +518,7 @@ export default function App() {
   } else {
     return (
       <button onClick={() => setShow(true)}>
-        Open The Beatles artist page
+        打开披头士艺术家页面
       </button>
     );
   }
@@ -286,7 +546,7 @@ export default function ArtistPage({ artist }) {
 }
 
 function Loading() {
-  return <h2>🌀 Loading...</h2>;
+  return <h2>🌀 加载中...</h2>;
 }
 ```
 
@@ -508,7 +768,7 @@ export default function App() {
   } else {
     return (
       <button onClick={() => setShow(true)}>
-        Open The Beatles artist page
+        打开披头士乐队页面
       </button>
     );
   }
@@ -538,7 +798,7 @@ export default function ArtistPage({ artist }) {
 }
 
 function BigSpinner() {
-  return <h2>🌀 Loading...</h2>;
+  return <h2>🌀 加载中……</h2>;
 }
 
 function AlbumsGlimmer() {
@@ -1119,7 +1379,7 @@ function Router() {
 }
 
 function BigSpinner() {
-  return <h2>🌀 Loading...</h2>;
+  return <h2>🌀 加载中...</h2>;
 }
 ```
 
@@ -1128,7 +1388,7 @@ export default function Layout({ children }) {
   return (
     <div className="layout">
       <section className="header">
-        Music Browser
+        音乐浏览器
       </section>
       <main>
         {children}
@@ -1142,7 +1402,7 @@ export default function Layout({ children }) {
 export default function IndexPage({ navigate }) {
   return (
     <button onClick={() => navigate('/the-beatles')}>
-      Open The Beatles artist page
+      打开披头士艺术家页面
     </button>
   );
 }
@@ -1431,7 +1691,7 @@ function Router() {
 }
 
 function BigSpinner() {
-  return <h2>🌀 Loading...</h2>;
+  return <h2>🌀 加载中...</h2>;
 }
 ```
 
@@ -1440,7 +1700,7 @@ export default function Layout({ children }) {
   return (
     <div className="layout">
       <section className="header">
-        Music Browser
+        音乐浏览器
       </section>
       <main>
         {children}
@@ -1454,7 +1714,7 @@ export default function Layout({ children }) {
 export default function IndexPage({ navigate }) {
   return (
     <button onClick={() => navigate('/the-beatles')}>
-      Open The Beatles artist page
+      打开披头士艺术家页面
     </button>
   );
 }
@@ -1992,15 +2252,98 @@ main {
 
 ### 在导航时重置 Suspense 边界 {/*resetting-suspense-boundaries-on-navigation*/}
 
-在过渡期间，React 会避免隐藏已经显示出来的内容。不过，如果你导航到一个带有不同参数的路由，你可能希望告诉 React 这是*不同*的内容。你可以用 `key` 来表达这一点：
+在 Transition 期间，React 会避免隐藏已经显示的内容。但是，当你导航到*不同*的内容时，例如另一位用户的个人资料，你会希望边界显示 fallback，而不是之前的内容。你可以使用 `key` 来表达这一点：
 
 ```js
 <ProfilePage key={queryParams.id} />
 ```
 
-假设你正在用户资料页内切换，而且某些内容挂起了。如果该更新被包裹在过渡中，它不会为已经可见的内容触发回退界面。这是预期行为。
+使用不同的 `key` 后，React 会将这些个人资料视为不同的内容，并在导航期间重置 Suspense 边界。`key` 可以放在边界本身，也可以放在它上方的组件上。与 Suspense 集成的路由器应该会自动执行此操作。
 
-不过，现在再想象你在两个不同的用户资料之间切换。在这种情况下，显示回退界面是合理的。例如，一个用户的时间线与另一个用户的时间线是*不同内容*。通过指定 `key`，你可以确保 React 将不同用户的资料视为不同组件，并在导航期间重置 Suspense 边界。集成了 Suspense 的路由器应该会自动这样做。
+在下面的示例中，打开个人资料页面会加载第一个个人资料。按下“Bob”会导航到另一个个人资料，而 `key` 会重置边界，因此会显示 fallback，而不是之前用户的简介。尝试移除 `key`：在下一个简介加载期间，之前的简介仍会保持可见：
+
+<Sandpack>
+
+```js src/App.js hidden
+import { useState } from 'react';
+import ProfilePage from './ProfilePage.js';
+
+export default function App() {
+  const [show, setShow] = useState(false);
+  if (show) {
+    return <ProfilePage />;
+  }
+  return (
+    <button onClick={() => setShow(true)}>
+      Open profile page
+    </button>
+  );
+}
+```
+
+```js src/ProfilePage.js active
+import { Suspense, useState, startTransition } from 'react';
+import Bio from './Bio.js';
+import { fetchBio } from './data.js';
+
+export default function ProfilePage() {
+  const [user, setUser] = useState(() => ({
+    id: 'alice',
+    bioPromise: fetchBio('alice'),
+  }));
+  function navigate(id) {
+    startTransition(() => {
+      setUser({ id, bioPromise: fetchBio(id) });
+    });
+  }
+  return (
+    <>
+      <button onClick={() => navigate('alice')}>
+        Alice
+      </button>
+      <button onClick={() => navigate('bob')}>
+        Bob
+      </button>
+      <Suspense key={user.id} fallback={<p>⌛ Loading profile...</p>}>
+        <Bio bioPromise={user.bioPromise} />
+      </Suspense>
+    </>
+  );
+}
+```
+
+```js src/Bio.js
+import { use } from 'react';
+
+export default function Bio({ bioPromise }) {
+  const bio = use(bioPromise);
+  return <p>{bio}</p>;
+}
+```
+
+```js src/data.js hidden
+// 注意：数据获取的方式取决于
+// 你与 Suspense 搭配使用的框架。
+
+export async function fetchBio(userId) {
+  // 添加一个人为延迟，让等待过程更加明显。
+  await new Promise(resolve => {
+    setTimeout(resolve, 1500);
+  });
+
+  return userId === 'alice'
+    ? 'Alice is a photographer and traveler.'
+    : 'Bob collects vintage synthesizers.';
+}
+```
+
+```css
+button {
+  margin-right: 8px;
+}
+```
+
+</Sandpack>
 
 ---
 
@@ -2026,6 +2369,871 @@ function Chat() {
 ```
 
 服务器 HTML 会包含加载指示器。到客户端后，它会被 `Chat` 组件替换。
+
+---
+
+### 等待样式表加载 {/*waiting-for-a-stylesheet-to-load*/}
+
+使用带有 [`<link rel="stylesheet">` 和 `precedence` 属性](/reference/react-dom/components/link#special-rendering-behavior) 渲染的样式表会阻塞 Suspense 边界，直到样式表加载完成（最长等待一段时间），这样内容就不会以未应用样式的状态出现。
+
+在下面的示例中，`Card` 组件使用 `precedence` 渲染一个样式表。按下“Show card”：React 会一直显示回退内容，直到样式表加载完成，然后显示应用了样式的卡片。
+
+作为对比，第二个按钮在一个独立的文档中执行相同的更新，但不使用 React。不会等待样式表加载，因此卡片文本会先以回退字体显示，然后再切换：
+
+<Sandpack>
+
+```js
+import { Suspense, useState, startTransition } from 'react';
+import { freshStylesheetUrl } from './styles.js';
+import VanillaCard from './VanillaCard.js';
+
+function Card({ href }) {
+  return (
+    <>
+      <link rel="stylesheet" href={href} precedence="default" />
+      <div className="fancy-card">This card uses a font from the stylesheet.</div>
+    </>
+  );
+}
+
+export default function App() {
+  const [href, setHref] = useState(null);
+  return (
+    <>
+      <button
+        onClick={() => {
+          startTransition(() => {
+            setHref(freshStylesheetUrl());
+          });
+        }}>
+        Show card
+      </button>
+      {href && (
+        <Suspense fallback={<p>⌛ Loading styles...</p>}>
+          <Card href={href} />
+        </Suspense>
+      )}
+      <hr />
+      <VanillaCard />
+    </>
+  );
+}
+```
+
+```js src/VanillaCard.js
+import { useRef } from 'react';
+import { freshStylesheetUrl } from './styles.js';
+
+export default function VanillaCard() {
+  const ref = useRef(null);
+  function show() {
+    const doc = ref.current.contentWindow.document;
+    doc.open();
+    doc.write(`
+      <style>
+        body { margin: 0; }
+        .fancy-card {
+          padding: 20px;
+          border-radius: 8px;
+          color: white;
+          font-family: 'Caveat', sans-serif;
+          font-size: 24px;
+          background: linear-gradient(135deg, #087ea4, #2b3491);
+        }
+      </style>
+      <div class="fancy-card">This card uses a font from the stylesheet.</div>
+      <link rel="stylesheet" href="${freshStylesheetUrl()}">
+    `);
+    doc.close();
+  }
+  return (
+    <>
+      <button onClick={show}>Show card (without React)</button>
+      <iframe ref={ref} title="Vanilla card" className="vanilla-frame" />
+    </>
+  );
+}
+```
+
+```js src/styles.js hidden
+// 添加唯一参数，使样式表不会被缓存，
+// 并确保每次运行都会显示加载状态。
+export function freshStylesheetUrl() {
+  return (
+    'https://fonts.googleapis.com/css2?family=Caveat&display=swap' +
+    '&t=' +
+    Date.now()
+  );
+}
+```
+
+```css
+#root {
+  min-height: 300px;
+}
+button {
+  margin-right: 8px;
+}
+hr {
+  margin: 16px 0;
+}
+.fancy-card {
+  margin-top: 1em;
+  padding: 20px;
+  border-radius: 8px;
+  color: white;
+  font-family: 'Caveat', sans-serif;
+  font-size: 24px;
+  background: linear-gradient(135deg, #087ea4, #2b3491);
+}
+.vanilla-frame {
+  display: block;
+  margin-top: 1em;
+  border: none;
+  width: 100%;
+  height: 90px;
+}
+```
+
+</Sandpack>
+
+---
+
+### <CanaryBadge /> 从 Suspense 内容进行动画 {/*animating-from-suspense-content*/}
+
+Suspense 可以与 [`<ViewTransition>`](/reference/react/ViewTransition) 组合使用，以实现从回退内容切换到实际内容时的动画效果。将边界包裹在 `<ViewTransition>` 中，React 会将这次切换视为一次更新，默认在回退内容和实际内容之间进行交叉淡化：
+
+<Sandpack>
+
+```js src/Video.js hidden
+function Thumbnail({video, children}) {
+  return (
+    <div
+      aria-hidden="true"
+      tabIndex={-1}
+      className={`thumbnail ${video.image}`}
+    />
+  );
+}
+
+export function Video({video}) {
+  return (
+    <div className="video">
+      <div className="link">
+        <Thumbnail video={video}></Thumbnail>
+        <div className="info">
+          <div className="video-title">{video.title}</div>
+          <div className="video-description">{video.description}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function VideoPlaceholder() {
+  const video = {image: 'loading'};
+  return (
+    <div className="video">
+      <div className="link">
+        <Thumbnail video={video}></Thumbnail>
+        <div className="info">
+          <div className="video-title loading" />
+          <div className="video-description loading" />
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+```js
+import {ViewTransition, useState, startTransition, Suspense} from 'react';
+import {Video, VideoPlaceholder} from './Video';
+import {useLazyVideoData} from './data';
+
+function LazyVideo() {
+  const video = useLazyVideoData();
+  return <Video video={video} />;
+}
+
+export default function Component() {
+  const [showItem, setShowItem] = useState(false);
+  return (
+    <>
+      <button
+        onClick={() => {
+          startTransition(() => {
+            setShowItem((prev) => !prev);
+          });
+        }}>
+        {showItem ? '➖' : '➕'}
+      </button>
+      {showItem ? (
+        <ViewTransition>
+          <Suspense fallback={<VideoPlaceholder />}>
+            <LazyVideo />
+          </Suspense>
+        </ViewTransition>
+      ) : null}
+    </>
+  );
+}
+```
+
+```js src/data.js hidden
+import {use} from 'react';
+
+let cache = null;
+
+function fetchVideo() {
+  if (!cache) {
+    cache = new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          id: '1',
+          title: 'First video',
+          description: 'Video description',
+          image: 'blue',
+        });
+      }, 1000);
+    });
+  }
+  return cache;
+}
+
+export function useLazyVideoData() {
+  return use(fetchVideo());
+}
+```
+
+```css
+#root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 200px;
+}
+button {
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f8ff;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s, border 0.3s;
+}
+button:hover {
+  border: 2px solid #ccc;
+  background-color: #e0e8ff;
+}
+.thumbnail {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.5rem;
+  outline-offset: 2px;
+  width: 8rem;
+  vertical-align: middle;
+  background-color: #ffffff;
+  background-size: cover;
+  user-select: none;
+}
+.thumbnail.blue {
+  background-image: conic-gradient(at top right, #c76a15, #087ea4, #2b3491);
+}
+.loading {
+  background-image: linear-gradient(
+    90deg,
+    rgba(173, 216, 230, 0.3) 25%,
+    rgba(135, 206, 250, 0.5) 50%,
+    rgba(173, 216, 230, 0.3) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+.video {
+  display: flex;
+  flex-direction: row;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 1em;
+}
+.video .link {
+  display: flex;
+  flex-direction: row;
+  flex: 1 1 0;
+  gap: 0.125rem;
+  outline-offset: 4px;
+  cursor: pointer;
+}
+.video .info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 8px;
+  gap: 0.125rem;
+}
+.video .info:hover {
+  text-decoration: underline;
+}
+.video-title {
+  font-size: 15px;
+  line-height: 1.25;
+  font-weight: 700;
+  color: #23272f;
+}
+.video-title.loading {
+  height: 20px;
+  width: 80px;
+  border-radius: 0.5rem;
+}
+.video-description {
+  color: #5e687e;
+  font-size: 13px;
+  border-radius: 0.5rem;
+}
+.video-description.loading {
+  height: 15px;
+  width: 100px;
+}
+```
+
+```json package.json hidden
+{
+  "dependencies": {
+    "react": "canary",
+    "react-dom": "canary",
+    "react-scripts": "latest"
+  }
+}
+```
+
+</Sandpack>
+
+<Note>
+
+将 `<ViewTransition>` 放置在边界的不同位置，会决定回退内容和实际内容是作为一次更新进行交叉淡化，还是分别进行退出和进入动画。你还可以使用 View Transition 类来[自定义动画](/reference/react/ViewTransition#customizing-animations)。
+
+[详细了解如何从 Suspense 内容进行动画。](/reference/react/ViewTransition#animating-from-suspense-content)
+
+</Note>
+
+---
+
+### <CanaryBadge /> 等待字体加载 {/*waiting-for-a-font-to-load*/}
+
+当 [`<ViewTransition>`](/reference/react/ViewTransition) 为 Suspense 边界的显示设置动画时，React 会等待内容引入的新字体，直到超时为止，这样文本就不会以备用字体闪现。此行为仅发生在 `<ViewTransition>` 更新期间。
+
+在下面的示例中，Suspense 边界被包裹在 `<ViewTransition>` 中，并且 `Quote` 组件会在其数据加载时暂停。渲染引用内容会开始下载字体。React 会保持备用内容可见，直到字体加载完成，因此引用内容一开始就会以其指定的字体显示。
+
+作为对比，第二个按钮执行相同的更新，但不使用 React。没有任何机制等待字体加载，因此文本会先以备用字体显示，然后再切换：
+
+<Sandpack>
+
+```js
+import { ViewTransition, Suspense, use, useState, startTransition } from 'react';
+import { fetchQuote } from './data.js';
+import { freshFontUrl } from './font.js';
+import VanillaQuote from './VanillaQuote.js';
+
+function Quote({ fontSrc }) {
+  const quote = use(fetchQuote());
+  return (
+    <>
+      <style href={fontSrc} precedence="default">
+        {`@font-face {
+          font-family: 'Fancy';
+          src: url(${fontSrc}) format('truetype');
+          font-display: swap;
+        }`}
+      </style>
+      <p className="quote fancy">{quote}</p>
+    </>
+  );
+}
+
+export default function App() {
+  const [fontSrc, setFontSrc] = useState(null);
+  return (
+    <>
+      <button
+        onClick={() => {
+          startTransition(() => {
+            setFontSrc(freshFontUrl());
+          });
+        }}>
+        Show quote
+      </button>
+      {fontSrc && (
+        <ViewTransition>
+          <Suspense fallback={<p className="quote">⌛ Loading quote...</p>}>
+            <Quote fontSrc={fontSrc} />
+          </Suspense>
+        </ViewTransition>
+      )}
+      <hr />
+      <VanillaQuote />
+    </>
+  );
+}
+```
+
+```js src/VanillaQuote.js
+import { useRef } from 'react';
+import { freshFontUrl } from './font.js';
+
+export default function VanillaQuote() {
+  const ref = useRef(null);
+  function show() {
+    const style = document.createElement('style');
+    style.textContent = `@font-face {
+      font-family: 'VanillaFancy';
+      src: url(${freshFontUrl()}) format('truetype');
+      font-display: swap;
+    }`;
+    document.head.appendChild(style);
+    ref.current.innerHTML = `<p class="quote vanilla-fancy">The best way to predict the future is to invent it.</p>`;
+  }
+  return (
+    <>
+      <button onClick={show}>Show quote (without React)</button>
+      <div ref={ref} />
+    </>
+  );
+}
+```
+
+```js src/font.js hidden
+// 添加一个唯一参数，使字体不会被缓存，
+// 并确保每次运行都会显示加载状态。
+export function freshFontUrl() {
+  return (
+    'https://raw.githubusercontent.com/google/fonts/main/ofl/caveat/Caveat%5Bwght%5D.ttf' +
+    '?t=' +
+    Date.now()
+  );
+}
+```
+
+```js src/data.js hidden
+// 注意：数据获取的具体方式取决于
+// 你与 Suspense 一起使用的框架。
+// 通常，缓存逻辑应位于框架内部。
+
+let cache = null;
+
+export function fetchQuote() {
+  if (!cache) {
+    cache = new Promise((resolve) => {
+      // 添加一个人为的延迟，让等待过程更加明显。
+      setTimeout(() => {
+        resolve(
+          'The best way to predict the future is to invent it.'
+        );
+      }, 500);
+    });
+  }
+  return cache;
+}
+```
+
+```css
+#root {
+  min-height: 260px;
+}
+.quote {
+  font-size: 20px;
+  margin-top: 1em;
+}
+.fancy {
+  font-family: 'Fancy', sans-serif;
+}
+.vanilla-fancy {
+  font-family: 'VanillaFancy', sans-serif;
+}
+hr {
+  margin: 16px 0;
+}
+```
+
+```json package.json hidden
+{
+  "dependencies": {
+    "react": "canary",
+    "react-dom": "canary",
+    "react-scripts": "latest"
+  }
+}
+```
+
+</Sandpack>
+
+---
+
+### <CanaryBadge /> 等待图像加载 {/*waiting-for-an-image-to-load*/}
+
+当 [`<ViewTransition>`](/reference/react/ViewTransition) 为 Suspense 边界的显示过程添加动画时，React 会等待可见图像加载完成，直到超时为止，这样动画就不会在图像加载一半时开始。此行为仅发生在 `<ViewTransition>` 更新期间。添加 `onLoad` 处理函数可以让特定图像跳过等待，即使它位于 `<ViewTransition>` 内部也是如此。
+
+在下面的示例中，Suspense 边界被包裹在 `<ViewTransition>` 中，并在头像加载完成前显示个人资料骨架屏。
+
+作为对比，第二个按钮执行相同的更新，但不使用 React。不会等待图像加载，因此卡片会立即出现，而图像加载完成后才显示：
+
+<Sandpack>
+
+```js
+import { ViewTransition, Suspense, useState, startTransition } from 'react';
+import { freshImageUrl } from './image.js';
+import VanillaProfile from './VanillaProfile.js';
+
+function Profile({ src }) {
+  return (
+    <div className="card">
+      <img src={src} alt="Jack Pope" width={80} height={80} />
+      <p>Jack Pope</p>
+    </div>
+  );
+}
+
+function ProfilePlaceholder() {
+  return (
+    <div className="card">
+      <div className="avatar-placeholder" />
+      <p className="name-placeholder">&nbsp;</p>
+    </div>
+  );
+}
+
+export default function App() {
+  const [src, setSrc] = useState(null);
+  return (
+    <>
+      <button
+        onClick={() => {
+          startTransition(() => {
+            setSrc(freshImageUrl());
+          });
+        }}>
+        显示个人资料
+      </button>
+      {src && (
+        <ViewTransition>
+          <Suspense fallback={<ProfilePlaceholder />}>
+            <Profile src={src} />
+          </Suspense>
+        </ViewTransition>
+      )}
+      <hr />
+      <VanillaProfile />
+    </>
+  );
+}
+```
+
+```js src/VanillaProfile.js
+import { useRef } from 'react';
+import { freshImageUrl } from './image.js';
+
+export default function VanillaProfile() {
+  const ref = useRef(null);
+  function show() {
+    ref.current.innerHTML = `<div class="card">
+      <img src="${freshImageUrl()}" alt="Jack Pope" width="80" height="80" />
+      <p>Jack Pope</p>
+    </div>`;
+  }
+  return (
+    <>
+      <button onClick={show}>显示个人资料（不使用 React）</button>
+      <div ref={ref} />
+    </>
+  );
+}
+```
+
+```js src/image.js hidden
+// 添加一个唯一参数，使图像不会被缓存，
+// 并确保每次运行都显示加载状态。
+export function freshImageUrl() {
+  return 'https://react.dev/images/team/jack-pope.jpg?t=' + Date.now();
+}
+```
+
+```css
+#root {
+  min-height: 390px;
+}
+.card {
+  margin-top: 1em;
+}
+.card img {
+  display: block;
+  border-radius: 50%;
+  background: #dfe3e9;
+}
+.card p {
+  font-weight: bold;
+}
+.avatar-placeholder {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #dfe3e9;
+}
+.name-placeholder {
+  width: 90px;
+  border-radius: 4px;
+  background: #dfe3e9;
+}
+hr {
+  margin: 16px 0;
+}
+```
+
+```json package.json hidden
+{
+  "dependencies": {
+    "react": "canary",
+    "react-dom": "canary",
+    "react-scripts": "latest"
+  }
+}
+```
+
+</Sandpack>
+
+---
+
+### <CanaryBadge /> 协调字体、图像和样式表 {/*coordinating-fonts-images-and-stylesheets*/}
+
+Suspense 边界可以同时等待数据、样式表、字体和图像。等待字体和图像只会发生在 [`<ViewTransition>`](/reference/react/ViewTransition) 更新期间。在下面的示例中，`ProfileCard` 组件会在数据加载时暂停渲染，并使用 `precedence` 渲染一个样式表、以新字体显示文本，以及渲染一幅肖像。React 会在数据和样式表加载期间保持骨架屏可见。随后，`<ViewTransition>` 的显示过程会等待字体和图像，因此卡片会以完整状态出现。
+
+作为对比，不使用 React 的版本会加载相同的数据，并让每个资源按照自己的时间表到达：
+
+<Sandpack>
+
+```js
+import { ViewTransition, Suspense, use, useState, startTransition } from 'react';
+import { fetchQuote } from './data.js';
+import { freshStylesheetUrl, freshImageUrl } from './resources.js';
+import VanillaProfileCard from './VanillaProfileCard.js';
+
+function ProfileCard({ resources }) {
+  const quote = use(resources.quotePromise);
+  return (
+    <>
+      <link rel="stylesheet" href={resources.stylesheet} precedence="default" />
+      <div className="profile-card">
+        <img src={resources.image} alt="Jack Pope" width={80} height={80} />
+        <div>
+          <p className="name">Jack Pope</p>
+          <p className="bio">{quote}</p>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function ProfileCardPlaceholder() {
+  return (
+    <div className="profile-card">
+      <div className="avatar-placeholder" />
+      <div>
+        <p className="name name-placeholder">&nbsp;</p>
+        <p className="bio bio-placeholder">&nbsp;</p>
+      </div>
+    </div>
+  );
+}
+
+export default function App() {
+  const [resources, setResources] = useState(null);
+  return (
+    <>
+      <button
+        onClick={() => {
+          startTransition(() => {
+            setResources({
+              quotePromise: fetchQuote(),
+              stylesheet: freshStylesheetUrl(),
+              image: freshImageUrl(),
+            });
+          });
+        }}>
+        显示个人资料
+      </button>
+      {resources && (
+        <ViewTransition>
+          <Suspense fallback={<ProfileCardPlaceholder />}>
+            <ProfileCard resources={resources} />
+          </Suspense>
+        </ViewTransition>
+      )}
+      <hr />
+      <VanillaProfileCard />
+    </>
+  );
+}
+```
+
+```js src/VanillaProfileCard.js
+import { useRef } from 'react';
+import { fetchQuote } from './data.js';
+import { freshStylesheetUrl, freshImageUrl } from './resources.js';
+
+export default function VanillaProfileCard() {
+  const ref = useRef(null);
+  async function show() {
+    const quote = await fetchQuote();
+    const doc = ref.current.contentWindow.document;
+    doc.open();
+    doc.write(`
+      <style>
+        body { margin: 0; font-family: sans-serif; }
+        .profile-card { display: flex; gap: 12px; align-items: center; }
+        .profile-card img { border-radius: 50%; background: #dfe3e9; }
+        .name { margin: 0 0 4px; font-family: 'Caveat', sans-serif; font-size: 22px; line-height: 28px; font-weight: bold; }
+        .bio { margin: 0; font-family: 'Caveat', sans-serif; font-size: 20px; line-height: 26px; }
+      </style>
+      <div class="profile-card">
+        <img src="${freshImageUrl()}" alt="Jack Pope" width="80" height="80" />
+        <div>
+          <p class="name">Jack Pope</p>
+          <p class="bio">${quote}</p>
+        </div>
+      </div>
+      <link rel="stylesheet" href="${freshStylesheetUrl()}">
+    `);
+    doc.close();
+  }
+  return (
+    <>
+      <button onClick={show}>显示个人资料（不使用 React）</button>
+      <iframe ref={ref} title="Vanilla 个人资料卡片" className="vanilla-frame" />
+    </>
+  );
+}
+```
+
+```js src/resources.js hidden
+// 添加一个唯一参数，使资源不会被缓存，
+// 并确保每次运行都显示加载状态。
+export function freshStylesheetUrl() {
+  return (
+    'https://fonts.googleapis.com/css2?family=Caveat&display=swap' +
+    '&t=' +
+    Date.now()
+  );
+}
+
+export function freshImageUrl() {
+  return 'https://react.dev/images/team/jack-pope.jpg?t=' + Date.now();
+}
+```
+
+```js src/data.js hidden
+// 注意：数据获取的具体方式取决于你使用的框架，
+// 以及该框架如何与 Suspense 配合使用。
+
+export async function fetchQuote() {
+  // 添加一个人为的延迟，让等待过程更明显。
+  await new Promise((resolve) => {
+    setTimeout(resolve, 1000);
+  });
+  return 'The best way to predict the future is to invent it.';
+}
+```
+
+```css
+#root {
+  min-height: 320px;
+}
+button {
+  margin-right: 8px;
+}
+hr {
+  margin: 16px 0;
+}
+.profile-card {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 1em;
+}
+.profile-card img {
+  border-radius: 50%;
+  background: #dfe3e9;
+}
+.name {
+  margin: 0 0 4px;
+  font-family: 'Caveat', sans-serif;
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: bold;
+}
+.bio {
+  margin: 0;
+  font-family: 'Caveat', sans-serif;
+  font-size: 20px;
+  line-height: 26px;
+}
+.profile-card img {
+  display: block;
+}
+.avatar-placeholder {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #dfe3e9;
+}
+.name-placeholder,
+.bio-placeholder {
+  border-radius: 4px;
+  background: #dfe3e9;
+  color: transparent;
+}
+.name-placeholder {
+  width: 90px;
+}
+.bio-placeholder {
+  width: 220px;
+}
+.vanilla-frame {
+  display: block;
+  margin-top: 1em;
+  border: none;
+  width: 100%;
+  height: 110px;
+}
+```
+
+```json package.json hidden
+{
+  "dependencies": {
+    "react": "canary",
+    "react-dom": "canary",
+    "react-scripts": "latest"
+  }
+}
+```
+
+</Sandpack>
 
 ---
 

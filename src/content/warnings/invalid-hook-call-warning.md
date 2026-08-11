@@ -143,7 +143,7 @@ window.React2 = require('react');
 console.log(window.React1 === window.React2);
 ```
 
-如果它打印出 `false`，那么你可能有两个 React，需要弄清楚这是为什么。[这个问题](https://github.com/facebook/react/issues/13991)包含了社区遇到的一些常见原因。
+如果输出 `false`，那么你可能有两个 React，需要弄清楚为什么会这样。[这个问题](https://github.com/react/react/issues/13991)包含了社区遇到的一些常见原因。
 
 当你使用 `npm link` 或类似工具时，这个问题也可能出现。在这种情况下，你的打包器可能会“看到”两个 React——一个在应用文件夹中，一个在你的库文件夹中。假设 `myapp` 和 `mylib` 是相邻文件夹，一种可能的修复方法是在 `mylib` 中运行 `npm link ../myapp/node_modules/react`。这应该会让该库使用应用中的 React 副本。
 
@@ -155,4 +155,4 @@ console.log(window.React1 === window.React2);
 
 ## 其他原因 {/*other-causes*/}
 
-如果以上方法都不起作用，请在[这个 issue](https://github.com/facebook/react/issues/13991) 中留言，我们会尽力帮助你。尽量创建一个能重现问题的小示例——你可能会在这样做的过程中发现问题所在。
+如果这些方法都不起作用，请在[这个 issue](https://github.com/react/react/issues/13991)中留言，我们会尽力提供帮助。尝试创建一个能够复现问题的小示例——在此过程中，你可能会发现问题所在。

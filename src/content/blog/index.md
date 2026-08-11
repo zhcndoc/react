@@ -150,7 +150,7 @@ React 团队很高兴分享一些更新：
 
 ### 所有发布说明 {/*all-release-notes*/}
 
-并非每个 React 版本都值得拥有自己的博客文章，但你可以在 React 仓库中的 [`CHANGELOG.md`](https://github.com/facebook/react/blob/main/CHANGELOG.md) 文件里，以及 [Releases](https://github.com/facebook/react/releases) 页面上，找到每个版本的详细更新日志。
+并非每个 React 版本都值得单独撰写一篇博客文章，但你可以在 React 代码库的 [`CHANGELOG.md`](https://github.com/react/react/blob/main/CHANGELOG.md) 文件中，以及 [Releases](https://github.com/react/react/releases) 页面上，找到每个版本的详细变更日志。
 
 ---
 

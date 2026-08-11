@@ -4,7 +4,7 @@ title: renderToReadableStream
 
 <Intro>
 
-`renderToReadableStream` 会将 React 树渲染为 [Readable Web Stream。](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream)
+`renderToReadableStream` 会将 React 树渲染为 [可读 Web 流。](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream)
 
 ```js
 const stream = await renderToReadableStream(reactNode, options?)
@@ -49,16 +49,16 @@ async function handler(request) {
 
 * `reactNode`：你想要渲染为 HTML 的 React 节点。例如，像 `<App />` 这样的 JSX 元素。它应当表示整个文档，因此 `App` 组件应该渲染 `<html>` 标签。
 
-* **可选** `options`：一个带有流式传输选项的对象。
-  * **可选** `bootstrapScriptContent`：如果指定，这个字符串会被放入一个内联 `<script>` 标签中。
-  * **可选** `bootstrapScripts`：一个字符串 URL 数组，用于在页面上发出 `<script>` 标签。使用它来包含调用 [`hydrateRoot`.](/reference/react-dom/client/hydrateRoot) 的 `<script>`。如果你完全不想在客户端运行 React，可以省略它。
-  * **可选** `bootstrapModules`：与 `bootstrapScripts` 类似，但会改为发出 [`<script type="module">`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)。
-  * **可选** `identifierPrefix`：React 用于通过 [`useId`.](/reference/react/useId) 生成 ID 的字符串前缀。在同一页面使用多个根时，这有助于避免冲突。必须与传给 [`hydrateRoot`.](/reference/react-dom/client/hydrateRoot#parameters) 的前缀相同
-  * **可选** `namespaceURI`：流的根 [namespace URI](https://developer.mozilla.org/en-US/docs/Web/API/Document/createElementNS#important_namespace_uris) 字符串。默认为普通 HTML。对于 SVG 传入 `'http://www.w3.org/2000/svg'`，对于 MathML 传入 `'http://www.w3.org/1998/Math/MathML'`。
-  * **可选** `nonce`：一个 [`nonce`](http://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#nonce) 字符串，用于允许 [`script-src` Content-Security-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/script-src) 下的脚本。
-  * **可选** `onError`：每当发生服务端错误时触发的回调，无论是[可恢复的](#recovering-from-errors-outside-the-shell)还是[不可恢复的。](#recovering-from-errors-inside-the-shell)默认情况下，这只会调用 `console.error`。如果你覆盖它以[记录崩溃报告，](#logging-crashes-on-the-server)请确保你仍然调用 `console.error`。你也可以用它在 shell 发出之前[调整状态码。](#setting-the-status-code)
-  * **可选** `progressiveChunkSize`：每个块中的字节数。[阅读更多关于默认启发式的信息。](https://github.com/facebook/react/blob/14c2be8dac2d5482fda8a0906a31d239df8551fc/packages/react-server/src/ReactFizzServer.js#L210-L225)
-  * **可选** `signal`：[中止信号](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal)，它允许你[中止服务端渲染](#aborting-server-rendering)并在客户端渲染剩余部分。
+* **可选** `options`：包含流式传输选项的对象。
+  * **可选** `bootstrapScriptContent`：如果指定，此字符串将被放置在内联的 `<script>` 标签中。
+  * **可选** `bootstrapScripts`：要在页面中输出的 `<script>` 标签的字符串 URL 数组。使用它来包含调用 [`hydrateRoot`](/reference/react-dom/client/hydrateRoot) 的 `<script>`。如果你完全不想在客户端运行 React，则省略它。
+  * **可选** `bootstrapModules`：与 `bootstrapScripts` 类似，但会输出 [`<script type="module">`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)。
+  * **可选** `identifierPrefix`：React 用于 [`useId`](/reference/react/useId) 生成的 ID 的字符串前缀。在同一页面上使用多个根时，这有助于避免冲突。必须与传递给 [`hydrateRoot`](/reference/react-dom/client/hydrateRoot#parameters) 的前缀相同。
+  * **可选** `namespaceURI`：流的根 [命名空间 URI](https://developer.mozilla.org/en-US/docs/Web/API/Document/createElementNS#important_namespace_uris)。默认为常规 HTML。对于 SVG，传入 `'http://www.w3.org/2000/svg'`；对于 MathML，传入 `'http://www.w3.org/1998/Math/MathML'`。
+  * **可选** `nonce`：一个 [`nonce`](http://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#nonce) 字符串，用于允许 [`script-src` 内容安全策略](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/script-src)中的脚本。
+  * **可选** `onError`：每当发生服务器错误时触发的回调，无论错误是[可恢复的](#recovering-from-errors-outside-the-shell)还是[不可恢复的。](#recovering-from-errors-inside-the-shell)默认情况下，它只会调用 `console.error`。如果你重写它以[记录崩溃报告，](#logging-crashes-on-the-server)请确保仍然调用 `console.error`。你也可以使用它在 shell 输出之前[调整状态码。](#setting-the-status-code)
+  * **可选** `progressiveChunkSize`：一个数据块中的字节数。[详细了解默认启发式算法。](https://github.com/react/react/blob/14c2be8dac2d5482fda8a0906a31d239df8551fc/packages/react-server/src/ReactFizzServer.js#L210-L225)
+  * **可选** `signal`：一个[中止信号](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal)，让你可以[中止服务器渲染](#aborting-server-rendering)，并在客户端渲染其余内容。
 
 
 #### 返回值 {/*returns*/}
@@ -76,9 +76,9 @@ async function handler(request) {
 
 ## 用法 {/*usage*/}
 
-### 将 React 树作为 HTML 渲染到 Readable Web Stream {/*rendering-a-react-tree-as-html-to-a-readable-web-stream*/}
+### 将 React 树作为 HTML 渲染到可读 Web 流 {/*rendering-a-react-tree-as-html-to-a-readable-web-stream*/}
 
-调用 `renderToReadableStream` 可将你的 React 树以 HTML 的形式渲染到 [Readable Web Stream:](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream)
+调用 `renderToReadableStream` 可将你的 React 树以 HTML 的形式渲染到 [可读 Web 流：](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream)
 
 ```js [[1, 4, "<App />"], [2, 5, "['/main.js']"]]
 import { renderToReadableStream } from 'react-dom/server';
@@ -115,7 +115,7 @@ export default function App() {
 }
 ```
 
-React 会将 [doctype](https://developer.mozilla.org/en-US/docs/Glossary/Doctype) 和你的 <CodeStep step={2}>bootstrap `<script>` 标签</CodeStep> 注入到生成的 HTML 流中：
+React 会将 [doctype](https://developer.mozilla.org/en-US/docs/Glossary/Doctype) 和你的 <CodeStep step={2}>bootstrap `<script>` 标签</CodeStep>注入到生成的 HTML 流中：
 
 ```html [[2, 5, "/main.js"]]
 <!DOCTYPE html>
@@ -283,17 +283,7 @@ function ProfilePage() {
 
 <Note>
 
-**只有启用了 Suspense 的数据源才会激活 Suspense 组件。** 它们包括：
-
-- 使用支持 Suspense 的框架进行数据获取，例如 [Relay](https://relay.dev/docs/guided-tour/rendering/loading-states/) 和 [Next.js](https://nextjs.org/docs/getting-started/react-essentials)
-- 使用 [`lazy`](/reference/react/lazy) 懒加载组件代码
-- 使用 [`use`](/reference/react/use) 读取 Promise 的值
-
-Suspense **不会**检测数据是否在 Effect 或事件处理器内部被获取。
-
-上面 `Posts` 组件中加载数据的具体方式取决于你的框架。如果你使用的是支持 Suspense 的框架，你会在其数据获取文档中找到详细信息。
-
-目前还不支持在不使用有明确意见的框架的情况下进行支持 Suspense 的数据获取。实现支持 Suspense 的数据源所需的要求尚不稳定，而且没有文档说明。用于将数据源与 Suspense 集成的官方 API 将在未来的 React 版本中发布。
+只有从[激活 Suspense 边界](/reference/react/Suspense#what-activates-a-suspense-boundary)的数据源中读取的数据（例如使用 [`use`](/reference/react/use) 读取的 Promise）才会在渲染期间触发挂起。Suspense 无法检测在 Effect 或事件处理函数中获取的数据。
 
 </Note>
 

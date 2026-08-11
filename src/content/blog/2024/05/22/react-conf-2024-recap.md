@@ -17,86 +17,86 @@ description: 上周我们举办了 React Conf 2024，这是一场在内华达州
 
 ---
 
-在 React Conf 2024 上，我们公布了 [React 19 RC](/blog/2024/12/05/react-19)、[React Native 新架构 Beta 版](https://github.com/reactwg/react-native-new-architecture/discussions/189)，以及 [React Compiler](/learn/react-compiler) 的实验性版本。社区成员也登台宣布了 [React Router v7](https://remix.run/blog/merging-remix-and-react-router)、Expo Router 中的 [Universal Server Components](https://www.youtube.com/watch?v=T8TZQ6k4SLE&t=20765s)、[RedwoodJS](https://redwoodjs.com/blog/rsc-now-in-redwoodjs) 中的 React Server Components，以及更多内容。
+在 React Conf 2024 上，我们公布了 [React 19 RC](/blog/2024/12/05/react-19)、[React Native 新架构 Beta 版](https://github.com/reactwg/react-native-new-architecture/discussions/189)，以及 [React Compiler](/learn/react-compiler) 的实验性版本。社区成员也登台宣布了 [React Router v7](https://remix.run/blog/merging-remix-and-react-router)、Expo Router 中的 [通用服务器组件](https://www.youtube.com/watch?v=T8TZQ6k4SLE&t=20765s)、[RedwoodJS](https://redwoodjs.com/blog/rsc-now-in-redwoodjs) 中的 React 服务器组件，以及更多内容。
 
-完整的 [day 1](https://www.youtube.com/watch?v=T8TZQ6k4SLE) 和 [day 2](https://www.youtube.com/watch?v=0ckOUBiuxVY) 直播现已可在线查看。在这篇文章中，我们将总结此次活动中的演讲和公告。
+完整的[第 1 天](https://www.youtube.com/watch?v=T8TZQ6k4SLE)和[第 2 天](https://www.youtube.com/watch?v=0ckOUBiuxVY)直播现已可在线查看。在这篇文章中，我们将总结此次活动中的演讲和公告。
 
-## Day 1 {/*day-1*/}
+## 第一天 {/*day-1*/}
 
-_[在此观看 day 1 的完整直播。](https://www.youtube.com/watch?v=T8TZQ6k4SLE&t=973s)_
+_[在此观看第一天的完整直播。](https://www.youtube.com/watch?v=T8TZQ6k4SLE&t=973s)_
 
-在 day 1 开场时，Meta CTO [Andrew "Boz" Bosworth](https://www.threads.net/@boztank) 先发送了欢迎致辞，随后由 [Seth Webster](https://twitter.com/sethwebster) 介绍，他负责 Meta 的 React Org，还有我们的主持人 [Ashley Narcisse](https://twitter.com/_darkfadr)。
+在第一天开场时，Meta CTO [Andrew "Boz" Bosworth](https://www.threads.net/@boztank) 先发送了欢迎致辞，随后由 [Seth Webster](https://twitter.com/sethwebster) 介绍，他负责 Meta 的 React Org，还有我们的主持人 [Ashley Narcisse](https://twitter.com/_darkfadr)。
 
-在 day 1 的主题演讲中，[Joe Savona](https://twitter.com/en_JS) 分享了我们对 React 的目标和愿景：让任何人都能轻松构建出色的用户体验。[Lauren Tan](https://twitter.com/potetotes) 随后带来了《State of React》，她提到 React 在 2023 年的下载量超过了 10 亿次，并且 37% 的新开发者是使用 React 学习编程的。最后，她强调了 React 社区为让 React 成为“React”所做的工作。
+在第一天的主题演讲中，[Joe Savona](https://twitter.com/en_JS) 分享了我们对 React 的目标和愿景：让任何人都能轻松构建出色的用户体验。[Lauren Tan](https://twitter.com/potetotes) 随后带来了《State of React》，她提到 React 在 2023 年的下载量超过了 10 亿次，并且 37% 的新开发者是使用 React 学习编程的。最后，她强调了 React 社区为让 React 成为“React”所做的工作。
 
 想了解更多，可以查看会议后续来自社区的这些演讲：
 
 - [Vanilla React](https://www.youtube.com/watch?v=T8TZQ6k4SLE&t=5542s)，由 [Ryan Florence](https://twitter.com/ryanflorence) 主讲
 - [React Rhythm & Blues](https://www.youtube.com/watch?v=0ckOUBiuxVY&t=12728s)，由 [Lee Robinson](https://twitter.com/leeerob) 主讲
-- [RedwoodJS, now with React Server Components](https://www.youtube.com/watch?v=T8TZQ6k4SLE&t=26815s)，由 [Amy Dutton](https://twitter.com/selfteachme) 主讲
-- [Introducing Universal React Server Components in Expo Router](https://www.youtube.com/watch?v=T8TZQ6k4SLE&t=20765s)，由 [Evan Bacon](https://twitter.com/Baconbrix) 主讲
+- [RedwoodJS，现已支持 React Server Components](https://www.youtube.com/watch?v=T8TZQ6k4SLE&t=26815s)，由 [Amy Dutton](https://twitter.com/selfteachme) 主讲
+- [在 Expo Router 中介绍通用 React Server Components](https://www.youtube.com/watch?v=T8TZQ6k4SLE&t=20765s)，由 [Evan Bacon](https://twitter.com/Baconbrix) 主讲
 
 接下来在主题演讲中，[Josh Story](https://twitter.com/joshcstory) 和 [Andrew Clark](https://twitter.com/acdlite) 分享了 React 19 即将推出的新特性，并宣布了可用于生产环境测试的 React 19 RC。你可以在 [React 19 发布文章](/blog/2024/12/05/react-19)中查看所有特性，也可以观看这些深入介绍新特性的演讲：
 
 - [React 19 有什么新内容](https://www.youtube.com/watch?v=T8TZQ6k4SLE&t=8880s)，由 [Lydia Hallie](https://twitter.com/lydiahallie) 主讲
-- [React Unpacked: React 19 路线图](https://www.youtube.com/watch?v=T8TZQ6k4SLE&t=10112s)，由 [Sam Selikoff](https://twitter.com/samselikoff) 主讲
+- [React Unpacked：React 19 路线图](https://www.youtube.com/watch?v=T8TZQ6k4SLE&t=10112s)，由 [Sam Selikoff](https://twitter.com/samselikoff) 主讲
 - [React 19 深入解析：协调 HTML](https://www.youtube.com/watch?v=T8TZQ6k4SLE&t=24916s)，由 [Josh Story](https://twitter.com/joshcstory) 主讲
 - [使用 React Server Components 增强表单](https://www.youtube.com/watch?v=0ckOUBiuxVY&t=25280s)，由 [Aurora Walberg Scharff](https://twitter.com/aurorascharff) 主讲
-- [React for Two Computers](https://www.youtube.com/watch?v=T8TZQ6k4SLE&t=18825s)，由 [Dan Abramov](https://bsky.app/profile/danabra.mov) 主讲
-- [And Now You Understand React Server Components](https://www.youtube.com/watch?v=0ckOUBiuxVY&t=11256s)，由 [Kent C. Dodds](https://twitter.com/kentcdodds) 主讲
+- [适用于两台计算机的 React](https://www.youtube.com/watch?v=T8TZQ6k4SLE&t=18825s)，由 [Dan Abramov](https://bsky.app/profile/danabra.mov) 主讲
+- [现在，你理解 React Server Components 了](https://www.youtube.com/watch?v=0ckOUBiuxVY&t=11256s)，由 [Kent C. Dodds](https://twitter.com/kentcdodds) 主讲
 
-最后，我们在主题演讲结尾由 [Joe Savona](https://twitter.com/en_JS)、[Sathya Gunasekaran](https://twitter.com/_gsathya) 和 [Mofei Zhang](https://twitter.com/zmofei) 宣布 React Compiler 现已 [开源](https://github.com/facebook/react/pull/29061)，并分享了一个可供尝试的 React Compiler 实验版本。
+最后，我们以 [Joe Savona](https://twitter.com/en_JS)、[Sathya Gunasekaran](https://twitter.com/_gsathya) 和 [Mofei Zhang](https://twitter.com/zmofei) 宣布 React Compiler 现已[开源](https://github.com/react/react/pull/29061)作为主题演讲的收尾，并分享了一个可以试用的 React Compiler 实验版本。
 
 如需了解更多关于如何使用 Compiler 以及其工作原理的信息，请查看 [文档](/learn/react-compiler)和这些演讲：
 
 - [忘记 Memo 吧](https://www.youtube.com/watch?v=T8TZQ6k4SLE&t=12020s)，由 [Lauren Tan](https://twitter.com/potetotes) 主讲
 - [React Compiler 深入解析](https://www.youtube.com/watch?v=0ckOUBiuxVY&t=9313s)，由 [Sathya Gunasekaran](https://twitter.com/_gsathya) 和 [Mofei Zhang](https://twitter.com/zmofei) 主讲
 
-在此观看 day 1 的完整主题演讲：
+在此观看第一天的完整主题演讲：
 
 <YouTubeIframe src="https://www.youtube.com/embed/T8TZQ6k4SLE?t=973s" />
 
-## Day 2 {/*day-2*/}
+## 第 2 天 {/*day-2*/}
 
-_[在此观看 day 2 的完整直播。](https://www.youtube.com/watch?v=0ckOUBiuxVY&t=1720s)_
+_[在此观看第 2 天的完整直播。](https://www.youtube.com/watch?v=0ckOUBiuxVY&t=1720s)_
 
-在 day 2 开场时，[Seth Webster](https://twitter.com/sethwebster) 发送了欢迎致辞，随后是 [Eli White](https://x.com/Eli_White) 的感谢致辞，以及由我们的首席氛围官 [Ashley Narcisse](https://twitter.com/_darkfadr) 进行的介绍。
+在第 2 天开场时，[Seth Webster](https://twitter.com/sethwebster) 发送了欢迎致辞，随后是 [Eli White](https://x.com/Eli_White) 的感谢致辞，以及由我们的首席氛围官 [Ashley Narcisse](https://twitter.com/_darkfadr) 进行的介绍。
 
-在 day 2 的主题演讲中，[Nicola Corti](https://twitter.com/cortinico) 分享了 React Native 的现状，包括 2023 年的 7800 万次下载。他还重点介绍了使用 React Native 的应用，包括 Meta 内部使用的 2000 多个屏幕；Facebook Marketplace 中产品详情页，每天访问量超过 20 亿次；以及 Microsoft Windows 开始菜单的一部分，还有几乎每个微软 Office 产品在移动端和桌面端中的一些功能。
+在第 2 天的主题演讲中，[Nicola Corti](https://twitter.com/cortinico) 分享了 React Native 的现状，包括 2023 年的 7800 万次下载。他还重点介绍了使用 React Native 的应用，包括 Meta 内部使用的 2000 多个屏幕；Facebook Marketplace 中产品详情页，每天访问量超过 20 亿次；以及 Microsoft Windows 开始菜单的一部分，还有几乎每个微软 Office 产品在移动端和桌面端中的一些功能。
 
 Nicola 还强调了社区为支持 React Native 所做的所有工作，包括库、框架和多个平台。想了解更多，可以查看社区的这些演讲：
 
 - [将 React Native 扩展到移动端和桌面应用之外](https://www.youtube.com/watch?v=0ckOUBiuxVY&t=5798s)，由 [Chris Traganos](https://twitter.com/chris_trag) 和 [Anisha Malde](https://twitter.com/anisha_malde) 主讲
 - [使用 React 进行空间计算](https://www.youtube.com/watch?v=0ckOUBiuxVY&t=22525s)，由 [Michał Pierzchała](https://twitter.com/thymikee) 主讲
 
-[Riccardo Cipolleschi](https://twitter.com/cipolleschir) 继续主持 day 2 的主题演讲，宣布 React Native 新架构现已进入 Beta 阶段，并已准备好供应用在生产环境中采用。他分享了新架构中的新特性和改进，并介绍了 React Native 未来的路线图。更多内容请查看：
+[Riccardo Cipolleschi](https://twitter.com/cipolleschir) 继续主持第 2 天的主题演讲，宣布 React Native 新架构现已进入 Beta 阶段，并已准备好供应用在生产环境中采用。他分享了新架构中的新特性和改进，并介绍了 React Native 未来的路线图。更多内容请查看：
 
 - [跨平台 React](https://www.youtube.com/watch?v=0ckOUBiuxVY&t=26569s)，由 [Olga Zinoveva](https://github.com/SlyCaptainFlint) 和 [Naman Goel](https://twitter.com/naman34) 主讲
 
-接下来在主题演讲中，Nicola 宣布我们现在建议所有使用 React Native 创建的新应用都从 Expo 这样的框架开始。伴随这一变化，他还宣布了新的 React Native 首页和新的 Getting Started 文档。你可以在 [React Native 文档](https://reactnative.dev/docs/next/environment-setup)中查看新的入门指南。
+接下来在主题演讲中，Nicola 宣布我们现在建议所有使用 React Native 创建的新应用都从 Expo 这样的框架开始。伴随这一变化，他还宣布了新的 React Native 首页和新的入门文档。你可以在 [React Native 文档](https://reactnative.dev/docs/next/environment-setup)中查看新的入门指南。
 
 最后，在主题演讲结束时，[Kadi Kraman](https://twitter.com/kadikraman) 分享了 Expo 的最新功能和改进，以及如何使用 Expo 开始进行 React Native 开发。
 
-在此观看 day 2 的完整主题演讲：
+在此观看第 2 天的完整主题演讲：
 
 <YouTubeIframe src="https://www.youtube.com/embed/0ckOUBiuxVY?t=1720s" />
 
-## Q&A {/*q-and-a*/}
+## 问答 {/*q-and-a*/}
 
-React 和 React Native 团队也在每天结束时举行了 Q&A 环节：
+React 和 React Native 团队也在每天结束时举行了问答环节：
 
-- [React Q&A](https://www.youtube.com/watch?v=T8TZQ6k4SLE&t=27518s)，由 [Michael Chan](https://twitter.com/chantastic) 主持
-- [React Native Q&A](https://www.youtube.com/watch?v=0ckOUBiuxVY&t=27935s)，由 [Jamon Holmgren](https://twitter.com/jamonholmgren) 主持
+- [React 问答](https://www.youtube.com/watch?v=T8TZQ6k4SLE&t=27518s)，由 [Michael Chan](https://twitter.com/chantastic) 主持
+- [React Native 问答](https://www.youtube.com/watch?v=0ckOUBiuxVY&t=27935s)，由 [Jamon Holmgren](https://twitter.com/jamonholmgren) 主持。
 
-## And more... {/*and-more*/}
+## 以及更多…… {/*and-more*/}
 
-我们还听到了关于可访问性、错误报告、css 等主题的演讲：
+我们还听到了关于可访问性、错误报告、CSS 等主题的演讲：
 
 - [揭开 React 应用中可访问性的神秘面纱](https://www.youtube.com/watch?v=0ckOUBiuxVY&t=20655s)，由 [Kateryna Porshnieva](https://twitter.com/krambertech) 主讲
 - [Pigment CSS，服务器组件时代的 CSS](https://www.youtube.com/watch?v=0ckOUBiuxVY&t=21696s)，由 [Olivier Tassinari](https://twitter.com/olivtassinari) 主讲
 - [实时 React Server Components](https://www.youtube.com/watch?v=T8TZQ6k4SLE&t=24070s)，由 [Sunil Pai](https://twitter.com/threepointone) 主讲
 - [让我们打破 React 规则](https://www.youtube.com/watch?v=T8TZQ6k4SLE&t=25862s)，由 [Charlotte Isambert](https://twitter.com/c_isambert) 主讲
-- [解决你 100% 的错误](https://www.youtube.com/watch?v=0ckOUBiuxVY&t=19881s)，由 [Ryan Albrecht](https://github.com/ryan953) 主讲
+- [解决你 100% 的错误](https://www.youtube.com/watch?v=0ckOUBiuxVY&t=19881s)，由 [Ryan Albrecht](https://github.com/ryan953) 主讲。
 
 ## 感谢 {/*thank-you*/}
 

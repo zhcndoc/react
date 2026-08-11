@@ -43,7 +43,7 @@ React 编译器可能破坏你的应用的一个主要方式，是你的代码�
 
 ### 编译器构建错误 {/*compiler-build-errors*/}
 
-如果你遇到一个意外破坏构建的编译器错误，这很可能是编译器中的 bug。请将它报告到 [facebook/react](https://github.com/facebook/react/issues) 仓库，并附上：
+如果遇到意外导致构建失败的编译器错误，这很可能是编译器中的 bug。请将其报告到 [react/react](https://github.com/react/react/issues) 仓库，并附上：
 - 错误消息
 - 导致错误的代码
 - 你的 React 和编译器版本
@@ -78,16 +78,16 @@ function ProblematicComponent() {
 
 如果你认为自己发现了编译器 bug：
 
-1. **确认这不是 React 规则的违反** - 使用 ESLint 检查
-2. **创建最小可复现示例** - 在一个小例子中隔离问题
-3. **在没有编译器的情况下测试** - 确认问题只在启用编译时发生
-4. **提交一个 [issue](https://github.com/facebook/react/issues/new?template=compiler_bug_report.yml)**：
+1. **确认这不是违反 React 规则** - 使用 ESLint 检查
+2. **创建一个最小复现示例** - 在一个小型示例中隔离问题
+3. **不使用编译器进行测试** - 确认问题仅在编译时出现
+4. **提交一个[问题](https://github.com/react/react/issues/new?template=compiler_bug_report.yml)**：
    - React 和编译器版本
-   - 最小可复现代码
+   - 最小复现代码
    - 预期行为与实际行为
-   - 任何错误消息
+   - 任何错误消息。
 
 ## 后续步骤 {/*next-steps*/}
 
 - 查看 [React 规则](/reference/rules) 以防止问题
-- 查看 [渐进式采用指南](/learn/react-compiler/incremental-adoption) 以了解逐步推广策略
+- 查看 [渐进式采用指南](/learn/react-compiler/incremental-adoption) 以了解逐步推广策略。

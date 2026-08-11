@@ -92,27 +92,27 @@ React Compiler 也可以用于编译库。因为 React Compiler 需要在任何�
 
 我们之前在 React Conf 上宣布了仅限邀请加入的 [React Compiler Working Group](https://github.com/reactwg/react-compiler)，用于提供反馈、提问并协作推进编译器的实验性发布。
 
-从今天起，随着 React Compiler Beta 版一起，我们将向所有人开放 Working Group 成员资格。React Compiler Working Group 的目标是帮助现有应用和库为平稳、渐进地采用 React Compiler 做好生态准备。请继续在 [React 仓库](https://github.com/facebook/react) 中提交 bug 报告，但请在 [Working Group 讨论论坛](https://github.com/reactwg/react-compiler/discussions) 中留下反馈、提出问题或分享想法。
+从今天起，随着 React Compiler Beta 版本的发布，我们将向所有人开放 Working Group 的成员资格。React Compiler Working Group 旨在帮助生态系统为现有应用和库平稳、渐进地采用 React Compiler 做好准备。请继续在 [React 仓库](https://github.com/react/react) 中提交 bug 报告，但请在 [Working Group 讨论论坛](https://github.com/reactwg/react-compiler/discussions) 中提供反馈、提出问题或分享想法。
 
 核心团队也会使用 discussions 仓库分享我们的研究发现。随着稳定版发布临近，任何重要信息也都会发布在这个论坛上。
 
 ## Meta 的 React Compiler {/*react-compiler-at-meta*/}
 
-在 [React Conf](/blog/2024/05/22/react-conf-2024-recap) 上，我们分享了编译器在 Quest Store 和 Instagram 上的推广是成功的。自那以后，我们又在 Meta 的更多大型 Web 应用中部署了 React Compiler，包括 [Facebook](https://www.facebook.com) 和 [Threads](https://www.threads.net)。这意味着，如果你最近使用过这些应用中的任何一个，你的体验可能由编译器提供支持。我们能够以很少的代码改动将这些应用接入编译器，而且是在一个拥有超过 100,000 个 React 组件的 monorepo 中完成的。
+在 [React Conf](/blog/2024/05/22/react-conf-2024-recap) 上，我们分享了编译器在 Quest Store 和 Instagram 上的推广是成功的。自那以后，我们又在 Meta 的更多大型 Web 应用中部署了 React Compiler，包括 [Facebook](https://www.facebook.com) 和 [Threads](https://www.threads.net)。这意味着，如果你最近使用过这些应用中的任何一个，你的体验可能由编译器提供支持。我们能够以很少的代码改动将这些应用接入编译器，而且是在一个拥有超过 100,000 个 React 组件的单体仓库中完成的。
 
 我们在所有这些应用中都看到了显著的性能提升。随着推广的推进，我们继续看到与[我们此前在 ReactConf 分享的成果](https://youtu.be/lyEKhv8-3n0?t=3223)同量级的结果。这些应用多年来已经被 Meta 工程师和 React 专家进行了大量手工调优和优化，因此即便是几个百分点的提升，对我们来说也是巨大的胜利。
 
-我们也预期 React Compiler 会带来开发效率上的收益。为此，我们与 Meta 的数据科学伙伴[^2]合作，对手动记忆化对开发效率的影响进行了深入的统计分析。在 Meta 推广编译器之前，我们发现只有大约 8% 的 React pull request 使用了手动记忆化，而这些 pull request 的编写时间长了 31-46%[^3]。这验证了我们的直觉：手动记忆化会增加认知负担，我们预计 React Compiler 将带来更高效的代码编写和评审。值得注意的是，React Compiler 还确保默认情况下*所有*代码都会被记忆化，而不仅仅是（在我们的情况下）开发者显式应用记忆化的那 8%。
+我们也预期 React Compiler 会带来开发效率上的收益。为此，我们与 Meta 的数据科学伙伴[^2]合作，对手动记忆化对开发效率的影响进行了深入的统计分析。在 Meta 推广编译器之前，我们发现只有大约 8% 的 React 拉取请求使用了手动记忆化，而这些拉取请求的编写时间长了 31-46%[^3]。这验证了我们的直觉：手动记忆化会增加认知负担，我们预计 React Compiler 将带来更高效的代码编写和评审。值得注意的是，React Compiler 还确保默认情况下*所有*代码都会被记忆化，而不仅仅是（在我们的情况下）开发者显式应用记忆化的那 8%。
 
 ## 通往稳定版的路线图 {/*roadmap-to-stable*/}
 
 *这不是最终路线图，可能会发生变化。*
 
-我们计划在 Beta 版发布后不久，在不远的将来推出编译器的 Release Candidate，当时大多数遵循 React 规则的应用和库已经被证明能够很好地与编译器协作。经过一段来自社区的最终反馈期后，我们计划为编译器发布稳定版。稳定版将标志着 React 新基础的开始，并且会强烈建议所有应用和库使用编译器和 ESLint 插件。
+我们计划在 Beta 版发布后不久，在不远的将来推出编译器的候选版本，当时大多数遵循 React 规则的应用和库已经被证明能够很好地与编译器协作。经过一段来自社区的最终反馈期后，我们计划为编译器发布稳定版。稳定版将标志着 React 新基础的开始，并且会强烈建议所有应用和库使用编译器和 ESLint 插件。
 
 * ✅ 实验性：已在 React Conf 2024 发布，主要用于从早期采用者那里获取反馈。
 * ✅ 公共 Beta：今天可用，用于获取更广泛社区的反馈。
-* 🚧 Release Candidate (RC)：React Compiler 能够无问题地适用于大多数遵循规则的应用和库。
+* 🚧 候选版本 (RC)：React Compiler 能够无问题地适用于大多数遵循规则的应用和库。
 * 🚧 一般可用：在来自社区的最终反馈期之后。
 
 这些发布还包括编译器的 ESLint 插件，它会显示由编译器静态分析出来的诊断信息。我们计划将现有的 eslint-plugin-react-hooks 插件与编译器的 ESLint 插件合并，这样只需要安装一个插件。
@@ -127,8 +127,8 @@ React Compiler 也可以用于编译库。因为 React Compiler 需要在任何�
 
 ---
 
-[^1]: 感谢 [@nikeee](https://github.com/facebook/react/pulls?q=is%3Apr+author%3Anikeee)、[@henryqdineen](https://github.com/facebook/react/pulls?q=is%3Apr+author%3Ahenryqdineen)、[@TrickyPi](https://github.com/facebook/react/pulls?q=is%3Apr+author%3ATrickyPi) 以及其他几位为编译器作出贡献的人。
+[^1]: 感谢 [@nikeee](https://github.com/react/react/pulls?q=is%3Apr+author%3Anikeee)、[@henryqdineen](https://github.com/react/react/pulls?q=is%3Apr+author%3Ahenryqdineen)、[@TrickyPi](https://github.com/react/react/pulls?q=is%3Apr+author%3ATrickyPi) 以及其他几位贡献者对编译器作出的贡献。
 
 [^2]: 感谢 [Vaishali Garg](https://www.linkedin.com/in/vaishaligarg09) 在 Meta 领导这项关于 React Compiler 的研究，并审阅本文。
 
-[^3]: 在控制作者任职时长、diff 长度/复杂度以及其他潜在混杂因素之后。
+[^3]: 在控制作者任职时长、差异长度/复杂度以及其他潜在混杂因素之后。

@@ -1,22 +1,22 @@
 ---
-title: incompatible-library
+title: 不兼容的库
 ---
 
 <Intro>
 
-验证与与 memoization（手动或自动）不兼容的库使用情况。
+验证与记忆化（手动或自动）不兼容的库使用情况。
 
 </Intro>
 
 <Note>
 
-这些库是在 React 的 memoization 规则尚未被充分记录之前设计的。当时它们做出了正确的选择，以优化在应用状态变化时让组件保持“恰到好处”的响应性这一更符合开发体验的方式。虽然这些旧模式曾经有效，但我们后来发现它们与 React 的编程模型不兼容。我们将继续与库作者合作，将这些库迁移到遵循 React 规则的模式。
+这些库是在 React 的记忆化规则尚未被充分记录之前设计的。当时它们做出了正确的选择，以优化在应用状态变化时让组件保持“恰到好处”的响应性这一更符合开发体验的方式。虽然这些旧模式曾经有效，但我们后来发现它们与 React 的编程模型不兼容。我们将继续与库作者合作，将这些库迁移到遵循 React 规则的模式。
 
 </Note>
 
-## Rule Details {/*rule-details*/}
+## 规则详情 {/*rule-details*/}
 
-某些库使用了 React 不支持的模式。当 linter 检测到来自[已知列表](https://github.com/facebook/react/blob/main/compiler/packages/babel-plugin-react-compiler/src/HIR/DefaultModuleTypeProvider.ts)中的这些 API 的使用时，会根据这条规则将其标记出来。这意味着 React Compiler 可以自动跳过使用这些不兼容 API 的组件，从而避免破坏你的应用。
+一些库使用了 React 不支持的模式。当 linter 检测到这些 API 的使用情况，并且它们属于[已知列表](https://github.com/react/react/blob/main/compiler/packages/babel-plugin-react-compiler/src/HIR/DefaultModuleTypeProvider.ts)时，就会根据此规则将其标记出来。这意味着 React Compiler 可以自动跳过使用这些不兼容 API 的组件，从而避免破坏你的应用。
 
 ```js
 // 这些库中 memoization 失效的示例
@@ -73,7 +73,7 @@ function Component() {
 
 </DeepDive>
 
-### Invalid {/*invalid*/}
+### 无效 {/*invalid*/}
 
 以下是此规则的错误代码示例：
 
@@ -113,7 +113,7 @@ const Component = observer(() => {
 
 </Pitfall>
 
-### Valid {/*valid*/}
+### 有效 {/*valid*/}
 
 以下是此规则的正确代码示例：
 
@@ -135,4 +135,4 @@ function Component() {
 }
 ```
 
-还有一些其他库目前还没有与 React 的 memoization 模型兼容的替代 API。如果 linter 不能自动跳过调用这些 API 的组件或 hooks，请[提交 issue](https://github.com/facebook/react/issues)，这样我们就可以把它添加到 linter 中。
+其他一些库目前还没有与 React 的 memoization 模型兼容的替代 API。如果 linter 没有自动跳过调用这些 API 的组件或 hook，请[提交 issue](https://github.com/react/react/issues)，以便我们将其添加到 linter 中。

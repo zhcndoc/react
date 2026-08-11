@@ -151,9 +151,9 @@ export default function MyApp() {
 
 function Form() {
   return (
-    <Panel title="Welcome">
-      <Button show={true}>Sign up</Button>
-      <Button show={false}>Log in</Button>
+    <Panel title="欢迎">
+      <Button show={true}>注册</Button>
+      <Button show={false}>登录</Button>
     </Panel>
   );
 }
@@ -472,7 +472,7 @@ function Albums() {
 }
 ```
 
-相反，应传入来自缓存、支持 Suspense 的框架或 Server Component 的 Promise：
+相反，应从缓存、[支持 Suspense 的框架](/reference/react/Suspense#suspense-enabled-frameworks) 或 Server Component 中传递 Promise：
 
 ```js
 // ✅ fetchData 从缓存中读取 Promise。
@@ -537,11 +537,11 @@ export function fetchData(url) {
 
 <Note>
 
-Promise 的缓存方式取决于你与 Suspense 一起使用的框架。框架通常会提供内置的缓存机制。如果你不使用框架，可以像上面那样使用一个简单的模块级缓存，或者使用一个 [支持 Suspense 的数据源](/reference/react/Suspense#displaying-a-fallback-while-content-is-loading)。
+你如何缓存 Promise 取决于你使用的 Suspense 框架。框架通常会提供内置的缓存机制。如果你不使用框架，可以使用类似上面的简单模块级缓存，或者使用[支持 Suspense 的数据源](/reference/react/Suspense#what-activates-a-suspense-boundary)。
 
 </Note>
 
-在下面的示例中，点击“Re-render”会更新 `App` 中的状态并触发重新渲染。由于 `fetchData` 返回的是相同的已缓存 Promise，`Albums` 会同步读取该值，而不是再次显示 Suspense 回退内容。
+在下面的示例中，点击“重新渲染”会更新 `App` 中的状态并触发重新渲染。由于 `fetchData` 返回的是相同的已缓存 Promise，`Albums` 会同步读取该值，而不是再次显示 Suspense 回退内容。
 
 <Sandpack>
 
@@ -554,10 +554,10 @@ export default function App() {
   return (
     <>
       <button onClick={() => setCount(count + 1)}>
-        Re-render
+        重新渲染
       </button>
-      <p>Render count: {count}</p>
-      <Suspense fallback={<p>Loading...</p>}>
+      <p>渲染次数：{count}</p>
+      <Suspense fallback={<p>加载中...</p>}>
         <Albums />
       </Suspense>
     </>
@@ -661,7 +661,7 @@ function fetchData(url) {
 
 <Pitfall>
 
-不要根据 Promise 是否已经完成而跳过调用 `use`。
+##### 不要根据 Promise 是否已经完成来跳过调用 `use`。 {/*conditional-use*/}
 
 与其他 Hook 不同，`use` 可以在条件分支和循环中调用——但它必须始终针对 Promise 本身被调用。绝不要直接读取 `promise.status` 或 `promise.value` 来绕过 `use`；始终将 Promise 传给 `use`，让 React 来处理它。
 
@@ -1112,47 +1112,59 @@ root.render(
 
 #### 我应该在 Server 还是 Client Component 中解析 Promise？ {/*resolve-promise-in-server-or-client-component*/}
 
-可以在 Server Component 中使用 `await` 解析 Promise，或者将其作为属性传递给 Client Component，并在那里使用 `use` 进行解析。
+如果你有一个 Promise，那么在某个时刻需要将其解包以读取其中的值。在 Server Component 中，可以使用 `await` 解包；在 Client Component 中，则使用 `use` 解包。
 
-在 Server Component 中使用 `await` 会让 Server Component 本身挂起，而 Client Component 会将已解析的值作为属性接收：
+通常，最简单的做法是在创建 Promise 的地方使用 `await`。Server Component 会一直暂停，直到数据准备就绪，其下方的所有内容也会等待：
 
 ```js
 // Server Component
 export default async function App() {
-  // 将挂起 Server Component。
   const messageContent = await fetchMessage();
   return <Message messageContent={messageContent} />;
 }
 ```
 
-Server Component 也可以在不等待 Promise 的情况下先启动它，然后将该 Promise 传递给 Client Component。Server Component 会立即返回，而 Client Component 会在调用 `use` 时挂起：
+不过，你不必立即将其解包。你可以将 Promise 作为属性继续向下传递，并在组件树更深处将其解包。读取 Promise 的组件仍会暂停，但只有组件树的那一部分会等待数据。将该组件包裹在 [`<Suspense>`](/reference/react/Suspense) 边界中，这样其余页面就可以立即渲染，同时显示回退内容。
+
+例如，更深层的 Server Component 可以对它接收到的 Promise 使用 `await`：
 
 ```js
+import { Suspense } from 'react';
+
 // Server Component
 export default function App() {
-  // 未等待：在此处启动，在客户端解析。
   const messagePromise = fetchMessage();
-  return <Message messagePromise={messagePromise} />;
+  return (
+    <Suspense fallback={<p>⌛正在下载消息...</p>}>
+      <Message messagePromise={messagePromise} />
+    </Suspense>
+  );
+}
+
+// Server Component
+async function Message({ messagePromise }) {
+  const messageContent = await messagePromise;
+  return <p>{messageContent}</p>;
 }
 ```
+
+或者，在单独的文件中，Client Component 可以使用 `use` 解包同一个 Promise：
 
 ```js
 // Client Component
 'use client';
+
 import { use } from 'react';
 
 export function Message({ messagePromise }) {
-  // 在数据可用之前会挂起。
   const messageContent = use(messagePromise);
   return <p>{messageContent}</p>;
 }
 ```
 
-在可能的情况下，优先在 Server Component 中使用 `await`，因为这样可以将数据获取保留在服务器端。如果上层的 Server Component 已经等待了数据，那么请将已解析的值作为属性向下传递，而不是创建一个新的 Promise 再调用 `use`。
+在这两种情况下，向下传递 Promise 的工作方式都是相同的。两者都会在读取 Promise 的位置暂停，并解除上方 UI 的阻塞。唯一的区别是，Client Component 无法在渲染期间使用 `await`，因此会改用 `use` 解包 Promise。一个常见的场景是交互式内容，例如弹出框和工具提示，其中只有在悬停或点击后才需要数据。
 
-你也可以在不等待的情况下将 promise 作为属性传递给 Client Component，然后使用 `use(promise)` 在树的更深处挂起。这样在 Promise 仍处于挂起状态时，周围更多的 UI 就可以完成渲染。一个常见场景是弹出层和工具提示等交互式内容，这些内容只有在悬停或点击后才需要数据。Client Components 不能使用 `await`，因此它们依赖 `use` 来在 Promise 上挂起。
-
-无论哪种情况，都要把读取 Promise 的组件包裹在 Suspense 边界中，这样 React 就可以在 Promise 处于挂起状态时显示回退内容。有关边界放置的指导，请参见[一起同时显示内容](/reference/react/Suspense#revealing-content-together-at-once)。
+有关应将 Suspense 边界放置在何处的指导，请参阅[一次性显示所有内容](/reference/react/Suspense#revealing-content-together-at-once)。
 
 </DeepDive>
 
@@ -1160,9 +1172,9 @@ export function Message({ messagePromise }) {
 
 ### 使用错误边界显示错误 {/*displaying-an-error-with-an-error-boundary*/}
 
-如果传递给 `use` 的 Promise 被拒绝，错误会传播到最近的 [Error Boundary](/reference/react/Component#catching-rendering-errors-with-an-error-boundary)。将调用 `use` 的组件包裹在 Error Boundary 中，以便在 Promise 被拒绝时显示备用内容。
+如果传递给 `use` 的 Promise 被拒绝，错误会传播到最近的 [错误边界](/reference/react/Component#catching-rendering-errors-with-an-error-boundary)。将调用 `use` 的组件包裹在错误边界中，以便在 Promise 被拒绝时显示备用内容。
 
-在下面的示例中，`fetchData` 在第一次尝试时会被拒绝，在重试时会成功。Error Boundary 会捕获该拒绝并显示带有 “Try again” 按钮的备用内容。
+在下面的示例中，`fetchData` 在第一次尝试时会被拒绝，在重试时会成功。错误边界会捕获该拒绝并显示带有“再试一次”按钮的备用内容。
 
 <Sandpack>
 
@@ -1238,7 +1250,7 @@ async function getData(url) {
   // 添加一个假的延迟，以使加载状态可见。
   await new Promise(resolve => setTimeout(resolve, 1000));
   if (url === '/the-beatles/albums') {
-    // 首次尝试失败，以演示 Error Boundary，
+    // 首次尝试失败，以演示错误边界，
     // 然后在重试时成功。
     if (!retried) {
       throw new Error('示例错误：获取专辑失败');

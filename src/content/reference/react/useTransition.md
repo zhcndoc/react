@@ -82,7 +82,7 @@ function SubmitButton({ submitAction }) {
         });
       }}
     >
-      Submit
+      提交
     </button>
   );
 }
@@ -736,6 +736,10 @@ export default function ContactTab() {
 button { margin-right: 10px }
 b { display: inline-block; margin-right: 10px; }
 .pending { color: #777; }
+.items {
+  max-height: 300px;
+  overflow: auto;
+}
 ```
 
 </Sandpack>
@@ -764,7 +768,7 @@ function TabButton({ action, children, isActive }) {
   // ...
 ```
 
-注意，现在点击 “Posts” 感觉更灵敏了，因为标签按钮本身会立即更新：
+注意，现在点击 “帖子” 感觉更灵敏了，因为标签按钮本身会立即更新：
 
 <Sandpack>
 
@@ -783,19 +787,19 @@ export default function TabContainer() {
         isActive={tab === 'about'}
         action={() => setTab('about')}
       >
-        About
+        关于
       </TabButton>
       <TabButton
         isActive={tab === 'posts'}
         action={() => setTab('posts')}
       >
-        Posts (slow)
+        帖子（缓慢）
       </TabButton>
       <TabButton
         isActive={tab === 'contact'}
         action={() => setTab('contact')}
       >
-        Contact
+        联系方式
       </TabButton>
       <hr />
       {tab === 'about' && <AboutTab />}
@@ -863,7 +867,7 @@ function SlowPost({ index }) {
 
   return (
     <li className="item">
-      Post #{index + 1}
+      帖子 #{index + 1}
     </li>
   );
 }
@@ -891,6 +895,10 @@ export default function ContactTab() {
 button { margin-right: 10px }
 b { display: inline-block; margin-right: 10px; }
 .pending { color: #777; }
+.items {
+  max-height: 300px;
+  overflow: auto;
+}
 ```
 
 </Sandpack>
@@ -1312,7 +1320,7 @@ export default function Layout({ children, isPending }) {
       <section className="header" style={{
         opacity: isPending ? 0.7 : 1
       }}>
-        Music Browser
+        音乐浏览器
       </section>
       <main>
         {children}
@@ -1559,7 +1567,7 @@ main {
 
 ### 使用错误边界向用户显示错误 {/*displaying-an-error-to-users-with-error-boundary*/}
 
-如果传递给 `startTransition` 的函数抛出错误，你可以使用 [error boundary](/reference/react/Component#catching-rendering-errors-with-an-error-boundary) 向用户显示错误。要使用 error boundary，请将调用 `useTransition` 的组件包裹在 error boundary 中。一旦传递给 `startTransition` 的函数出错，就会显示 error boundary 的 fallback。
+如果传递给 `startTransition` 的函数抛出错误，你可以使用[错误边界](/reference/react/Component#catching-rendering-errors-with-an-error-boundary)向用户显示错误。要使用错误边界，请将调用 `useTransition` 的组件包裹在错误边界中。一旦传递给 `startTransition` 的函数出错，就会显示错误边界的 fallback。
 
 <Sandpack>
 
@@ -1576,9 +1584,9 @@ export function AddCommentContainer() {
 }
 
 function addComment(comment) {
-  // 为了演示以显示 Error Boundary
+  // 为了演示以显示错误边界
   if (comment == null) {
-    throw new Error("示例错误：抛出一个错误以触发 error boundary");
+    throw new Error("示例错误：抛出一个错误以触发错误边界");
   }
 }
 
@@ -1821,7 +1829,7 @@ export default function App({}) {
 
   return (
     <div>
-      <h1>Checkout</h1>
+      <h1>结账</h1>
       <Item action={updateQuantityAction}/>
       <hr />
       <Total clientQuantity={clientQuantity} savedQuantity={quantity} isPending={isPending} />
@@ -1843,8 +1851,8 @@ export default function Item({action}) {
   }
   return (
     <div className="item">
-      <span>Eras Tour Tickets</span>
-      <label htmlFor="name">Quantity: </label>
+      <span>时代巡演门票</span>
+      <label htmlFor="name">数量： </label>
       <input
         type="number"
         onChange={handleChange}
@@ -1865,17 +1873,17 @@ const intl = new Intl.NumberFormat("en-US", {
 export default function Total({ clientQuantity, savedQuantity, isPending }) {
   return (
     <div className="total">
-      <span>Total:</span>
+      <span>总计：</span>
       <div>
         <div>
           {isPending
-            ? "🌀 Updating..."
+            ? "🌀 更新中..."
             : `${intl.format(savedQuantity * 9999)}`}
         </div>
         <div className="error">
           {!isPending &&
             clientQuantity !== savedQuantity &&
-            `Wrong total, expected: ${intl.format(clientQuantity * 9999)}`}
+            `总价错误，预期为：${intl.format(clientQuantity * 9999)}`}
         </div>
       </div>
     </div>
@@ -1987,7 +1995,7 @@ export default function App({}) {
 
   return (
     <div>
-      <h1>Checkout</h1>
+      <h1>结账</h1>
       <Item action={updateQuantityAction}/>
       <hr />
       <Total clientQuantity={clientQuantity} savedQuantity={quantity} isPending={isPending} />
@@ -2009,8 +2017,8 @@ export default function Item({action}) {
   }
   return (
     <div className="item">
-      <span>Eras Tour Tickets</span>
-      <label htmlFor="name">Quantity: </label>
+      <span>时代巡演门票</span>
+      <label htmlFor="name">数量： </label>
       <input
         type="number"
         onChange={handleChange}
@@ -2031,17 +2039,17 @@ const intl = new Intl.NumberFormat("en-US", {
 export default function Total({ clientQuantity, savedQuantity, isPending }) {
   return (
     <div className="total">
-      <span>Total:</span>
+      <span>总计：</span>
       <div>
         <div>
           {isPending
-            ? "🌀 Updating..."
+            ? "🌀 更新中..."
             : `${intl.format(savedQuantity * 9999)}`}
         </div>
         <div className="error">
           {!isPending &&
             clientQuantity !== savedQuantity &&
-            `Wrong total, expected: ${intl.format(clientQuantity * 9999)}`}
+            `总价错误，预期为：${intl.format(clientQuantity * 9999)}`}
         </div>
       </div>
     </div>

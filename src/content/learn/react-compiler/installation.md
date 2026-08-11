@@ -190,12 +190,12 @@ React Compiler 包含一条 ESLint 规则，可帮助识别无法优化的代码
 npm install -D eslint-plugin-react-hooks@latest
 </TerminalBlock>
 
-如果你还没有配置 eslint-plugin-react-hooks，请按照 [readme 中的安装说明](https://github.com/facebook/react/blob/main/packages/eslint-plugin-react-hooks/README.md#installation) 进行设置。编译器规则可在 `recommended-latest` 预设中使用。
+如果你还没有配置 eslint-plugin-react-hooks，请按照 [自述文件中的安装说明](https://github.com/react/react/blob/main/packages/eslint-plugin-react-hooks/README.md#installation) 进行操作。编译器规则可在 `recommended-latest` 预设中使用。
 
 ESLint 规则将会：
 - 识别[React 规则](/reference/rules)的违规项
 - 显示哪些组件无法被优化
-- 提供有助于修复问题的错误信息
+- 提供有助于修复问题的错误信息。
 
 ## 验证你的设置 {/*verify-your-setup*/}
 
@@ -260,4 +260,4 @@ function ProblematicComponent() {
 - [配置选项](/reference/react-compiler/configuration) 用于自定义编译器
 - [渐进式采用策略](/learn/react-compiler/incremental-adoption) 适用于现有代码库
 - [调试技巧](/learn/react-compiler/debugging) 用于排查问题
-- [编译库指南](/reference/react-compiler/compiling-libraries) 用于编译你的 React 库
+- [编译库指南](/reference/react-compiler/compiling-libraries) 用于编译你的 React 库。

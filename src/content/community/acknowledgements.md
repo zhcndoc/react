@@ -4,7 +4,7 @@ title: 致谢
 
 <Intro>
 
-React 最初由 [Jordan Walke.](https://github.com/jordwalke) 创建。如今，React 拥有一个 [专门的全职团队在维护它](/community/team)，以及超过一千名 [开源贡献者。](https://github.com/facebook/react/graphs/contributors)
+React 最初由 [Jordan Walke](https://github.com/jordwalke) 创建。如今，React 拥有一个[专职团队负责开发](/community/team)，以及超过一千名[开源贡献者](https://github.com/react/react/graphs/contributors)。
 
 </Intro>
 
@@ -62,7 +62,7 @@ React 最初由 [Jordan Walke.](https://github.com/jordwalke) 创建。如今，
 
 这份列表并不完整。
 
-我们还要特别感谢 [Tom Occhino](https://github.com/tomocchino) 和 [Adam Wolff](https://github.com/wolffiex) 多年来给予的指导和支持。我们也感谢所有将 [React 翻译成其他语言的志愿者。](https://translations.react.dev/)
+我们还要特别感谢 [Tom Occhino](https://github.com/tomocchino) 和 [Adam Wolff](https://github.com/wolffiex) 多年来给予的指导和支持。我们也感谢所有将 [React 翻译成其他语言的志愿者。](https://translations.react.dev/)。
 
 ## 其他致谢 {/*additional-thanks*/}
 
@@ -71,4 +71,4 @@ React 最初由 [Jordan Walke.](https://github.com/jordwalke) 创建。如今，
 * [Jeff Barczewski](https://github.com/jeffbski) 允许我们在 npm 上使用 `react` 包名
 * [Christopher Aue](https://christopheraue.net/) 允许我们使用 reactjs.com 域名以及 Twitter 上的 [@reactjs](https://twitter.com/reactjs) 用户名
 * [ProjectMoon](https://github.com/ProjectMoon) 允许我们在 npm 上使用 [flux](https://www.npmjs.com/package/flux) 包名
-* Shane Anderson 允许我们在 GitHub 上使用 [react](https://github.com/react) 组织
+* Shane Anderson 允许我们在 GitHub 上使用 [react](https://github.com/react) 组织。

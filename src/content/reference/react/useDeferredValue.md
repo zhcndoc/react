@@ -86,11 +86,7 @@ function SearchPage() {
 
 <Note>
 
-此示例假设你使用的是支持 Suspense 的数据源：
-
-- 使用支持 Suspense 的框架进行数据获取，例如 [Relay](https://relay.dev/docs/guided-tour/rendering/loading-states/) 和 [Next.js](https://nextjs.org/docs/app/getting-started/fetching-data#with-suspense)
-- 使用 [`lazy`](/reference/react/lazy) 懒加载组件代码
-- 使用 [`use`](/reference/react/use) 读取 Promise 的值
+此示例假设您使用的数据源会[激活 Suspense 边界](/reference/react/Suspense#what-activates-a-suspense-boundary)，例如使用 [`use`](/reference/react/use) 读取的 Promise。
 
 [了解有关 Suspense 及其限制的更多信息。](/reference/react/Suspense)
 
@@ -253,10 +249,10 @@ export default function App() {
   return (
     <>
       <label>
-        Search albums:
+        搜索专辑：
         <input value={query} onChange={e => setQuery(e.target.value)} />
       </label>
-      <Suspense fallback={<h2>Loading...</h2>}>
+      <Suspense fallback={<h2>加载中...</h2>}>
         <SearchResults query={deferredQuery} />
       </Suspense>
     </>
@@ -706,6 +702,8 @@ export default SlowList;
 ```css
 .items {
   padding: 0;
+  max-height: 300px;
+  overflow: auto;
 }
 
 .item {
@@ -783,6 +781,8 @@ export default SlowList;
 ```css
 .items {
   padding: 0;
+  max-height: 300px;
+  overflow: auto;
 }
 
 .item {

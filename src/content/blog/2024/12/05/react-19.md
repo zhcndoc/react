@@ -1,11 +1,11 @@
 ---
 title: "React v19"
-author: The React Team
+author: React 团队
 date: 2024/12/05
 description: React 19 现已在 npm 上可用！在这篇文章中，我们将概述 React 19 的新特性，以及你如何采用它们。
 ---
 
-2024 年 12 月 05 日，由 [The React Team](/community/team) 发布
+2024 年 12 月 05 日，由 [React 团队](/community/team) 发布
 
 ---
 <Note>
@@ -182,7 +182,7 @@ const [error, submitAction, isPending] = useActionState(
 
 `React.useActionState` 在 Canary 版本中之前叫做 `ReactDOM.useFormState`，但我们已经将其重命名并弃用了 `useFormState`。
 
-更多信息请参见 [#28491](https://github.com/facebook/react/pull/28491)。
+有关更多信息，请参见 [#28491](https://github.com/react/react/pull/28491)。
 
 </Note>
 
@@ -271,7 +271,7 @@ function Page({commentsPromise}) {
   // 当 `use` 在 Comments 中挂起时，
   // 这个 Suspense 边界会被显示。
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>加载中...</div>}>
       <Comments commentsPromise={commentsPromise} />
     </Suspense>
   )
@@ -330,7 +330,7 @@ function Heading({children}) {
 - [`prerender`](/reference/react-dom/static/prerender)
 - [`prerenderToNodeStream`](/reference/react-dom/static/prerenderToNodeStream)
 
-这些新 API 通过在生成静态 HTML 之前等待数据加载，对 `renderToString` 进行了改进。它们旨在与 Node.js Streams 和 Web Streams 之类的流式环境配合使用。例如，在 Web Stream 环境中，你可以使用 `prerender` 将 React 树预渲染为静态 HTML：
+这些新 API 通过在生成静态 HTML 之前等待数据加载，对 `renderToString` 进行了改进。它们旨在与 Node.js 流和 Web 流之类的流式环境配合使用。例如，在 Web 流环境中，你可以使用 `prerender` 将 React 树预渲染为静态 HTML：
 
 ```js
 import { prerender } from 'react-dom/static';
@@ -345,51 +345,51 @@ async function handler(request) {
 }
 ```
 
-Prerender API 会在返回静态 HTML 流之前等待所有数据加载完成。流可以被转换为字符串，或者通过流式响应发送。它们不支持在内容加载时进行流式传输，而现有的 [React DOM 服务器渲染 API](/reference/react-dom/server) 支持这一点。
+预渲染 API 会在返回静态 HTML 流之前等待所有数据加载完成。流可以被转换为字符串，或者通过流式响应发送。它们不支持在内容加载时进行流式传输，而现有的 [React DOM 服务器渲染 API](/reference/react-dom/server) 支持这一点。
 
 更多信息请参阅 [React DOM 静态 API](/reference/react-dom/static)。
 
-## React Server Components {/*react-server-components*/}
+## React 服务器组件 {/*react-server-components*/}
 
-### Server Components {/*server-components*/}
+### 服务器组件 {/*server-components*/}
 
-Server Components 是一种新选项，允许在打包之前、在与你的客户端应用或 SSR 服务器分离的环境中提前渲染组件。这个独立环境就是 React Server Components 中的“服务器”。Server Components 可以在 CI 服务器上的构建时运行一次，也可以通过 Web 服务器按每个请求运行。
+服务器组件是一种新选项，允许在打包之前、在与你的客户端应用或 SSR 服务器分离的环境中提前渲染组件。这个独立环境就是 React 服务器组件中的“服务器”。服务器组件可以在 CI 服务器上的构建时运行一次，也可以通过 Web 服务器按每个请求运行。
 
-React 19 包含了从 Canary 渠道引入的全部 React Server Components 功能。这意味着，带有 Server Components 的库现在可以将 React 19 作为 peer dependency，并使用 `react-server` [导出条件](https://github.com/reactjs/rfcs/blob/main/text/0227-server-module-conventions.md#react-server-conditional-exports)，以便在支持 [全栈 React 架构](/learn/creating-a-react-app#which-features-make-up-the-react-teams-full-stack-architecture-vision) 的框架中使用。
+React 19 包含了从 Canary 渠道引入的全部 React 服务器组件功能。这意味着，带有服务器组件的库现在可以将 React 19 作为对等依赖，并使用 `react-server` [导出条件](https://github.com/reactjs/rfcs/blob/main/text/0227-server-module-conventions.md#react-server-conditional-exports)，以便在支持 [全栈 React 架构](/learn/creating-a-react-app#which-features-make-up-the-react-teams-full-stack-architecture-vision) 的框架中使用。
 
 
 <Note>
 
-#### 我该如何为 Server Components 构建支持？ {/*how-do-i-build-support-for-server-components*/}
+#### 我该如何为服务器组件构建支持？ {/*how-do-i-build-support-for-server-components*/}
 
-尽管 React 19 中的 React Server Components 是稳定的，并且不会在小版本之间破坏，但用于实现 React Server Components 打包器或框架的底层 API 不遵循 semver，可能会在 React 19.x 的小版本之间发生破坏性变化。
+尽管 React 19 中的 React 服务器组件是稳定的，并且不会在小版本之间破坏，但用于实现 React 服务器组件打包器或框架的底层 API 不遵循 semver，可能会在 React 19.x 的小版本之间发生破坏性变化。
 
-为了让打包器或框架支持 React Server Components，我们建议锁定到特定的 React 版本，或者使用 Canary 版本。我们将继续与打包器和框架合作，未来稳定用于实现 React Server Components 的 API。
+为了让打包器或框架支持 React 服务器组件，我们建议锁定到特定的 React 版本，或者使用 Canary 版本。我们将继续与打包器和框架合作，未来稳定用于实现 React 服务器组件的 API。
 
 </Note>
 
 
-更多内容请参阅 [React Server Components](/reference/rsc/server-components) 文档。
+更多内容请参阅 [React 服务器组件](/reference/rsc/server-components) 文档。
 
-### Server Actions {/*server-actions*/}
+### 服务器操作 {/*server-actions*/}
 
-Server Actions 允许 Client Components 调用在服务器上执行的异步函数。
+服务器操作允许客户端组件调用在服务器上执行的异步函数。
 
-当使用 `"use server"` 指令定义 Server Action 时，你的框架会自动创建对该服务器函数的引用，并将该引用传递给 Client Component。当客户端调用该函数时，React 会向服务器发送请求来执行该函数，并返回结果。
+当使用 `"use server"` 指令定义服务器操作时，你的框架会自动创建对该服务器函数的引用，并将该引用传递给客户端组件。当客户端调用该函数时，React 会向服务器发送请求来执行该函数，并返回结果。
 
 <Note>
 
-#### Server Components 没有对应的指令。 {/*there-is-no-directive-for-server-components*/}
+#### 服务器组件没有对应的指令。 {/*there-is-no-directive-for-server-components*/}
 
-一个常见的误解是，Server Components 由 `"use server"` 标记，但实际上并没有用于 Server Components 的指令。`"use server"` 指令是用于 Server Actions 的。
+一个常见的误解是，服务器组件由 `"use server"` 标记，但实际上并没有用于服务器组件的指令。`"use server"` 指令是用于服务器操作的。
 
-更多信息请参阅 [Directives](/reference/rsc/directives) 文档。
+更多信息请参阅 [指令](/reference/rsc/directives) 文档。
 
 </Note>
 
-Server Actions 可以在 Server Components 中创建并作为 props 传递给 Client Components，也可以被导入并在 Client Components 中使用。
+服务器操作可以在服务器组件中创建并作为 props 传递给客户端组件，也可以被导入并在客户端组件中使用。
 
-更多内容请参阅 [React Server Actions](/reference/rsc/server-actions) 文档。
+更多内容请参阅 [React 服务器操作](/reference/rsc/server-actions) 文档。
 
 ## React 19 的改进 {/*improvements-in-react-19*/}
 
@@ -422,7 +422,7 @@ function MyInput({placeholder, ref}) {
 
 <ConsoleLogLine level="error">
 
-Warning: Text content did not match. Server: "Server" Client: "Client"
+警告：文本内容不匹配。服务器：“服务器” 客户端：“客户端”
 {'  '}at span
 {'  '}at App
 
@@ -430,13 +430,13 @@ Warning: Text content did not match. Server: "Server" Client: "Client"
 
 <ConsoleLogLine level="error">
 
-Warning: An error occurred during hydration. The server HTML was replaced with client content in \<div\>.
+警告：hydration 期间发生错误。服务器 HTML 已被客户端内容替换为 \<div\>。
 
 </ConsoleLogLine>
 
 <ConsoleLogLine level="error">
 
-Warning: Text content did not match. Server: "Server" Client: "Client"
+警告：文本内容不匹配。服务器：“服务器” 客户端：“客户端”
 {'  '}at span
 {'  '}at App
 
@@ -444,13 +444,13 @@ Warning: Text content did not match. Server: "Server" Client: "Client"
 
 <ConsoleLogLine level="error">
 
-Warning: An error occurred during hydration. The server HTML was replaced with client content in \<div\>.
+警告：hydration 期间发生错误。服务器 HTML 已被客户端内容替换为 \<div\>。
 
 </ConsoleLogLine>
 
 <ConsoleLogLine level="error">
 
-Uncaught Error: Text content does not match server-rendered HTML.
+未捕获的错误：文本内容与服务器渲染的 HTML 不匹配。
 {'  '}at checkForUnmatchedText
 {'  '}...
 
@@ -465,18 +465,18 @@ Uncaught Error: Text content does not match server-rendered HTML.
 
 <ConsoleLogLine level="error">
 
-Uncaught Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if an SSR-ed Client Component used:{'\n'}
-\- A server/client branch `if (typeof window !== 'undefined')`.
-\- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
-\- Date formatting in a user's locale which doesn't match the server.
-\- External changing data without sending a snapshot of it along with the HTML.
-\- Invalid HTML tag nesting.{'\n'}
-It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.{'\n'}
+未捕获的错误：hydration 失败，因为服务器渲染的 HTML 与客户端不匹配。因此，此树将在客户端重新生成。如果 SSR 的客户端组件使用了以下内容，可能会发生这种情况：{'\n'}
+\- 服务器/客户端分支 `if (typeof window !== 'undefined')`。
+\- 每次调用都会发生变化的变量输入，例如 `Date.now()` 或 `Math.random()`。
+\- 用户区域设置中的日期格式与服务器不匹配。
+\- 外部不断变化的数据，但没有随 HTML 一起发送其快照。
+\- 无效的 HTML 标签嵌套。{'\n'}
+如果客户端安装了会在 React 加载前篡改 HTML 的浏览器扩展，也可能发生这种情况。{'\n'}
 https://react.dev/link/hydration-mismatch {'\n'}
 {'  '}\<App\>
 {'    '}\<span\>
-{'+    '}Client
-{'-    '}Server{'\n'}
+{'+    '}客户端
+{'-    '}服务器{'\n'}
 {'  '}at throwOnHydrationMismatch
 {'  '}...
 
@@ -726,7 +726,7 @@ function MyComponent() {
 
 ### 更好的错误报告 {/*error-handling*/}
 
-我们改进了 React 19 中的错误处理，以减少重复并为处理已捕获和未捕获错误提供选项。例如，当渲染中发生错误并被 Error Boundary 捕获时，之前 React 会抛出两次错误（一次是原始错误，另一次是在自动恢复失败之后），然后再调用 `console.error` 并附带错误发生位置的信息。
+我们改进了 React 19 中的错误处理，以减少重复并为处理已捕获和未捕获错误提供选项。例如，当渲染中发生错误并被错误边界捕获时，之前 React 会抛出两次错误（一次是原始错误，另一次是在自动恢复失败之后），然后再调用 `console.error` 并附带错误发生位置的信息。
 
 这会导致每个被捕获的错误出现三条错误信息：
 
@@ -734,29 +734,29 @@ function MyComponent() {
 
 <ConsoleLogLine level="error">
 
-Uncaught Error: hit
-{'  '}at Throws
-{'  '}at renderWithHooks
+未捕获的错误：hit
+{'  '}位于 Throws
+{'  '}位于 renderWithHooks
 {'  '}...
 
 </ConsoleLogLine>
 
 <ConsoleLogLine level="error">
 
-Uncaught Error: hit<span className="ms-2 text-gray-30">{'    <--'} 重复</span>
-{'  '}at Throws
-{'  '}at renderWithHooks
+未捕获的错误：hit<span className="ms-2 text-gray-30">{'    <--'} 重复</span>
+{'  '}位于 Throws
+{'  '}位于 renderWithHooks
 {'  '}...
 
 </ConsoleLogLine>
 
 <ConsoleLogLine level="error">
 
-The above error occurred in the Throws component:
-{'  '}at Throws
-{'  '}at ErrorBoundary
-{'  '}at App{'\n'}
-React will try to recreate this component tree from scratch using the error boundary you provided, ErrorBoundary.
+上述错误发生在 Throws 组件中：
+{'  '}位于 Throws
+{'  '}位于 ErrorBoundary
+{'  '}位于 App{'\n'}
+React 将尝试使用你提供的错误边界 ErrorBoundary，从头开始重新创建此组件树。
 
 </ConsoleLogLine>
 
@@ -768,17 +768,17 @@ React will try to recreate this component tree from scratch using the error boun
 
 <ConsoleLogLine level="error">
 
-Error: hit
-{'  '}at Throws
-{'  '}at renderWithHooks
+错误：hit
+{'  '}位于 Throws
+{'  '}位于 renderWithHooks
 {'  '}...{'\n'}
-The above error occurred in the Throws component:
-{'  '}at Throws
-{'  '}at ErrorBoundary
-{'  '}at App{'\n'}
-React will try to recreate this component tree from scratch using the error boundary you provided, ErrorBoundary.
-{'  '}at ErrorBoundary
-{'  '}at App
+上述错误发生在 Throws 组件中：
+{'  '}位于 Throws
+{'  '}位于 ErrorBoundary
+{'  '}位于 App{'\n'}
+React 将尝试使用你提供的错误边界 ErrorBoundary，从头开始重新创建此组件树。
+{'  '}位于 ErrorBoundary
+{'  '}位于 App
 
 </ConsoleLogLine>
 
@@ -786,8 +786,8 @@ React will try to recreate this component tree from scratch using the error boun
 
 此外，我们新增了两个 root 选项，以补充 `onRecoverableError`：
 
-- `onCaughtError`：当 React 在 Error Boundary 中捕获到错误时调用。
-- `onUncaughtError`：当错误被抛出且未被 Error Boundary 捕获时调用。
+- `onCaughtError`：当 React 在错误边界中捕获到错误时调用。
+- `onUncaughtError`：当错误被抛出且未被错误边界捕获时调用。
 - `onRecoverableError`：当错误被抛出并自动恢复时调用。
 
 更多信息和示例请参阅 [`createRoot`](/reference/react-dom/client/createRoot) 和 [`hydrateRoot`](/reference/react-dom/client/hydrateRoot) 的文档。

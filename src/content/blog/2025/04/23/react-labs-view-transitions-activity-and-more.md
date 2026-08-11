@@ -1,5 +1,5 @@
 ---
-title: "React Labs: 视图过渡、Activity 及更多内容"
+title: "React Labs：视图过渡、Activity 及更多内容"
 author: Ricky Hanlon
 date: 2025/04/23
 description: 在 React Labs 的文章中，我们会介绍处于积极研究与开发中的项目。在这篇文章里，我们将分享两个今天即可尝试的新实验性功能，以及我们当前正在推进的其他领域的更新。
@@ -40,7 +40,7 @@ description: 在 React Labs 的文章中，我们会介绍处于积极研究与�
 
 </Note>
 
-View Transitions 和 Activity 现已可在 `react@experimental` 中进行测试。这些功能已经在生产环境中经过测试并且是稳定的，但随着我们吸收反馈，最终 API 仍可能发生变化。
+视图过渡和 Activity 现已可在 `react@experimental` 中进行测试。这些功能已经在生产环境中经过测试并且是稳定的，但随着我们吸收反馈，最终 API 仍可能发生变化。
 
 你可以通过将 React 包升级到最新的实验版本来试用它们：
 
@@ -49,8 +49,8 @@ View Transitions 和 Activity 现已可在 `react@experimental` 中进行测试�
 
 继续阅读，了解如何在你的应用中使用这些功能，或者查看新发布的文档：
 
-- [`<ViewTransition>`](/reference/react/ViewTransition)：一个让你为 Transition 启用动画的组件。
-- [`addTransitionType`](/reference/react/addTransitionType)：一个允许你指定 Transition 原因的函数。
+- [`<ViewTransition>`](/reference/react/ViewTransition)：一个让你为过渡启用动画的组件。
+- [`addTransitionType`](/reference/react/addTransitionType)：一个允许你指定过渡原因的函数。
 - [`<Activity>`](/reference/react/Activity)：一个让你隐藏和显示 UI 部分的组件。
 
 ## 视图过渡 {/*view-transitions*/}
@@ -60,9 +60,9 @@ React View Transitions 是一项新的实验性功能，它让你更容易为应
 要让某个元素参与动画，请将其包裹在新的 `<ViewTransition>` 组件中：
 
 ```js
-// 要动画的“什么”。
+// 要为其添加动画的“什么”。
 <ViewTransition>
-  <div>animate me</div>
+  <div>为我添加动画</div>
 </ViewTransition>
 ```
 
@@ -71,24 +71,24 @@ React View Transitions 是一项新的实验性功能，它让你更容易为应
 你可以通过使用以下三种触发器之一来定义 View Transition 的“何时”动画：
 
 ```js
-// 何时动画。
+// 何时添加动画。
 
-// Transitions
+// 过渡
 startTransition(() => setState(...));
 
-// Deferred Values
+// 延迟值
 const deferred = useDeferredValue(value);
 
 // Suspense
 <Suspense fallback={<Fallback />}>
-  <div>Loading...</div>
+  <div>加载中……</div>
 </Suspense>
 ```
 
 默认情况下，这些动画会使用应用于 [View Transitions 的默认 CSS 动画](https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API/Using#customizing_your_animations)（通常是平滑的交叉淡入淡出）。你可以使用 [view transition 伪选择器](https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API/Using#the_view_transition_pseudo-element_tree) 来定义动画“如何”运行。例如，你可以使用 `*` 来修改所有过渡的默认动画：
 
 ```
-// 何如动画。
+// 如何添加动画。
 ::view-transition-old(*) {
   animation: 300ms ease-out fade-out;
 }
@@ -105,7 +105,7 @@ const deferred = useDeferredValue(value);
 
 我们先从这个应用开始，它目前不会为以下任何交互添加动画：
 - 点击一个视频查看详情。
-- 点击“back”返回信息流。
+- 点击“返回”返回信息流。
 - 在列表中输入以过滤视频。
 
 <Sandpack>
@@ -263,7 +263,7 @@ export function ChevronLeft() {
         <path
           fill="currentColor"
           fillRule="nonzero"
-          d="M95.8838835,240.366117 C95.3957281,239.877961 94.6042719,239.877961 94.1161165,240.366117 C93.6279612,240.854272 93.6279612,241.645728 94.1161165,242.133883 L98.6161165,246.633883 C99.1042719,247.122039 99.8957281,247.122039 100.383883,246.633883 L104.883883,242.133883 C105.372039,241.645728 105.372039,240.854272 104.883883,240.366117 C104.395728,239.877961 103.604272,239.877961 103.116117,240.366117 L99.5,243.982233 L95.8838835,240.366117 Z"
+          d="M95.8838835,240.366117 C95.3957281,239.877961 94.6042719,239.877961 94.1161165,240.366117 C93.6279612,240.854272 93.6279612,241.645728 94.1161165,242.133883 L98.6161165,246.633883 C99.1042719,247.122039 99.8957281,247.122039 100.383883,246.633883 L104.883883,242.133883 C105.372039,241.645728 105.372039,241.645728 104.883883,240.366117 C104.395728,239.877961 103.604272,239.877961 103.116117,240.366117 L99.5,243.982233 L95.8838835,240.366117 Z"
           transform="translate(356.5 164.5)"
         />
         <polygon points="446 418 466 418 466 398 446 398" />
@@ -408,7 +408,7 @@ export default function LikeButton({video}) {
   return (
     <button
       className={`like-button ${isLiked && 'liked'}`}
-      aria-label={isLiked ? 'Unsave' : 'Save'}
+      aria-label={isLiked ? '取消保存' : '保存'}
       onClick={() => {
         const nextIsLiked = !isLiked;
         if (nextIsLiked) {
@@ -486,43 +486,42 @@ export function Video({ video }) {
 }
 ```
 
-
 ```js src/data.js hidden
 const videos = [
   {
     id: '1',
-    title: 'First video',
-    description: 'Video description',
+    title: '第一个视频',
+    description: '视频描述',
     image: 'blue',
   },
   {
     id: '2',
-    title: 'Second video',
-    description: 'Video description',
+    title: '第二个视频',
+    description: '视频描述',
     image: 'red',
   },
   {
     id: '3',
-    title: 'Third video',
-    description: 'Video description',
+    title: '第三个视频',
+    description: '视频描述',
     image: 'green',
   },
   {
     id: '4',
-    title: 'Fourth video',
-    description: 'Video description',
+    title: '第四个视频',
+    description: '视频描述',
     image: 'purple',
   },
   {
     id: '5',
-    title: 'Fifth video',
-    description: 'Video description',
+    title: '第五个视频',
+    description: '视频描述',
     image: 'yellow',
   },
   {
     id: '6',
-    title: 'Sixth video',
-    description: 'Video description',
+    title: '第六个视频',
+    description: '视频描述',
     image: 'gray',
   },
 ];
@@ -667,7 +666,7 @@ export function useIsNavPending() {
 
 View Transitions 适用于导航、展开、打开或重新排序等 UI 过渡。它们并不是用来取代应用中的所有动画的。
 
-在上面的示例应用中，请注意，当你点击“like”按钮以及在 Suspense fallback 闪烁效果中时，已经存在动画了。对于 CSS 动画来说，这是很好的用例，因为它们是在为某个特定元素做动画。
+在上面的示例应用中，请注意，当你点击“喜欢”按钮以及在 Suspense fallback 闪烁效果中时，已经存在动画了。对于 CSS 动画来说，这是很好的用例，因为它们是在为某个特定元素做动画。
 
 </Note>
 
@@ -693,7 +692,6 @@ function navigate(url) {
 ```
 
 当 `url` 变化时，`<ViewTransition>` 和新的路由会被渲染。由于 `<ViewTransition>` 是在 `startTransition` 内部更新的，因此 `<ViewTransition>` 会被激活动画。
-
 
 默认情况下，View Transitions 包含浏览器默认的交叉淡入淡出动画。在我们的示例中加入这一点后，现在每当我们在页面之间导航时，都会有交叉淡入淡出效果：
 
@@ -1003,7 +1001,7 @@ export default function LikeButton({video}) {
   return (
     <button
       className={`like-button ${isLiked && 'liked'}`}
-      aria-label={isLiked ? 'Unsave' : 'Save'}
+      aria-label={isLiked ? '取消收藏' : '收藏'}
       onClick={() => {
         const nextIsLiked = !isLiked;
         if (nextIsLiked) {
@@ -1086,38 +1084,38 @@ export function Video({ video }) {
 const videos = [
   {
     id: '1',
-    title: 'First video',
-    description: 'Video description',
+    title: '第一个视频',
+    description: '视频描述',
     image: 'blue',
   },
   {
     id: '2',
-    title: 'Second video',
-    description: 'Video description',
+    title: '第二个视频',
+    description: '视频描述',
     image: 'red',
   },
   {
     id: '3',
-    title: 'Third video',
-    description: 'Video description',
+    title: '第三个视频',
+    description: '视频描述',
     image: 'green',
   },
   {
     id: '4',
-    title: 'Fourth video',
-    description: 'Video description',
+    title: '第四个视频',
+    description: '视频描述',
     image: 'purple',
   },
   {
     id: '5',
-    title: 'Fifth video',
-    description: 'Video description',
+    title: '第五个视频',
+    description: '视频描述',
     image: 'yellow',
   },
   {
     id: '6',
-    title: 'Sixth video',
-    description: 'Video description',
+    title: '第六个视频',
+    description: '视频描述',
     image: 'gray',
   },
 ];
@@ -2001,7 +1999,7 @@ function SearchInput({ value, onChange }) {
   return (
     <form className="search" onSubmit={(e) => e.preventDefault()}>
       <label htmlFor={id} className="sr-only">
-        Search
+        搜索
       </label>
       <div className="search-input">
         <div className="search-icon">
@@ -2010,7 +2008,7 @@ function SearchInput({ value, onChange }) {
         <input
           type="text"
           id={id}
-          placeholder="Search"
+          placeholder="搜索"
           value={value}
           onChange={(e) => onChange(e.target.value)}
         />
@@ -2041,11 +2039,11 @@ export default function Home() {
   const [searchText, setSearchText] = useState("");
   const foundVideos = filterVideos(videos, searchText);
   return (
-    <Layout heading={<div className="fit">{count} Videos</div>}>
+    <Layout heading={<div className="fit">{count} 个视频</div>}>
       <SearchInput value={searchText} onChange={setSearchText} />
       <div className="video-list">
         {foundVideos.length === 0 && (
-          <div className="no-results">No results</div>
+          <div className="no-results">没有结果</div>
         )}
         <div className="videos">
           {foundVideos.map((video) => (
@@ -2294,7 +2292,6 @@ export function Video({ video }) {
   );
 }
 ```
-
 
 ```js src/data.js hidden
 const videos = [
@@ -3037,7 +3034,6 @@ ul {
 }
 ```
 
-
 ```css src/animations.css
 /* 不需要额外的动画 */
 
@@ -3101,9 +3097,9 @@ root.render(
 
 </Sandpack>
 
-默认情况下，React 会自动为每个参与过渡的元素生成唯一的 `name`（参见 [How does `<ViewTransition>` work](/reference/react/ViewTransition#how-does-viewtransition-work)）。当 React 看到一个过渡中带有 `name` 的 `<ViewTransition>` 被移除，同时又添加了一个相同 `name` 的新 `<ViewTransition>` 时，它会激活共享元素过渡。
+默认情况下，React 会自动为每个参与过渡的元素生成唯一的 `name`（参见 [<ViewTransition> 的工作原理](/reference/react/ViewTransition#how-does-viewtransition-work)）。当 React 看到一个过渡中带有 `name` 的 `<ViewTransition>` 被移除，同时又添加了一个相同 `name` 的新 `<ViewTransition>` 时，它会激活共享元素过渡。
 
-更多信息请参见 [Animating a Shared Element](/reference/react/ViewTransition#animating-a-shared-element) 的文档。
+更多信息请参见 [为共享元素添加动画](/reference/react/ViewTransition#animating-a-shared-element) 的文档。
 
 ### 基于原因进行动画 {/*animating-based-on-cause-2*/}
 
@@ -3126,7 +3122,7 @@ function navigateBack(url) {
 }
 ```
 
-借助过渡类型，你可以通过 props 为 `<ViewTransition>` 提供自定义动画。让我们为“6 Videos”和“Back”的标题添加共享元素过渡：
+借助过渡类型，你可以通过 props 为 `<ViewTransition>` 提供自定义动画。让我们为“6 个视频”和“返回”的标题添加共享元素过渡：
 
 ```js {4,5}
 <ViewTransition
@@ -3226,7 +3222,7 @@ export default function Details() {
             navigateBack("/");
           }}
         >
-          <ChevronLeft /> Back
+          <ChevronLeft /> 返回
         </div>
       }
     >
@@ -3265,7 +3261,7 @@ function SearchInput({ value, onChange }) {
         <input
           type="text"
           id={id}
-          placeholder="Search"
+          placeholder="搜索"
           value={value}
           onChange={(e) => onChange(e.target.value)}
         />
@@ -3296,7 +3292,7 @@ export default function Home() {
   const [searchText, setSearchText] = useState("");
   const foundVideos = filterVideos(videos, searchText);
   return (
-    <Layout heading={<div className="fit">{count} Videos</div>}>
+    <Layout heading={<div className="fit">{count} 个视频</div>}>
       <SearchInput value={searchText} onChange={setSearchText} />
       <div className="video-list">
         {foundVideos.length === 0 && (
@@ -3327,7 +3323,7 @@ export function ChevronLeft() {
         <path
           fill="currentColor"
           fillRule="nonzero"
-          d="M95.8838835,240.366117 C95.3957281,239.877961 94.6042719,239.877961 94.1161165,240.366117 C93.6279612,240.854272 93.6279612,241.645728 94.1161165,242.133883 L98.6161165,246.633883 C99.1042719,247.122039 99.8957281,247.122039 100.383883,246.633883 L104.883883,242.133883 C105.372039,241.645728 105.372039,240.854272 104.883883,240.366117 C104.395728,239.877961 103.604272,239.877961 103.116117,240.366117 L99.5,243.982233 L95.8838835,240.366117 Z"
+          d="M95.8838835,240.366117 C95.3957281,239.877961 94.6042719,239.877961 94.1161165,240.366117 C93.6279612,240.854272 93.6279612,241.645728 94.1161165,242.133883 L98.6161165,246.633883 C99.1042719,247.122039 99.8957281,247.122039 100.383883,246.633883 L104.883883,242.133883 C105.372039,241.645728 105.372039,241.645728 104.883883,240.366117 C104.395728,239.877961 103.604272,239.877961 103.116117,240.366117 L99.5,243.982233 L95.8838835,240.366117 Z"
           transform="translate(356.5 164.5)"
         />
         <polygon points="446 418 466 418 466 398 446 398" />
@@ -3479,7 +3475,7 @@ export default function LikeButton({video}) {
   return (
     <button
       className={`like-button ${isLiked && 'liked'}`}
-      aria-label={isLiked ? 'Unsave' : 'Save'}
+      aria-label={isLiked ? '取消保存' : '保存'}
       onClick={() => {
         const nextIsLiked = !isLiked;
         if (nextIsLiked) {
@@ -3972,7 +3968,7 @@ ul {
   }
 }
 
-/* LikeButton */
+/* 点赞按钮 */
 .like-button {
   outline-offset: 2px;
   position: relative;
@@ -4362,9 +4358,9 @@ root.render(
 
 </Sandpack>
 
-默认情况下，React 会自动为每个参与过渡的元素生成唯一的 `name`（参见 [How does `<ViewTransition>` work](/reference/react/ViewTransition#how-does-viewtransition-work)）。当 React 看到一个过渡中带有 `name` 的 `<ViewTransition>` 被移除，同时又添加了一个相同 `name` 的新 `<ViewTransition>` 时，它会激活共享元素过渡。
+默认情况下，React 会自动为每个参与过渡的元素生成唯一的 `name`（参见 [“`<ViewTransition>` 如何工作”](/reference/react/ViewTransition#how-does-viewtransition-work)）。当 React 看到一个过渡中带有 `name` 的 `<ViewTransition>` 被移除，同时又添加了一个相同 `name` 的新 `<ViewTransition>` 时，它会激活共享元素过渡。
 
-更多信息请参见 [Animating a Shared Element](/reference/react/ViewTransition#animating-a-shared-element) 的文档。
+更多信息请参见 [“为共享元素添加动画”](/reference/react/ViewTransition#animating-a-shared-element) 的文档。
 
 ### 基于原因进行动画 {/*animating-based-on-cause*/}
 
@@ -4387,7 +4383,7 @@ function navigateBack(url) {
 }
 ```
 
-借助过渡类型，你可以通过 props 为 `<ViewTransition>` 提供自定义动画。让我们为“6 Videos”和“Back”的标题添加共享元素过渡：
+借助过渡类型，你可以通过 props 为 `<ViewTransition>` 提供自定义动画。让我们为“6 个视频”和“返回”的标题添加共享元素过渡：
 
 ```js {4,5}
 <ViewTransition
@@ -4487,7 +4483,7 @@ export default function Details() {
             navigateBack("/");
           }}
         >
-          <ChevronLeft /> Back
+          <ChevronLeft /> 返回
         </div>
       }
     >
@@ -4526,7 +4522,7 @@ function SearchInput({ value, onChange }) {
         <input
           type="text"
           id={id}
-          placeholder="Search"
+          placeholder="搜索"
           value={value}
           onChange={(e) => onChange(e.target.value)}
         />
@@ -4557,7 +4553,7 @@ export default function Home() {
   const [searchText, setSearchText] = useState("");
   const foundVideos = filterVideos(videos, searchText);
   return (
-    <Layout heading={<div className="fit">{count} Videos</div>}>
+    <Layout heading={<div className="fit">{count} 个视频</div>}>
       <SearchInput value={searchText} onChange={setSearchText} />
       <div className="video-list">
         {foundVideos.length === 0 && (
@@ -4588,7 +4584,7 @@ export function ChevronLeft() {
         <path
           fill="currentColor"
           fillRule="nonzero"
-          d="M95.8838835,240.366117 C95.3957281,239.877961 94.6042719,239.877961 94.1161165,240.366117 C93.6279612,240.854272 93.6279612,241.645728 94.1161165,242.133883 L98.6161165,246.633883 C99.1042719,247.122039 99.8957281,247.122039 100.383883,246.633883 L104.883883,242.133883 C105.372039,241.645728 105.372039,240.854272 104.883883,240.366117 C104.395728,239.877961 103.604272,239.877961 103.116117,240.366117 L99.5,243.982233 L95.8838835,240.366117 Z"
+          d="M95.8838835,240.366117 C95.3957281,239.877961 94.6042719,239.877961 94.1161165,240.366117 C93.6279612,240.854272 93.6279612,241.645728 94.1161165,242.133883 L98.6161165,246.633883 C99.1042719,247.122039 99.8957281,247.122039 100.383883,246.633883 L104.883883,242.133883 C105.372039,241.645728 105.372039,241.645728 104.883883,240.366117 C104.395728,239.877961 103.604272,239.877961 103.116117,240.366117 L99.5,243.982233 L95.8838835,240.366117 Z"
           transform="translate(356.5 164.5)"
         />
         <polygon points="446 418 466 418 466 398 446 398" />
@@ -4740,7 +4736,7 @@ export default function LikeButton({video}) {
   return (
     <button
       className={`like-button ${isLiked && 'liked'}`}
-      aria-label={isLiked ? 'Unsave' : 'Save'}
+      aria-label={isLiked ? '取消保存' : '保存'}
       onClick={() => {
         const nextIsLiked = !isLiked;
         if (nextIsLiked) {
@@ -4905,7 +4901,7 @@ export function ChevronLeft() {
         <path
           fill="currentColor"
           fillRule="nonzero"
-          d="M95.8838835,240.366117 C95.3957281,239.877961 94.6042719,239.877961 94.1161165,240.366117 C93.6279612,240.854272 93.6279612,241.645728 94.1161165,242.133883 L98.6161165,246.633883 C99.1042719,247.122039 99.8957281,247.122039 100.383883,246.633883 L104.883883,242.133883 C105.372039,241.645728 105.372039,240.854272 104.883883,240.366117 C104.395728,239.877961 103.604272,239.877961 103.116117,240.366117 L99.5,243.982233 L95.8838835,240.366117 Z"
+          d="M95.8838835,240.366117 C95.3957281,239.877961 94.6042719,239.877961 94.1161165,240.366117 C93.6279612,240.854272 93.6279612,241.645728 94.1161165,242.133883 L98.6161165,246.633883 C99.1042719,247.122039 99.8957281,247.122039 100.383883,246.633883 L104.883883,242.133883 C105.372039,241.645728 105.372039,241.645728 104.883883,240.366117 C104.395728,239.877961 103.604272,239.877961 103.116117,240.366117 L99.5,243.982233 L95.8838835,240.366117 Z"
           transform="translate(356.5 164.5)"
         />
         <polygon points="446 418 466 418 466 398 446 398" />
@@ -5139,7 +5135,6 @@ export function Video({ video }) {
   );
 }
 ```
-
 
 ```js src/data.js hidden
 const videos = [
@@ -5532,8 +5527,7 @@ ul {
     -2em 2em 0 0, -3em 0em 0 -1em, -2em -2em 0 -1em;
   }
   62.5% {
-    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em,
-    3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 0,
+    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 0,
     -2em 2em 0 0.2em, -3em 0 0 0, -2em -2em 0 -1em;
   }
   75% {
@@ -5874,7 +5868,6 @@ ul {
 }
 ```
 
-
 ```css src/animations.css
 /* 无需额外动画 */
 
@@ -6036,1320 +6029,7 @@ root.render(
 
 </Sandpack>
 
-### 动画列表 {/*animating-lists*/}
-
-你也可以使用 `<ViewTransition>` 来为项目列表在重新排序时添加动画，例如可搜索项目列表：
-
-```js {3,5}
-<div className="videos">
-  {filteredVideos.map((video) => (
-    <ViewTransition key={video.id}>
-      <Video video={video} />
-    </ViewTransition>
-  ))}
-</div>
-```
-
-要激活 ViewTransition，我们可以使用 `useDeferredValue`：
-
-```js {2}
-const [searchText, setSearchText] = useState('');
-const deferredSearchText = useDeferredValue(searchText);
-const filteredVideos = filterVideos(videos, deferredSearchText);
-```
-
-现在，当你在搜索栏中输入时，项目会播放动画：
-
-<Sandpack>
-
-```js src/App.js hidden
-import { ViewTransition } from "react";
-import Details from "./Details";
-import Home from "./Home";
-import { useRouter } from "./router";
-
-export default function App() {
-  const { url } = useRouter();
-
-  // 默认慢速淡入淡出动画。
-  return (
-    <ViewTransition default="slow-fade">
-      {url === "/" ? <Home /> : <Details />}
-    </ViewTransition>
-  );
-}
-```
-
-```js src/Details.js hidden
-import { use, Suspense, ViewTransition } from "react";
-import { fetchVideo, fetchVideoDetails } from "./data";
-import { Thumbnail, VideoControls } from "./Videos";
-import { useRouter } from "./router";
-import Layout from "./Layout";
-import { ChevronLeft } from "./Icons";
-
-function VideoDetails({id}) {
-  // 从 Suspense 回退内容过渡到实际内容
-  return (
-    <Suspense
-      fallback={
-        // 将回退内容向下动画。
-        <ViewTransition exit="slide-down">
-          <VideoInfoFallback />
-        </ViewTransition>
-      }
-    >
-      {/* 将内容向上动画 */}
-      <ViewTransition enter="slide-up">
-        <VideoInfo id={id} />
-      </ViewTransition>
-    </Suspense>
-  );
-}
-
-function VideoInfoFallback() {
-  return (
-    <>
-      <div className="fallback title"></div>
-      <div className="fallback description"></div>
-    </>
-  );
-}
-
-export default function Details() {
-  const { url, navigateBack } = useRouter();
-  const videoId = url.split("/").pop();
-  const video = use(fetchVideo(videoId));
-
-  return (
-    <Layout
-      heading={
-        <div
-          className="fit back"
-          onClick={() => {
-            navigateBack("/");
-          }}
-        >
-          <ChevronLeft /> 返回
-        </div>
-      }
-    >
-      <div className="details">
-        <Thumbnail video={video} large>
-          <VideoControls />
-        </Thumbnail>
-        <VideoDetails id={video.id} />
-      </div>
-    </Layout>
-  );
-}
-
-function VideoInfo({ id }) {
-  const details = use(fetchVideoDetails(id));
-  return (
-    <>
-      <p className="info-title">{details.title}</p>
-      <p className="info-description">{details.description}</p>
-    </>
-  );
-}
-```
-
-```js src/Home.js
-import { useId, useState, use, useDeferredValue, ViewTransition } from "react";import { Video } from "./Videos";import Layout from "./Layout";import { fetchVideos } from "./data";import { IconSearch } from "./Icons";
-
-function SearchList({searchText, videos}) {
-  // 使用 useDeferredValue 激活（“何时”）
-  const deferredSearchText = useDeferredValue(searchText);
-  const filteredVideos = filterVideos(videos, deferredSearchText);
-  return (
-    <div className="video-list">
-      <div className="videos">
-        {filteredVideos.map((video) => (
-          // 为列表中的每一项添加动画（“什么”）
-          <ViewTransition key={video.id}>
-            <Video video={video} />
-          </ViewTransition>
-        ))}
-      </div>
-      {filteredVideos.length === 0 && (
-        <div className="no-results">没有结果</div>
-      )}
-    </div>
-  );
-}
-
-export default function Home() {
-  const videos = use(fetchVideos());
-  const count = videos.length;
-  const [searchText, setSearchText] = useState('');
-
-  return (
-    <Layout heading={<div className="fit">{count} 个视频</div>}>
-      <SearchInput value={searchText} onChange={setSearchText} />
-      <SearchList videos={videos} searchText={searchText} />
-    </Layout>
-  );
-}
-
-function SearchInput({ value, onChange }) {
-  const id = useId();
-  return (
-    <form className="search" onSubmit={(e) => e.preventDefault()}>
-      <label htmlFor={id} className="sr-only">
-        搜索
-      </label>
-      <div className="search-input">
-        <div className="search-icon">
-          <IconSearch />
-        </div>
-        <input
-          type="text"
-          id={id}
-          placeholder="搜索"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-        />
-      </div>
-    </form>
-  );
-}
-
-function filterVideos(videos, query) {
-  const keywords = query
-    .toLowerCase()
-    .split(" ")
-    .filter((s) => s !== "");
-  if (keywords.length === 0) {
-    return videos;
-  }
-  return videos.filter((video) => {
-    const words = (video.title + " " + video.description)
-      .toLowerCase()
-      .split(" ");
-    return keywords.every((kw) => words.some((w) => w.includes(kw)));
-  });
-}
-```
-
-```js src/Icons.js hidden
-export function ChevronLeft() {
-  return (
-    <svg
-      className="chevron-left"
-      xmlns="http://www.w3.org/2000/svg"
-      width="20"
-      height="20"
-      viewBox="0 0 20 20">
-      <g fill="none" fillRule="evenodd" transform="translate(-446 -398)">
-        <path
-          fill="currentColor"
-          fillRule="nonzero"
-          d="M95.8838835,240.366117 C95.3957281,239.877961 94.6042719,239.877961 94.1161165,240.366117 C93.6279612,240.854272 93.6279612,241.645728 94.1161165,242.133883 L98.6161165,246.633883 C99.1042719,247.122039 99.8957281,247.122039 100.383883,246.633883 L104.883883,242.133883 C105.372039,241.645728 105.372039,240.854272 104.883883,240.366117 C104.395728,239.877961 103.604272,239.877961 103.116117,240.366117 L99.5,243.982233 L95.8838835,240.366117 Z"
-          transform="translate(356.5 164.5)"
-        />
-        <polygon points="446 418 466 418 466 398 446 398" />
-      </g>
-    </svg>
-  );
-}
-
-export function PauseIcon() {
-  return (
-    <svg
-      className="control-icon"
-      style={{padding: '4px'}}
-      width="100"
-      height="100"
-      viewBox="0 0 512 512"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg">
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M256 0C114.617 0 0 114.615 0 256s114.617 256 256 256 256-114.615 256-256S397.383 0 256 0zm-32 320c0 8.836-7.164 16-16 16h-32c-8.836 0-16-7.164-16-16V192c0-8.836 7.164-16 16-16h32c8.836 0 16 7.164 16 16v128zm128 0c0 8.836-7.164 16-16 16h-32c-8.836 0-16-7.164-16-16V192c0-8.836 7.164-16 16-16h32c8.836 0 16 7.164 16 16v128z"
-        fill="currentColor"
-      />
-    </svg>
-  );
-}
-
-export function PlayIcon() {
-  return (
-    <svg
-      className="control-icon"
-      width="100"
-      height="100"
-      viewBox="0 0 72 72"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg">
-      <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M36 69C54.2254 69 69 54.2254 69 36C69 17.7746 54.2254 3 36 3C17.7746 3 3 17.7746 3 36C3 54.2254 17.7746 69 36 69ZM52.1716 38.6337L28.4366 51.5801C26.4374 52.6705 24 51.2235 24 48.9464V23.0536C24 20.7764 26.4374 19.3295 28.4366 20.4199L52.1716 33.3663C54.2562 34.5034 54.2562 37.4966 52.1716 38.6337Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
-}
-export function Heart({liked, animate}) {
-  return (
-    <>
-      <svg
-        className="absolute overflow-visible"
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg">
-        <circle
-          className={`circle ${liked ? 'liked' : ''} ${animate ? 'animate' : ''}`}
-          cx="12"
-          cy="12"
-          r="11.5"
-          fill="transparent"
-          strokeWidth="0"
-          stroke="currentColor"
-        />
-      </svg>
-
-      <svg
-        className={`heart ${liked ? 'liked' : ''} ${animate ? 'animate' : ''}`}
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg">
-        {liked ? (
-          <path
-            d="M12 23a.496.496 0 0 1-.26-.074C7.023 19.973 0 13.743 0 8.68c0-4.12 2.322-6.677 6.058-6.677 2.572 0 5.108 2.387 5.134 2.41l.808.771.808-.771C12.834 4.387 15.367 2 17.935 2 21.678 2 24 4.558 24 8.677c0 5.06-7.022 11.293-11.74 14.246a.496.496 0 0 1-.26.074V23z"
-            fill="currentColor"
-          />
-        ) : (
-          <path
-            fillRule="evenodd"
-            clipRule="evenodd"
-            d="m12 5.184-.808-.771-.004-.004C11.065 4.299 8.522 2.003 6 2.003c-3.736 0-6 2.558-6 6.677 0 4.47 5.471 9.848 10 13.079.602.43 1.187.82 1.74 1.167A.497.497 0 0 0 12 23v-.003c.09 0 .182-.026.26-.074C16.977 19.97 24 13.737 24 8.677 24 4.557 21.743 2 18 2c-2.569 0-5.166 2.387-5.192 2.413L12 5.184zm-.002 15.525c2.071-1.388 4.477-3.342 6.427-5.47C20.72 12.733 22 10.401 22 8.677c0-1.708-.466-2.855-1.087-3.55C20.316 4.459 19.392 4 18 4c-.726 0-1.63.364-2.5.9-.67.412-1.148.82-1.266.92-.03.025-.037.031-.019.014l-.013.013L12 7.949 9.832 5.88a10.08 10.08 0 0 0-1.33-.977C7.633 4.367 6.728 4.003 6 4.003c-1.388 0-2.312.459-2.91 1.128C2.466 5.826 2 6.974 2 8.68c0 1.726 1.28 4.058 3.575 6.563 1.948 2.127 4.352 4.078 6.423 5.466z"
-            fill="currentColor"
-          />
-        )}
-      </svg>
-    </>
-  );
-}
-
-export function IconSearch(props) {
-  return (
-    <svg width="1em" height="1em" viewBox="0 0 20 20">
-      <path
-        d="M14.386 14.386l4.0877 4.0877-4.0877-4.0877c-2.9418 2.9419-7.7115 2.9419-10.6533 0-2.9419-2.9418-2.9419-7.7115 0-10.6533 2.9418-2.9419 7.7115-2.9419 10.6533 0 2.9419 2.9418 2.9419 7.7115 0 10.6533z"
-        stroke="currentColor"
-        fill="none"
-        strokeWidth="2"
-        fillRule="evenodd"
-        strokeLinecap="round"
-        strokeLinejoin="round"></path>
-    </svg>
-  );
-}
-```
-
-```js src/Layout.js
-import {ViewTransition} from 'react'; import { useIsNavPending } from "./router";
-
-export default function Page({ heading, children }) {
-  const isPending = useIsNavPending();
-  return (
-    <div className="page">
-      <div className="top">
-        <div className="top-nav">
-          {/* 根据过渡类型使用自定义类。 */}
-          <ViewTransition
-            name="nav"
-            share={{
-              'nav-forward': 'slide-forward',
-              'nav-back': 'slide-back',
-            }}>
-            {heading}
-          </ViewTransition>
-          {isPending && <span className="loader"></span>}
-        </div>
-      </div>
-      {/* 为内容禁用 ViewTransition。 */}
-      {/* 内容可以定义自己的 ViewTransition。 */}
-      <ViewTransition default="none">
-        <div className="bottom">
-          <div className="content">{children}</div>
-        </div>
-      </ViewTransition>
-    </div>
-  );
-}
-```
-
-```js src/LikeButton.js hidden
-import {useState} from 'react';
-import {Heart} from './Icons';
-
-// 这是一个变通办法，因为我们实际上没有后端。
-// 与本地状态不同，这种方式在视频被筛选时仍然会保留。
-const likedVideos = new Set();
-
-export default function LikeButton({video}) {
-  const [isLiked, setIsLiked] = useState(() => likedVideos.has(video.id));
-  const [animate, setAnimate] = useState(false);
-  return (
-    <button
-      className={`like-button ${isLiked && 'liked'}`}
-      aria-label={isLiked ? '取消保存' : '保存'}
-      onClick={() => {
-        const nextIsLiked = !isLiked;
-        if (nextIsLiked) {
-          likedVideos.add(video.id);
-        } else {
-          likedVideos.delete(video.id);
-        }
-        setAnimate(true);
-        setIsLiked(nextIsLiked);
-      }}>
-      <Heart liked={isLiked} animate={animate} />
-    </button>
-  );
-}
-```
-
-```js src/Videos.js
-import { useState, ViewTransition } from "react"; import LikeButton from "./LikeButton"; import { useRouter } from "./router"; import { PauseIcon, PlayIcon } from "./Icons"; import { startTransition } from "react";
-
-export function Thumbnail({ video, children }) {
-  // 添加名称以使用共享元素过渡进行动画。
-  return (
-    <ViewTransition name={`video-${video.id}`}>
-      <div
-        aria-hidden="true"
-        tabIndex={-1}
-        className={`thumbnail ${video.image}`}
-      >
-        {children}
-      </div>
-    </ViewTransition>
-  );
-}
-
-
-
-export function VideoControls() {
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  return (
-    <span
-      className="controls"
-      onClick={() =>
-        startTransition(() => {
-          setIsPlaying((p) => !p);
-        })
-      }
-    >
-      {isPlaying ? <PauseIcon /> : <PlayIcon />}
-    </span>
-  );
-}
-
-export function Video({ video }) {
-  const { navigate } = useRouter();
-
-  return (
-    <div className="video">
-      <div
-        className="link"
-        onClick={(e) => {
-          e.preventDefault();
-          navigate(`/video/${video.id}`);
-        }}
-      >
-        <Thumbnail video={video}></Thumbnail>
-
-        <div className="info">
-          <div className="video-title">{video.title}</div>
-          <div className="video-description">{video.description}</div>
-        </div>
-      </div>
-      <LikeButton video={video} />
-    </div>
-  );
-}
-```
-
-```js src/data.js hidden
-const videos = [
-  {
-    id: '1',
-    title: '第一个视频',
-    description: '视频描述',
-    image: 'blue',
-  },
-  {
-    id: '2',
-    title: '第二个视频',
-    description: '视频描述',
-    image: 'red',
-  },
-  {
-    id: '3',
-    title: '第三个视频',
-    description: '视频描述',
-    image: 'green',
-  },
-  {
-    id: '4',
-    title: '第四个视频',
-    description: '视频描述',
-    image: 'purple',
-  },
-  {
-    id: '5',
-    title: '第五个视频',
-    description: '视频描述',
-    image: 'yellow',
-  },
-  {
-    id: '6',
-    title: '第六个视频',
-    description: '视频描述',
-    image: 'gray',
-  },
-];
-
-let videosCache = new Map();
-let videoCache = new Map();
-let videoDetailsCache = new Map();
-const VIDEO_DELAY = 1;
-const VIDEO_DETAILS_DELAY = 1000;
-export function fetchVideos() {
-  if (videosCache.has(0)) {
-    return videosCache.get(0);
-  }
-  const promise = new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(videos);
-    }, VIDEO_DELAY);
-  });
-  videosCache.set(0, promise);
-  return promise;
-}
-
-export function fetchVideo(id) {
-  if (videoCache.has(id)) {
-    return videoCache.get(id);
-  }
-  const promise = new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(videos.find((video) => video.id === id));
-    }, VIDEO_DELAY);
-  });
-  videoCache.set(id, promise);
-  return promise;
-}
-
-export function fetchVideoDetails(id) {
-  if (videoDetailsCache.has(id)) {
-    return videoDetailsCache.get(id);
-  }
-  const promise = new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(videos.find((video) => video.id === id));
-    }, VIDEO_DETAILS_DELAY);
-  });
-  videoDetailsCache.set(id, promise);
-  return promise;
-}
-```
-
-```js src/router.js
-import {useState, createContext, use, useTransition, useLayoutEffect, useEffect, addTransitionType} from "react";
-
-export function Router({ children }) {
-  const [isPending, startTransition] = useTransition();
-  function navigate(url) {
-    startTransition(() => {
-      // 导航前进的过渡类型
-      addTransitionType('nav-forward');
-      go(url);
-    });
-  }
-  function navigateBack(url) {
-    startTransition(() => {
-      // 导航后退的过渡类型
-      addTransitionType('nav-back');
-      go(url);
-    });
-  }
-
-  const [routerState, setRouterState] = useState({pendingNav: () => {}, url: document.location.pathname});
-
-  function go(url) {
-    setRouterState({
-      url,
-      pendingNav() {
-        window.history.pushState({}, "", url);
-      },
-    });
-  }
-
-  useEffect(() => {
-    function handlePopState() {
-      // 这里不应进行动画，因为恢复必须是同步的。
-      // 即使它是一个过渡。
-      startTransition(() => {
-        setRouterState({
-          url: document.location.pathname + document.location.search,
-          pendingNav() {
-            // 空操作。URL 已经更新。
-          },
-        });
-      });
-    }
-    window.addEventListener("popstate", handlePopState);
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, []);
-  const pendingNav = routerState.pendingNav;
-  useLayoutEffect(() => {
-    pendingNav();
-  }, [pendingNav]);
-
-  return (
-    <RouterContext
-      value={{
-        url: routerState.url,
-        navigate,
-        navigateBack,
-        isPending,
-        params: {},
-      }}
-    >
-      {children}
-    </RouterContext>
-  );
-}
-
-const RouterContext = createContext({ url: "/", params: {} });
-
-export function useRouter() {
-  return use(RouterContext);
-}
-
-export function useIsNavPending() {
-  return use(RouterContext).isPending;
-}
-
-```
-
-```css src/styles.css hidden
-@font-face {
-  font-family: Optimistic Text;
-  src: url(https://react.dev/fonts/Optimistic_Text_W_Rg.woff2) format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: Optimistic Text;
-  src: url(https://react.dev/fonts/Optimistic_Text_W_Md.woff2) format("woff2");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: Optimistic Text;
-  src: url(https://react.dev/fonts/Optimistic_Text_W_Bd.woff2) format("woff2");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: Optimistic Text;
-  src: url(https://react.dev/fonts/Optimistic_Text_W_Bd.woff2) format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html {
-  background-image: url(https://react.dev/images/meta-gradient-dark.png);
-  background-size: 100%;
-  background-position: -100%;
-  background-color: rgb(64 71 86);
-  background-repeat: no-repeat;
-  height: 100%;
-  width: 100%;
-}
-
-body {
-  font-family: Optimistic Text, -apple-system, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
-  padding: 10px 0 10px 0;
-  margin: 0;
-  display: flex;
-  justify-content: center;
-}
-
-#root {
-  flex: 1 1;
-  height: auto;
-  background-color: #fff;
-  border-radius: 10px;
-  max-width: 450px;
-  min-height: 600px;
-  padding-bottom: 10px;
-}
-
-h1 {
-  margin-top: 0;
-  font-size: 22px;
-}
-
-h2 {
-  margin-top: 0;
-  font-size: 20px;
-}
-
-h3 {
-  margin-top: 0;
-  font-size: 18px;
-}
-
-h4 {
-  margin-top: 0;
-  font-size: 16px;
-}
-
-h5 {
-  margin-top: 0;
-  font-size: 14px;
-}
-
-h6 {
-  margin-top: 0;
-  font-size: 12px;
-}
-
-code {
-  font-size: 1.2em;
-}
-
-ul {
-  padding-inline-start: 20px;
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-}
-
-.absolute {
-  position: absolute;
-}
-
-.overflow-visible {
-  overflow: visible;
-}
-
-.visible {
-  overflow: visible;
-}
-
-.fit {
-  width: fit-content;
-}
-
-
-/* 布局 */
-.page {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.top-hero {
-  height: 200px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-image: conic-gradient(
-      from 90deg at -10% 100%,
-      #2b303b 0deg,
-      #2b303b 90deg,
-      #16181d 1turn
-  );
-}
-
-.bottom {
-  flex: 1;
-  overflow: auto;
-}
-
-.top-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0;
-  padding: 0 12px;
-  top: 0;
-  width: 100%;
-  height: 44px;
-  color: #23272f;
-  font-weight: 700;
-  font-size: 20px;
-  z-index: 100;
-  cursor: default;
-}
-
-.content {
-  padding: 0 12px;
-  margin-top: 4px;
-}
-
-
-.loader {
-  color: #23272f;
-  font-size: 3px;
-  width: 1em;
-  margin-right: 18px;
-  height: 1em;
-  border-radius: 50%;
-  position: relative;
-  text-indent: -9999em;
-  animation: loading-spinner 1.3s infinite linear;
-  animation-delay: 200ms;
-  transform: translateZ(0);
-}
-
-@keyframes loading-spinner {
-  0%,
-  100% {
-    box-shadow: 0 -3em 0 0.2em,
-    2em -2em 0 0em, 3em 0 0 -1em,
-    2em 2em 0 -1em, 0 3em 0 -1em,
-    -2em 2em 0 -1em, -3em 0 0 -1em,
-    -2em -2em 0 0;
-  }
-  12.5% {
-    box-shadow: 0 -3em 0 0, 2em -2em 0 0.2em,
-    3em 0 0 0, 2em 2em 0 -1em, 0 3em 0 -1em,
-    -2em 2em 0 -1em, -3em 0 0 -1em,
-    -2em -2em 0 -1em;
-  }
-  25% {
-    box-shadow: 0 -3em 0 -0.5em,
-    2em -2em 0 0, 3em 0 0 0.2em,
-    2em 2em 0 0, 0 3em 0 -1em,
-    -2em 2em 0 -1em, -3em 0 0 -1em,
-    -2em -2em 0 -1em;
-  }
-  37.5% {
-    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em,
-    3em 0em 0 0, 2em 2em 0 0.2em, 0 3em 0 0em,
-    -2em 2em 0 -1em, -3em 0em 0 -1em, -2em -2em 0 -1em;
-  }
-  50% {
-    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em,
-    3em 0 0 -1em, 2em 2em 0 0em, 0 3em 0 0.2em,
-    -2em 2em 0 0, -3em 0em 0 -1em, -2em -2em 0 -1em;
-  }
-  62.5% {
-    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em,
-    3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 0,
-    -2em 2em 0 0.2em, -3em 0 0 0, -2em -2em 0 -1em;
-  }
-  75% {
-    box-shadow: 0em -3em 0 -1em, 2em -2em 0 -1em,
-    3em 0em 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em,
-    -2em 2em 0 0, -3em 0em 0 0.2em, -2em -2em 0 0;
-  }
-  87.5% {
-    box-shadow: 0em -3em 0 0, 2em -2em 0 -1em,
-    3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 -1em,
-    -2em 2em 0 0, -3em 0em 0 0, -2em -2em 0 0.2em;
-  }
-}
-
-/* LikeButton */
-.like-button {
-  outline-offset: 2px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  cursor: pointer;
-  border-radius: 9999px;
-  border: none;
-  outline: none 2px;
-  color: #5e687e;
-  background: none;
-}
-
-.like-button:focus {
-  color: #a6423a;
-  background-color: rgba(166, 66, 58, .05);
-}
-
-.like-button:active {
-  color: #a6423a;
-  background-color: rgba(166, 66, 58, .05);
-  transform: scaleX(0.95) scaleY(0.95);
-}
-
-.like-button:hover {
-  background-color: #f6f7f9;
-}
-
-.like-button.liked {
-  color: #a6423a;
-}
-
-/* Icons */
-@keyframes circle {
-  0% {
-    transform: scale(0);
-    stroke-width: 16px;
-  }
-
-  50% {
-    transform: scale(.5);
-    stroke-width: 16px;
-  }
-
-  to {
-    transform: scale(1);
-    stroke-width: 0;
-  }
-}
-
-.circle {
-  color: rgba(166, 66, 58, .5);
-  transform-origin: center;
-  transition-property: all;
-  transition-duration: .15s;
-  transition-timing-function: cubic-bezier(.4,0,.2,1);
-}
-
-.circle.liked.animate {
-  animation: circle .3s forwards;
-}
-
-.heart {
-  width: 1.5rem;
-  height: 1.5rem;
-}
-
-.heart.liked {
-  transform-origin: center;
-  transition-property: all;
-  transition-duration: .15s;
-  transition-timing-function: cubic-bezier(.4, 0, .2, 1);
-}
-
-.heart.liked.animate {
-  animation: scale .35s ease-in-out forwards;
-}
-
-.control-icon {
-  color: hsla(0, 0%, 100%, .5);
-  filter:  drop-shadow(0 20px 13px rgba(0, 0, 0, .03)) drop-shadow(0 8px 5px rgba(0, 0, 0, .08));
-}
-
-.chevron-left {
-  margin-top: 2px;
-  rotate: 90deg;
-}
-
-
-/* 视频 */
-.thumbnail {
-  position: relative;
-  aspect-ratio: 16 / 9;
-  display: flex;
-  overflow: hidden;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  border-radius: 0.5rem;
-  outline-offset: 2px;
-  width: 8rem;
-  vertical-align: middle;
-  background-color: #ffffff;
-  background-size: cover;
-  user-select: none;
-}
-
-.thumbnail.blue {
-  background-image: conic-gradient(at top right, #c76a15, #087ea4, #2b3491);
-}
-
-.thumbnail.red {
-  background-image: conic-gradient(at top right, #c76a15, #a6423a, #2b3491);
-}
-
-.thumbnail.green {
-  background-image: conic-gradient(at top right, #c76a15, #388f7f, #2b3491);
-}
-
-.thumbnail.purple {
-  background-image: conic-gradient(at top right, #c76a15, #575fb7, #2b3491);
-}
-
-.thumbnail.yellow {
-  background-image: conic-gradient(at top right, #c76a15, #FABD62, #2b3491);
-}
-
-.thumbnail.gray {
-  background-image: conic-gradient(at top right, #c76a15, #4E5769, #2b3491);
-}
-
-.video {
-  display: flex;
-  flex-direction: row;
-  gap: 0.75rem;
-  align-items: center;
-}
-
-.video .link {
-  display: flex;
-  flex-direction: row;
-  flex: 1 1 0;
-  gap: 0.125rem;
-  outline-offset: 4px;
-  cursor: pointer;
-}
-
-.video .info {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin-left: 8px;
-  gap: 0.125rem;
-}
-
-.video .info:hover {
-  text-decoration: underline;
-}
-
-.video-title {
-  font-size: 15px;
-  line-height: 1.25;
-  font-weight: 700;
-  color: #23272f;
-}
-
-.video-description {
-  color: #5e687e;
-  font-size: 13px;
-}
-
-/* 详情 */
-.details .thumbnail {
-  position: relative;
-  aspect-ratio: 16 / 9;
-  display: flex;
-  overflow: hidden;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  border-radius: 0.5rem;
-  outline-offset: 2px;
-  width: 100%;
-  vertical-align: middle;
-  background-color: #ffffff;
-  background-size: cover;
-  user-select: none;
-}
-
-.video-details-title {
-  margin-top: 8px;
-}
-
-.video-details-speaker {
-  display: flex;
-  gap: 8px;
-  margin-top: 10px
-}
-
-.back {
-  display: flex;
-  align-items: center;
-  margin-left: -5px;
-  cursor: pointer;
-}
-
-.back:hover {
-  text-decoration: underline;
-}
-
-.info-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  line-height: 1.25;
-  margin: 8px 0 0 0 ;
-}
-
-.info-description {
-  margin: 8px 0 0 0;
-}
-
-.controls {
-  cursor: pointer;
-}
-
-.fallback {
-  background: #f6f7f8 linear-gradient(to right, #e6e6e6 5%, #cccccc 25%, #e6e6e6 35%) no-repeat;
-  background-size: 800px 104px;
-  display: block;
-  line-height: 1.25;
-  margin: 8px 0 0 0;
-  border-radius: 5px;
-  overflow: hidden;
-
-  animation: 1s linear 1s infinite shimmer;
-  animation-delay: 300ms;
-  animation-duration: 1s;
-  animation-fill-mode: forwards;
-  animation-iteration-count: infinite;
-  animation-name: shimmer;
-  animation-timing-function: linear;
-}
-
-
-.fallback.title {
-  width: 130px;
-  height: 30px;
-
-}
-
-.fallback.description {
-  width: 150px;
-  height: 21px;
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: -468px 0;
-  }
-
-  100% {
-    background-position: 468px 0;
-  }
-}
-
-.search {
-  margin-bottom: 10px;
-}
-.search-input {
-  width: 100%;
-  position: relative;
-}
-
-.search-icon {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  inset-inline-start: 0;
-  display: flex;
-  align-items: center;
-  padding-inline-start: 1rem;
-  pointer-events: none;
-  color: #99a1b3;
-}
-
-.search-input input {
-  display: flex;
-  padding-inline-start: 2.75rem;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  width: 100%;
-  text-align: start;
-  background-color: rgb(235 236 240);
-  outline: 2px solid transparent;
-  cursor: pointer;
-  border: none;
-  align-items: center;
-  color: rgb(35 39 47);
-  border-radius: 9999px;
-  vertical-align: middle;
-  font-size: 15px;
-}
-
-.search-input input:hover, .search-input input:active {
-  background-color: rgb(235 236 240/ 0.8);
-  color: rgb(35 39 47/ 0.8);
-}
-
-/* 首页 */
-.video-list {
-  position: relative;
-}
-
-.video-list .videos {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  overflow-y: auto;
-  height: 100%;
-}
-```
-
-
-```css src/animations.css
-/* 让 Suspense 的 fallback 向下滑动的动画 */
-::view-transition-old(.slide-down) {
-    animation: 150ms ease-out both fade-out, 150ms ease-out both slide-down;
-}
-
-::view-transition-new(.slide-up) {
-    animation: 210ms ease-in 150ms both fade-in, 400ms ease-in both slide-up;
-}
-
-/* 由过渡类型添加的 view transition 类的动画 */
-::view-transition-old(.slide-forward) {
-    /* 向前滑动时，旧页面应向左滑出。 */
-    animation: 150ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
-    400ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;
-}
-
-::view-transition-new(.slide-forward) {
-    /* 向前滑动时，新页面应从右侧滑入。 */
-    animation: 210ms cubic-bezier(0, 0, 0.2, 1) 150ms both fade-in,
-    400ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
-}
-
-::view-transition-old(.slide-back) {
-    /* 向后滑动时，旧页面应向右滑出。 */
-    animation: 150ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
-    400ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-right;
-}
-
-::view-transition-new(.slide-back) {
-    /* 向后滑动时，新页面应从左侧滑入。 */
-    animation: 210ms cubic-bezier(0, 0, 0.2, 1) 150ms both fade-in,
-    400ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-left;
-}
-
-/* 支持上面动画的关键帧。 */
-@keyframes slide-up {
-    from {
-        transform: translateY(10px);
-    }
-    to {
-        transform: translateY(0);
-    }
-}
-
-@keyframes slide-down {
-    from {
-        transform: translateY(0);
-    }
-    to {
-        transform: translateY(10px);
-    }
-}
-
-@keyframes fade-in {
-    from {
-        opacity: 0;
-    }
-}
-
-@keyframes fade-out {
-    to {
-        opacity: 0;
-    }
-}
-
-@keyframes slide-to-right {
-    to {
-        transform: translateX(50px);
-    }
-}
-
-@keyframes slide-from-right {
-    from {
-        transform: translateX(50px);
-    }
-    to {
-        transform: translateX(0);
-    }
-}
-
-@keyframes slide-to-left {
-    to {
-        transform: translateX(-50px);
-    }
-}
-
-@keyframes slide-from-left {
-    from {
-        transform: translateX(-50px);
-    }
-    to {
-        transform: translateX(0);
-    }
-}
-```
-
-```js src/index.js hidden
-import React, {StrictMode} from 'react';
-import {createRoot} from 'react-dom/client';
-import './styles.css';
-import './animations.css';
-
-import App from './App';
-import {Router} from './router';
-
-const root = createRoot(document.getElementById('root'));
-root.render(
-  <StrictMode>
-    <Router>
-      <App />
-    </Router>
-  </StrictMode>
-);
-```
-
-```json package.json hidden
-{
-  "dependencies": {
-    "react": "canary",
-    "react-dom": "canary",
-    "react-scripts": "latest"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
-  }
-}
-```
-
-</Sandpack>
-
-如果你想了解更多它们的工作原理，请查看文档中的 [ViewTransition 是如何工作的](/reference/react/ViewTransition#how-does-viewtransition-work)。
-
-_如果想了解我们构建 View Transitions 的更多背景，请参见：[#31975](https://github.com/facebook/react/pull/31975)、[#32105](https://github.com/facebook/react/pull/32105)、[#32041](https://github.com/facebook/react/pull/32041)、[#32734](https://github.com/facebook/react/pull/32734)、[#32797](https://github.com/facebook/react/pull/32797) [#31999](https://github.com/facebook/react/pull/31999)、[#32031](https://github.com/facebook/react/pull/32031)、[#32050](https://github.com/facebook/react/pull/32050)、[#32820](https://github.com/facebook/react/pull/32820)、[#32029](https://github.com/facebook/react/pull/32029)、[#32028](https://github.com/facebook/react/pull/32028)，以及 [#32038](https://github.com/facebook/react/pull/32038)，作者是 [@sebmarkbage](https://twitter.com/sebmarkbage)（感谢 Seb！）。_
-
----
+_有关我们构建 View Transitions 的更多背景信息，请参阅：[ #31975](https://github.com/react/react/pull/31975)、[#32105](https://github.com/react/react/pull/32105)、[#32041](https://github.com/react/react/pull/32041)、[#32734](https://github.com/react/react/pull/32734)、[#32797](https://github.com/react/react/pull/32797)、[#31999](https://github.com/react/react/pull/31999)、[#32031](https://github.com/react/react/pull/32031)、[#32050](https://github.com/react/react/pull/32050)、[#32820](https://github.com/react/react/pull/32820)、[#32029](https://github.com/react/react/pull/32029)、[#32028](https://github.com/react/react/pull/32028) 和 [#32038](https://github.com/react/react/pull/32038)，作者是 [@sebmarkbage](https://twitter.com/sebmarkbage)（感谢 Seb！）。_
 
 ## Activity {/*activity*/}
 
@@ -7408,7 +6088,7 @@ function App() {
 
 然而，这意味着如果用户返回旧页面，之前的所有状态都会丢失。例如，如果 `<Home />` 页面有一个 `<input>` 输入框，那么当用户离开页面时，这个 `<input>` 会被卸载，用户已经输入的所有文本也会丢失。
 
-Activity 允许你在用户切换页面时保留这些状态，这样当他们 ফিরে लौट回时就可以从离开的地方继续。做法是把树的一部分包裹在 `<Activity>` 中，并切换 `mode`：
+Activity 允许你在用户切换页面时保留这些状态，这样当他们返回时就可以从离开的地方继续。做法是把树的一部分包裹在 `<Activity>` 中，并切换 `mode`：
 
 ```js {6-8}
 function App() {
@@ -7849,7 +6529,6 @@ export function Video({ video }) {
 }
 ```
 
-
 ```js src/data.js hidden
 const videos = [
   {
@@ -8241,7 +6920,7 @@ ul {
     -2em 2em 0 0, -3em 0em 0 -1em, -2em -2em 0 -1em;
   }
   62.5% {
-    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em,
+    box-shadow: 0 -3em 0 -1em, 2em -2em 0 -1em, 
     3em 0 0 -1em, 2em 2em 0 -1em, 0 3em 0 0,
     -2em 2em 0 0.2em, -3em 0 0 0, -2em -2em 0 -1em;
   }
@@ -8858,7 +7537,7 @@ useEffect(() => {
 
 ---
 
-## Compiler IDE 扩展 {/*compiler-ide-extension*/}
+## 编译器 IDE 扩展 {/*compiler-ide-extension*/}
 
 在 2025 年晚些时候，[我们分享了](/blog/2025/10/07/react-compiler-1) React Compiler 的首个稳定版本，并且我们还在持续投入，发布更多改进。
 

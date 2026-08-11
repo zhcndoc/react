@@ -49,15 +49,15 @@ async function handler(request, response) {
 
 * `reactNode`：你希望渲染为 HTML 的 React 节点。例如，一个像 `<App />` 这样的 JSX 节点。它应当代表整个文档，因此 App 组件应该渲染 `<html>` 标签。
 
-* **可选** `options`：一个包含静态生成选项的对象。
-  * **可选** `bootstrapScriptContent`：如果指定，这个字符串会放入一个内联的 `<script>` 标签中。
-  * **可选** `bootstrapScripts`：用于在页面上发出 `<script>` 标签的字符串 URL 数组。用它来包含调用 [`hydrateRoot`.](/reference/react-dom/client/hydrateRoot) 的 `<script>`。如果你不想在客户端运行 React，可以省略它。
-  * **可选** `bootstrapModules`：类似 `bootstrapScripts`，但会改为发出 [`<script type="module">`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)。
-  * **可选** `identifierPrefix`：React 为 [`useId`.](/reference/react/useId) 生成的 ID 使用的字符串前缀。在同一页面上使用多个根时，这有助于避免冲突。必须与传递给 [`hydrateRoot`.](/reference/react-dom/client/hydrateRoot#parameters) 的前缀相同。
-  * **可选** `namespaceURI`：流的根 [namespace URI](https://developer.mozilla.org/en-US/docs/Web/API/Document/createElementNS#important_namespace_uris) 字符串。默认为常规 HTML。SVG 请传入 `'http://www.w3.org/2000/svg'`，MathML 请传入 `'http://www.w3.org/1998/Math/MathML'`。
-  * **可选** `onError`：每当发生服务器错误时触发的回调，无论是 [可恢复的](/reference/react-dom/server/renderToReadableStream#recovering-from-errors-outside-the-shell) 还是 [不可恢复的](/reference/react-dom/server/renderToReadableStream#recovering-from-errors-inside-the-shell)。默认情况下，它只会调用 `console.error`。如果你覆盖它来 [记录崩溃报告，](/reference/react-dom/server/renderToReadableStream#logging-crashes-on-the-server) 请确保仍然调用 `console.error`。你也可以用它在 shell 发出之前 [调整状态码](/reference/react-dom/server/renderToReadableStream#setting-the-status-code)。
-  * **可选** `progressiveChunkSize`：每个分块中的字节数。[阅读更多关于默认启发式的信息。](https://github.com/facebook/react/blob/14c2be8dac2d5482fda8a0906a31d239df8551fc/packages/react-server/src/ReactFizzServer.js#L210-L225)
-  * **可选** `signal`：一个 [abort signal](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal)，允许你 [中止预渲染](#aborting-prerendering)，并让其余内容在客户端渲染。
+* **可选** `options`：包含静态生成选项的对象。
+  * **可选** `bootstrapScriptContent`：如果指定了此字符串，它将被放置在内联的 `<script>` 标签中。
+  * **可选** `bootstrapScripts`：要在页面中生成的 `<script>` 标签的字符串 URL 数组。使用它来包含调用 [`hydrateRoot`](/reference/react-dom/client/hydrateRoot) 的 `<script>`。如果你完全不想在客户端运行 React，则省略它。
+  * **可选** `bootstrapModules`：类似于 `bootstrapScripts`，但会生成 [`<script type="module">`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)。
+  * **可选** `identifierPrefix`：React 用于为 [`useId`](/reference/react/useId) 生成的 ID 添加的字符串前缀。在同一页面上使用多个根时，这有助于避免冲突。必须与传递给 [`hydrateRoot`](/reference/react-dom/client/hydrateRoot#parameters) 的前缀相同。
+  * **可选** `namespaceURI`：流的根 [命名空间 URI](https://developer.mozilla.org/en-US/docs/Web/API/Document/createElementNS#important_namespace_uris)。默认为常规 HTML。对于 SVG，传入 `'http://www.w3.org/2000/svg'`；对于 MathML，传入 `'http://www.w3.org/1998/Math/MathML'`。
+  * **可选** `onError`：每当发生服务器错误时都会触发的回调，无论错误是[可恢复的](/reference/react-dom/server/renderToReadableStream#recovering-from-errors-outside-the-shell)还是[不可恢复的](/reference/react-dom/server/renderToReadableStream#recovering-from-errors-inside-the-shell)。默认情况下，它只会调用 `console.error`。如果你重写它来[记录崩溃报告](/reference/react-dom/server/renderToReadableStream#logging-crashes-on-the-server)，请确保仍然调用 `console.error`。你也可以使用它在 shell 发出前[调整状态码](/reference/react-dom/server/renderToReadableStream#setting-the-status-code)。
+  * **可选** `progressiveChunkSize`：一个数据块中的字节数。[进一步了解默认启发式算法。](https://github.com/react/react/blob/14c2be8dac2d5482fda8a0906a31d239df8551fc/packages/react-server/src/ReactFizzServer.js#L210-L225)
+  * **可选** `signal`：一个[中止信号](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal)，允许你[中止预渲染](#aborting-prerendering)，并在客户端渲染其余内容。
 
 #### 返回值 {/*returns*/}
 
@@ -275,17 +275,7 @@ function ProfilePage() {
 
 <Note>
 
-**只有支持 Suspense 的数据源才会激活 Suspense 组件。** 它们包括：
-
-- 使用支持 Suspense 的框架进行数据获取，例如 [Relay](https://relay.dev/docs/guided-tour/rendering/loading-states/) 和 [Next.js](https://nextjs.org/docs/getting-started/react-essentials)
-- 使用 [`lazy`](/reference/react/lazy) 懒加载组件代码
-- 使用 [`use`](/reference/react/use) 读取 Promise 的值
-
-Suspense **不会** 检测数据是否在 Effect 或事件处理函数中获取。
-
-上面的 `Posts` 组件中具体如何加载数据取决于你的框架。如果你使用支持 Suspense 的框架，你可以在其数据获取文档中找到详细信息。
-
-目前还不支持不使用特定框架的 Suspense 数据获取。实现支持 Suspense 的数据源所需的要求仍不稳定且没有文档说明。用于将数据源与 Suspense 集成的官方 API 将在未来版本的 React 中发布。
+只有从会[触发 Suspense 边界](/reference/react/Suspense#what-activates-a-suspense-boundary)的来源读取的数据（例如使用 [`use`](/reference/react/use) 读取的 Promise）才会在渲染期间挂起。Suspense 无法检测在 Effect 或事件处理函数中获取的数据。
 
 </Note>
 

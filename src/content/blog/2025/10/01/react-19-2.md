@@ -1,11 +1,11 @@
 ---
 title: "React 19.2"
-author: The React Team
+author: React 团队
 date: 2025/10/01
-description: React 19.2 添加了 Activity、React Performance Tracks、useEffectEvent 等新功能。
+description: React 19.2 添加了 Activity、React 性能轨道、useEffectEvent 等新功能。
 ---
 
-2025 年 10 月 1 日，来自 [The React Team](/community/team)
+2025 年 10 月 1 日，来自 [React 团队](/community/team)
 
 ---
 
@@ -91,7 +91,7 @@ function ChatRoom({ roomId, theme }) {
       onConnected();
     });
     connection.connect();
-    return () => connection.disconnect();
+    return () => connection.disconnect()
   }, [roomId]); // ✅ 已声明所有依赖项（Effect Events 不是依赖项）
   // ...
 ```
@@ -235,13 +235,13 @@ const { prelude } = await resumeAndPrerender(<App />, postponedState);
 
 从 19.2 开始，React 会在一小段时间内批量显示服务端渲染的 Suspense 边界，以便让更多内容一起显示，并与客户端渲染的行为保持一致。
 
-<Diagram name="19_2_batching_before" height={162} width={1270} alt="Diagram with three sections, with an arrow transitioning each section in between. The first section contains a page rectangle showing a glimmer loading state with faded bars. The second panel shows the top half of the page revealed and highlighted in blue. The third panel shows the entire the page revealed and highlighted in blue.">
+<Diagram name="19_2_batching_before" height={162} width={1270} alt="包含三个部分的图示，每个部分之间都有箭头表示过渡。第一部分包含一个页面矩形，显示带有淡色条的微光加载状态。第二部分显示页面的上半部分已显示，并以蓝色高亮。第三部分显示整个页面已显示，并以蓝色高亮。">
 
 此前，在流式服务端渲染期间，suspense 内容会立即替换回退内容。
 
 </Diagram>
 
-<Diagram name="19_2_batching_after" height={162} width={1270} alt="Diagram with three sections, with an arrow transitioning each section in between. The first section contains a page rectangle showing a glimmer loading state with faded bars. The second panel shows the same page. The third panel shows the entire the page revealed and highlighted in blue.">
+<Diagram name="19_2_batching_after" height={162} width={1270} alt="包含三个部分的图示，每个部分之间都有箭头表示过渡。第一部分包含一个页面矩形，显示带有淡色条的微光加载状态。第二部分显示相同的页面。第三部分显示整个页面已显示，并以蓝色高亮。">
 
 在 React 19.2 中，suspense 边界会在一小段时间内批量处理，以便让更多内容一起显示。
 
@@ -300,7 +300,7 @@ React 19.2 为 Node.js 中的流式 SSR 添加了 Web Streams 支持：
 
 如需查看启用编译器的完整规则列表，请[查看 linter 文档](/reference/eslint-plugin-react-hooks#recommended)。
 
-查看 `eslint-plugin-react-hooks` 的[更新日志以了解完整变更列表](https://github.com/facebook/react/blob/main/packages/eslint-plugin-react-hooks/CHANGELOG.md#610)。
+如需查看完整的变更列表，请查看 `eslint-plugin-react-hooks` 的[变更日志](https://github.com/react/react/blob/main/packages/eslint-plugin-react-hooks/CHANGELOG.md#610)。
 
 ---
 
@@ -316,20 +316,24 @@ React 19.2 为 Node.js 中的流式 SSR 添加了 Web Streams 支持：
 - `react-dom`：允许在可提升样式上使用 nonce [#32461](https://github.com/facebook/react/pull/32461)
 - `react-dom`：当一个由 React 拥有的节点同时包含文本内容时，警告不要将其用作 Container [#32774](https://github.com/facebook/react/pull/32774)
 
-值得注意的错误修复
-- `react`：将 context 字符串化为 "SomeContext"，而不是 "SomeContext.Provider" [#33507](https://github.com/facebook/react/pull/33507)
-- `react`：修复在 popstate 事件中出现的无限 useDeferredValue 循环 [#32821](https://github.com/facebook/react/pull/32821)
-- `react`：修复将初始值传递给 useDeferredValue 时的一个 bug [#34376](https://github.com/facebook/react/pull/34376)
-- `react`：修复在使用 Client Actions 提交表单时的崩溃 [#33055](https://github.com/facebook/react/pull/33055)
-- `react`：如果已脱水的 suspense 边界重新挂起，则隐藏/取消隐藏其内容 [#32900](https://github.com/facebook/react/pull/32900)
-- `react`：避免在 Hot Reload 期间对宽树发生栈溢出 [#34145](https://github.com/facebook/react/pull/34145)
-- `react`：在多个位置改进组件栈信息 [#33629](https://github.com/facebook/react/pull/33629), [#33724](https://github.com/facebook/react/pull/33724), [#32735](https://github.com/facebook/react/pull/32735), [#33723](https://github.com/facebook/react/pull/33723)
-- `react`：修复在 React.lazy-ed Component 中使用 React.use 时的一个 bug [#33941](https://github.com/facebook/react/pull/33941)
-- `react-dom`：在使用 ARIA 1.3 属性时不再警告 [#34264](https://github.com/facebook/react/pull/34264)
-- `react-dom`：修复 Suspense fallback 中嵌套过深的 Suspense 的一个 bug [#33467](https://github.com/facebook/react/pull/33467)
-- `react-dom`：避免在渲染时中止后再次挂起时卡住 [#34192](https://github.com/facebook/react/pull/34192)
+其他值得注意的变更
+- `react-dom`：允许在可提升样式上使用 nonce [#32461](https://github.com/react/react/pull/32461)
+- `react-dom`：当一个由 React 拥有的节点同时包含文本内容时，警告不要将其用作 Container [#32774](https://github.com/react/react/pull/32774)
 
-如需查看完整变更列表，请参阅 [更新日志](https://github.com/facebook/react/blob/main/CHANGELOG.md)。
+值得注意的错误修复
+- `react`：将上下文字符串化为“SomeContext”，而不是“SomeContext.Provider” [#33507](https://github.com/react/react/pull/33507)
+- `react`：修复 popstate 事件中 useDeferredValue 无限循环的问题 [#32821](https://github.com/react/react/pull/32821)
+- `react`：修复向 useDeferredValue 传入初始值时的错误 [#34376](https://github.com/react/react/pull/34376)
+- `react`：修复使用 Client Actions 提交表单时发生崩溃的问题 [#33055](https://github.com/react/react/pull/33055)
+- `react`：当已脱水的 suspense 边界再次挂起时，隐藏/取消隐藏其内容 [#32900](https://github.com/react/react/pull/32900)
+- `react`：避免在热重载期间处理宽树时发生栈溢出 [#34145](https://github.com/react/react/pull/34145)
+- `react`：改进各处的组件堆栈信息 [#33629](https://github.com/react/react/pull/33629)、[#33724](https://github.com/react/react/pull/33724)、[#32735](https://github.com/react/react/pull/32735)、[#33723](https://github.com/react/react/pull/33723)
+- `react`：修复在 React.lazy-ed 组件中使用 React.use 时的问题 [#33941](https://github.com/react/react/pull/33941)
+- `react-dom`：使用 ARIA 1.3 属性时不再发出警告 [#34264](https://github.com/react/react/pull/34264)
+- `react-dom`：修复 Suspense 回退内容中深度嵌套 Suspense 时的问题 [#33467](https://github.com/react/react/pull/33467)
+- `react-dom`：避免在渲染期间中止后再次挂起时卡住 [#34192](https://github.com/react/react/pull/34192)
+
+如需查看完整的变更列表，请参阅[更新日志](https://github.com/react/react/blob/main/CHANGELOG.md)。
 
 
 ---

@@ -252,7 +252,7 @@ React 18 中的 Suspense 最适合与 transition API 结合使用。如果你在
 
 > 注意
 >
-> `useSyncExternalStore`  предназначен用于库，而不是应用代码。
+> `useSyncExternalStore` 用于库，而不是应用代码。
 
 #### useInsertionEffect {/*useinsertioneffect*/}
 
@@ -260,7 +260,7 @@ React 18 中的 Suspense 最适合与 transition API 结合使用。如果你在
 
 > 注意
 >
-> `useInsertionEffect`  предназначен用于库，而不是应用代码。
+> `useInsertionEffect` 用于库，而不是应用代码。
 
 ## 如何升级 {/*how-to-upgrade*/}
 
@@ -270,75 +270,75 @@ React 18 中的 Suspense 最适合与 transition API 结合使用。如果你在
 
 ### React {/*react*/}
 
-* 添加 `useTransition` 和 `useDeferredValue`，以将紧急更新与过渡分离。([#10426](https://github.com/facebook/react/pull/10426), [#10715](https://github.com/facebook/react/pull/10715), [#15593](https://github.com/facebook/react/pull/15593), [#15272](https://github.com/facebook/react/pull/15272), [#15578](https://github.com/facebook/react/pull/15578), [#15769](https://github.com/facebook/react/pull/15769), [#17058](https://github.com/facebook/react/pull/17058), [#18796](https://github.com/facebook/react/pull/18796), [#19121](https://github.com/facebook/react/pull/19121), [#19703](https://github.com/facebook/react/pull/19703), [#19719](https://github.com/facebook/react/pull/19719), [#19724](https://github.com/facebook/react/pull/19724), [#20672](https://github.com/facebook/react/pull/20672), [#20976](https://github.com/facebook/react/pull/20976) 由 [@acdlite](https://github.com/acdlite), [@lunaruan](https://github.com/lunaruan), [@rickhanlonii](https://github.com/rickhanlonii) 和 [@sebmarkbage](https://github.com/sebmarkbage) 提交）
-* 添加 `useId` 用于生成唯一 ID。([#17322](https://github.com/facebook/react/pull/17322), [#18576](https://github.com/facebook/react/pull/18576), [#22644](https://github.com/facebook/react/pull/22644), [#22672](https://github.com/facebook/react/pull/22672), [#21260](https://github.com/facebook/react/pull/21260) 由 [@acdlite](https://github.com/acdlite), [@lunaruan](https://github.com/lunaruan) 和 [@sebmarkbage](https://github.com/sebmarkbage) 提交）
-* 添加 `useSyncExternalStore` 以帮助外部存储库与 React 集成。([#15022](https://github.com/facebook/react/pull/15022), [#18000](https://github.com/facebook/react/pull/18000), [#18771](https://github.com/facebook/react/pull/18771), [#22211](https://github.com/facebook/react/pull/22211), [#22292](https://github.com/facebook/react/pull/22292), [#22239](https://github.com/facebook/react/pull/22239), [#22347](https://github.com/facebook/react/pull/22347), [#23150](https://github.com/facebook/react/pull/23150) 由 [@acdlite](https://github.com/acdlite), [@bvaughn](https://github.com/bvaughn) 和 [@drarmstr](https://github.com/drarmstr) 提交）
-* 添加 `startTransition`，作为不带待处理反馈的 `useTransition` 版本。([#19696](https://github.com/facebook/react/pull/19696) 由 [@rickhanlonii](https://github.com/rickhanlonii) 提交）
-* 为 CSS-in-JS 库添加 `useInsertionEffect`。([#21913](https://github.com/facebook/react/pull/21913) 由 [@rickhanlonii](https://github.com/rickhanlonii) 提交）
-* 当内容重新出现时，让 Suspense 重新挂载布局效果。([#19322](https://github.com/facebook/react/pull/19322), [#19374](https://github.com/facebook/react/pull/19374), [#19523](https://github.com/facebook/react/pull/19523), [#20625](https://github.com/facebook/react/pull/20625), [#21079](https://github.com/facebook/react/pull/21079) 由 [@acdlite](https://github.com/acdlite), [@bvaughn](https://github.com/bvaughn) 和 [@lunaruan](https://github.com/lunaruan) 提交）
-* 让 `<StrictMode>` 重新运行效果以检查可恢复状态。([#19523](https://github.com/facebook/react/pull/19523) , [#21418](https://github.com/facebook/react/pull/21418) 由 [@bvaughn](https://github.com/bvaughn) 和 [@lunaruan](https://github.com/lunaruan) 提交）
-* 假定 Symbols 始终可用。([#23348](https://github.com/facebook/react/pull/23348) 由 [@sebmarkbage](https://github.com/sebmarkbage) 提交）
-* 移除 `object-assign` polyfill。([#23351](https://github.com/facebook/react/pull/23351) 由 [@sebmarkbage](https://github.com/sebmarkbage) 提交）
-* 移除不受支持的 `unstable_changedBits` API。([#20953](https://github.com/facebook/react/pull/20953) 由 [@acdlite](https://github.com/acdlite) 提交）
-* 允许组件渲染 undefined。([#21869](https://github.com/facebook/react/pull/21869) 由 [@rickhanlonii](https://github.com/rickhanlonii) 提交）
-* 将由点击等离散事件产生的 `useEffect` 同步刷新。([#21150](https://github.com/facebook/react/pull/21150) 由 [@acdlite](https://github.com/acdlite) 提交）
-* 现在 Suspense 中的 `fallback={undefined}` 行为与 `null` 相同，并且不会被忽略。([#21854](https://github.com/facebook/react/pull/21854) 由 [@rickhanlonii](https://github.com/rickhanlonii) 提交）
-* 将所有解析为同一组件的 `lazy()` 视为等价。([#20357](https://github.com/facebook/react/pull/20357) 由 [@sebmarkbage](https://github.com/sebmarkbage) 提交）
-* 首次渲染时不要修补 console。([#22308](https://github.com/facebook/react/pull/22308) 由 [@lunaruan](https://github.com/lunaruan) 提交）
-* 改进内存使用。([#21039](https://github.com/facebook/react/pull/21039) 由 [@bgirard](https://github.com/bgirard) 提交）
-* 改进字符串强制转换抛出异常时的消息（Temporal.*、Symbol 等）。([#22064](https://github.com/facebook/react/pull/22064) 由 [@justingrant](https://github.com/justingrant) 提交）
-* 在可用时优先使用 `setImmediate` 而不是 `MessageChannel`。([#20834](https://github.com/facebook/react/pull/20834) 由 [@gaearon](https://github.com/gaearon) 提交）
-* 修复上下文无法在挂起树内传播的问题。([#23095](https://github.com/facebook/react/pull/23095) 由 [@gaearon](https://github.com/gaearon) 提交）
-* 通过移除 eager bailout 机制修复 `useReducer` 观察到错误 props 的问题。([#22445](https://github.com/facebook/react/pull/22445) 由 [@josephsavona](https://github.com/josephsavona) 提交）
-* 修复在 Safari 中追加 iframe 时 `setState` 被忽略的问题。([#23111](https://github.com/facebook/react/pull/23111) 由 [@gaearon](https://github.com/gaearon) 提交）
-* 修复在树中渲染 `ZonedDateTime` 时的崩溃。([#20617](https://github.com/facebook/react/pull/20617) 由 [@dimaqq](https://github.com/dimaqq) 提交）
-* 修复测试中将 document 设为 `null` 时的崩溃。([#22695](https://github.com/facebook/react/pull/22695) 由 [@SimenB](https://github.com/SimenB) 提交）
-* 修复在启用并发特性时 `onLoad` 不触发的问题。([#23316](https://github.com/facebook/react/pull/23316) 由 [@gnoff](https://github.com/gnoff) 提交）
-* 修复选择器返回 `NaN` 时的警告。([#23333](https://github.com/facebook/react/pull/23333) 由 [@hachibeeDI](https://github.com/hachibeeDI) 提交）
-* 修复测试中将 document 设为 `null` 时的崩溃。([#22695](https://github.com/facebook/react/pull/22695) 由 [@SimenB](https://github.com/SimenB) 提交）
-* 修复生成的许可证头。([#23004](https://github.com/facebook/react/pull/23004) 由 [@vitaliemiron](https://github.com/vitaliemiron) 提交）
-* 将 `package.json` 添加为入口点之一。([#22954](https://github.com/facebook/react/pull/22954) 由 [@Jack](https://github.com/Jack-Works) 提交）
-* 允许在 Suspense 边界之外挂起。([#23267](https://github.com/facebook/react/pull/23267) 由 [@acdlite](https://github.com/acdlite) 提交）
-* 每当 hydration 失败时记录一个可恢复错误。([#23319](https://github.com/facebook/react/pull/23319) 由 [@acdlite](https://github.com/acdlite) 提交）
+* 添加 `useTransition` 和 `useDeferredValue`，以区分紧急更新和过渡更新。([#10426](https://github.com/react/react/pull/10426), [#10715](https://github.com/react/react/pull/10715), [#15593](https://github.com/react/react/pull/15593), [#15272](https://github.com/react/react/pull/15272), [#15578](https://github.com/react/react/pull/15578), [#15769](https://github.com/react/react/pull/15769), [#17058](https://github.com/react/react/pull/17058), [#18796](https://github.com/react/react/pull/18796), [#19121](https://github.com/react/react/pull/19121), [#19703](https://github.com/react/react/pull/19703), [#19719](https://github.com/react/react/pull/19719), [#19724](https://github.com/react/react/pull/19724), [#20672](https://github.com/react/react/pull/20672), [#20976](https://github.com/react/react/pull/20976)，由 [@acdlite](https://github.com/acdlite)、[@lunaruan](https://github.com/lunaruan)、[@rickhanlonii](https://github.com/rickhanlonii) 和 [@sebmarkbage](https://github.com/sebmarkbage) 完成)
+* 添加 `useId` 以生成唯一 ID。([#17322](https://github.com/react/react/pull/17322), [#18576](https://github.com/react/react/pull/18576), [#22644](https://github.com/react/react/pull/22644), [#22672](https://github.com/react/react/pull/22672), [#21260](https://github.com/react/react/pull/21260)，由 [@acdlite](https://github.com/acdlite)、[@lunaruan](https://github.com/lunaruan) 和 [@sebmarkbage](https://github.com/sebmarkbage) 完成)
+* 添加 `useSyncExternalStore`，帮助外部存储库与 React 集成。([#15022](https://github.com/react/react/pull/15022), [#18000](https://github.com/react/react/pull/18000), [#18771](https://github.com/react/react/pull/18771), [#22211](https://github.com/react/react/pull/22211), [#22292](https://github.com/react/react/pull/22292), [#22239](https://github.com/react/react/pull/22239), [#22347](https://github.com/react/react/pull/22347), [#23150](https://github.com/react/react/pull/23150)，由 [@acdlite](https://github.com/acdlite)、[@bvaughn](https://github.com/bvaughn) 和 [@drarmstr](https://github.com/drarmstr) 完成)
+* 添加 `startTransition`，作为没有待处理反馈的 `useTransition` 版本。([#19696](https://github.com/react/react/pull/19696) 由 [@rickhanlonii](https://github.com/rickhanlonii) 完成)
+* 为 CSS-in-JS 库添加 `useInsertionEffect`。([#21913](https://github.com/react/react/pull/21913) 由 [@rickhanlonii](https://github.com/rickhanlonii) 完成)
+* 当内容重新出现时，让 Suspense 重新挂载布局副作用。([#19322](https://github.com/react/react/pull/19322), [#19374](https://github.com/react/react/pull/19374), [#19523](https://github.com/react/react/pull/19523), [#20625](https://github.com/react/react/pull/20625), [#21079](https://github.com/react/react/pull/21079)，由 [@acdlite](https://github.com/acdlite)、[@bvaughn](https://github.com/bvaughn) 和 [@lunaruan](https://github.com/lunaruan) 完成)
+* 让 `<StrictMode>` 重新运行副作用，以检查状态是否可恢复。([#19523](https://github.com/react/react/pull/19523) , [#21418](https://github.com/react/react/pull/21418) 由 [@bvaughn](https://github.com/bvaughn) 和 [@lunaruan](https://github.com/lunaruan) 完成)
+* 假定 Symbols 始终可用。([#23348](https://github.com/react/react/pull/23348) 由 [@sebmarkbage](https://github.com/sebmarkbage) 完成)
+* 移除 `object-assign` polyfill。([#23351](https://github.com/react/react/pull/23351) 由 [@sebmarkbage](https://github.com/sebmarkbage) 完成)
+* 移除不受支持的 `unstable_changedBits` API。([#20953](https://github.com/react/react/pull/20953) 由 [@acdlite](https://github.com/acdlite) 完成)
+* 允许组件渲染 undefined。([#21869](https://github.com/react/react/pull/21869) 由 [@rickhanlonii](https://github.com/rickhanlonii) 完成)
+* 同步刷新由点击等离散事件产生的 `useEffect`。([#21150](https://github.com/react/react/pull/21150) 由 [@acdlite](https://github.com/acdlite) 完成)
+* Suspense 的 `fallback={undefined}` 现在与 `null` 行为相同，不再被忽略。([#21854](https://github.com/react/react/pull/21854) 由 [@rickhanlonii](https://github.com/rickhanlonii) 完成)
+* 将所有解析为同一组件的 `lazy()` 视为等价。([#20357](https://github.com/react/react/pull/20357) 由 [@sebmarkbage](https://github.com/sebmarkbage) 完成)
+* 首次渲染期间不再修改 console。([#22308](https://github.com/react/react/pull/22308) 由 [@lunaruan](https://github.com/lunaruan) 完成)
+* 改进内存使用。([#21039](https://github.com/react/react/pull/21039) 由 [@bgirard](https://github.com/bgirard) 完成)
+* 改进字符串强制转换抛出异常时的消息（Temporal.*、Symbol 等）。([#22064](https://github.com/react/react/pull/22064) 由 [@justingrant](https://github.com/justingrant) 完成)
+* 在 `MessageChannel` 可用时优先使用 `setImmediate`。([#20834](https://github.com/react/react/pull/20834) 由 [@gaearon](https://github.com/gaearon) 完成)
+* 修复上下文无法在挂起的树内部传播的问题。([#23095](https://github.com/react/react/pull/23095) 由 [@gaearon](https://github.com/gaearon) 完成)
+* 移除 eager bailout 机制，修复 `useReducer` 观察到错误 props 的问题。([#22445](https://github.com/react/react/pull/22445) 由 [@josephsavona](https://github.com/josephsavona) 完成)
+* 修复 Safari 在追加 iframe 时忽略 `setState` 的问题。([#23111](https://github.com/react/react/pull/23111) 由 [@gaearon](https://github.com/gaearon) 完成)
+* 修复在树中渲染 `ZonedDateTime` 时发生崩溃的问题。([#20617](https://github.com/react/react/pull/20617) 由 [@dimaqq](https://github.com/dimaqq) 完成)
+* 修复测试中将 document 设置为 `null` 时发生崩溃的问题。([#22695](https://github.com/react/react/pull/22695) 由 [@SimenB](https://github.com/SimenB) 完成)
+* 修复启用并发特性时 `onLoad` 未触发的问题。([#23316](https://github.com/react/react/pull/23316) 由 [@gnoff](https://github.com/gnoff) 完成)
+* 修复选择器返回 `NaN` 时出现警告的问题。([#23333](https://github.com/react/react/pull/23333) 由 [@hachibeeDI](https://github.com/hachibeeDI) 完成)
+* 修复测试中将 document 设置为 `null` 时发生崩溃的问题。([#22695](https://github.com/react/react/pull/22695) 由 [@SimenB](https://github.com/SimenB) 完成)
+* 修复生成的许可证头信息。([#23004](https://github.com/react/react/pull/23004) 由 [@vitaliemiron](https://github.com/vitaliemiron) 完成)
+* 将 `package.json` 添加为入口点之一。([#22954](https://github.com/react/react/pull/22954) 由 [@Jack](https://github.com/Jack-Works) 完成)
+* 允许在 Suspense 边界之外挂起。([#23267](https://github.com/react/react/pull/23267) 由 [@acdlite](https://github.com/acdlite) 完成)
+* 每当 hydration 失败时记录一个可恢复错误。([#23319](https://github.com/react/react/pull/23319) 由 [@acdlite](https://github.com/acdlite) 完成)
 
 ### React DOM {/*react-dom*/}
 
-* 添加 `createRoot` 和 `hydrateRoot`。([#10239](https://github.com/facebook/react/pull/10239), [#11225](https://github.com/facebook/react/pull/11225), [#12117](https://github.com/facebook/react/pull/12117), [#13732](https://github.com/facebook/react/pull/13732), [#15502](https://github.com/facebook/react/pull/15502), [#15532](https://github.com/facebook/react/pull/15532), [#17035](https://github.com/facebook/react/pull/17035), [#17165](https://github.com/facebook/react/pull/17165), [#20669](https://github.com/facebook/react/pull/20669), [#20748](https://github.com/facebook/react/pull/20748), [#20888](https://github.com/facebook/react/pull/20888), [#21072](https://github.com/facebook/react/pull/21072), [#21417](https://github.com/facebook/react/pull/21417), [#21652](https://github.com/facebook/react/pull/21652), [#21687](https://github.com/facebook/react/pull/21687), [#23207](https://github.com/facebook/react/pull/23207), [#23385](https://github.com/facebook/react/pull/23385) 由 [@acdlite](https://github.com/acdlite), [@bvaughn](https://github.com/bvaughn), [@gaearon](https://github.com/gaearon), [@lunaruan](https://github.com/lunaruan), [@rickhanlonii](https://github.com/rickhanlonii), [@trueadm](https://github.com/trueadm) 和 [@sebmarkbage](https://github.com/sebmarkbage) 提交）
-* 添加选择性 hydration。([#14717](https://github.com/facebook/react/pull/14717), [#14884](https://github.com/facebook/react/pull/14884), [#16725](https://github.com/facebook/react/pull/16725), [#16880](https://github.com/facebook/react/pull/16880), [#17004](https://github.com/facebook/react/pull/17004), [#22416](https://github.com/facebook/react/pull/22416), [#22629](https://github.com/facebook/react/pull/22629), [#22448](https://github.com/facebook/react/pull/22448), [#22856](https://github.com/facebook/react/pull/22856), [#23176](https://github.com/facebook/react/pull/23176) 由 [@acdlite](https://github.com/acdlite), [@gaearon](https://github.com/gaearon), [@salazarm](https://github.com/salazarm) 和 [@sebmarkbage](https://github.com/sebmarkbage) 提交）
-* 将 `aria-description` 添加到已知 ARIA 属性列表中。([#22142](https://github.com/facebook/react/pull/22142) 由 [@mahyareb](https://github.com/mahyareb) 提交）
-* 为 video 元素添加 `onResize` 事件。([#21973](https://github.com/facebook/react/pull/21973) 由 [@rileyjshaw](https://github.com/rileyjshaw) 提交）
-* 将 `imageSizes` 和 `imageSrcSet` 添加到已知 props。([#22550](https://github.com/facebook/react/pull/22550) 由 [@eps1lon](https://github.com/eps1lon) 提交）
-* 如果提供了 `value`，则允许非字符串 `<option>` 子元素。([#21431](https://github.com/facebook/react/pull/21431) 由 [@sebmarkbage](https://github.com/sebmarkbage) 提交）
-* 修复 `aspectRatio` 样式未被应用的问题。([#21100](https://github.com/facebook/react/pull/21100) 由 [@gaearon](https://github.com/gaearon) 提交）
-* 当调用 `renderSubtreeIntoContainer` 时发出警告。([#23355](https://github.com/facebook/react/pull/23355) 由 [@acdlite](https://github.com/acdlite) 提交）
+* 添加 `createRoot` 和 `hydrateRoot`。（[#10239](https://github.com/react/react/pull/10239)、[#11225](https://github.com/react/react/pull/11225)、[#12117](https://github.com/react/react/pull/12117)、[#13732](https://github.com/react/react/pull/13732)、[#15502](https://github.com/react/react/pull/15502)、[#15532](https://github.com/react/react/pull/15532)、[#17035](https://github.com/react/react/pull/17035)、[#17165](https://github.com/react/react/pull/17165)、[#20669](https://github.com/react/react/pull/20669)、[#20748](https://github.com/react/react/pull/20748)、[#20888](https://github.com/react/react/pull/20888)、[#21072](https://github.com/react/react/pull/21072)、[#21417](https://github.com/react/react/pull/21417)、[#21652](https://github.com/react/react/pull/21652)、[#21687](https://github.com/react/react/pull/21687)、[#23207](https://github.com/react/react/pull/23207)、[#23385](https://github.com/react/react/pull/23385)，由 [@acdlite](https://github.com/acdlite)、[@bvaughn](https://github.com/bvaughn)、[@gaearon](https://github.com/gaearon)、[@lunaruan](https://github.com/lunaruan)、[@rickhanlonii](https://github.com/rickhanlonii)、[@trueadm](https://github.com/trueadm) 和 [@sebmarkbage](https://github.com/sebmarkbage) 完成）
+* 添加选择性 hydration。（[#14717](https://github.com/react/react/pull/14717)、[#14884](https://github.com/react/react/pull/14884)、[#16725](https://github.com/react/react/pull/16725)、[#16880](https://github.com/react/react/pull/16880)、[#17004](https://github.com/react/react/pull/17004)、[#22416](https://github.com/react/react/pull/22416)、[#22629](https://github.com/react/react/pull/22629)、[#22448](https://github.com/react/react/pull/22448)、[#22856](https://github.com/react/react/pull/22856)、[#23176](https://github.com/react/react/pull/23176)，由 [@acdlite](https://github.com/acdlite)、[@gaearon](https://github.com/gaearon)、[@salazarm](https://github.com/salazarm) 和 [@sebmarkbage](https://github.com/sebmarkbage) 完成）
+* 将 `aria-description` 添加到已知 ARIA 属性列表中。（[#22142](https://github.com/react/react/pull/22142) 由 [@mahyareb](https://github.com/mahyareb) 完成）
+* 为 video 元素添加 `onResize` 事件。（[#21973](https://github.com/react/react/pull/21973) 由 [@rileyjshaw](https://github.com/rileyjshaw) 完成）
+* 将 `imageSizes` 和 `imageSrcSet` 添加到已知属性中。（[#22550](https://github.com/react/react/pull/22550) 由 [@eps1lon](https://github.com/eps1lon) 完成）
+* 如果提供了 `value`，则允许 `<option>` 的子元素为非字符串类型。（[#21431](https://github.com/react/react/pull/21431) 由 [@sebmarkbage](https://github.com/sebmarkbage) 完成）
+* 修复 `aspectRatio` 样式未生效的问题。（[#21100](https://github.com/react/react/pull/21100) 由 [@gaearon](https://github.com/gaearon) 完成）
+* 如果调用 `renderSubtreeIntoContainer`，则发出警告。（[#23355](https://github.com/react/react/pull/23355) 由 [@acdlite](https://github.com/acdlite) 完成）
 
-### React DOM Server {/*react-dom-server-1*/}
+### React DOM 服务端 {/*react-dom-server-1*/}
 
-* 添加新的流式渲染器。([#14144](https://github.com/facebook/react/pull/14144), [#20970](https://github.com/facebook/react/pull/20970), [#21056](https://github.com/facebook/react/pull/21056), [#21255](https://github.com/facebook/react/pull/21255), [#21200](https://github.com/facebook/react/pull/21200), [#21257](https://github.com/facebook/react/pull/21257), [#21276](https://github.com/facebook/react/pull/21276), [#22443](https://github.com/facebook/react/pull/22443), [#22450](https://github.com/facebook/react/pull/22450), [#23247](https://github.com/facebook/react/pull/23247), [#24025](https://github.com/facebook/react/pull/24025), [#24030](https://github.com/facebook/react/pull/24030) 由 [@sebmarkbage](https://github.com/sebmarkbage) 提交）
-* 修复在处理多个请求时 SSR 中的上下文提供器。([#23171](https://github.com/facebook/react/pull/23171) 由 [@frandiox](https://github.com/frandiox) 提交）
-* 文本不匹配时回退到客户端渲染。([#23354](https://github.com/facebook/react/pull/23354) 由 [@acdlite](https://github.com/acdlite) 提交）
-* 弃用 `renderToNodeStream`。([#23359](https://github.com/facebook/react/pull/23359) 由 [@sebmarkbage](https://github.com/sebmarkbage) 提交）
-* 修复新的服务端渲染器中的一个误报错误日志。([#24043](https://github.com/facebook/react/pull/24043) 由 [@eps1lon](https://github.com/eps1lon) 提交）
-* 修复新的服务端渲染器中的一个 bug。([#22617](https://github.com/facebook/react/pull/22617) 由 [@shuding](https://github.com/shuding) 提交）
-* 在服务器端忽略自定义元素中的函数和值符号值。([#21157](https://github.com/facebook/react/pull/21157) 由 [@sebmarkbage](https://github.com/sebmarkbage) 提交）
+* 添加新的流式渲染器。 ([#14144](https://github.com/react/react/pull/14144), [#20970](https://github.com/react/react/pull/20970), [#21056](https://github.com/react/react/pull/21056), [#21255](https://github.com/react/react/pull/21255), [#21200](https://github.com/react/react/pull/21200), [#21257](https://github.com/react/react/pull/21257), [#21276](https://github.com/react/react/pull/21276), [#22443](https://github.com/react/react/pull/22443), [#22450](https://github.com/react/react/pull/22450), [#23247](https://github.com/react/react/pull/23247), [#24025](https://github.com/react/react/pull/24025), [#24030](https://github.com/react/react/pull/24030) 由 [@sebmarkbage](https://github.com/sebmarkbage) 提交)
+* 修复 SSR 在处理多个请求时的上下文提供器问题。 ([#23171](https://github.com/react/react/pull/23171) 由 [@frandiox](https://github.com/frandiox) 提交)
+* 文本不匹配时恢复为客户端渲染。 ([#23354](https://github.com/react/react/pull/23354) 由 [@acdlite](https://github.com/acdlite) 提交)
+* 弃用 `renderToNodeStream`。 ([#23359](https://github.com/react/react/pull/23359) 由 [@sebmarkbage](https://github.com/sebmarkbage) 提交)
+* 修复新服务端渲染器中的一条无关错误日志。 ([#24043](https://github.com/react/react/pull/24043) 由 [@eps1lon](https://github.com/eps1lon) 提交)
+* 修复新服务端渲染器中的一个错误。 ([#22617](https://github.com/react/react/pull/22617) 由 [@shuding](https://github.com/shuding) 提交)
+* 在服务端忽略自定义元素中的函数值和 symbol 值。 ([#21157](https://github.com/react/react/pull/21157) 由 [@sebmarkbage](https://github.com/sebmarkbage) 提交)
 
-### React DOM Test Utils {/*react-dom-test-utils*/}
+### React DOM 测试工具 {/*react-dom-test-utils*/}
 
-* 当在生产环境中使用 `act` 时抛出错误。([#21686](https://github.com/facebook/react/pull/21686) 由 [@acdlite](https://github.com/acdlite) 提交）
-* 支持使用 `global.IS_REACT_ACT_ENVIRONMENT` 禁用多余的 act 警告。([#22561](https://github.com/facebook/react/pull/22561) 由 [@acdlite](https://github.com/acdlite) 提交）
-* 扩展 act 警告以涵盖所有可能调度 React 工作的 API。([#22607](https://github.com/facebook/react/pull/22607) 由 [@acdlite](https://github.com/acdlite) 提交）
-* 让 `act` 批量更新。([#21797](https://github.com/facebook/react/pull/21797) 由 [@acdlite](https://github.com/acdlite) 提交）
-* 移除对悬挂的被动效果的警告。([#22609](https://github.com/facebook/react/pull/22609) 由 [@acdlite](https://github.com/acdlite) 提交）
+* 在生产环境中使用 `act` 时抛出错误。 ([#21686](https://github.com/react/react/pull/21686) 由 [@acdlite](https://github.com/acdlite) 提交)
+* 支持通过 `global.IS_REACT_ACT_ENVIRONMENT` 禁用多余的 act 警告。 ([#22561](https://github.com/react/react/pull/22561) 由 [@acdlite](https://github.com/acdlite) 提交)
+* 扩展 act 警告，以涵盖所有可能调度 React 工作的 API。 ([#22607](https://github.com/react/react/pull/22607) 由 [@acdlite](https://github.com/acdlite) 提交)
+* 让 `act` 批量处理更新。 ([#21797](https://github.com/react/react/pull/21797) 由 [@acdlite](https://github.com/acdlite) 提交)
+* 移除针对悬空被动副作用的警告。 ([#22609](https://github.com/react/react/pull/22609) 由 [@acdlite](https://github.com/acdlite) 提交)
 
 ### React Refresh {/*react-refresh*/}
 
-* 在 Fast Refresh 中跟踪后挂载的根。([#22740](https://github.com/facebook/react/pull/22740) 由 [@anc95](https://github.com/anc95) 提交）
-* 向 `package.json` 添加 `exports` 字段。([#23087](https://github.com/facebook/react/pull/23087) 由 [@otakustay](https://github.com/otakustay) 提交）
+* 在 Fast Refresh 中跟踪延迟挂载的根节点。([#22740](https://github.com/react/react/pull/22740)，由 [@anc95](https://github.com/anc95) 提交)
+* 向 `package.json` 添加 `exports` 字段。([#23087](https://github.com/react/react/pull/23087)，由 [@otakustay](https://github.com/otakustay) 提交)
 
-### Server Components (Experimental) {/*server-components-experimental*/}
+### 服务端组件（实验性）{/*server-components-experimental*/}
 
-* 添加 Server Context 支持。([#23244](https://github.com/facebook/react/pull/23244) 由 [@salazarm](https://github.com/salazarm) 提交）
-* 添加 `lazy` 支持。([#24068](https://github.com/facebook/react/pull/24068) 由 [@gnoff](https://github.com/gnoff) 提交）
-* 为 webpack 5 更新 webpack 插件。([#22739](https://github.com/facebook/react/pull/22739) 由 [@michenly](https://github.com/michenly) 提交）
-* 修复 Node 加载器中的一个错误。([#22537](https://github.com/facebook/react/pull/22537) 由 [@btea](https://github.com/btea) 提交）
-* 在边缘环境中使用 `globalThis` 而不是 `window`。([#22777](https://github.com/facebook/react/pull/22777) 由 [@huozhi](https://github.com/huozhi) 提交）
+* 添加服务端上下文支持。 ([#23244](https://github.com/react/react/pull/23244) 由 [@salazarm](https://github.com/salazarm) 提交)
+* 添加对 `lazy` 的支持。 ([#24068](https://github.com/react/react/pull/24068) 由 [@gnoff](https://github.com/gnoff) 提交)
+* 更新 webpack 插件以支持 webpack 5 ([#22739](https://github.com/react/react/pull/22739) 由 [@michenly](https://github.com/michenly) 提交)
+* 修复 Node 加载器中的错误。 ([#22537](https://github.com/react/react/pull/22537) 由 [@btea](https://github.com/btea) 提交)
+* 在边缘环境中使用 `globalThis` 替代 `window`。 ([#22777](https://github.com/react/react/pull/22777) 由 [@huozhi](https://github.com/huozhi) 提交)

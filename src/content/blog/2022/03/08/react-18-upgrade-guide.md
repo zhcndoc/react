@@ -13,7 +13,7 @@ description: 正如我们在发布文章中所分享的，React 18 通过我们�
 
 正如我们在 [发布文章](/blog/2022/03/29/react-v18) 中所分享的，React 18 通过我们新的并发渲染器引入了诸多功能，并为现有应用提供了渐进式采用策略。在这篇文章中，我们将引导你完成升级到 React 18 的步骤。
 
-如果你在升级到 React 18 的过程中遇到任何问题，请 [报告任何问题](https://github.com/facebook/react/issues/new/choose)。
+如果你在升级到 React 18 的过程中遇到任何问题，请[报告这些问题](https://github.com/react/react/issues/new/choose)。
 
 </Intro>
 
@@ -151,7 +151,7 @@ const root = hydrateRoot(container, <App tab="home" />);
 
 ## TypeScript 定义的更新 {/*updates-to-typescript-definitions*/}
 
-如果你的项目使用 TypeScript，你需要将 `@types/react` 和 `@types/react-dom` 依赖更新到最新版本。新的类型更安全，并能捕获过去会被类型检查器忽略的问题。最显著的变化是，在定义 props 时，`children` prop 现在需要显式列出，例如：
+如果你的项目使用 TypeScript，你需要将 `@types/react` 和 `@types/react-dom` 依赖更新到最新版本。新的类型更安全，并能捕获过去会被类型检查器忽略的问题。最显著的变化是，在定义 props 时，现在需要显式列出 `children` 属性，例如：
 
 ```typescript{3}
 interface MyButtonProps {
@@ -160,7 +160,7 @@ interface MyButtonProps {
 }
 ```
 
-请参见 [React 18 typings 拉取请求](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/56210)，了解完整的仅类型变更列表。它链接到了库类型中的示例修复，因此你可以看到如何调整你的代码。你可以使用 [自动迁移脚本](https://github.com/eps1lon/types-react-codemod) 更快地帮助将你的应用代码迁移到新的、更安全的类型定义。
+请参见 [React 18 类型定义拉取请求](https://github.com/DefinitelyTyped/DefinitelyTyped/pull/56210)，了解完整的仅类型变更列表。该拉取请求链接到了库类型中的示例修复，因此你可以看到如何调整你的代码。你可以使用 [自动迁移脚本](https://github.com/eps1lon/types-react-codemod)，更快地帮助将你的应用代码迁移到新的、更安全的类型定义。
 
 如果你在这些类型定义中发现了 bug，请在 DefinitelyTyped 仓库中 [提交 issue](https://github.com/DefinitelyTyped/DefinitelyTyped/discussions/new?category=issues-with-a-types-package)。
 
@@ -315,17 +315,17 @@ globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
 ### React {/*react*/}
 
-* **组件现在可以渲染 `undefined`：** 如果你从组件返回 `undefined`，React 不再发出警告。这使得允许的组件返回值与组件树中间允许的值保持一致。我们建议使用 linter 来防止诸如在 JSX 之前忘记写 `return` 之类的错误。
-* **在测试中，`act` 警告现在需要显式启用：** 如果你正在运行端到端测试，那么 `act` 警告是不必要的。我们引入了一个[显式启用](https://github.com/reactwg/react-18/discussions/102)机制，因此你可以只在它们有用且有益的单元测试中启用它们。
-* **不再警告在未挂载组件上调用 `setState`：** 以前，当你在一个未挂载组件上调用 `setState` 时，React 会警告内存泄漏。这个警告是为订阅场景添加的，但人们主要是在设置状态其实没问题的场景中遇到它，而规避方案会让代码更糟。我们已经[移除了](https://github.com/facebook/react/pull/22114)这个警告。
-* **不再抑制控制台日志：** 当你使用 Strict Mode 时，React 会将每个组件渲染两次，以帮助你发现意外的副作用。在 React 17 中，我们抑制了两次渲染中的一次控制台日志，以便日志更易于阅读。针对社区关于这会造成困惑的[反馈](https://github.com/facebook/react/issues/21783)，我们移除了这种抑制。相反，如果你安装了 React DevTools，第二次日志中的渲染将以灰色显示，并且会有一个选项（默认关闭）来完全抑制它们。
-* **改进内存使用：** React 现在在卸载时会清理更多内部字段，从而减轻应用代码中可能存在且未修复的内存泄漏所带来的影响。
+* **组件现在可以渲染 `undefined`：** 如果你从组件中返回 `undefined`，React 将不再发出警告。这使组件允许返回的值与组件树中间允许的值保持一致。我们建议使用代码检查工具来避免忘记在 JSX 前添加 `return` 语句之类的错误。
+* **在测试中，`act` 警告现在需要选择启用：** 如果你正在运行端到端测试，`act` 警告是不必要的。我们引入了一种[选择启用](https://github.com/reactwg/react-18/discussions/102)的机制，因此你可以仅在这些警告有用且有益的单元测试中启用它们。
+* **不再警告对已卸载组件调用 `setState`：** 以前，当你对已卸载的组件调用 `setState` 时，React 会针对内存泄漏发出警告。添加此警告原本是为了提醒订阅问题，但人们主要是在设置状态本身没有问题的场景中遇到它，而解决方法反而会使代码变得更糟。我们已经[移除了](https://github.com/react/react/pull/22114)此警告。
+* **不再抑制控制台日志：** 当你使用 Strict Mode 时，React 会将每个组件渲染两次，以帮助你发现意外的副作用。在 React 17 中，我们抑制了其中一次渲染的控制台日志，以便让日志更易于阅读。针对[社区反馈](https://github.com/react/react/issues/21783)认为这会造成困惑，我们移除了这一抑制。现在，如果你安装了 React DevTools，第二次渲染的日志会以灰色显示，并且会提供一个选项（默认关闭）来完全抑制这些日志。
+* **改进内存使用：** 现在，React 会在卸载时清理更多内部字段，从而减轻应用程序代码中可能存在的未修复内存泄漏所造成的影响。
 
-### React DOM Server {/*react-dom-server*/}
+### React DOM 服务器 {/*react-dom-server*/}
 
 * **`renderToString`：** 在服务器上挂起时将不再报错。相反，它会为最近的 `<Suspense>` 边界输出 fallback HTML，然后在客户端重试渲染相同内容。仍然建议你改用流式 API，例如 `renderToPipeableStream` 或 `renderToReadableStream`。
 * **`renderToStaticMarkup`：** 在服务器上挂起时将不再报错。相反，它会为最近的 `<Suspense>` 边界输出 fallback HTML。
 
 ## 更新日志 {/*changelog*/}
 
-你可以在这里查看[完整更新日志](https://github.com/facebook/react/blob/main/CHANGELOG.md)。
+您可以在[此处查看完整的更新日志](https://github.com/react/react/blob/main/CHANGELOG.md)。

@@ -49,17 +49,17 @@ const { pipe } = renderToPipeableStream(<App />, {
 * `reactNode`：你想渲染为 HTML 的 React 节点。例如，一个像 `<App />` 这样的 JSX 元素。它应当代表整个文档，因此 `App` 组件应该渲染 `<html>` 标签。
 
 * **可选** `options`：包含流式传输选项的对象。
-  * **可选** `bootstrapScriptContent`：如果指定，这个字符串会被放入内联的 `<script>` 标签中。
-  * **可选** `bootstrapScripts`：页面上要输出的 `<script>` 标签对应的字符串 URL 数组。使用它来包含调用 [`hydrateRoot`.](/reference/react-dom/client/hydrateRoot) 的 `<script>`。如果你完全不想在客户端运行 React，就省略它。
-  * **可选** `bootstrapModules`：类似 `bootstrapScripts`，但会输出 [`<script type="module">`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)。
-  * **可选** `identifierPrefix`：React 用于 [`useId`.](/reference/react/useId) 生成 ID 的字符串前缀。在同一页面使用多个根时，这有助于避免冲突。必须与传给 [`hydrateRoot`.](/reference/react-dom/client/hydrateRoot#parameters) 的前缀相同
-  * **可选** `namespaceURI`：流的根 [namespace URI](https://developer.mozilla.org/en-US/docs/Web/API/Document/createElementNS#important_namespace_uris) 字符串。默认是普通 HTML。SVG 传 `'http://www.w3.org/2000/svg'`，MathML 传 `'http://www.w3.org/1998/Math/MathML'`。
-  * **可选** `nonce`：一个 [`nonce`](http://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#nonce) 字符串，用于允许 [`script-src` Content-Security-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/script-src) 下的脚本。
-  * **可选** `onAllReady`：当所有渲染完成时触发的回调，包括 [shell](#specifying-what-goes-into-the-shell) 和所有额外的 [内容。](#streaming-more-content-as-it-loads) 你可以在 [爬虫和静态生成。](#waiting-for-all-content-to-load-for-crawlers-and-static-generation) 场景下用它代替 `onShellReady`。如果你在这里开始流式传输，你将不会获得任何渐进式加载。流将包含最终 HTML。
-  * **可选** `onError`：无论是 [可恢复的](#recovering-from-errors-outside-the-shell) 还是 [不可恢复的，](#recovering-from-errors-inside-the-shell) 只要发生服务器错误就会触发的回调。默认情况下，它只会调用 `console.error`。如果你覆盖它以 [记录崩溃报告，](#logging-crashes-on-the-server) 请确保你仍然调用 `console.error`。你也可以用它在 shell 发出前 [调整状态码。](#setting-the-status-code)
-  * **可选** `onShellReady`：在 [初始 shell](#specifying-what-goes-into-the-shell) 渲染完成后立即触发的回调。你可以在这里 [设置状态码](#setting-the-status-code) 并调用 `pipe` 开始流式传输。React 会在 shell 之后 [流式输出额外内容，](#streaming-more-content-as-it-loads) 同时带上内联 `<script>` 标签，用内容替换 HTML 的加载占位。
-  * **可选** `onShellError`：如果初始 shell 渲染时出错则触发的回调。它会将错误作为参数接收。此时流中还没有输出任何字节，并且 `onShellReady` 和 `onAllReady` 都不会被调用，因此你可以 [输出一个备用 HTML shell。](#recovering-from-errors-inside-the-shell)
-  * **可选** `progressiveChunkSize`：每个分块的字节数。[了解默认启发式的更多信息。](https://github.com/facebook/react/blob/14c2be8dac2d5482fda8a0906a31d239df8551fc/packages/react-server/src/ReactFizzServer.js#L210-L225)
+  * **可选** `bootstrapScriptContent`：如果指定了此字符串，它将被放置在内联的 `<script>` 标签中。
+  * **可选** `bootstrapScripts`：要在页面中输出的 `<script>` 标签的字符串 URL 数组。使用它来包含调用 [`hydrateRoot`](/reference/react-dom/client/hydrateRoot) 的 `<script>`。如果你根本不想在客户端运行 React，则省略它。
+  * **可选** `bootstrapModules`：与 `bootstrapScripts` 类似，但会输出 [`<script type="module">`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)。
+  * **可选** `identifierPrefix`：React 用于 [`useId`](/reference/react/useId) 生成的 ID 的字符串前缀。在同一页面上使用多个根节点时，它有助于避免冲突。必须与传递给 [`hydrateRoot`](/reference/react-dom/client/hydrateRoot#parameters) 的前缀相同。
+  * **可选** `namespaceURI`：流的根 [命名空间 URI](https://developer.mozilla.org/en-US/docs/Web/API/Document/createElementNS#important_namespace_uris) 字符串。默认为常规 HTML。对于 SVG，传入 `'http://www.w3.org/2000/svg'`；对于 MathML，传入 `'http://www.w3.org/1998/Math/MathML'`。
+  * **可选** `nonce`：用于允许 [`script-src` 内容安全策略](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/script-src)脚本的 [`nonce`](http://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#nonce) 字符串。
+  * **可选** `onAllReady`：当所有渲染完成时触发的回调，包括[外壳](#specifying-what-goes-into-the-shell)和所有额外的[内容](#streaming-more-content-as-it-loads)。你可以将它用于[爬虫和静态生成](#waiting-for-all-content-to-load-for-crawlers-and-static-generation)，以替代 `onShellReady`。如果你在这里开始流式传输，就不会获得渐进式加载。流中将包含最终的 HTML。
+  * **可选** `onError`：每当服务端发生错误时触发的回调，无论错误是[可恢复的](#recovering-from-errors-outside-the-shell)还是[不可恢复的](#recovering-from-errors-inside-the-shell)。默认情况下，它只会调用 `console.error`。如果你重写它以[记录崩溃报告](#logging-crashes-on-the-server)，请确保仍然调用 `console.error`。你也可以使用它在外壳输出之前[调整状态码](#setting-the-status-code)。
+  * **可选** `onShellReady`：在[初始外壳](#specifying-what-goes-into-the-shell)渲染完成后立即触发的回调。你可以在这里[设置状态码](#setting-the-status-code)并调用 `pipe` 以开始流式传输。React 会在外壳之后[流式传输额外内容](#streaming-more-content-as-it-loads)，并附带内联的 `<script>` 标签，用内容替换 HTML 加载中的回退内容。
+  * **可选** `onShellError`：如果渲染初始外壳时发生错误，则触发的回调。它接收错误作为参数。此时流中尚未输出任何字节，并且 `onShellReady` 和 `onAllReady` 都不会被调用，因此你可以[输出回退 HTML 外壳](#recovering-from-errors-inside-the-shell)。
+  * **可选** `progressiveChunkSize`：一个数据块中的字节数。[详细了解默认启发式算法。](https://github.com/react/react/blob/14c2be8dac2d5482fda8a0906a31d239df8551fc/packages/react-server/src/ReactFizzServer.js#L210-L225)
 
 
 #### 返回值 {/*returns*/}
@@ -284,17 +284,7 @@ function ProfilePage() {
 
 <Note>
 
-**只有支持 Suspense 的数据源才会激活 Suspense 组件。** 它们包括：
-
-- 使用支持 Suspense 的框架进行数据获取，例如 [Relay](https://relay.dev/docs/guided-tour/rendering/loading-states/) 和 [Next.js](https://nextjs.org/docs/getting-started/react-essentials)
-- 使用 [`lazy`](/reference/react/lazy) 懒加载组件代码
-- 使用 [`use`](/reference/react/use) 读取 Promise 的值
-
-Suspense **不会** 检测在 Effect 或事件处理器中获取数据的情况。
-
-上面 `Posts` 组件中加载数据的具体方式取决于你的框架。如果你使用支持 Suspense 的框架，你会在其数据获取文档中找到详细信息。
-
-目前还不支持在不使用特定框架的情况下进行支持 Suspense 的数据获取。实现支持 Suspense 的数据源所需的要求尚不稳定，并且没有文档说明。用于将数据源与 Suspense 集成的官方 API 将在未来版本的 React 中发布。
+只有从[激活 Suspense 边界](/reference/react/Suspense#what-activates-a-suspense-boundary)的数据源中读取的数据（例如使用 [`use`](/reference/react/use) 读取的 Promise）才会在渲染期间触发挂起。Suspense 无法检测在 Effect 或事件处理函数中获取的数据。
 
 </Note>
 

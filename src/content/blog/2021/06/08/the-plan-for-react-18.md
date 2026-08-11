@@ -1,6 +1,6 @@
 ---
 title: "React 18 的计划"
-author: Andrew Clark, Brian Vaughn, Christine Abernathy, Dan Abramov, Rachel Nabors, Rick Hanlon, Sebastian Markbage, and Seth Webster
+author: Andrew Clark, Brian Vaughn, Christine Abernathy, Dan Abramov, Rachel Nabors, Rick Hanlon, Sebastian Markbage 和 Seth Webster
 date: 2021/06/08
 description: React 团队很高兴分享一些最新进展。我们已经开始着手 React 18 的发布工作，它将成为我们的下一个重大版本。我们创建了一个工作组，为社区逐步采用 React 18 中的新特性做好准备。我们还发布了 React 18 Alpha，方便库作者进行尝试并提供反馈...
 ---
@@ -51,7 +51,7 @@ React 团队很高兴分享一些最新进展：
 
 由于我们预计工作组一开始会受到大量关注，只有受邀成员才能创建主题或在主题下评论。不过，这些主题对公众完全可见，因此每个人都能获取相同的信息。我们认为，这在为工作组成员创造高效环境与保持更广泛社区透明度之间，达成了一个不错的折中。
 
-一如既往，你可以向我们的[问题跟踪器](https://github.com/facebook/react/issues)提交 bug 报告、问题和一般反馈。
+一如既往，你可以通过我们的 [问题跟踪器](https://github.com/react/react/issues)提交错误报告、问题和一般反馈。
 
 ## 如何立即尝试 React 18 Alpha {/*how-to-try-react-18-alpha-today*/}
 

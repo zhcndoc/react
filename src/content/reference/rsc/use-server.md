@@ -179,7 +179,7 @@ Server Functions 是暴露的服务端端点，可以在客户端代码中的任
 
 在 [form](/reference/react-dom/components/form) 外使用 Server Function 时，请在 [过渡](/reference/react/useTransition) 中调用该 Server Function，这样你就可以显示加载指示器、展示 [乐观状态更新](/reference/react/useOptimistic)，以及处理意外错误。表单会自动将 Server Functions 包装在过渡中。
 
-```js {9-12}
+```js {9-14}
 import incrementLike from './actions';
 import { useState, useTransition } from 'react';
 
@@ -190,7 +190,9 @@ function LikeButton() {
   const onClick = () => {
     startTransition(async () => {
       const currentCount = await incrementLike();
-      setLikeCount(currentCount);
+      startTransition(() => {
+        setLikeCount(currentCount);
+      });
     });
   };
 

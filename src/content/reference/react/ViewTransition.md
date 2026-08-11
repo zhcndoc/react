@@ -31,7 +31,7 @@ import {ViewTransition} from 'react';
 
 ---
 
-## Reference {/*reference*/}
+## 参考 {/*reference*/}
 
 ### `<ViewTransition>` {/*viewtransition*/}
 
@@ -51,9 +51,9 @@ import {ViewTransition} from 'react';
 
 在底层，React 会将 `view-transition-name` 应用到嵌套在 `<ViewTransition>` 组件内部的最近 DOM 节点的内联样式上。如果有多个同级 DOM 节点，例如 `<ViewTransition><div /><div /></ViewTransition>`，那么 React 会在名称后添加后缀以使每个名称唯一，但从概念上说它们属于同一个。React 不会急切地应用这些，而只会在该边界应该参与动画时才应用。
 
-React 会自动在内部调用 `startViewTransition`，所以你不应该自己这么做。实际上，如果页面上还有其他东西正在运行 ViewTransition，React 会中断它。因此建议你使用 React 自身来协调这些操作。如果你过去通过其他方式触发 ViewTransitions，我们建议你迁移到内置方式。
+React 会自动在内部调用 `startViewTransition`，所以你不应该自己这么做。实际上，如果页面上还有其他东西正在运行视图过渡，React 会中断它。因此建议你使用 React 自身来协调这些操作。如果你过去通过其他方式触发视图过渡，我们建议你迁移到内置方式。
 
-如果已经有其他 React ViewTransitions 在运行，React 会等待它们完成后再开始下一个。不过重要的是，如果第一个动画运行期间又发生了多个更新，这些更新都会被批量合并为一个。如果你先启动 A->B，然后在此期间又有更新变成 C，再变成 D。当第一个 A->B 动画结束后，下一个动画将从 B->D 进行。
+如果已经有其他 React 视图过渡在运行，React 会等待它们完成后再开始下一个。不过重要的是，如果第一个动画运行期间又发生了多个更新，这些更新都会被批量合并为一个。如果你先启动 A->B，然后在此期间又有更新变成 C，再变成 D。当第一个 A->B 动画结束后，下一个动画将从 B->D 进行。
 
 `getSnapshotBeforeUpdate` 生命周期会在 `startViewTransition` 之前被调用，并且某些 `view-transition-name` 会同时更新。
 
@@ -62,7 +62,7 @@ React 会自动在内部调用 `startViewTransition`，所以你不应该自己�
 - 将其变更应用到 DOM 并调用 `useInsertionEffect`。
 - 等待字体加载完成。
 - 调用 `componentDidMount`、`componentDidUpdate`、`useLayoutEffect` 和 refs。
-- 等待任何未完成的 Navigation 完成。
+- 等待任何未完成的导航完成。
 - 然后 React 会测量布局中的任何变化，以查看哪些边界需要执行动画。
 
 在 `startViewTransition` 的 ready Promise 解析之后，React 会恢复 `view-transition-name`。然后 React 将调用 `onEnter`、`onExit`、`onUpdate` 和 `onShare` 回调，以便对动画进行手动编程控制。这会发生在内置默认动画已经被计算之后。
@@ -73,31 +73,31 @@ React 会自动在内部调用 `startViewTransition`，所以你不应该自己�
 
 </DeepDive>
 
-#### Props {/*props*/}
+#### 属性 {/*props*/}
 
-- **可选** `name`：一个字符串或对象。用于 shared element transitions 的 View Transition 名称。如果未提供，React 会为每个 View Transition 使用唯一名称，以防止意外动画。
-- [View Transition Class](#view-transition-class) 属性。
-- [View Transition Event](#view-transition-event) 属性。
+- **可选** `name`：一个字符串或对象。用于共享元素过渡的 View Transition 名称。如果未提供，React 会为每个 View Transition 使用唯一名称，以防止意外动画。
+- [View Transition 类](#view-transition-class) 属性。
+- [View Transition 事件](#view-transition-event) 属性。
 
-#### Caveats {/*caveats*/}
+#### 注意事项 {/*caveats*/}
 
-- 仅将 `name` 用于 [shared element transitions](#animating-a-shared-element)。对于所有其他动画，React 会自动生成唯一名称，以防止意外动画。
-- 默认情况下，`setState` 会立即更新，并不会激活 `<ViewTransition>`；只有包裹在 [Transition](/reference/react/useTransition)、[`<Suspense>`](/reference/react/Suspense) 或 `useDeferredValue` 中的更新才会激活 ViewTransition。
-- `<ViewTransition>` 会创建一个可以移动、缩放并交叉淡化的图像。与你可能在 React Native 或 Motion 中见过的布局动画不同，这意味着其中并不是每个单独的 Element 都会对其位置进行动画。这可以带来更好的性能，以及与逐个动画化每个部分相比更连续、更平滑的动画体验。不过，这也可能会让一些本应自行移动的内容失去连续性。因此，你可能需要手动添加更多 `<ViewTransition>` 边界。
+- 仅将 `name` 用于[共享元素过渡](#animating-a-shared-element)。对于所有其他动画，React 会自动生成唯一名称，以防止意外动画。
+- 默认情况下，`setState` 会立即更新，并不会激活 `<ViewTransition>`；只有包裹在[Transition](/reference/react/useTransition)、[`<Suspense>`](/reference/react/Suspense) 或 `useDeferredValue` 中的更新才会激活 ViewTransition。
+- `<ViewTransition>` 会创建一个可以移动、缩放并交叉淡化的图像。与您可能在 React Native 或 Motion 中见过的布局动画不同，这意味着其中并不是每个单独的元素都会对其位置进行动画。这可以带来更好的性能，以及与逐个动画化每个部分相比更连续、更平滑的动画体验。不过，这也可能会让一些本应自行移动的内容失去连续性。因此，您可能需要手动添加更多 `<ViewTransition>` 边界。
 - 目前，`<ViewTransition>` 仅在 DOM 中有效。我们正在努力为 React Native 和其他平台添加支持。
 
-#### Animation triggers {/*animation-triggers*/}
+#### 动画触发器 {/*animation-triggers*/}
 
 React 会自动决定触发哪种 View Transition 动画：
 
 - `enter`：如果 `ViewTransition` 是本次 Transition 中第一个被插入的组件，那么它会被激活。
 - `exit`：如果 `ViewTransition` 是本次 Transition 中第一个被删除的组件，那么它会被激活。
 - `update`：如果 `ViewTransition` 内部有 React 正在执行的任何 DOM 变更（例如 prop 发生变化），或者由于紧邻的兄弟节点导致 `ViewTransition` 边界本身发生大小或位置变化。如果存在嵌套的 `ViewTransition`，那么变更会应用到它们而不是父级。
-- `share`：如果一个带名称的 `ViewTransition` 位于被删除的子树中，而另一个同名的 `ViewTransition` 是同一次 Transition 中插入的子树的一部分，那么它们会形成 Shared Element Transition，并且会从被删除的那个动画到被插入的那个。
+- `share`：如果一个带名称的 `ViewTransition` 位于被删除的子树中，而另一个同名的 `ViewTransition` 是同一次 Transition 中插入的子树的一部分，那么它们会形成共享元素过渡，并且会从被删除的那个动画到被插入的那个。
 
 默认情况下，`<ViewTransition>` 会使用平滑的交叉淡化进行动画（浏览器默认的视图过渡）。
 
-你可以通过为 `<ViewTransition>` 组件在每种触发类型上提供一个 [View Transition Class](#view-transition-class) 来自定义动画（参见 [Styling View Transitions](#styling-view-transitions)），或者使用 [ViewTransition Events](#view-transition-events) 并借助 [Web Animations API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API) 用 JavaScript 控制动画。
+你可以通过为 `<ViewTransition>` 组件在每种触发类型上提供一个 [View Transition 类](#view-transition-class) 来自定义动画（参见[设置视图过渡样式](#styling-view-transitions)），或者使用 [ViewTransition 事件](#view-transition-events) 并借助 [Web Animations API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API) 用 JavaScript 控制动画。
 
 <Note>
 
@@ -111,7 +111,7 @@ React 会自动决定触发哪种 View Transition 动画：
 
 </Note>
 
-### View Transition Class {/*view-transition-class*/}
+### View Transition 类 {/*view-transition-class*/}
 
 `<ViewTransition>` 提供了用于定义触发哪些动画的属性：
 
@@ -123,7 +123,7 @@ React 会自动决定触发哪种 View Transition 动画：
 />
 ```
 
-#### Props {/*view-transition-class-props*/}
+#### 属性 {/*view-transition-class-props*/}
 
 - **可选** `enter`：`"auto"`、`"none"`、一个字符串，或一个对象。
 - **可选** `exit`：`"auto"`、`"none"`、一个字符串，或一个对象。
@@ -131,20 +131,20 @@ React 会自动决定触发哪种 View Transition 动画：
 - **可选** `share`：`"auto"`、`"none"`、一个字符串，或一个对象。
 - **可选** `default`：`"auto"`、`"none"`、一个字符串，或一个对象。
 
-#### Caveats {/*view-transition-class-caveats*/}
+#### 注意事项 {/*view-transition-class-caveats*/}
 
 - 如果 `default` 是 `"none"`，那么除非显式列出，否则所有其他触发类型都会关闭。
 
-#### Values {/*view-transition-values*/}
+#### 值 {/*view-transition-values*/}
 
-View Transition class 的值可以是：
+View Transition 类的值可以是：
 - `auto`：默认值。使用浏览器默认动画。
 - `none`：禁用此类型的动画。
-- `<classname>`：用于 [自定义 View Transitions](#styling-view-transitions) 的自定义 CSS 类名。
+- `<classname>`：用于[自定义视图过渡](#styling-view-transitions)的自定义 CSS 类名。
 
 对象值可以是一个带字符串键的对象，其值为 `auto`、`none` 或自定义 className：
-- `{[type]: value}`：如果动画匹配 [Transition Type](/reference/react/addTransitionType)，则应用 `value`。
-- `{default: value}`：如果没有匹配到任何 [Transition Type](/reference/react/addTransitionType)，则应用默认值。
+- `{[type]: value}`：如果动画匹配[Transition 类型](/reference/react/addTransitionType)，则应用 `value`。
+- `{default: value}`：如果没有匹配到任何[Transition 类型](/reference/react/addTransitionType)，则应用默认值。
 
 例如，你可以将 ViewTransition 定义为：
 
@@ -165,13 +165,13 @@ View Transition class 的值可以是：
 >
 ```
 
-有关如何为自定义动画定义 CSS 类，请参见 [Styling View Transitions](#styling-view-transitions)。
+有关如何为自定义动画定义 CSS 类，请参见[设置视图过渡样式](#styling-view-transitions)。
 
 ---
 
-### View Transition Event {/*view-transition-event*/}
+### View Transition 事件 {/*view-transition-event*/}
 
-View Transition Events 允许你使用 [Web Animations API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API) 通过 JavaScript 控制动画：
+View Transition 事件允许你使用 [Web Animations API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API) 通过 JavaScript 控制动画：
 
 ```js
 <ViewTransition
@@ -180,7 +180,7 @@ View Transition Events 允许你使用 [Web Animations API](https://developer.mo
 />
 ```
 
-#### Props {/*view-transition-event-props*/}
+#### 属性 {/*view-transition-event-props*/}
 
 - **可选** `onEnter`：在触发 `"enter"` 动画时调用。
 - **可选** `onExit`：在触发 `"exit"` 动画时调用。
@@ -188,21 +188,21 @@ View Transition Events 允许你使用 [Web Animations API](https://developer.mo
 - **可选** `onUpdate`：在触发 `"update"` 动画时调用。
 
 
-#### Caveats {/*view-transition-event-caveats*/}
+#### 注意事项 {/*view-transition-event-caveats*/}
 - 每次 Transition 中，每个 `<ViewTransition>` 只会触发一个事件。`onShare` 的优先级高于 `onEnter` 和 `onExit`。
 - 每个事件都应该返回一个**清理函数**。当 View Transition 完成时会调用清理函数，从而允许你取消或清理任何动画。
 
-#### Arguments {/*view-transition-event-arguments*/}
+#### 参数 {/*view-transition-event-arguments*/}
 
 每个事件都会接收两个参数：
 
-- `instance`：一个 View Transition 实例，提供对视图过渡 [伪元素](https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API/Using#the_view_transition_process) 的访问
+- `instance`：一个 View Transition 实例，提供对视图过渡[伪元素](https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API/Using#the_view_transition_process)的访问
   - `old`：`::view-transition-old` 伪元素。
   - `new`：`::view-transition-new` 伪元素。
   - `name`：此边界的 `view-transition-name` 字符串。
   - `group`：`::view-transition-group` 伪元素。
   - `imagePair`：`::view-transition-image-pair` 伪元素。
-- `types`：动画中包含的 [Transition Types](/reference/react/addTransitionType) 的 `Array<string>`。如果未指定类型，则为空数组。
+- `types`：动画中包含的 [Transition 类型](/reference/react/addTransitionType)的 `Array<string>`。如果未指定类型，则为空数组。
 
 例如，你可以定义一个通过 JavaScript 驱动动画的 `onEnter` 事件：
 
@@ -218,7 +218,7 @@ View Transition Events 允许你使用 [Web Animations API](https://developer.mo
 </ViewTransition>
 ```
 
-更多示例请参见 [使用 JavaScript 进行动画](#animating-with-javascript)。
+更多示例请参见[使用 JavaScript 进行动画](#animating-with-javascript)。
 
 ---
 
@@ -263,7 +263,7 @@ View Transition Events 允许你使用 [Web Animations API](https://developer.mo
 function Child() {
   return (
     <ViewTransition enter="auto" exit="auto" default="none">
-      <div>Hi</div>
+      <div>嗨</div>
     </ViewTransition>
   );
 }
@@ -345,8 +345,8 @@ export default function Component() {
 export default [
   {
     id: '1',
-    title: 'First video',
-    description: 'Video description',
+    title: '第一个视频',
+    description: '视频描述',
     image: 'blue',
   },
 ];
@@ -1264,7 +1264,7 @@ items.map(item => <div><Component key={item.id} item={item} /></div>)
 
 ### 为 Suspense 内容添加动画 {/*animating-from-suspense-content*/}
 
-和任何 Transition 一样，React 会等待数据和新的 CSS（`<link rel="stylesheet" precedence="...">`）就绪后才运行动画。除此之外，ViewTransitions 还会在动画开始前最多等待 500ms 让新字体加载完成，以避免字体稍后出现闪烁。出于同样原因，被 ViewTransition 包裹的图片也会等待图片加载完成。
+与任何 Transition 一样，React 会等待数据和新的 CSS（`<link rel="stylesheet" precedence="...">`）加载完成后再运行动画。除此之外，ViewTransition 还会在开始动画前最多等待 500 毫秒，以便加载新字体，避免字体稍后加载时出现闪烁。出于同样的原因，使用 ViewTransition 包裹的图像也会等待图像加载完成。请参阅 Suspense 页面上的[等待字体加载](/reference/react/Suspense#waiting-for-a-font-to-load)和[等待图像加载](/reference/react/Suspense#waiting-for-an-image-to-load)示例。
 
 如果它位于一个新的 Suspense 边界实例内，那么会先显示 fallback。等 Suspense 边界完全加载后，它会触发 `<ViewTransition>`，将内容的显示过程做动画化。
 
@@ -1506,7 +1506,7 @@ button:hover {
 
 </Sandpack>
 
-**Enter/Exit：**
+**进入/退出：**
 
 ```
 <Suspense fallback={<ViewTransition><A /></ViewTransition>}>
@@ -1540,7 +1540,7 @@ button:hover {
 
 ### 自定义动画 {/*customizing-animations*/}
 
-默认情况下，`<ViewTransition>` 包含浏览器提供的默认交叉淡入淡出。
+默认情况下，`<ViewTransition>` 包含浏览器提供的默认交叉淡入淡出动画。
 
 要自定义动画，你可以为 `<ViewTransition>` 组件提供属性，以便根据 `<ViewTransition>` 的激活方式指定要使用的动画。
 
@@ -1552,7 +1552,7 @@ button:hover {
 </ViewTransition>
 ```
 
-并使用 view transition classes 在 CSS 中定义 slow-fade：
+并使用视图过渡类在 CSS 中定义 slow-fade：
 
 ```css
 ::view-transition-old(.slow-fade) {

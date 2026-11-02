@@ -13,6 +13,7 @@
  * @type {import('next').NextConfig}
  **/
 const nextConfig = {
+  output: 'standalone',
   pageExtensions: ['jsx', 'js', 'ts', 'tsx', 'mdx', 'md'],
   reactStrictMode: true,
   experimental: {

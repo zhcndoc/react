@@ -10,34 +10,87 @@ title: React 大会
 
 ## 即将举行的大会 {/*upcoming-conferences*/}
 
-### ZurichJS Conf 2026 {/*zurichjs-conf-2026*/}
-2026年9月10日-11日。瑞士苏黎世线下举行
+### React Summit US 2026 {/*react-summit-us-2026*/}
+2026年11月17日和20日。美国纽约线下举行，并提供线上参与（混合活动）
 
-[网站](https://conf.zurichjs.com?utm_campaign=ZurichJS_Conf&utm_source=referral&utm_content=reactjs_community_conferences) - [Twitter](https://x.com/zurichjs) - [LinkedIn](https://www.linkedin.com/company/zurichjs/)
+[网站](https://reactsummit.us/) - [Twitter](https://x.com/reactsummit) - [LinkedIn](https://www.linkedin.com/showcase/reactsummit)
 
-### React Alicante 2026 {/*react-alicante-2026*/}
-2026年9月24日-26日。西班牙阿利坎特线下举行
+### React Day Berlin 2026 {/*react-day-berlin-2026*/}
+2026年12月4日和7日。德国柏林线下举行，并提供线上参与（混合活动）
 
-[网站](https://reactalicante.es//) - [Twitter](https://x.com/ReactAlicante)
+[网站](https://reactday.berlin/) - [Twitter](https://x.com/reactdayberlin) - [LinkedIn](https://www.linkedin.com/showcase/react-day-berlin/)
+
+### React Summit Asia 2027 {/*react-summit-asia-2027*/}
+2027年4月15日和19日。新加坡线下举行，并提供线上参与（混合活动）
+
+[网站](https://reactsummit.asia/) - [Twitter](https://x.com/reactsummit) - [LinkedIn](https://www.linkedin.com/showcase/reactsummit)
+
+### React Conf Japan 2027 {/*react-conf-japan-2027*/}
+2027年4月24日。在日本东京线下举行
+
+[网站](https://reactconf.jp/) - [Twitter](https://x.com/reactconfjp)
+
+### React Summit 2027 {/*react-summit-2027*/}
+2027年5月21日和25日。荷兰阿姆斯特丹线下举行，并提供线上参与（混合活动）
+
+[网站](https://reactsummit.com/) - [Twitter](https://x.com/reactsummit) - [LinkedIn](https://www.linkedin.com/showcase/reactsummit)
+
+## 往届会议 {/*past-conferences*/}
+
+### React India 2026 {/*react-india-2026*/}
+2026年10月29日-31日。印度果阿线下举行
+
+[网站](https://www.reactindia.io/) - [Twitter](https://x.com/react_india)
+
+### React Advanced London 2026 {/*react-advanced-london-2026*/}
+2026年10月23日和26日。英国伦敦线下举行，并提供线上参与（混合活动）
+
+[网站](https://reactadvanced.com/) - [Twitter](https://x.com/reactadvanced) - [LinkedIn](https://www.linkedin.com/showcase/react-advanced-london/)
 
 ### CityJS Athens 2026 {/*cityjs-athens-2026*/}
 2026年10月21日-23日。希腊雅典线下举行
 
 [网站](https://athens.cityjsconf.org/) - [Twitter](https://x.com/cityjsconf) - [Bluesky](https://bsky.app/profile/cityjsconf.bsky.social)
 
+### React Alicante 2026 {/*react-alicante-2026*/}
+2026年9月24日-26日。西班牙阿利坎特线下举行
 
-## 往届会议 {/*past-conferences*/}
+[网站](https://reactalicante.es//) - [Twitter](https://x.com/ReactAlicante)
 
+### React Native Connection 2026 {/*react-native-connection-2026*/}
+2026年9月24日。法国巴黎线下举行
 
-### React Conf Japan 2027 {/*react-conf-japan-2027*/}
-2027年4月24日。在日本东京线下举行
+[网站](https://reactnativeconnection.io/) - [Twitter](https://x.com/ReactNativeConn) - [Bluesky](https://bsky.app/profile/reactnativeconnect.bsky.social)
 
-[网站](https://reactconf.jp/) - [Twitter](https://x.com/reactconfjp)。
+### ZurichJS Conf 2026 {/*zurichjs-conf-2026*/}
+2026年9月10日-11日。瑞士苏黎世线下举行
+
+[网站](https://conf.zurichjs.com?utm_campaign=ZurichJS_Conf&utm_source=referral&utm_content=reactjs_community_conferences) - [Twitter](https://x.com/zurichjs) - [LinkedIn](https://www.linkedin.com/company/zurichjs/)
+
+### Render(ATL) 2026 🍑 {/*renderatl-2026-*/}
+2026年8月12日-13日。美国佐治亚州亚特兰大线下举行
+
+[网站](https://renderatl.com/) - [Twitter](https://x.com/renderATL) - [LinkedIn](https://www.linkedin.com/company/renderatl)
+
+### React Summit 2026 {/*react-summit-2026*/}
+2026年6月12日和16日。荷兰阿姆斯特丹线下举行，并提供线上参与（混合活动）
+
+[网站](https://reactsummit.com/) - [Twitter](https://x.com/reactsummit) - [LinkedIn](https://www.linkedin.com/showcase/reactsummit)
+
+### React Norway 2026 {/*react-norway-2026*/}
+2026年6月5日。挪威奥斯陆线下举行
+
+[网站](https://reactnorway.com/) - [Twitter](https://x.com/ReactNorway)
+
+### React Miami 2026 {/*react-miami-2026*/}
+2026年4月23日-24日。美国佛罗里达州迈阿密线下举行
+
+[网站](https://reactmiami.com/) - [Twitter](https://x.com/ReactMiamiConf)
 
 ### CityJS 伦敦 2026 {/*cityjs-london-2026*/}
 2026年4月14日至17日。伦敦线下举办
 
-[网站](https://india.cityjsconf.org/) - [Twitter](https://x.com/cityjsconf) - [Bluesky](https://bsky.app/profile/cityjsconf.bsky.social)
+[网站](https://london.cityjsconf.org/) - [Twitter](https://x.com/cityjsconf) - [Bluesky](https://bsky.app/profile/cityjsconf.bsky.social)
 
 
 ### React 巴黎 2026 {/*react-paris-2026*/}
@@ -49,7 +102,7 @@ title: React 大会
 ### CityJS 新德里 2026 {/*cityjs-newdelhi-2026*/}
 2026年2月12日-13日。印度新德里线下举行
 
-[网站](https://india.cityjsconf.org/) - [Twitter](https://x.com/cityjsconf) - [Bluesky](https://bsky.app/profile/cityjsconf.bsky.social)。
+[网站](https://singapore.cityjsconf.org/) - [Twitter](https://x.com/cityjsconf) - [Bluesky](https://bsky.app/profile/cityjsconf.bsky.social)。
 
 ### CityJS 新加坡 2026 {/*cityjs-singapore-2026*/}
 2026年2月4日-6日。新加坡线下举行

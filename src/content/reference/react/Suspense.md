@@ -47,8 +47,8 @@ Suspense 边界会等待其内容准备就绪后再显示内容。以下任一�
 - 使用 [`use`](/reference/react/use) 读取 Promise，包括从[服务器组件](/reference/rsc/server-components)流式传输的数据，或通过[支持 Suspense 的框架](#suspense-enabled-frameworks)加载的数据。
 - 加载使用 [`<link rel="stylesheet">` 和 `precedence` 属性渲染的样式表。](/reference/react-dom/components/link#special-rendering-behavior)React 会阻塞边界，直到样式表加载完成，但有超时限制。[参见下面的示例。](#waiting-for-a-stylesheet-to-load)
 - 在流式服务器渲染期间等待大型边界的 HTML 到达。发送 HTML 需要时间，因此即使其中没有任何内容暂停，包含足够内容的边界也会被激活。React 会随着 HTML 的到达显示内容。
-- <CanaryBadge /> 加载字体。默认情况下，Suspense 不会等待字体，但在 [`<ViewTransition>`](/reference/react/ViewTransition) 更新期间，会等待新字体加载完成，但有超时限制，以避免文本使用后备字体闪烁。[参见下面的示例。](#waiting-for-a-font-to-load)
-- <CanaryBadge /> 加载图片。默认情况下，Suspense 不会等待图片，但在 [`<ViewTransition>`](/reference/react/ViewTransition) 更新期间，React 会阻塞边界，直到图片加载完成，但有超时限制。添加 `onLoad` 处理函数可以让特定图片不受此行为影响。[参见下面的示例。](#waiting-for-an-image-to-load)
+- 加载字体。默认情况下，Suspense 不会等待字体；当 [`<ViewTransition>`](/reference/react/ViewTransition) 为边界内容的显示添加动画时，React 会等待最多 500 毫秒，让新字体加载完成，以免文本闪现为后备字体。[参见下面的示例。](#waiting-for-a-font-to-load)
+- 加载图片。默认情况下，Suspense 不会等待图片；当 [`<ViewTransition>`](/reference/react/ViewTransition) 为边界内容的显示添加动画时，React 会等待最多 500 毫秒，让可见图片加载完成后再开始动画。设置 `loading="lazy"` 或添加 `onLoad` 处理函数可以让特定图片跳过等待。[参见下面的示例。](#waiting-for-an-image-to-load)
 - <ExperimentalBadge /> 在 [`<Suspense defer>`](#props) 边界内执行 CPU 密集型渲染工作。
 
 <Note>
@@ -472,9 +472,17 @@ document.getElementById('render').addEventListener('click', () => {
 export async function flushReadableStreamToFrame(readable, frame) {
   const doc = frame.contentWindow.document;
   const decoder = new TextDecoder();
-  for await (const chunk of readable) {
-    doc.write(decoder.decode(chunk, { stream: true }));
+  const reader = readable.getReader();
+
+  while (true) {
+    const {done, value} = await reader.read();
+    if (done) {
+      break;
+    }
+    doc.write(decoder.decode(value, {stream: true}));
   }
+
+  doc.write(decoder.decode());
   doc.close();
 }
 ```
@@ -2372,6 +2380,158 @@ function Chat() {
 
 ---
 
+### 为仅浏览器内容提供回退内容 {/*providing-a-fallback-for-browser-only-content*/}
+
+Suspense 边界可以为仅在浏览器中渲染的组件提供回退内容。在组件外包裹 `<Suspense>`，并在组件内调用 [`use(browser())`](/reference/react/use#use-browser)。
+
+点击 **重新加载**，即可在初始 HTML 中看到加载回退内容。hydration 完成后，React 会显示从 `localStorage` 加载的草稿。
+
+<Sandpack>
+
+```js src/App.js active
+import { Suspense, use, useState } from 'react';
+import { browser } from 'react-dom';
+
+function SavedDraft() {
+  use(browser('The draft is stored in localStorage.'));
+  const [draft, setDraft] = useState(
+    () => localStorage.getItem('draft') ?? ''
+  );
+
+  function handleChange(event) {
+    const nextDraft = event.target.value;
+    setDraft(nextDraft);
+    localStorage.setItem('draft', nextDraft);
+  }
+
+  return (
+    <label>
+      Draft:
+      <textarea
+        value={draft}
+        onChange={handleChange}
+        rows={4}
+        cols={30}
+      />
+    </label>
+  );
+}
+
+export default function App() {
+  return (
+    <>
+      <h1>Saved draft</h1>
+      <Suspense fallback={<p>Loading draft...</p>}>
+        <SavedDraft />
+      </Suspense>
+    </>
+  );
+}
+```
+
+```js src/Document.js hidden
+import App from './App.js';
+
+export default function Document() {
+  return (
+    <html lang="en">
+      <head>
+        <title>Saved draft</title>
+        <style>{`
+          h1 { font-size: 24px; margin-top: 0; }
+          label, textarea { display: block; }
+          textarea { margin-top: 5px; }
+        `}</style>
+      </head>
+      <body>
+        <App />
+      </body>
+    </html>
+  );
+}
+```
+
+```js src/index.js hidden
+import { hydrateRoot } from 'react-dom/client';
+import { renderToReadableStream } from 'react-dom/server';
+import Document from './Document.js';
+import { flushReadableStreamToFrame } from './demo-helpers.js';
+import './styles.css';
+
+async function main(frame) {
+  const stream = await renderToReadableStream(<Document />);
+  await flushReadableStreamToFrame(stream, frame);
+
+  // Wait so both the fallback and hydrated content are visible.
+  await new Promise(resolve => setTimeout(resolve, 1200));
+  hydrateRoot(frame.contentDocument, <Document />);
+}
+
+main(document.getElementById('preview'));
+```
+
+```js src/demo-helpers.js hidden
+export async function flushReadableStreamToFrame(readable, frame) {
+  const doc = frame.contentWindow.document;
+  const decoder = new TextDecoder();
+  const reader = readable.getReader();
+
+  while (true) {
+    const {done, value} = await reader.read();
+    if (done) {
+      break;
+    }
+    doc.write(decoder.decode(value, {stream: true}));
+  }
+
+  doc.write(decoder.decode());
+  doc.close();
+}
+```
+
+```html public/index.html hidden
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Browser-only rendering</title>
+</head>
+<body>
+  <iframe id="preview" title="Rendered page"></iframe>
+</body>
+</html>
+```
+
+```css src/styles.css hidden
+iframe {
+  width: 100%;
+  height: 160px;
+  border: 0;
+}
+```
+
+```json package.json hidden
+{
+  "dependencies": {
+    "react": "19.3.0-canary-f1f7ed2a-20260904",
+    "react-dom": "19.3.0-canary-f1f7ed2a-20260904",
+    "react-scripts": "latest"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
+```
+
+</Sandpack>
+
+服务端渲染期间，React 会在 HTML 中包含 Suspense 边界的回退内容。浏览器中，React 会用已保存的草稿替换回退内容。
+
+---
+
 ### 等待样式表加载 {/*waiting-for-a-stylesheet-to-load*/}
 
 使用带有 [`<link rel="stylesheet">` 和 `precedence` 属性](/reference/react-dom/components/link#special-rendering-behavior) 渲染的样式表会阻塞 Suspense 边界，直到样式表加载完成（最长等待一段时间），这样内容就不会以未应用样式的状态出现。
@@ -2499,7 +2659,7 @@ hr {
 
 ---
 
-### <CanaryBadge /> 从 Suspense 内容进行动画 {/*animating-from-suspense-content*/}
+### 从 Suspense 内容进行动画 {/*animating-from-suspense-content*/}
 
 Suspense 可以与 [`<ViewTransition>`](/reference/react/ViewTransition) 组合使用，以实现从回退内容切换到实际内容时的动画效果。将边界包裹在 `<ViewTransition>` 中，React 会将这次切换视为一次更新，默认在回退内容和实际内容之间进行交叉淡化：
 
@@ -2718,8 +2878,8 @@ button:hover {
 ```json package.json hidden
 {
   "dependencies": {
-    "react": "canary",
-    "react-dom": "canary",
+    "react": "19.3.0-canary-f1f7ed2a-20260904",
+    "react-dom": "19.3.0-canary-f1f7ed2a-20260904",
     "react-scripts": "latest"
   }
 }
@@ -2737,54 +2897,61 @@ button:hover {
 
 ---
 
-### <CanaryBadge /> 等待字体加载 {/*waiting-for-a-font-to-load*/}
+### 等待字体加载 {/*waiting-for-a-font-to-load*/}
 
-当 [`<ViewTransition>`](/reference/react/ViewTransition) 为 Suspense 边界的显示设置动画时，React 会等待内容引入的新字体，直到超时为止，这样文本就不会以备用字体闪现。此行为仅发生在 `<ViewTransition>` 更新期间。
+当 [`<ViewTransition>`](/reference/react/ViewTransition) 为 Suspense 边界中内容的显示添加动画时，React 会等待最多 500 毫秒，让内容引入的新字体加载完成，这样文本就不会闪现为后备字体。此行为仅发生在 `<ViewTransition>` 更新期间。
 
-在下面的示例中，Suspense 边界被包裹在 `<ViewTransition>` 中，并且 `Quote` 组件会在其数据加载时暂停。渲染引用内容会开始下载字体。React 会保持备用内容可见，直到字体加载完成，因此引用内容一开始就会以其指定的字体显示。
+在下面的示例中，Suspense 边界被包裹在 `<ViewTransition>` 中，并且 `Quote` 组件会在其数据加载时暂停。渲染引用内容会加载一个引入字体的样式表。React 会在样式表和字体加载期间保持回退内容可见。如果字体在 500 毫秒内加载完成，引用内容一开始就会以指定字体显示。
 
-作为对比，第二个按钮执行相同的更新，但不使用 React。没有任何机制等待字体加载，因此文本会先以备用字体显示，然后再切换：
+作为对比，第二个按钮执行相同的更新，但不使用 React。不会等待字体加载，因此文本会先以后备字体显示，然后再切换：
 
 <Sandpack>
 
 ```js
-import { ViewTransition, Suspense, use, useState, startTransition } from 'react';
+import {
+  ViewTransition,
+  Suspense,
+  use,
+  useState,
+  startTransition,
+} from 'react';
 import { fetchQuote } from './data.js';
-import { freshFontUrl } from './font.js';
+import {
+  freshFontUrl,
+  freshStylesheetUrl,
+} from './font.js';
 import VanillaQuote from './VanillaQuote.js';
 
-function Quote({ fontSrc }) {
+function Quote({ stylesheet }) {
   const quote = use(fetchQuote());
   return (
     <>
-      <style href={fontSrc} precedence="default">
-        {`@font-face {
-          font-family: 'Fancy';
-          src: url(${fontSrc}) format('truetype');
-          font-display: swap;
-        }`}
-      </style>
+      <link
+        rel="stylesheet"
+        href={stylesheet}
+        precedence="default"
+      />
       <p className="quote fancy">{quote}</p>
     </>
   );
 }
 
 export default function App() {
-  const [fontSrc, setFontSrc] = useState(null);
+  const [stylesheet, setStylesheet] = useState(null);
   return (
     <>
       <button
         onClick={() => {
           startTransition(() => {
-            setFontSrc(freshFontUrl());
+            setStylesheet(freshStylesheetUrl());
           });
         }}>
         Show quote
       </button>
-      {fontSrc && (
+      {stylesheet && (
         <ViewTransition>
           <Suspense fallback={<p className="quote">⌛ Loading quote...</p>}>
-            <Quote fontSrc={fontSrc} />
+            <Quote stylesheet={stylesheet} />
           </Suspense>
         </ViewTransition>
       )}
@@ -2805,7 +2972,7 @@ export default function VanillaQuote() {
     const style = document.createElement('style');
     style.textContent = `@font-face {
       font-family: 'VanillaFancy';
-      src: url(${freshFontUrl()}) format('truetype');
+      src: url(${freshFontUrl()}) format('woff2');
       font-display: swap;
     }`;
     document.head.appendChild(style);
@@ -2821,11 +2988,19 @@ export default function VanillaQuote() {
 ```
 
 ```js src/font.js hidden
-// 添加一个唯一参数，使字体不会被缓存，
-// 并确保每次运行都会显示加载状态。
-export function freshFontUrl() {
+export function freshStylesheetUrl() {
+  // Add a unique parameter so the stylesheet isn't cached.
   return (
-    'https://raw.githubusercontent.com/google/fonts/main/ofl/caveat/Caveat%5Bwght%5D.ttf' +
+    'https://fonts.googleapis.com/css2?family=Caveat&display=swap' +
+    '&t=' +
+    Date.now()
+  );
+}
+
+export function freshFontUrl() {
+  // Add a unique parameter so the font isn't cached.
+  return (
+    'https://fonts.gstatic.com/s/caveat/v23/WnznHAc5bAfYB2QRah7pcpNvOx-pjfJ9eIWpYT5Kmgq3sw.woff2' +
     '?t=' +
     Date.now()
   );
@@ -2863,7 +3038,7 @@ export function fetchQuote() {
   margin-top: 1em;
 }
 .fancy {
-  font-family: 'Fancy', sans-serif;
+  font-family: 'Caveat', sans-serif;
 }
 .vanilla-fancy {
   font-family: 'VanillaFancy', sans-serif;
@@ -2876,8 +3051,8 @@ hr {
 ```json package.json hidden
 {
   "dependencies": {
-    "react": "canary",
-    "react-dom": "canary",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
     "react-scripts": "latest"
   }
 }
@@ -2887,25 +3062,28 @@ hr {
 
 ---
 
-### <CanaryBadge /> 等待图像加载 {/*waiting-for-an-image-to-load*/}
+### 等待图像加载 {/*waiting-for-an-image-to-load*/}
 
-当 [`<ViewTransition>`](/reference/react/ViewTransition) 为 Suspense 边界的显示过程添加动画时，React 会等待可见图像加载完成，直到超时为止，这样动画就不会在图像加载一半时开始。此行为仅发生在 `<ViewTransition>` 更新期间。添加 `onLoad` 处理函数可以让特定图像跳过等待，即使它位于 `<ViewTransition>` 内部也是如此。
+当 Suspense 边界中的内容在 [`<ViewTransition>`](/reference/react/ViewTransition) 内显示时，React 会等待最多 500 毫秒，让可见图片加载完成后再开始动画。设置 `loading="lazy"` 或添加 `onLoad` 处理函数可以让图片跳过等待。
 
-在下面的示例中，Suspense 边界被包裹在 `<ViewTransition>` 中，并在头像加载完成前显示个人资料骨架屏。
-
-作为对比，第二个按钮执行相同的更新，但不使用 React。不会等待图像加载，因此卡片会立即出现，而图像加载完成后才显示：
+比较同一个边界在 `<ViewTransition>` 内外的表现。在 `<ViewTransition>` 内，React 会在图片加载期间将个人资料骨架屏保持最多 500 毫秒，这样卡片显示时图片也已就绪。在外部，Suspense 会在 Promise 解析后立即停止显示骨架屏。如果图片仍在加载，卡片会先出现，图片随后再显示：
 
 <Sandpack>
 
 ```js
-import { ViewTransition, Suspense, useState, startTransition } from 'react';
-import { freshImageUrl } from './image.js';
-import VanillaProfile from './VanillaProfile.js';
+import {
+  ViewTransition,
+  Suspense,
+  use,
+  useState,
+} from 'react';
+import { fetchImageSrc } from './image.js';
 
-function Profile({ src }) {
+function Profile({ cacheKey }) {
+  const src = use(fetchImageSrc(cacheKey));
   return (
     <div className="card">
-      <img src={src} alt="Jack Pope" width={80} height={80} />
+      <img src={src} alt="" width={80} height={80} />
       <p>Jack Pope</p>
     </div>
   );
@@ -2921,56 +3099,51 @@ function ProfilePlaceholder() {
 }
 
 export default function App() {
-  const [src, setSrc] = useState(null);
+  const [showWithTransition, setShowWithTransition] =
+    useState(false);
+  const [showWithoutTransition, setShowWithoutTransition] =
+    useState(false);
   return (
     <>
-      <button
-        onClick={() => {
-          startTransition(() => {
-            setSrc(freshImageUrl());
-          });
-        }}>
-        显示个人资料
+      <button onClick={() => setShowWithTransition(true)}>
+        Show profile with View Transition
       </button>
-      {src && (
+      {showWithTransition && (
         <ViewTransition>
           <Suspense fallback={<ProfilePlaceholder />}>
-            <Profile src={src} />
+            <Profile cacheKey="with-transition" />
           </Suspense>
         </ViewTransition>
       )}
       <hr />
-      <VanillaProfile />
-    </>
-  );
-}
-```
-
-```js src/VanillaProfile.js
-import { useRef } from 'react';
-import { freshImageUrl } from './image.js';
-
-export default function VanillaProfile() {
-  const ref = useRef(null);
-  function show() {
-    ref.current.innerHTML = `<div class="card">
-      <img src="${freshImageUrl()}" alt="Jack Pope" width="80" height="80" />
-      <p>Jack Pope</p>
-    </div>`;
-  }
-  return (
-    <>
-      <button onClick={show}>显示个人资料（不使用 React）</button>
-      <div ref={ref} />
+      <button onClick={() => setShowWithoutTransition(true)}>
+        Show profile without View Transition
+      </button>
+      {showWithoutTransition && (
+        <Suspense fallback={<ProfilePlaceholder />}>
+          <Profile cacheKey="without-transition" />
+        </Suspense>
+      )}
     </>
   );
 }
 ```
 
 ```js src/image.js hidden
-// 添加一个唯一参数，使图像不会被缓存，
-// 并确保每次运行都显示加载状态。
-export function freshImageUrl() {
+// Normally, the caching logic would be inside a framework.
+const cache = new Map();
+
+export function fetchImageSrc(cacheKey) {
+  if (!cache.has(cacheKey)) {
+    cache.set(cacheKey, loadImageSrc());
+  }
+  return cache.get(cacheKey);
+}
+
+async function loadImageSrc() {
+  // Delay the response so the Suspense fallback is visible.
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  // Add a unique parameter so the image isn't cached.
   return 'https://react.dev/images/team/jack-pope.jpg?t=' + Date.now();
 }
 ```
@@ -3001,6 +3174,12 @@ export function freshImageUrl() {
   border-radius: 4px;
   background: #dfe3e9;
 }
+.bio-placeholder {
+  width: 220px;
+  height: 52px;
+  border-radius: 4px;
+  background: #dfe3e9;
+}
 hr {
   margin: 16px 0;
 }
@@ -3009,8 +3188,8 @@ hr {
 ```json package.json hidden
 {
   "dependencies": {
-    "react": "canary",
-    "react-dom": "canary",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
     "react-scripts": "latest"
   }
 }
@@ -3020,7 +3199,7 @@ hr {
 
 ---
 
-### <CanaryBadge /> 协调字体、图像和样式表 {/*coordinating-fonts-images-and-stylesheets*/}
+### 协调字体、图像和样式表 {/*coordinating-fonts-images-and-stylesheets*/}
 
 Suspense 边界可以同时等待数据、样式表、字体和图像。等待字体和图像只会发生在 [`<ViewTransition>`](/reference/react/ViewTransition) 更新期间。在下面的示例中，`ProfileCard` 组件会在数据加载时暂停渲染，并使用 `precedence` 渲染一个样式表、以新字体显示文本，以及渲染一幅肖像。React 会在数据和样式表加载期间保持骨架屏可见。随后，`<ViewTransition>` 的显示过程会等待字体和图像，因此卡片会以完整状态出现。
 
@@ -3040,7 +3219,7 @@ function ProfileCard({ resources }) {
     <>
       <link rel="stylesheet" href={resources.stylesheet} precedence="default" />
       <div className="profile-card">
-        <img src={resources.image} alt="Jack Pope" width={80} height={80} />
+        <img src={resources.image} alt="" width={80} height={80} />
         <div>
           <p className="name">Jack Pope</p>
           <p className="bio">{quote}</p>
@@ -3100,7 +3279,6 @@ import { freshStylesheetUrl, freshImageUrl } from './resources.js';
 export default function VanillaProfileCard() {
   const ref = useRef(null);
   async function show() {
-    const quote = await fetchQuote();
     const doc = ref.current.contentWindow.document;
     doc.open();
     doc.write(`
@@ -3110,17 +3288,34 @@ export default function VanillaProfileCard() {
         .profile-card img { border-radius: 50%; background: #dfe3e9; }
         .name { margin: 0 0 4px; font-family: 'Caveat', sans-serif; font-size: 22px; line-height: 28px; font-weight: bold; }
         .bio { margin: 0; font-family: 'Caveat', sans-serif; font-size: 20px; line-height: 26px; }
+        .avatar-placeholder { width: 80px; height: 80px; border-radius: 50%; background: #dfe3e9; }
+        .name-placeholder, .bio-placeholder { border-radius: 4px; background: #dfe3e9; color: transparent; }
+        .name-placeholder { width: 90px; }
+        .bio-placeholder { width: 220px; height: 52px; }
       </style>
       <div class="profile-card">
-        <img src="${freshImageUrl()}" alt="Jack Pope" width="80" height="80" />
+        <div class="avatar-placeholder"></div>
+        <div>
+          <p class="name name-placeholder">&nbsp;</p>
+          <p class="bio bio-placeholder">&nbsp;</p>
+        </div>
+      </div>
+    `);
+    doc.close();
+
+    const quote = await fetchQuote();
+    doc.body.innerHTML = `
+      <div class="profile-card">
+        <img src="${freshImageUrl()}" alt="" width="80" height="80" />
         <div>
           <p class="name">Jack Pope</p>
           <p class="bio">${quote}</p>
         </div>
-      </div>
-      <link rel="stylesheet" href="${freshStylesheetUrl()}">
-    `);
-    doc.close();
+      </div>`;
+    const stylesheet = doc.createElement('link');
+    stylesheet.rel = 'stylesheet';
+    stylesheet.href = freshStylesheetUrl();
+    doc.head.appendChild(stylesheet);
   }
   return (
     <>
@@ -3213,6 +3408,7 @@ hr {
 }
 .bio-placeholder {
   width: 220px;
+  height: 52px;
 }
 .vanilla-frame {
   display: block;
@@ -3226,8 +3422,8 @@ hr {
 ```json package.json hidden
 {
   "dependencies": {
-    "react": "canary",
-    "react-dom": "canary",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
     "react-scripts": "latest"
   }
 }

@@ -105,7 +105,7 @@ useEffect(() => {
 }, [roomId]);
 ```
 
-由于 `onConnected` 是一个 <CodeStep step={1}>Effect Event</CodeStep>，`muted` 和 `onConnect` 不需要出现在 Effect 依赖项中。
+由于 `onConnected` 是一个 <CodeStep step={1}>Effect Event</CodeStep>，`muted` 和 `onConnected` 不需要出现在 Effect 依赖项中。
 
 <Pitfall>
 

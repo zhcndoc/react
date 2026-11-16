@@ -389,7 +389,7 @@ React 19 包含了从 Canary 渠道引入的全部 React 服务器组件功能�
 
 服务器操作可以在服务器组件中创建并作为 props 传递给客户端组件，也可以被导入并在客户端组件中使用。
 
-更多内容请参阅 [React 服务器操作](/reference/rsc/server-actions) 文档。
+更多内容请参阅 [React 服务器操作](/reference/rsc/server-functions) 文档。
 
 ## React 19 的改进 {/*improvements-in-react-19*/}
 

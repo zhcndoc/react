@@ -42,6 +42,8 @@ React 的工作由多个工作组负责，每个工作组负责项目的一个�
 
 <TeamMember name="Aurora Scharff" permalink="aurora-scharff" photo="/images/team/gh-aurorascharff.jpg" github="aurorascharff" title="Vercel 工程师" group="文档与社区" />
 
+<TeamMember name="Bartosz Kaszubowski" permalink="bartosz-kaszubowski" photo="/images/team/gh-simek.png" github="simek" bsky="simek.dev" title="工程师" group="文档与社区" />
+
 <TeamMember name="Brent Vatne" permalink="brent-vatne" photo="/images/team/gh-brentvatne.jpg" github="brentvatne" title="Expo 工程师" group="React Native" />
 
 <TeamMember name="Dan Abramov" permalink="dan-abramov" photo="/images/team/gaearon.jpg" github="gaearon" bsky="danabra.mov" title="Vercel 工程师" group="文档与社区">
@@ -101,8 +103,6 @@ React 的工作由多个工作组负责，每个工作组负责项目的一个�
 <TeamMember name="Steven Moyes" permalink="steven-moyes" photo="/images/team/gh-stmoy.jpg" github="stmoy" title="Amazon 工程师" group="React Native" />
 
 <TeamMember name="Vitali Zaidman" permalink="vitali-zaidman" photo="/images/team/gh-vzaidman.jpg" github="vzaidman" title="Meta 工程师" group="DevX" />
-
-<TeamMember name="Vojtěch Šimek" permalink="vojtech-simek" photo="/images/team/gh-simek.png" github="simek" title="开发者" group="文档与社区" />
 
 ## 顾问 {/*advisors*/}
 

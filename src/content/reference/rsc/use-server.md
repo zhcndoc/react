@@ -5,7 +5,7 @@ titleForTitleTag: "'use server' 指令"
 
 <RSC>
 
-`'use server'` 用于与 [使用 React Server Components](/reference/rsc/server-components) 一起使用。
+`'use server'` 用于配合 [React Server Components](/reference/rsc/server-components)。
 
 </RSC>
 
@@ -139,7 +139,7 @@ export default function App() {
 // requestUsername.js
 'use server';
 
-export default async function requestUsername(formData) {
+export default async function requestUsername(prevState, formData) {
   const username = formData.get('username');
   if (canRequest(username)) {
     // ...
@@ -199,7 +199,7 @@ function LikeButton() {
   return (
     <>
       <p>总点赞数：{likeCount}</p>
-      <button onClick={onClick} disabled={isPending}>点赞</button>;
+      <button onClick={onClick} disabled={isPending}>点赞</button>
     </>
   );
 }

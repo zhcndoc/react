@@ -662,7 +662,9 @@ export default function TooltipContainer({ children, x, y, contentRef }) {
 
 - 将 `useLayoutEffect` 替换为 [`useEffect`。](/reference/react/useEffect) 这会告诉 React，可以在不阻塞绘制的情况下显示初始渲染结果（因为原始 HTML 会在你的 Effect 运行之前先变为可见）。
 
-- 另外一种方式是，[将你的组件标记为仅客户端渲染。](/reference/react/Suspense#providing-a-fallback-for-server-errors-and-client-only-content) 这会告诉 React：在服务端渲染期间，用加载占位内容替换其内容，直到最近的 [`<Suspense>`](/reference/react/Suspense) 边界为止（例如，加载指示器或闪烁占位）。
+- 或者，调用 [`use(browser())`](/reference/react/use#use-browser) 将组件标记为仅在浏览器中渲染。服务端渲染期间，React 会用加载回退内容替换其内容，直到最近的 [`<Suspense>`](/reference/react/Suspense) 边界为止（例如，加载指示器或闪烁占位）。
+
+- 另外一种方式是，[将你的组件标记为仅客户端渲染。](/reference/react/Suspense#providing-a-fallback-for-server-errors-and-client-only-content) 这会告诉 React：在服务端渲染期间，用加载占位内容替换其内容，直到最近的 `<Suspense>` 边界为止（例如，加载指示器或闪烁占位）。
 
 - 另外，你也可以只在 hydration 之后渲染包含 `useLayoutEffect` 的组件。保留一个布尔值 `isMounted` 状态，初始值为 `false`，然后在 `useEffect` 调用中将其设为 `true`。你的渲染逻辑可以写成 `return isMounted ? <RealContent /> : <FallbackContent />`。在服务器上以及 hydration 过程中，用户会看到 `FallbackContent`，它不应该调用 `useLayoutEffect`。随后 React 会将其替换为仅在客户端运行、并且可以包含 `useLayoutEffect` 调用的 `RealContent`。
 

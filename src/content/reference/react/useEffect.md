@@ -1050,7 +1050,7 @@ export async function fetchBio(person) {
 这份缺点列表并不只针对 React。它适用于任何库中在挂载时获取数据的做法。和路由一样，数据获取并不容易做好，因此我们建议以下方法：
 
 - **如果你使用[框架](/learn/creating-a-react-app#full-stack-frameworks)，请使用它内置的数据获取机制。**现代 React 框架集成了高效的数据获取机制，而且不会有上面这些问题。
-- **否则，可以考虑使用或构建一个客户端缓存。**流行的开源方案包括 [TanStack Query](https://tanstack.com/query/latest/)、[useSWR](https://swr.vercel.app/) 和 [React Router 6.4+。](https://beta.reactrouter.com/en/main/start/overview)你也可以自己构建方案，在这种情况下，底层仍会使用 Effects，但还会增加请求去重、响应缓存，以及通过预加载数据或将数据需求上提到路由来避免网络瀑布的逻辑。
+- **否则，可以考虑使用或构建一个客户端缓存。**流行的开源方案包括 [TanStack Query](https://tanstack.com/query/latest/)、[useSWR](https://swr.vercel.app/) 和 [React Router](https://reactrouter.com/)。你也可以自己构建方案，在这种情况下，底层仍会使用 Effects，但还会增加请求去重、响应缓存，以及通过预加载数据或将数据需求上提到路由来避免网络瀑布的逻辑。
 
 如果这两种方案都不适合你，你仍然可以继续直接在 Effects 中获取数据。
 
@@ -1598,7 +1598,7 @@ function ChatRoom({ roomId }) {
 
   useEffect(() => {
     const options = createOptions(); // 它在 Effect 内部被使用
-    const connection = createConnection();
+    const connection = createConnection(options);
     connection.connect();
     return () => connection.disconnect();
   }, [createOptions]); // 🚩 结果是，这些依赖项在提交时总是不同的

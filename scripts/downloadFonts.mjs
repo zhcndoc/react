@@ -69,7 +69,7 @@ await Promise.all(
     const localDir = dirname(localPath);
     await fsPromises.mkdir(localDir, { recursive: true });
 
-    const command = `curl ${baseURL}${path} --output ${localPath}`;
+    const command = `curl --fail --retry 5 --retry-all-errors --retry-delay 1 ${baseURL}${path} --output ${localPath}`;
     await execAsync(command);
     console.log(`Downloaded ${path}`);
   })

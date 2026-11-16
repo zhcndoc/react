@@ -76,7 +76,7 @@ _更新于 2026 年 1 月 26 日。_
 
 ### 受影响的框架和打包器 {/*affected-frameworks-and-bundlers*/}
 
-一些 React 框架和打包器依赖、具有 peer 依赖，或包含了存在漏洞的 React 包。以下 React 框架和打包器受到影响：[next](https://www.npmjs.com/package/next)、[react-router](https://www.npmjs.com/package/react-router)、[waku](https://www.npmjs.com/package/waku)、[@parcel/rsc](https://www.npmjs.com/package/@parcel/rsc)、[@vite/rsc-plugin](https://www.npmjs.com/package/@vitejs/plugin-rsc) 和 [rwsdk](https://www.npmjs.com/package/rwsdk)。
+一些 React 框架和打包器依赖、具有 peer 依赖，或包含了存在漏洞的 React 包。以下 React 框架和打包器受到影响：[next](https://www.npmjs.com/package/next)、[react-router](https://www.npmjs.com/package/react-router)、[waku](https://www.npmjs.com/package/waku)、[@parcel/rsc](https://www.npmjs.com/package/@parcel/rsc)、[@vitejs/plugin-rsc](https://www.npmjs.com/package/@vitejs/plugin-rsc) 和 [rwsdk](https://www.npmjs.com/package/rwsdk)。
 
 升级步骤请参见 [上一条帖子中的说明](/blog/2025/12/03/critical-security-vulnerability-in-react-server-components#update-instructions)。
 

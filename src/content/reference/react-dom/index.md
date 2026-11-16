@@ -16,6 +16,7 @@ title: React DOM APIs
 
 * [`createPortal`](/reference/react-dom/createPortal) 让你可以在 DOM 树的不同部分渲染子组件。
 * [`flushSync`](/reference/react-dom/flushSync) 让你可以强制 React 同步刷新状态更新并更新 DOM。
+* [`requestFormReset`](/reference/react-dom/requestFormReset) 让你可以在处理自定义 Action 或 Transition 的提交时，请求重置表单。
 
 ## Resource Preloading APIs {/*resource-preloading-apis*/}
 
@@ -29,6 +30,12 @@ title: React DOM APIs
 * [`preloadModule`](/reference/react-dom/preloadModule) 让你可以预加载你预期要使用的 ESM 模块。
 * [`preinit`](/reference/react-dom/preinit) 让你可以获取并执行外部脚本，或获取并插入样式表。
 * [`preinitModule`](/reference/react-dom/preinitModule) 让你可以获取并执行 ESM 模块。
+
+## 服务端渲染 API {/*server-rendering-apis*/}
+
+此 API 控制组件如何在服务端渲染：
+
+* [`browser`](/reference/react-dom/browser) 让你可以在服务端渲染期间将组件标记为仅在浏览器中渲染。
 
 ---
 

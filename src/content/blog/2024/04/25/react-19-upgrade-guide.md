@@ -637,7 +637,7 @@ const ref = useRef<number>(null);
 ref.current = 1;
 ```
 
-`MutableRef` 现在已弃用，改为使用单一的 `RefObject` 类型，`useRef` 将始终返回该类型：
+`MutableRefObject` 现在已弃用，改为使用单一的 `RefObject` 类型，`useRef` 将始终返回该类型：
 
 ```ts
 interface RefObject<T> {

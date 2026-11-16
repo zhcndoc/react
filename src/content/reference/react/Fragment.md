@@ -6,7 +6,7 @@ title: <Fragment> (<>...</>)
 
 `<Fragment>`，通常通过 `<>...</>` 语法使用，可让你将元素分组而无需额外的包装节点。
 
-<Canary>Fragment 还可以接受 refs，这使你能够在不添加包装元素的情况下与底层 DOM 节点交互。</Canary>
+Fragment 还可以接受 refs，这使你能够在不添加包装元素的情况下与底层 DOM 节点交互。
 
 ```js
 <>
@@ -30,7 +30,7 @@ title: <Fragment> (<>...</>)
 #### 属性 {/*props*/}
 
 - **可选** `key`: 以显式 `<Fragment>` 语法声明的 Fragments 可以有 [keys.](/learn/rendering-lists#keeping-list-items-in-order-with-key)
-- <CanaryBadge /> **可选** `ref`: 一个 ref 对象（例如来自 [`useRef`](/reference/react/useRef)）或 [回调函数](/reference/react-dom/components/common#ref-callback)。React 会提供一个 `FragmentInstance` 作为 ref 值，它实现了用于与被 Fragment 包裹的 DOM 节点交互的方法。
+- **可选** `ref`: 一个 ref 对象（例如来自 [`useRef`](/reference/react/useRef)）或 [回调函数](/reference/react-dom/components/common#ref-callback)。React 会提供一个 `FragmentInstance` 作为 ref 值，它实现了用于与被 Fragment 包裹的 DOM 节点交互的方法。
 
 #### 注意事项 {/*caveats*/}
 
@@ -38,11 +38,11 @@ title: <Fragment> (<>...</>)
 
 * 当你从渲染 `<><Child /></>` 切换到 `[<Child />]` 或切换回来，或者当你从渲染 `<><Child /></>` 切换到 `<Child />` 再切换回来时，React 不会[重置状态](/learn/preserving-and-resetting-state)。这只在单层深度时有效：例如，从 `<><><Child /></></>` 切换到 `<Child />` 会重置状态。请参阅这里的精确语义[。](https://gist.github.com/clemmy/b3ef00f9507909429d8aa0d3ee4f986b)
 
-* <CanaryBadge /> 如果你想向 Fragment 传递 `ref`，就不能使用 `<>...</>` 语法。你必须显式地从 `'react'` 中导入 `Fragment`，并渲染 `<Fragment ref={yourRef}>...</Fragment>`。
+* 如果你想向 Fragment 传递 `ref`，就不能使用 `<>...</>` 语法。你必须显式地从 `'react'` 中导入 `Fragment`，并渲染 `<Fragment ref={yourRef}>...</Fragment>`。
 
 ---
 
-### <CanaryBadge /> `FragmentInstance` {/*fragmentinstance*/}
+### `FragmentInstance` {/*fragmentinstance*/}
 
 当你将 `ref` 传给一个 Fragment 时，React 会提供一个 `FragmentInstance` 对象。它实现了一些用于与 Fragment 包裹的一级 DOM 子节点交互的方法。
 
@@ -457,7 +457,7 @@ function PostBody({ body }) {
 
 ---
 
-### <CanaryBadge /> 在没有包装元素的情况下添加事件监听器 {/*adding-event-listeners-without-wrapper*/}
+### 在没有包装元素的情况下添加事件监听器 {/*adding-event-listeners-without-wrapper*/}
 
 Fragment `ref` 允许你在不添加包装 DOM 节点的情况下，给一组元素添加事件监听器。使用 [ref 回调](/reference/react-dom/components/common#ref-callback) 来挂载并清理监听器：
 
@@ -509,8 +509,8 @@ export default function App() {
 ```json package.json hidden
 {
   "dependencies": {
-    "react": "canary",
-    "react-dom": "canary",
+    "react": "19.3.0-canary-f1f7ed2a-20260904",
+    "react-dom": "19.3.0-canary-f1f7ed2a-20260904",
     "react-scripts": "latest"
   }
 }
@@ -546,7 +546,7 @@ export default function App() {
 
 ---
 
-### <CanaryBadge /> 在一组元素之间管理焦点 {/*managing-focus-across-elements*/}
+### 在一组元素之间管理焦点 {/*managing-focus-across-elements*/}
 
 Fragment `ref` 提供了 `focus`、`focusLast` 和 `blur` 方法，可作用于 Fragment 内的所有 DOM 节点：
 
@@ -618,8 +618,8 @@ label {
 ```json package.json hidden
 {
   "dependencies": {
-    "react": "canary",
-    "react-dom": "canary",
+    "react": "19.3.0-canary-f1f7ed2a-20260904",
+    "react-dom": "19.3.0-canary-f1f7ed2a-20260904",
     "react-scripts": "latest"
   }
 }
@@ -631,7 +631,7 @@ label {
 
 ---
 
-### <CanaryBadge /> 将一组元素滚动到视图中 {/*scrolling-group-into-view*/}
+### 将一组元素滚动到视图中 {/*scrolling-group-into-view*/}
 
 使用 `scrollIntoView` 可以在不使用包装元素的情况下，将 Fragment 的子元素滚动到视图中。传入 `true`（或省略该参数）会将第一个子元素滚动到顶部。传入 `false` 会将最后一个子元素滚动到底部：
 
@@ -714,8 +714,8 @@ p {
 ```json package.json hidden
 {
   "dependencies": {
-    "react": "canary",
-    "react-dom": "canary",
+    "react": "19.3.0-canary-f1f7ed2a-20260904",
+    "react-dom": "19.3.0-canary-f1f7ed2a-20260904",
     "react-scripts": "latest"
   }
 }
@@ -725,7 +725,7 @@ p {
 
 ---
 
-### <CanaryBadge /> 在没有包装元素的情况下观察可见性 {/*observing-visibility-without-wrapper*/}
+### 在没有包装元素的情况下观察可见性 {/*observing-visibility-without-wrapper*/}
 
 使用 `observeUsing` 将 `IntersectionObserver` 附加到 Fragment 的所有一级 DOM 子元素上。这让你可以在不要求子组件暴露 `ref` 或添加包装元素的情况下跟踪可见性：
 
@@ -826,8 +826,8 @@ export default function Card({ title }) {
 ```json package.json hidden
 {
   "dependencies": {
-    "react": "canary",
-    "react-dom": "canary",
+    "react": "19.3.0-canary-f1f7ed2a-20260904",
+    "react-dom": "19.3.0-canary-f1f7ed2a-20260904",
     "react-scripts": "latest"
   }
 }
@@ -837,7 +837,7 @@ export default function Card({ title }) {
 
 ---
 
-### <CanaryBadge /> 缓存全局 IntersectionObserver {/*caching-global-intersection-observer*/}
+### 缓存全局 IntersectionObserver {/*caching-global-intersection-observer*/}
 
 对于有许多 observer 的网站，一个常见的性能优化是：按配置共享一个 `IntersectionObserver`，并根据哪个元素发生交叉，将其条目路由到正确的回调。带有 `ref` 的 Fragment 通过 `reactFragments` 属性支持同样的模式。
 
@@ -1016,8 +1016,8 @@ export default function Card({ title, className }) {
 ```json package.json hidden
 {
   "dependencies": {
-    "react": "canary",
-    "react-dom": "canary",
+    "react": "19.3.0-canary-f1f7ed2a-20260904",
+    "react-dom": "19.3.0-canary-f1f7ed2a-20260904",
     "react-scripts": "latest"
   }
 }

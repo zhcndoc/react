@@ -135,7 +135,7 @@ React 渲染树中的根节点是应用的[根组件](/learn/importing-and-expor
 
 #### 渲染树中 HTML 标签在哪里？ {/*where-are-the-html-elements-in-the-render-tree*/}
 
-你会注意到上面的渲染树中，并没有提到每个组件所渲染的 HTML 标签。这是因为渲染树只由 React 的[组件](learn/your-first-component#components-ui-building-blocks)组成。
+你会注意到上面的渲染树中，并没有提到每个组件所渲染的 HTML 标签。这是因为渲染树只由 React 的[组件](/learn/your-first-component#components-ui-building-blocks)组成。
 
 React 作为一个 UI 框架，与平台无关。在 react.dev 上，我们展示的是渲染到 Web 的示例，而 Web 使用 HTML 标记作为其 UI 基元。但 React 应用同样也可能渲染到移动端或桌面端平台，而这些平台可能使用不同的 UI 基元，比如 [UIView](https://developer.apple.com/documentation/uikit/uiview) 或 [FrameworkElement](https://learn.microsoft.com/en-us/dotnet/api/system.windows.frameworkelement?view=windowsdesktop-7.0)。
 

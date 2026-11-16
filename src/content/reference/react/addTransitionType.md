@@ -1,15 +1,6 @@
 ---
 title: addTransitionType
-version: canary
 ---
-
-<Canary>
-
-**`addTransitionType` API 目前仅在 React 的 Canary 和 Experimental 渠道中可用。**
-
-[在此了解更多关于 React 发布渠道的信息。](/community/versioning-policy#all-release-channels)
-
-</Canary>
 
 <Intro>
 

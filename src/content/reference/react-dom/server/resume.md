@@ -16,7 +16,7 @@ const stream = await resume(reactNode, postponedState, options?)
 
 <Note>
 
-此 API 依赖 [Web Streams.](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API) 对于 Node.js，请改用 [`resumeToNodeStream`](/reference/react-dom/server/renderToPipeableStream)。
+此 API 依赖 [Web Streams.](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API) 对于 Node.js，请改用 [`resumeToPipeableStream`](/reference/react-dom/server/resumeToPipeableStream)。
 
 </Note>
 
@@ -44,10 +44,11 @@ async function handler(request, writable) {
 #### Parameters {/*parameters*/}
 
 * `reactNode`：你在调用 `prerender` 时使用的 React 节点。例如，一个像 `<App />` 这样的 JSX 元素。它应当表示整个文档，因此 `App` 组件应该渲染 `<html>` 标签。
-* `postponedState`：从 [prerender API](/reference/react-dom/static/index) 返回的、不透明的 `postpone` 对象，它是从你存储它的任何位置加载的（例如 redis、文件或 S3）。
+* `postponedState`：从 [prerender API](/reference/react-dom/static) 返回的、不透明的 `postpone` 对象，它是从你存储它的任何位置加载的（例如 redis、文件或 S3）。
 * **optional** `options`：包含流式传输选项的对象。
   * **optional** `nonce`：一个 [`nonce`](http://developer.mozilla.org/en-US/docs/Web/HTML/Element/script#nonce) 字符串，用于允许脚本满足 [`script-src` Content-Security-Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/script-src)。
   * **optional** `signal`：一个 [abort signal](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal)，可让你 [中止服务器渲染](#aborting-server-rendering)，并在客户端渲染剩余内容。
+  * **optional** `onBrowserBailout`：React 从 [`browser()`](/reference/react-dom/browser) 恢复时会调用的回调；此时 React 会留下一个 Suspense 回退内容，由浏览器替换。回调接收一个描述仅浏览器渲染的 `Error`，以及一个包含 `componentStack` 的 `errorInfo` 对象。如果向 `browser` 传入了原因，可以通过 `error.cause` 访问。默认情况下，React 不会执行任何操作。[了解如何在服务端报告仅浏览器渲染。](/reference/react-dom/browser#reporting-browser-only-rendering-on-the-server)
   * **optional** `onError`：每当发生服务器错误时触发的回调，无论该错误是否 [可恢复](/reference/react-dom/server/renderToReadableStream#recovering-from-errors-outside-the-shell) 或 [不可恢复。](/reference/react-dom/server/renderToReadableStream#recovering-from-errors-inside-the-shell) 默认情况下，它只会调用 `console.error`。如果你将其覆盖为 [记录崩溃报告，](/reference/react-dom/server/renderToReadableStream#logging-crashes-on-the-server) 请确保你仍然调用 `console.error`。
 
 
@@ -200,10 +201,18 @@ main(document.getElementById("container"));
 export async function flushReadableStreamToFrame(readable, frame) {
   const document = frame.contentWindow.document;
   const decoder = new TextDecoder();
-  for await (const chunk of readable) {
-    const partialHTML = decoder.decode(chunk);
+  const reader = readable.getReader();
+
+  while (true) {
+    const {done, value} = await reader.read();
+    if (done) {
+      break;
+    }
+    const partialHTML = decoder.decode(value, {stream: true});
     document.write(partialHTML);
   }
+
+  document.write(decoder.decode());
 }
 
 // 这不一定需要是一个错误。

@@ -88,7 +88,7 @@ function SearchPage() {
 
 此示例假设您使用的数据源会[激活 Suspense 边界](/reference/react/Suspense#what-activates-a-suspense-boundary)，例如使用 [`use`](/reference/react/use) 读取的 Promise。
 
-[了解有关 Suspense 及其限制的更多信息。](/reference/react/Suspense)
+[了解有关 Suspense 的更多信息。](/reference/react/Suspense)
 
 </Note>
 

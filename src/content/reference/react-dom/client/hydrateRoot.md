@@ -45,6 +45,7 @@ React 会附加到 `domNode` 内部已有的 HTML，并接管其中 DOM 的管�
   * **可选** `onUncaughtError`：当抛出错误且未被 Error Boundary 捕获时调用的回调。它会接收被抛出的 `error`，以及一个包含 `componentStack` 的 `errorInfo` 对象。
   * **可选** `onRecoverableError`：当 React 自动从错误中恢复时调用的回调。它会接收 React 抛出的 `error`，以及一个包含 `componentStack` 的 `errorInfo` 对象。某些可恢复错误可能会把原始错误原因作为 `error.cause`。
   * **可选** `identifierPrefix`：React 用于通过 [`useId`.](/reference/react/useId) 生成 ID 的字符串前缀。在同一页面使用多个根时，这有助于避免冲突。该前缀必须与服务器端使用的前缀相同。
+  * **可选** `formState`：由 [Server Function](/reference/rsc/server-functions) 处理的表单提交状态。如果页面是响应某个表单提交而渲染的，并且该表单使用了带 `permalink` 的 [`useActionState`](/reference/react/useActionState)，请传入得到的表单状态，这样 `useActionState` 会返回提交后的状态，而不是 `initialState`。它必须与传给[服务端渲染器](/reference/react-dom/server/renderToPipeableStream#parameters)的 `formState` 相同。通常由你使用的框架负责传递此值。
 
 
 #### 返回值 {/*returns*/}
@@ -123,7 +124,7 @@ root.unmount();
 
 ### 对服务器渲染的 HTML 进行 hydration {/*hydrating-server-rendered-html*/}
 
-如果你的应用 HTML 是由 [`react-dom/server`](/reference/react-dom/client/createRoot) 生成的，那么你需要在客户端对其进行 *hydrate*。
+如果你的应用 HTML 是由 [`react-dom/server`](/reference/react-dom/server) 生成的，那么你需要在客户端对其进行 *hydrate*。
 
 ```js [[1, 3, "document.getElementById('root')"], [2, 3, "<App />"]]
 import { hydrateRoot } from 'react-dom/client';
@@ -274,6 +275,8 @@ export default function App() {
 
 ---
 
+{/* TODO: Remove this subsection when browser is available in Stable. */}
+
 ### 处理不同的客户端和服务端内容 {/*handling-different-client-and-server-content*/}
 
 如果你有意需要在服务端和客户端渲染不同的内容，可以采用两遍渲染。客户端上渲染不同内容的组件可以读取类似 `isClient` 的 [state 变量](/reference/react/useState)，并在 [Effect](/reference/react/useEffect) 中把它设为 `true`：
@@ -318,6 +321,10 @@ export default function App() {
 </Sandpack>
 
 这样，初始渲染会输出与服务端相同的内容，从而避免不匹配；但在 hydration 之后会立即同步进行额外一次渲染。
+
+当你希望客户端渲染的内容不同于服务端初始渲染的 HTML 时，可以采用这种方法。
+
+如果某个组件应该只在浏览器中渲染，请调用 [`use(browser())`](/reference/react/use#use-browser)，而不要等待 Effect。
 
 <Pitfall>
 

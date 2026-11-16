@@ -38,11 +38,17 @@ title: "<form>"
 
 `<form>` 支持所有[通用元素属性。](/reference/react-dom/components/common#common-props)
 
-[`action`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#action)：一个 URL 或函数。当将 URL 传递给 `action` 时，表单将表现得像 HTML 表单组件一样。当将函数传递给 `action` 时，该函数将在一个 Transition 中处理表单提交，遵循[Action 属性模式](/reference/react/useTransition#exposing-action-props-from-components)。传递给 `action` 的函数可以是异步的，并且会以单个参数被调用，该参数包含已提交表单的[表单数据](https://developer.mozilla.org/en-US/docs/Web/API/FormData)。`action` 属性可以被 `<button>`、`<input type="submit">` 或 `<input type="image">` 组件上的 `formAction` 属性覆盖。
+* [`action`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#action)：包含 URL 的字符串或函数。传入 URL 时，表单的行为与标准 HTML 表单相同；传入函数时，该函数会处理提交。参见[使用 action 属性处理表单提交](#handle-form-submission-with-an-action-prop)。
+  * 向 `action` 传入函数时，React 会按照[Action 属性模式](/reference/react/useTransition#exposing-action-props-from-components)，在一个 [Transition](/reference/react/useTransition) 中运行它。
+  * 该函数可以是异步的。React 会以一个参数调用它，该参数包含已提交表单的 [`FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData)。
+  * `<button>`、`<input type="submit">` 或 `<input type="image">` 上的 `formAction` prop 会覆盖此 `action`。
+* [`method`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#method)：指定 `action` 为 URL 时使用的 HTTP 方法的字符串。默认为 `get`。
+* `onSubmit`：[事件处理函数](/reference/react-dom/components/common#react-event-object)，在表单提交时触发。参见[使用事件处理函数处理表单提交](#handle-form-submission-with-an-event-handler)。
 
 #### 注意事项 {/*caveats*/}
 
-* 当函数被传递给 `action` 或 `formAction` 时，无论 `method` 属性的值是什么，HTTP 方法都将是 POST。
+* 向 `action` 或 `formAction` 传入函数时，无论 `method` prop 的值是什么，HTTP 方法都将是 `POST`。
+* 向 `action` 或 `formAction` 传入函数时，Action 成功后 React 会重置所有[非受控](/reference/react-dom/components/input#reading-the-input-values-when-submitting-a-form)字段。参见[在 Action 后保留表单值](#preserve-form-values-after-an-action)。
 
 ---
 
@@ -50,9 +56,9 @@ title: "<form>"
 
 ### 使用事件处理函数处理表单提交 {/*handle-form-submission-with-an-event-handler*/}
 
-将一个函数传递给 `onSubmit` 事件处理函数，以便在表单提交时运行代码。默认情况下，浏览器会将表单数据发送到当前 URL 并刷新页面，因此请调用 [`e.preventDefault()`](https://developer.mozilla.org/en-US/docs/Web/API/Event/preventDefault) 来覆盖这种行为。
+将一个函数传递给 `onSubmit` 事件处理函数，以便在表单提交时运行代码。默认情况下，浏览器会将表单数据发送到当前 URL 并刷新页面。在事件处理函数中调用 [`e.preventDefault()`](https://developer.mozilla.org/en-US/docs/Web/API/Event/preventDefault) 可以覆盖这种行为。
 
-这个示例使用 [`new FormData(e.target)`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) 读取已提交的值，它会按每个字段的 `name` 收集所有字段。这使这些输入保持为[非受控](/reference/react-dom/components/input#reading-the-input-values-when-submitting-a-form)。如果你改为[使用 state 控制输入](/reference/react-dom/components/input#controlling-an-input-with-a-state-variable)，那么在提交时应从该 state 中读取，而不是从 `FormData` 中读取。
+如果你同时传入一个 `action` 函数，除非 `onSubmit` 调用了 `e.preventDefault()`，否则 React 会在 `onSubmit` 之后运行该函数。
 
 <Sandpack>
 
@@ -65,7 +71,7 @@ export default function Search() {
     // 读取表单数据
     const form = e.target;
     const formData = new FormData(form);
-    const query = formData.get("query");
+    const query = formData.get('query');
     alert(`You searched for '${query}'`);
   }
 
@@ -82,20 +88,31 @@ export default function Search() {
 
 <Note>
 
-使用 `onSubmit` 读取表单数据在 React 的每个版本中都有效，并且可以直接访问[提交事件](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/submit_event)，因此你可以调用 `e.preventDefault()` 并自行读取数据。将函数传递给 `action` 属性则会在 [Transition](/reference/react/useTransition) 中运行提交。然后 React 会跟踪待处理状态，将抛出的错误发送到最近的错误边界，并使表单能够与 [`useActionState`](/reference/react/useActionState) 和 [`useOptimistic`](/reference/react/useOptimistic) 配合工作。`action` 也可以是一个[服务器函数](/reference/rsc/server-functions)，而 `onSubmit` 不支持这一点。
+`onSubmit` 在 React 的每个版本中都有效，并且可以直接访问[提交事件](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/submit_event)。从 React 19 开始，[`action` prop](#handle-form-submission-with-an-action-prop) 是处理表单提交的首选 API。使用 `action` 时，React 会在 [Transition](/reference/react/useTransition) 中运行提交，并管理待处理状态及多次提交之间的并发。你还可以使用乐观更新、Error Boundary 和 [Server Functions](/reference/rsc/server-functions)。
 
 </Note>
 
 ### 使用 `action` 属性处理表单提交 {/*handle-form-submission-with-an-action-prop*/}
 
-将一个函数传递给表单的 `action` 属性，以便在表单提交时运行该函数。`[`formData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData)` 将作为参数传递给函数，因此你可以访问表单提交的数据。这与传统的 [HTML action](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#action) 不同，后者只接受 URL。与 `onSubmit` 不同，`action` 会在 [Transition](/reference/react/useTransition) 中运行，并且不需要调用 `e.preventDefault()`。在 `action` 函数成功后，表单中所有非受控字段元素都会被重置。
+将一个函数传递给表单的 `action` 属性，以便在表单提交时运行该函数。React 会将包含所有带 `name` 属性的输入值的 [`FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) 对象传给该函数。输入框可以是[非受控](/reference/react-dom/components/input#reading-the-input-values-when-submitting-a-form)的，无需设置成对的 `value`/`onChange`、`onSubmit` 处理函数或调用 `e.preventDefault()`。
+
+向 `action` 传入函数时，React 会：
+
+* 在 [Transition](/reference/react/useTransition) 中运行该函数。
+* 通过 [`useFormStatus`](/reference/react-dom/hooks/useFormStatus) 向子组件提供待处理状态。
+* 将错误传递给最近的 Error Boundary。
+* 在函数成功后重置表单中的非受控字段。若要保留字段值，请参阅[在 Action 后保留表单值](#preserve-form-values-after-an-action)。
+
+如果你手动处理提交，可以通过 [`requestFormReset`](/reference/react-dom/requestFormReset#requesting-a-reset-in-a-custom-form-action) 请求相同的重置行为。
+
+由于 Action 在 Transition 中运行，你还可以使用 [`useActionState`](/reference/react/useActionState) 管理表单 state，使用 [`useOptimistic`](/reference/react/useOptimistic) 实现乐观 UI。有关 [Server Functions](/reference/rsc/server-functions) 和渐进增强，请参阅[使用 Server Function 处理表单提交](#handle-form-submission-with-a-server-function)。
 
 <Sandpack>
 
 ```js src/App.js
 export default function Search() {
   function search(formData) {
-    const query = formData.get("query");
+    const query = formData.get('query');
     alert(`你搜索了 '${query}'`);
   }
   return (
@@ -109,42 +126,85 @@ export default function Search() {
 
 </Sandpack>
 
+---
+
 ### 使用 Server Function 处理表单提交 {/*handle-form-submission-with-a-server-function*/}
 
-渲染一个带有输入框和提交按钮的 `<form>`。将一个 Server Function（一个标记了[`'use server'`](/reference/rsc/use-server) 的函数）传递给 form 的 `action` 属性，以便在表单提交时运行该函数。
+`<form>` 的 `action` prop 可以运行一个 Server Function（即标记了 [`'use server'`](/reference/rsc/use-server) 的函数）。用户可以在 JavaScript 加载前或禁用 JavaScript 时提交表单，这与将 URL 传给 `action` 时的行为相同。
 
-将 Server Function 传递给 `<form action>`，可以让用户在未启用 JavaScript 或代码尚未加载之前提交表单。这对网络连接慢、设备性能较弱或禁用 JavaScript 的用户很有帮助，其工作方式类似于将 URL 传递给 `action` 属性时的表单行为。
-
-你可以使用隐藏表单字段向 `<form>` 的 action 提供数据。Server Function 将以隐藏表单字段数据作为 [`FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) 的实例被调用。
+React 会使用表单的 [`FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) 调用 Server Function，其中包含所有带 `name` 属性的输入。若要额外传入数据（例如来自 props 的 ID），请参阅[向 Action 传递额外数据](#passing-extra-data-to-an-action)。
 
 ```jsx
-import { updateCart } from './lib.js';
+import { addComment } from './actions.js';
 
-function AddToCart({productId}) {
-  async function addToCart(formData) {
-    'use server'
-    const productId = formData.get('productId')
-    await updateCart(productId)
-  }
+function CommentForm() {
   return (
-    <form action={addToCart}>
-        <input type="hidden" name="productId" value={productId} />
-        <button type="submit">添加到购物车</button>
+    <form action={addComment}>
+      <textarea name="comment" />
+      <button type="submit">Comment</button>
     </form>
-
   );
 }
 ```
 
-如果不使用隐藏表单字段向 `<form>` 的 action 提供数据，你也可以调用 <CodeStep step={1}>`bind`</CodeStep> 方法来为其提供额外参数。这会将一个新参数（<CodeStep step={2}>`productId`</CodeStep>）绑定到函数上，除此之外还有作为参数传递给函数的 <CodeStep step={3}>`formData`</CodeStep>。
+```js
+// actions.js
+'use server';
 
-```jsx [[1, 8, "bind"], [2,8, "productId"], [2,4, "productId"], [3,4, "formData"]]
+export async function addComment(formData) {
+  const comment = formData.get('comment');
+  // ...
+}
+```
+
+<DeepDive>
+
+#### 向 Action 传递额外数据 {/*passing-extra-data-to-an-action*/}
+
+Action 会收到已提交的 [`FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData)。如果要包含用户未输入的数据（例如来自 props 的 ID），可以采用以下方式：
+
+* **隐藏字段**会把值加入 `FormData`。该值会出现在 HTML 中，且 `formData.get` 返回字符串。JavaScript 加载前也可以提交表单。
+* **使用 `bind` 绑定**会将值作为参数传给 Server Function，位于 `formData` 之前。参数会保留原本类型，例如数字仍是数字。它必须是[可序列化的](/reference/rsc/use-server#serializable-parameters-and-return-values)。JavaScript 加载前也可以提交表单。
+* **在组件中定义函数**可以直接读取 props 和 state。该函数会在 JavaScript 加载后运行，然后将这些值传给 Server Function。
+
+客户端会发送隐藏字段值和绑定后的参数。请在服务端检查当前登录用户是否有权执行此 Action。参见[安全注意事项](/reference/rsc/use-server#security)。
+
+#### 隐藏字段 {/*passing-extra-data-hidden-fields*/}
+
+在 Server Component 中，渲染一个带有 `name` 和 `value` 的 `<input type="hidden">`。React 会将其值包含在传给 Action 的 `FormData` 中。
+
+```jsx
+// Server Component
 import { updateCart } from './lib.js';
 
-function AddToCart({productId}) {
+function AddToCart({ productId }) {
+  async function addToCart(formData) {
+    'use server';
+    await updateCart(formData.get('productId'));
+  }
+  return (
+    <form action={addToCart}>
+      <input type="hidden" name="productId" value={productId} />
+      <button type="submit">添加到购物车</button>
+    </form>
+  );
+}
+```
+
+React 在提交按钮发起表单提交时，也会将该按钮的 `name` 和 `value` 包含在 `FormData` 中。
+
+#### 使用 `bind` 绑定 {/*passing-extra-data-bind*/}
+
+在 Server Component 中，对 Server Function 调用 [`bind`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind)，然后将绑定后的函数传给 `action`。将 `null` 作为 `bind` 的第一个参数。`null` 之后的每个参数都会排在 React 提交表单时传入的 `formData` 参数之前。
+
+```jsx
+// Server Component
+import { updateCart } from './lib.js';
+
+function AddToCart({ productId }) {
   async function addToCart(productId, formData) {
-    "use server";
-    await updateCart(productId)
+    'use server';
+    await updateCart(productId);
   }
   const addProductToCart = addToCart.bind(null, productId);
   return (
@@ -155,7 +215,35 @@ function AddToCart({productId}) {
 }
 ```
 
-当 `<form>` 由[Server Component](/reference/rsc/use-client) 渲染，并且有一个[Server Function](/reference/rsc/server-functions) 被传递给 `<form>` 的 `action` 属性时，该表单会进行[渐进增强](https://developer.mozilla.org/en-US/docs/Glossary/Progressive_Enhancement)。
+表单提交时，React 会调用 `addProductToCart(formData)`，后者再调用 `addToCart(productId, formData)`。
+
+如果同时使用 [`useActionState`](/reference/react/useActionState)，Server Function 会依次收到 `productId`、`previousState` 和 `formData`。请将该函数定义在单独的文件中，并从 Client Component 绑定它。
+
+#### 在组件中定义函数 {/*passing-extra-data-function*/}
+
+在 Client Component 中定义传给 `action` 的函数，这样它就能直接读取组件的 props 或 state。该函数随后会将这些值传给 Server Function：
+
+```jsx
+// AddToCart.js
+'use client';
+
+import { updateCart } from './actions.js';
+
+function AddToCart({ productId }) {
+  async function addToCart(formData) {
+    await updateCart(productId, formData);
+  }
+  return (
+    <form action={addToCart}>
+      <button type="submit">添加到购物车</button>
+    </form>
+  );
+}
+```
+
+由于 `addToCart` 在浏览器中运行，表单必须等到 JavaScript 加载后才能提交。
+
+</DeepDive>
 
 ### 在表单提交期间显示待处理状态 {/*display-a-pending-state-during-form-submission*/}
 要在表单提交时显示待处理状态，你可以在 `<form>` 中渲染的组件里调用 `useFormStatus` Hook，并读取返回的 `pending` 属性。
@@ -165,14 +253,14 @@ function AddToCart({productId}) {
 <Sandpack>
 
 ```js src/App.js
-import { useFormStatus } from "react-dom";
-import { submitForm } from "./actions.js";
+import { useFormStatus } from 'react-dom';
+import { submitForm } from './actions.js';
 
 function Submit() {
   const { pending } = useFormStatus();
   return (
     <button type="submit" disabled={pending}>
-      {pending ? "提交中..." : "提交"}
+      {pending ? '提交中...' : '提交'}
     </button>
   );
 }
@@ -191,8 +279,8 @@ export default function App() {
 ```
 
 ```js src/actions.js hidden
-export async function submitForm(query) {
-    await new Promise((res) => setTimeout(res, 1000));
+export async function submitForm(formData) {
+  await new Promise((res) => setTimeout(res, 1000));
 }
 ```
 
@@ -209,13 +297,13 @@ export async function submitForm(query) {
 
 
 ```js src/App.js
-import { useOptimistic, useState, useRef } from "react";
-import { deliverMessage } from "./actions.js";
+import { startTransition, useOptimistic, useState, useRef } from 'react';
+import { deliverMessage } from './actions.js';
 
 function Thread({ messages, sendMessage }) {
-  const formRef = useRef();
+  const formRef = useRef(null);
   async function formAction(formData) {
-    addOptimisticMessage(formData.get("message"));
+    addOptimisticMessage(formData.get('message'));
     formRef.current.reset();
     await sendMessage(formData);
   }
@@ -248,11 +336,13 @@ function Thread({ messages, sendMessage }) {
 
 export default function App() {
   const [messages, setMessages] = useState([
-    { text: "你好呀！", sending: false, key: 1 }
+    { text: '你好呀！', sending: false, key: 1 }
   ]);
   async function sendMessage(formData) {
-    const sentMessage = await deliverMessage(formData.get("message"));
-    setMessages((messages) => [...messages, { text: sentMessage }]);
+    const sentMessage = await deliverMessage(formData.get('message'));
+    startTransition(() => {
+      setMessages((messages) => [...messages, { text: sentMessage }]);
+    });
   }
   return <Thread messages={messages} sendMessage={sendMessage} />;
 }
@@ -260,6 +350,7 @@ export default function App() {
 
 ```js src/actions.js
 export async function deliverMessage(message) {
+  // Simulate a message delivery delay
   await new Promise((res) => setTimeout(res, 1000));
   return message;
 }
@@ -267,12 +358,11 @@ export async function deliverMessage(message) {
 
 </Sandpack>
 
-[//]: # 'Uncomment the next line, and delete this line after the `useOptimistic` reference documentation page is published'
-[//]: # 'To learn more about the `useOptimistic` Hook see the [reference documentation](/reference/react/useOptimistic).'
+有关 `useOptimistic` Hook 的更多信息，请参阅[参考文档](/reference/react/useOptimistic)。
 
 ### 处理表单提交错误 {/*handling-form-submission-errors*/}
 
-在某些情况下，由 `<form>` 的 `action` 属性调用的函数会抛出错误。你可以通过将 `<form>` 包裹在 Error Boundary 中来处理这些错误。如果由 `<form>` 的 `action` 属性调用的函数抛出错误，则会显示错误边界的回退内容。
+要处理传给 `<form>` `action` 属性的函数抛出的错误，请将表单包裹在 [Error Boundary](/reference/react/Component#catching-rendering-errors-with-an-error-boundary) 中。函数抛出错误时，React 会显示该边界的回退内容。
 
 <Sandpack>
 
@@ -300,57 +390,64 @@ export default function Search() {
 ```json package.json hidden
 {
   "dependencies": {
-    "react": "19.0.0-rc-3edc000d-20240926",
-    "react-dom": "19.0.0-rc-3edc000d-20240926",
-    "react-scripts": "^5.0.0",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-scripts": "latest",
     "react-error-boundary": "4.0.3"
   },
-  "main": "/index.js",
-  "devDependencies": {}
+  "main": "/index.js"
 }
 ```
 
 </Sandpack>
 
-### 在没有 JavaScript 的情况下显示表单提交错误 {/*display-a-form-submission-error-without-javascript*/}
+#### 处理 JavaScript 加载前的表单提交错误 {/*display-a-form-submission-error-without-javascript*/}
 
 在渐进增强中，要在 JavaScript 包加载之前显示表单提交错误消息，需要满足以下条件：
 
 1. `<form>` 由 [Client Component](/reference/rsc/use-client) 渲染
 1. 传递给 `<form>` 的 `action` 属性的函数是一个 [Server Function](/reference/rsc/server-functions)
-1. 使用 `useActionState` Hook 来显示错误消息
+1. 使用 [`useActionState`](/reference/react/useActionState) Hook 来显示错误消息
 
-`useActionState` 接受两个参数：一个 [Server Function](/reference/rsc/server-functions) 和一个初始状态。`useActionState` 返回两个值：一个状态变量和一个 action。`useActionState` 返回的 action 应传递给表单的 `action` 属性。`useActionState` 返回的状态变量可用于显示错误消息。传递给 `useActionState` 的 Server Function 的返回值将用于更新该状态变量。
+在单独的文件中使用 [`'use server'`](/reference/rsc/use-server) 指令定义 Server Function。它会先收到上一次的 state，再收到已提交的 `FormData`：
 
 <Sandpack>
 
 ```js src/App.js
-import { useActionState } from "react";
-import { signUpNewUser } from "./api";
+// actions.js
+'use server';
 
-export default function Page() {
-  async function signup(prevState, formData) {
-    "use server";
-    const email = formData.get("email");
-    try {
-      await signUpNewUser(email);
-      alert(`已添加 "${email}"`);
-    } catch (err) {
-      return err.toString();
-    }
+import { signUpNewUser } from './api.js';
+
+export async function signup(previousState, formData) {
+  const email = formData.get('email');
+  try {
+    await signUpNewUser(email);
+    return null;
+  } catch (error) {
+    return error.message;
   }
+}
+```
+
+在 Client Component 中，将 Server Function 传给 `useActionState`。把返回的 Action 传给表单的 `action` prop，并渲染返回的 state：
+
+```js src/Signup.js
+// Signup.js
+'use client';
+
+import { useActionState } from 'react';
+import { signup } from './actions.js';
+
+export default function Signup() {
   const [message, signupAction] = useActionState(signup, null);
   return (
-    <>
-      <h1>注册我的新闻邮件</h1>
-      <p>使用同一个邮箱注册两次即可看到错误</p>
-      <form action={signupAction} id="signup-form">
-        <label htmlFor="email">邮箱： </label>
-        <input name="email" id="email" placeholder="react@example.com" />
-        <button>注册</button>
-        {!!message && <p>{message}</p>}
-      </form>
-    </>
+    <form action={signupAction} id="signup-form">
+      <label htmlFor="email">邮箱： </label>
+      <input name="email" id="email" placeholder="react@example.com" />
+      <button>注册</button>
+      {!!message && <p>{message}</p>}
+    </form>
   );
 }
 ```
@@ -368,38 +465,171 @@ export async function signUpNewUser(newEmail) {
 
 </Sandpack>
 
-了解更多关于从表单 action 更新状态的信息，请参阅 [`useActionState`](/reference/react/useActionState) 文档
+如果表单在 JavaScript 加载前提交，React 会在服务端渲染的响应中包含 Server Function 返回的错误消息。
 
-### 处理多种提交类型 {/*handling-multiple-submission-types*/}
+---
 
-可以将表单设计为根据用户按下的按钮来处理多种提交操作。表单中的每个按钮都可以通过设置 `formAction` 属性来关联不同的 action 或行为。
+### 在 Action 后保留表单值 {/*preserve-form-values-after-an-action*/}
 
-当用户点击某个特定按钮时，表单会被提交，并执行该按钮属性和 action 所定义的相应操作。例如，表单可能默认提交一篇文章供审核，但有一个单独的按钮将 `formAction` 设置为把文章保存为草稿。
+传给 `action` 或 `formAction` 的函数成功完成后，React 会重置表单中的[非受控字段](/reference/react-dom/components/input#reading-the-input-values-when-submitting-a-form)。保存编辑内容或显示[验证错误](/reference/react/useActionState#displaying-validation-errors-and-preserving-form-values)时，你可能希望保留已提交的值。
+
+你可以使用 [`useState`](/reference/react/useState) 保存这些值，并将它们传给各字段的 [`defaultValue`](/reference/react-dom/components/input#providing-an-initial-value-for-an-input)。Action 完成后更新 state。React 会先应用更新后的默认值，再重置表单，因此字段会保留这些值。
+
+试着更改标题并点击 **保存**。此示例使用 [`useFormStatus`](/reference/react-dom/hooks/useFormStatus) 在模拟的一秒请求期间显示“保存中...”，随后 `setTitle` 会更新保存的标题并保留输入框中的值。
 
 <Sandpack>
 
 ```js src/App.js
-export default function Search() {
+import { startTransition, useState } from 'react';
+import SaveButton from './SaveButton.js';
+
+export default function EditForm() {
+  const [title, setTitle] = useState('My draft');
+
+  async function saveAction(formData) {
+    await new Promise((res) => setTimeout(res, 1000));
+    startTransition(() => {
+      setTitle(formData.get('title'));
+    });
+  }
+
+  return (
+    <form action={saveAction}>
+      <input name="title" defaultValue={title} />
+      <SaveButton />
+      <p>Saved title: {title}</p>
+    </form>
+  );
+}
+```
+
+```js src/SaveButton.js hidden
+import { useFormStatus } from 'react-dom';
+
+export default function SaveButton() {
+  const { pending } = useFormStatus();
+  return (
+    <button type="submit" disabled={pending}>
+      {pending ? 'Saving...' : 'Save'}
+    </button>
+  );
+}
+```
+
+</Sandpack>
+
+`await` 之后的 `setTitle` 需要再包裹一次 [`startTransition`](/reference/react/startTransition)，才能将其标记为 Transition 更新。
+
+`saveAction` 也可以调用 [Server Function](/reference/rsc/server-functions)，并保存其返回值：
+
+```js
+// actions.js
+'use server';
+
+import { saveTitle } from './api.js';
+
+export async function submitTitle(formData) {
+  const title = formData.get('title');
+  await saveTitle(title);
+  return title;
+}
+```
+
+在组件文件顶部添加 [`'use client'`](/reference/rsc/use-client) 指令，导入 `submitTitle` 并替换 `saveAction`，表单其余部分可以保持不变：
+
+```js
+import { submitTitle } from './actions.js';
+
+async function saveAction(formData) {
+  const savedTitle = await submitTitle(formData);
+  startTransition(() => {
+    setTitle(savedTitle);
+  });
+}
+```
+
+#### JavaScript 加载前保留表单值 {/*preserving-form-values-before-javascript-loads*/}
+
+配合 [`useActionState`](/reference/react/useActionState) 使用时，React 可以在 hydration 完成之前显示 [Server Function](/reference/rsc/server-functions) 的返回值。表单可以将该值作为新的默认值。有关在 hydration 前显示服务器返回的验证错误，请参阅[处理 JavaScript 加载前的表单提交错误](#display-a-form-submission-error-without-javascript)。
+
+<DeepDive>
+
+#### 控制表单重置的其他方式 {/*other-ways-to-control-form-resets*/}
+
+上面的示例通过在重置前保存每个已提交的值来保留它们。你也可以选择保留哪些值，或控制何时重置：
+
+* **只在验证失败时保留值。** 每次提交都返回相同形状的 state。验证失败时，包含已提交的 `FormData`，并通过 `state.submitted?.get('title') ?? ''` 读取字段。验证成功时，将 `FormData` 设为 `null`，让重置清空这些字段。参见 [`useActionState`](/reference/react/useActionState#displaying-validation-errors-and-preserving-form-values) 中的示例。
+* **使用 `onSubmit` 跳过自动重置。** 在 `onSubmit` 中处理提交，调用 `e.preventDefault()`，并在 [`startTransition`](/reference/react/useTransition) 中运行 Action。由于表单的 `action` 没有运行，React 不会重置表单。
+* **在指定时机重置。** 调用表单元素的 [`reset()`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/reset)，立即将非受控字段重置为默认值。若要将重置安排为 Action 或 Transition 的一部分，请从 `react-dom` 调用 [`requestFormReset`](/reference/react-dom/requestFormReset)。
+* **同时重置表单和组件 state。** 更改渲染表单的组件的 [`key`](/learn/preserving-and-resetting-state#resetting-a-form-with-a-key)。React 会重新创建该组件及其 DOM，从而重置字段和本地 state。
+
+</DeepDive>
+
+---
+
+### 处理多种提交类型 {/*handling-multiple-submission-types*/}
+
+一个表单可以包含多个提交按钮，每个按钮运行不同的 Action。未设置 `formAction` 的按钮会运行表单的 `action`；设置了 `formAction` 的按钮则会运行自己的 Action。例如，下面的表单默认发布文章，但 **Save draft** 按钮会保存当前内容而不发布。它使用 [`useActionState`](/reference/react/useActionState) 保留已保存的草稿：
+
+<Sandpack>
+
+```js src/App.js
+import { useActionState } from 'react';
+
+export default function ArticleForm() {
+  // Preserve the saved draft after submission
+  const [formState, dispatchFormState] = useActionState((state, payload) => {
+    const content = payload.data.get('content');
+    switch (payload.type) {
+      case 'save':
+        alert(`Your draft of '${content}' was saved!`);
+        return payload.data;
+      case 'publish':
+        alert(`'${content}' was published!`);
+        return new FormData();
+      default:
+        return state;
+    }
+  }, new FormData());
+
   function publish(formData) {
-    const content = formData.get("content");
-    const button = formData.get("button");
-    alert(`'${content}' 已使用 '${button}' 按钮发布`);
+    dispatchFormState({
+      type: 'publish',
+      data: formData,
+    });
   }
 
   function save(formData) {
-    const content = formData.get("content");
-    alert(`你的 '${content}' 草稿已保存！`);
+    dispatchFormState({
+      type: 'save',
+      data: formData,
+    });
   }
 
   return (
     <form action={publish}>
-      <textarea name="content" rows={4} cols={40} />
+      <textarea
+        name="content"
+        rows={4}
+        cols={40}
+        defaultValue={formState?.get('content') || ''}
+      />
       <br />
-      <button type="submit" name="button" value="submit">发布</button>
-      <button formAction={save}>保存草稿</button>
+      <button type="submit" name="button" value="submit">Publish</button>
+      <button formAction={save}>Save draft</button>
     </form>
   );
 }
 ```
 
 </Sandpack>
+
+---
+
+## 故障排查 {/*troubleshooting*/}
+
+### 提交后表单字段被清空 {/*my-form-fields-are-cleared-after-submission*/}
+
+传给 `action` 或 `formAction` 的函数成功完成时，React 会将表单的非受控字段重置为默认值。没有 `defaultValue` 的文本字段会变为空。即使函数返回验证错误而没有抛出错误，表单仍会重置。
+
+若要保留已提交的值，请将它存入 state 并传给字段的 `defaultValue`。示例请参阅[在 Action 后保留表单值](#preserve-form-values-after-an-action)，或参阅[验证失败时保留表单值](/reference/react/useActionState#displaying-validation-errors-and-preserving-form-values)。

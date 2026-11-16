@@ -17,6 +17,7 @@ React 暴露了一些内置组件，你可以在你的 JSX 中使用它们。
 * [`<Suspense>`](/reference/react/Suspense) 让你可以在子组件加载时显示回退内容。
 * [`<StrictMode>`](/reference/react/StrictMode) 启用仅用于开发环境的额外检查，帮助你尽早发现 bug。
 * [`<Activity>`](/reference/react/Activity) 让你可以隐藏和恢复其子元素的 UI 和内部状态。
+* [`<ViewTransition>`](/reference/react/ViewTransition) 让你为由 Transitions 和 Suspense 更新的组件树添加动画。
 
 ---
 

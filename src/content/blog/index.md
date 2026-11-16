@@ -12,6 +12,12 @@ title: React 博客
 
 <div className="sm:-mx-5 flex flex-col gap-5 mt-12">
 
+<BlogCard title="React 19.3" date="2026年9月9日" url="/blog/2026/09/09/react-19-3">
+
+React 19.3 新增了 View Transitions、Fragment Refs、browser()、Trusted Types 等功能。本文将一一介绍……
+
+</BlogCard>
+
 <BlogCard title="React 基金会：React 的新家，由 Linux 基金会托管" date="2026年2月24日" url="/blog/2026/02/24/the-react-foundation">
 
 React 基金会已正式在 Linux 基金会旗下启动。

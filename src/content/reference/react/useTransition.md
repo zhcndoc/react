@@ -661,7 +661,7 @@ export default function TabButton({ action, children, isActive }) {
     return <b className="pending">{children}</b>;
   }
   return (
-    <button onClick={async () => {
+    <button onClick={() => {
       startTransition(async () => {
         // 等待传入的 action。
         // 这样它既可以是同步的，也可以是异步的。
@@ -1567,7 +1567,7 @@ main {
 
 ### 使用错误边界向用户显示错误 {/*displaying-an-error-to-users-with-error-boundary*/}
 
-如果传递给 `startTransition` 的函数抛出错误，你可以使用[错误边界](/reference/react/Component#catching-rendering-errors-with-an-error-boundary)向用户显示错误。要使用错误边界，请将调用 `useTransition` 的组件包裹在错误边界中。一旦传递给 `startTransition` 的函数出错，就会显示错误边界的 fallback。
+如果传递给 `startTransition` 的函数抛出错误或返回被拒绝的 Promise，你可以使用[错误边界](/reference/react/Component#catching-rendering-errors-with-an-error-boundary)向用户显示错误。要使用错误边界，请将调用 `useTransition` 的组件包裹在错误边界中。一旦传递给 `startTransition` 的函数出错，就会显示错误边界的 fallback。
 
 <Sandpack>
 
@@ -1684,7 +1684,7 @@ startTransition(() => {
 });
 ```
 
-你传给 `startTransition` 的函数必须是同步的。你不能像这样把更新标记为 Transition：
+传给 `startTransition` 的函数可以是同步或异步的。不过，在 `setTimeout` 回调中安排的更新不会被标记为 Transition：
 
 ```js
 startTransition(() => {
@@ -1738,7 +1738,7 @@ startTransition(async () => {
 
 ### 我想在组件外部调用 `useTransition` {/*i-want-to-call-usetransition-from-outside-a-component*/}
 
-你不能在组件外部调用 `useTransition`，因为它是一个 Hook。在这种情况下，请改用独立的 [`startTransition`](/reference/react/startTransition) 方法。它的工作方式相同，但不会提供 `isPending` 指示器。
+你不能在组件外部调用 `useTransition`，因为它是一个 Hook。在这种情况下，独立的 [`startTransition`](/reference/react/startTransition) 函数可以将状态更新标记为 Transition，但不会提供 `isPending` 标志。由于这个独立函数不关联组件，错误边界无法处理它所触发的 Transition 错误。
 
 ---
 

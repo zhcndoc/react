@@ -15,7 +15,7 @@ title: Server React DOM APIs
 这些方法仅在支持 [Web Streams](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API) 的环境中可用，这包括浏览器、Deno，以及一些现代边缘运行时：
 
 * [`renderToReadableStream`](/reference/react-dom/server/renderToReadableStream) 将一个 React 树渲染为一个 [可读的 Web 流。](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream)
-* [`resume`](/reference/react-dom/server/renderToPipeableStream) 将 [`prerender`](/reference/react-dom/static/prerender) 恢复为一个 [Readable Web Stream](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream)。
+* [`resume`](/reference/react-dom/server/resume) 将 [`prerender`](/reference/react-dom/static/prerender) 恢复为一个 [Readable Web Stream](https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream)。
 
 
 <Note>
@@ -30,7 +30,7 @@ Node.js 也包含这些方法以保证兼容性，但由于性能更差，不推
 这些方法仅在支持 [Node.js Streams:](https://nodejs.org/api/stream.html) 的环境中可用：
 
 * [`renderToPipeableStream`](/reference/react-dom/server/renderToPipeableStream) 将一个 React 树渲染为一个可管道化的 [Node.js Stream.](https://nodejs.org/api/stream.html)
-* [`resumeToPipeableStream`](/reference/react-dom/server/renderToPipeableStream) 将 [`prerenderToNodeStream`](/reference/react-dom/static/prerenderToNodeStream) 恢复为一个可管道化的 [Node.js Stream.](https://nodejs.org/api/stream.html)
+* [`resumeToPipeableStream`](/reference/react-dom/server/resumeToPipeableStream) 将 [`prerenderToNodeStream`](/reference/react-dom/static/prerenderToNodeStream) 恢复为一个可管道化的 [Node.js Stream.](https://nodejs.org/api/stream.html)
 
 ---
 

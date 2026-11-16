@@ -107,4 +107,4 @@ function Counter({max}) {
 
 现在，setter 只会在点击时运行，React 会正常完成渲染，而且 `count` 永远不会超过 `max`。
 
-在少数情况下，你可能需要根据前一次渲染的信息来调整状态。对于这些情况，请遵循[此模式](https://react.dev/reference/react/useState#storing-information-from-previous-renders)来有条件地设置状态。
+在少数情况下，你可能需要根据前一次渲染的信息来调整状态。对于这些情况，请遵循[此模式](/reference/react/useState#storing-information-from-previous-renders)来有条件地设置状态。

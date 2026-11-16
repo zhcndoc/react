@@ -4,7 +4,7 @@ title: use
 
 <Intro>
 
-`use` 是一个 React API，可让你读取 [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) 或 [上下文](/learn/passing-data-deeply-with-context) 的值。
+`use` 是一个 React API，可让你在渲染期间读取资源，例如 [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) 或 [上下文](/learn/passing-data-deeply-with-context)。
 
 ```js
 const value = use(resource);
@@ -77,6 +77,37 @@ Promise 解析后的值。
 * `use` 不能在 try-catch 块内部调用。请改为将组件包裹在 [错误边界](#displaying-an-error-with-an-error-boundary) 中，以捕获错误并显示回退内容。
 * 传递给 `use` 的 Promise 必须被缓存，以便在重新渲染之间复用同一个 Promise 实例。[请参阅下方关于缓存 Promise 的说明。](#caching-promises-for-client-components)
 * 当将 Promise 从服务器组件传递到客户端组件时，其解析值必须是[可序列化的](/reference/rsc/use-client#serializable-types)。
+
+### `use(browser())` {/*use-browser*/}
+
+在只应于浏览器中渲染的组件内，将 [`browser`](/reference/react-dom/browser) 返回的值传给 `use`：
+
+```js
+import { use } from 'react';
+import { browser } from 'react-dom';
+
+function BrowserOnly() {
+  use(browser('This component requires browser APIs.'));
+  return <BrowserContent />;
+}
+```
+
+服务端渲染期间，调用 `use(browser())` 的组件会暂停，React 会在 HTML 中保留最近的 [`<Suspense>`](/reference/react/Suspense) 边界的回退内容。在浏览器中，`use(browser())` 会返回 `undefined`，组件因此可以正常渲染。
+
+[参见下方示例。](#rendering-a-component-only-in-the-browser)
+
+#### 参数 {/*browser-parameters*/}
+
+* `browserValue`：[`browser`](/reference/react-dom/browser) 返回的值。
+
+#### 返回值 {/*browser-returns*/}
+
+`use(browser())` 在浏览器中返回 `undefined`。
+
+#### 注意事项 {/*browser-caveats*/}
+
+* 服务端渲染期间，调用 `use(browser())` 的组件必须位于 `<Suspense>` 边界内，否则服务端渲染会失败。
+* 在 React Server Components 应用中，必须从 [Client Component](/reference/rsc/use-client)（而不是 [Server Component](/reference/rsc/server-components)）中调用 `use(browser())`。
 
 ---
 
@@ -248,7 +279,7 @@ function Profile() {
 
 ---
 
-## 用法（Promises）{/*usage-promises*/}
+## 用法（Promises） {/*usage-promises*/}
 
 ### 使用 `use` 读取 Promise {/*reading-a-promise-with-use*/}
 
@@ -1289,6 +1320,160 @@ async function getData(url) {
 }
 ```
 </Sandpack>
+
+---
+
+## 用法（浏览器） {/*usage-browser*/}
+
+### 仅在浏览器中渲染组件 {/*rendering-a-component-only-in-the-browser*/}
+
+在只应于浏览器中渲染的组件内，将 [`browser`](/reference/react-dom/browser) 返回的值传给 `use`。
+
+点击 **重新加载**，即可在初始 HTML 中看到加载回退内容。hydration 完成后，React 会显示从 `localStorage` 加载的草稿。
+
+<Sandpack>
+
+```js src/App.js active
+import { Suspense, use, useState } from 'react';
+import { browser } from 'react-dom';
+
+function SavedDraft() {
+  use(browser('The draft is stored in localStorage.'));
+  const [draft, setDraft] = useState(
+    () => localStorage.getItem('draft') ?? ''
+  );
+
+  function handleChange(event) {
+    const nextDraft = event.target.value;
+    setDraft(nextDraft);
+    localStorage.setItem('draft', nextDraft);
+  }
+
+  return (
+    <label>
+      Draft:
+      <textarea
+        value={draft}
+        onChange={handleChange}
+        rows={4}
+        cols={30}
+      />
+    </label>
+  );
+}
+
+export default function App() {
+  return (
+    <>
+      <h1>Saved draft</h1>
+      <Suspense fallback={<p>Loading draft...</p>}>
+        <SavedDraft />
+      </Suspense>
+    </>
+  );
+}
+```
+
+```js src/Document.js hidden
+import App from './App.js';
+
+export default function Document() {
+  return (
+    <html lang="en">
+      <head>
+        <title>Saved draft</title>
+        <style>{`
+          h1 { font-size: 24px; margin-top: 0; }
+          label, textarea { display: block; }
+          textarea { margin-top: 5px; }
+        `}</style>
+      </head>
+      <body>
+        <App />
+      </body>
+    </html>
+  );
+}
+```
+
+```js src/index.js hidden
+import { hydrateRoot } from 'react-dom/client';
+import { renderToReadableStream } from 'react-dom/server';
+import Document from './Document.js';
+import { flushReadableStreamToFrame } from './demo-helpers.js';
+import './styles.css';
+
+async function main(frame) {
+  const stream = await renderToReadableStream(<Document />);
+  await flushReadableStreamToFrame(stream, frame);
+
+  // Wait so both the fallback and hydrated content are visible.
+  await new Promise(resolve => setTimeout(resolve, 1200));
+  hydrateRoot(frame.contentDocument, <Document />);
+}
+
+main(document.getElementById('preview'));
+```
+
+```js src/demo-helpers.js hidden
+export async function flushReadableStreamToFrame(readable, frame) {
+  const doc = frame.contentWindow.document;
+  const decoder = new TextDecoder();
+  const reader = readable.getReader();
+
+  while (true) {
+    const {done, value} = await reader.read();
+    if (done) {
+      break;
+    }
+    doc.write(decoder.decode(value, {stream: true}));
+  }
+
+  doc.write(decoder.decode());
+  doc.close();
+}
+```
+
+```html public/index.html hidden
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Browser-only rendering</title>
+</head>
+<body>
+  <iframe id="preview" title="Rendered page"></iframe>
+</body>
+</html>
+```
+
+```css src/styles.css hidden
+iframe {
+  width: 100%;
+  height: 160px;
+  border: 0;
+}
+```
+
+```json package.json hidden
+{
+  "dependencies": {
+    "react": "19.3.0-canary-f1f7ed2a-20260904",
+    "react-dom": "19.3.0-canary-f1f7ed2a-20260904",
+    "react-scripts": "latest"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
+```
+
+</Sandpack>
+
+服务端渲染期间，`use(browser())` 会暂停组件，React 会在 HTML 中包含最近的 Suspense 边界的回退内容。在浏览器中，`use(browser())` 会返回 `undefined`，然后正常渲染已保存的草稿。
 
 ---
 

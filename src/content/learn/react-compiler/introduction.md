@@ -144,7 +144,7 @@ function TableContainer({ items }) {
 - React Compiler 只会记忆化 React 组件和 hooks，不会记忆化每一个函数
 - React Compiler 的记忆化不会在多个组件或 hooks 之间共享
 
-因此，如果多个不同组件都使用了 `expensivelyProcessAReallyLargeArrayOfObjects`，那么即使传入的都是完全相同的 items，这个昂贵计算也会被反复执行。我们建议先进行[性能分析](reference/react/useMemo#how-to-tell-if-a-calculation-is-expensive)，确认它是否真的那么昂贵，然后再让代码变得更复杂。
+因此，如果多个不同组件都使用了 `expensivelyProcessAReallyLargeArrayOfObjects`，那么即使传入的都是完全相同的 items，这个昂贵计算也会被反复执行。我们建议先进行[性能分析](/reference/react/useMemo#how-to-tell-if-a-calculation-is-expensive)，确认它是否真的那么昂贵，然后再让代码变得更复杂。
 </DeepDive>
 
 ## 我应该试用这个编译器吗？ {/*should-i-try-out-the-compiler*/}

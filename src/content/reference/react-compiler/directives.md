@@ -195,4 +195,4 @@ function ProblematicComponent() {
 
 * [`compilationMode`](/reference/react-compiler/compilationMode) - 配置编译器如何选择要优化的内容
 * [`Configuration`](/reference/react-compiler/configuration) - 完整的编译器配置选项
-* [React Compiler 文档](https://react.dev/learn/react-compiler) - 入门指南
+* [React Compiler 文档](/learn/react-compiler) - 入门指南

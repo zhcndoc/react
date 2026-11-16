@@ -1,19 +1,8 @@
 ---
 title: <ViewTransition>
-version: canary
 ---
 
-
-
 <Intro>
-
-<Canary>
-
-**`<ViewTransition />` API 目前仅在 React 的 Canary 和 Experimental 渠道中可用。**
-
-[在此了解有关 React 发布渠道的更多信息。](/community/versioning-policy#all-release-channels)
-
-</Canary>
 
 `<ViewTransition>` 让你可以使用 Transitions 和 Suspense 来为组件树添加动画。
 
@@ -436,8 +425,8 @@ button:hover {
 ```json package.json hidden
 {
   "dependencies": {
-    "react": "canary",
-    "react-dom": "canary",
+    "react": "19.3.0-canary-f1f7ed2a-20260904",
+    "react-dom": "19.3.0-canary-f1f7ed2a-20260904",
     "react-scripts": "latest"
   }
 }
@@ -576,8 +565,8 @@ function Counter() {
 ```json package.json hidden
 {
   "dependencies": {
-    "react": "canary",
-    "react-dom": "canary",
+    "react": "19.3.0-canary-f1f7ed2a-20260904",
+    "react-dom": "19.3.0-canary-f1f7ed2a-20260904",
     "react-scripts": "latest"
   }
 }
@@ -800,8 +789,8 @@ button:hover {
 ```json package.json hidden
 {
   "dependencies": {
-    "react": "canary",
-    "react-dom": "canary",
+    "react": "19.3.0-canary-f1f7ed2a-20260904",
+    "react-dom": "19.3.0-canary-f1f7ed2a-20260904",
     "react-scripts": "latest"
   }
 }
@@ -1034,8 +1023,8 @@ button:hover {
 ```json package.json hidden
 {
   "dependencies": {
-    "react": "canary",
-    "react-dom": "canary",
+    "react": "19.3.0-canary-f1f7ed2a-20260904",
+    "react-dom": "19.3.0-canary-f1f7ed2a-20260904",
     "react-scripts": "latest"
   }
 }
@@ -1235,8 +1224,8 @@ button:hover {
 ```json package.json hidden
 {
   "dependencies": {
-    "react": "canary",
-    "react-dom": "canary",
+    "react": "19.3.0-canary-f1f7ed2a-20260904",
+    "react-dom": "19.3.0-canary-f1f7ed2a-20260904",
     "react-scripts": "latest"
   }
 }
@@ -1264,9 +1253,9 @@ items.map(item => <div><Component key={item.id} item={item} /></div>)
 
 ### 为 Suspense 内容添加动画 {/*animating-from-suspense-content*/}
 
-与任何 Transition 一样，React 会等待数据和新的 CSS（`<link rel="stylesheet" precedence="...">`）加载完成后再运行动画。除此之外，ViewTransition 还会在开始动画前最多等待 500 毫秒，以便加载新字体，避免字体稍后加载时出现闪烁。出于同样的原因，使用 ViewTransition 包裹的图像也会等待图像加载完成。请参阅 Suspense 页面上的[等待字体加载](/reference/react/Suspense#waiting-for-a-font-to-load)和[等待图像加载](/reference/react/Suspense#waiting-for-an-image-to-load)示例。
+与任何 Transition 一样，React 会在运行动画之前等待数据和新的 CSS（`<link rel="stylesheet" precedence="...">`）加载完成。`<ViewTransition>` 还会最多等待 500 毫秒，让新字体和可见图片加载完成，避免它们在动画开始后才闪现。请参阅 Suspense 页面上的[等待字体加载](/reference/react/Suspense#waiting-for-a-font-to-load)和[等待图片加载](/reference/react/Suspense#waiting-for-an-image-to-load)示例。
 
-如果它位于一个新的 Suspense 边界实例内，那么会先显示 fallback。等 Suspense 边界完全加载后，它会触发 `<ViewTransition>`，将内容的显示过程做动画化。
+如果内容位于一个新的 Suspense 边界中，React 会先显示 fallback。该边界加载完成后，`<ViewTransition>` 会为内容的显示添加动画。
 
 根据你放置 `<ViewTransition>` 的位置，有两种为 Suspense 边界添加动画的方式：
 
@@ -1326,7 +1315,7 @@ export function VideoPlaceholder() {
 ```
 
 ```js
-import {ViewTransition, useState, startTransition, Suspense} from 'react';
+import { ViewTransition, Suspense, useState } from 'react';
 import {Video, VideoPlaceholder} from './Video';
 import {useLazyVideoData} from './data';
 
@@ -1339,12 +1328,7 @@ export default function Component() {
   const [showItem, setShowItem] = useState(false);
   return (
     <>
-      <button
-        onClick={() => {
-          startTransition(() => {
-            setShowItem((prev) => !prev);
-          });
-        }}>
+      <button onClick={() => setShowItem((prev) => !prev)}>
         {showItem ? '➖' : '➕'}
       </button>
       {showItem ? (
@@ -1497,8 +1481,8 @@ button:hover {
 ```json package.json hidden
 {
   "dependencies": {
-    "react": "canary",
-    "react-dom": "canary",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
     "react-scripts": "latest"
   }
 }
@@ -1728,8 +1712,8 @@ button:hover {
 ```json package.json hidden
 {
   "dependencies": {
-    "react": "canary",
-    "react-dom": "canary",
+    "react": "19.3.0-canary-f1f7ed2a-20260904",
+    "react-dom": "19.3.0-canary-f1f7ed2a-20260904",
     "react-scripts": "latest"
   }
 }
@@ -1974,8 +1958,8 @@ button:hover {
 ```json package.json hidden
 {
   "dependencies": {
-    "react": "canary",
-    "react-dom": "canary",
+    "react": "19.3.0-canary-f1f7ed2a-20260904",
+    "react-dom": "19.3.0-canary-f1f7ed2a-20260904",
     "react-scripts": "latest"
   }
 }
@@ -2200,8 +2184,8 @@ button:hover {
 ```json package.json hidden
 {
   "dependencies": {
-    "react": "canary",
-    "react-dom": "canary",
+    "react": "19.3.0-canary-f1f7ed2a-20260904",
+    "react-dom": "19.3.0-canary-f1f7ed2a-20260904",
     "react-scripts": "latest"
   }
 }
@@ -2445,8 +2429,8 @@ button:hover {
 ```json package.json hidden
 {
   "dependencies": {
-    "react": "canary",
-    "react-dom": "canary",
+    "react": "19.3.0-canary-f1f7ed2a-20260904",
+    "react-dom": "19.3.0-canary-f1f7ed2a-20260904",
     "react-scripts": "latest"
   }
 }

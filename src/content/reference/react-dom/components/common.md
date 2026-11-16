@@ -14,6 +14,8 @@ title: "常见组件（例如 <div>）"
 
 ## 参考 {/*reference*/}
 
+* `dangerouslySetInnerHTML`：一个形如 `{ __html: '<p>some html</p>' }` 的对象，其中包含原始 HTML 字符串或 [`TrustedHTML`](https://developer.mozilla.org/en-US/docs/Web/API/TrustedHTML) 值。它会覆盖 DOM 节点的 [`innerHTML`](https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML) 属性，并显示传入的 HTML。必须格外谨慎地使用！如果其中的 HTML 不可信（例如来自用户数据），就可能引入 [XSS](https://en.wikipedia.org/wiki/Cross-site_scripting) 漏洞。[阅读更多关于 `dangerouslySetInnerHTML` 的内容。](#dangerously-setting-the-inner-html)
+
 * `style`：一个包含 CSS 样式的对象，例如 `{ fontWeight: 'bold', margin: 20 }`。与 DOM 的 [`style`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style) 属性类似，CSS 属性名需要使用 `camelCase` 形式，例如使用 `fontWeight` 而不是 `font-weight`。你可以将字符串或数字作为值传入。如果传入数字，例如 `width: 100`，React 会自动在值后追加 `px`（“像素”），除非它是[无单位属性。](https://github.com/react/react/blob/81d4ee9ca5c405dce62f64e61506b8e155f38d8d/packages/react-dom-bindings/src/shared/CSSProperty.js#L8-L57)我们建议仅在无法提前确定样式值的动态样式中使用 `style`。在其他情况下，使用 `className` 应用普通 CSS 类会更高效。[阅读更多关于 `className` 和 `style` 的内容。](#applying-css-styles)
 
 * `suppressHydrationWarning`：一个布尔值。如果你使用 [服务端渲染，](/reference/react-dom/server)通常当服务端和客户端渲染出不同内容时会出现警告。在某些罕见情况下（如时间戳），要保证完全一致非常困难甚至不可能。如果将 `suppressHydrationWarning` 设为 `true`，React 将不会就该元素的属性和内容不匹配发出警告。它只作用于一层深度，并且 предназначляется 作为一种逃生出口。不要过度使用它。[阅读关于抑制 hydration 错误的内容。](/reference/react-dom/client/hydrateRoot#suppressing-unavoidable-hydration-mismatch-errors)
@@ -36,7 +38,7 @@ title: "常见组件（例如 <div>）"
 
 当 `<div>` DOM 节点被添加到屏幕上时，React 会用 DOM `node` 作为参数调用你的 `ref` 回调。当该 `<div>` DOM 节点被移除时，React 会调用回调返回的清理函数。
 
-只要你传入的是一个*不同的* `ref` 回调，React 也会调用你的 `ref` 回调。在上面的示例中，`(node) => { ... }` 在每次渲染时都是不同的函数。当你的组件重新渲染时，*之前的*函数会以 `null` 作为参数被调用，而*下一个*函数会以 DOM 节点作为参数被调用。
+只要你传入的是一个*不同的* `ref` 回调，React 也会调用你的 `ref` 回调。在上面的示例中，`(node) => { ... }` 在每次渲染时都是不同的函数。当你的组件重新渲染时，React 会调用*上一个*函数返回的清理函数，然后用 DOM 节点调用*下一个*函数。如果上一个函数没有返回清理函数，则会改为用 `null` 调用它。
 
 #### 参数 {/*ref-callback-parameters*/}
 
@@ -701,12 +703,14 @@ export default function Form() {
 
 ### 危险地设置 inner HTML {/*dangerously-setting-the-inner-html*/}
 
-你可以像这样向元素传递一段原始 HTML 字符串：
+你可以像这样向元素传递一段原始 HTML 字符串或 [`TrustedHTML`](https://developer.mozilla.org/en-US/docs/Web/API/TrustedHTML) 值：
 
 ```js
 const markup = { __html: '<p>一些原始 html</p>' };
 return <div dangerouslySetInnerHTML={markup} />;
 ```
+
+如果你的网站强制使用 [Trusted Types](https://developer.mozilla.org/en-US/docs/Web/API/Trusted_Types_API)，请将由安全策略创建的 `TrustedHTML` 值作为 `__html` 传入。React 会将该值原样传给浏览器，不会把它转换为字符串，因此浏览器可以对其进行验证。你的策略仍须确保用于创建该值的任何输入都可信且经过清理。
 
 **这是危险的。与底层 DOM 的 [`innerHTML`](https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML) 属性一样，你必须格外小心！除非这段标记来自完全可信的来源，否则很容易通过这种方式引入 [XSS](https://en.wikipedia.org/wiki/Cross-site_scripting) 漏洞。**
 

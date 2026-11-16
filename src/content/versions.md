@@ -12,7 +12,7 @@ title: React 版本
 
 你可以在下面找到之前各个主版本的归档。
 
-## 最新版本：19.2 {/*latest-version*/}
+## 最新版本：19.3 {/*latest-version*/}
 
 - [react.dev](https://react.dev) {/*docs-19*/}
 
@@ -43,6 +43,7 @@ title: React 版本
 - [React Compiler Beta 发布](/blog/2024/10/21/react-compiler-beta-release)
 - [React Compiler v1.0](/blog/2025/10/07/react-compiler-1)
 - [React 19.2](/blog/2025/10/01/react-19-2)
+- [React 19.3](/blog/2026/09/09/react-19-3)
 
 **演讲**
 - [React 19 主题演讲](https://www.youtube.com/watch?v=lyEKhv8-3n0)
@@ -54,6 +55,7 @@ title: React 版本
 - [React 19 深入解析：协调 HTML](https://www.youtube.com/watch?v=IBBN-s77YSI)
 
 **发布版本**
+- [v19.3.0（2026 年 9 月 9 日）](https://github.com/react/react/blob/main/CHANGELOG.md#1930-september-9-2026)
 - [v19.2.7（2026 年 6 月）](https://github.com/react/react/blob/main/CHANGELOG.md#1927-june-1-2026)
 - [v19.2.6（2026 年 5 月）](https://github.com/react/react/blob/main/CHANGELOG.md#1926-may-6-2026)
 - [v19.2.5（2026 年 3 月）](https://github.com/react/react/blob/main/CHANGELOG.md#1925-march-18-2026)
@@ -325,4 +327,7 @@ React 于 2013 年 5 月 29 日开源。首次提交是：[`75897c`：首次公�
 
 React 于 2013 年在 Facebook 西雅图办公室开源：
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/XxVg_s8xAms?si=466vSJrnXTn05j9A" title="YouTube 视频播放器" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<YouTubeIframe
+  title="React 于 2013 年在 Facebook 西雅图团队开源"
+  src="https://www.youtube.com/embed/XxVg_s8xAms?si=466vSJrnXTn05j9A"
+/>

@@ -34,7 +34,7 @@ title: 服务器函数
 
 ## 用法 {/*usage*/}
 
-### 从服务器组件创建服务器函数 {/*creating-a-server-function-from-a-server-component*/}
+### 在 Server Component 中创建 Server Function {/*creating-a-server-function-from-a-server-component*/}
 
 服务器组件可以使用 `"use server"` 指令定义服务器函数：
 
@@ -42,7 +42,7 @@ title: 服务器函数
 // 服务器组件
 import Button from './Button';
 
-function EmptyNote () {
+function EmptyNote() {
   async function createNoteAction() {
     // 服务器函数
     'use server';
@@ -50,7 +50,7 @@ function EmptyNote () {
     await db.notes.create();
   }
 
-  return <Button onClick={createNoteAction}/>;
+  return <Button onClick={createNoteAction} />;
 }
 ```
 
@@ -62,46 +62,49 @@ function EmptyNote () {
 export default function Button({onClick}) {
   console.log(onClick);
   // {$$typeof: Symbol.for("react.server.reference"), $$id: 'createNoteAction'}
-  return <button onClick={() => onClick()}>创建空笔记</button>
+  return <button onClick={() => onClick()}>创建空笔记</button>;
 }
 ```
 
 更多内容请参阅 [`"use server"`](/reference/rsc/use-server) 文档。
 
 
-### 从客户端组件导入服务器函数 {/*importing-server-functions-from-client-components*/}
+### 将 Server Function 导入 Client Component {/*importing-server-functions-from-client-components*/}
 
 客户端组件可以从使用 `"use server"` 指令的文件中导入服务器函数：
 
-```js [[1, 3, "createNote"]]
+```js [[1, 4, "createNote"]]
+// actions.js
 "use server";
 
 export async function createNote() {
   await db.notes.create();
 }
-
 ```
 
 当打包工具构建 `EmptyNote` 客户端组件时，它会在包中为 `createNote` 函数创建一个引用。点击 `button` 时，React 会使用提供的引用向服务器发送请求，以执行 `createNote` 函数：
 
-```js [[1, 2, "createNote"], [1, 5, "createNote"], [1, 7, "createNote"]]
+```js [[1, 4, "createNote"], [1, 7, "createNote"], [1, 9, "createNote"]]
+// EmptyNote.js
 "use client";
+
 import {createNote} from './actions';
 
 function EmptyNote() {
   console.log(createNote);
   // {$$typeof: Symbol.for("react.server.reference"), $$id: 'createNote'}
-  <button onClick={() => createNote()} />
+  return <button onClick={() => createNote()}>创建空笔记</button>;
 }
 ```
 
 更多内容请参阅 [`"use server"`](/reference/rsc/use-server) 文档。
 
-### 带有 Actions 的服务器函数 {/*server-functions-with-actions*/}
+### 从 Action 中调用 Server Function {/*server-functions-with-actions*/}
 
 服务器函数可以在客户端的 Actions 中被调用：
 
-```js [[1, 3, "updateName"]]
+```js [[1, 4, "updateName"]]
+// actions.js
 "use server";
 
 export async function updateName(name) {
@@ -109,12 +112,15 @@ export async function updateName(name) {
     return {error: '需要姓名'};
   }
   await db.users.updateName(name);
+  return {error: null};
 }
 ```
 
-```js [[1, 3, "updateName"], [1, 13, "updateName"], [2, 11, "submitAction"], [2, 25, "submitAction"]]
+```js [[1, 5, "updateName"], [1, 15, "updateName"], [2, 13, "submitAction"], [2, 28, "submitAction"]]
+// UpdateName.js
 "use client";
 
+import {useState, useTransition} from 'react';
 import {updateName} from './actions';
 
 function UpdateName() {
@@ -123,25 +129,32 @@ function UpdateName() {
 
   const [isPending, startTransition] = useTransition();
 
-  const submitAction = async () => {
+  function submitAction() {
     startTransition(async () => {
       const {error} = await updateName(name);
+      // State updates after await aren't automatically marked as Transitions,
+      // so wrap them in another startTransition.
       startTransition(() => {
-        if (error) {
-          setError(error);
-        } else {
+        setError(error);
+        if (!error) {
           setName('');
         }
       });
-    })
+    });
   }
 
   return (
     <form action={submitAction}>
-      <input type="text" name="name" disabled={isPending}/>
+      <input
+        type="text"
+        name="name"
+        value={name}
+        onChange={event => setName(event.target.value)}
+        disabled={isPending}
+      />
       {error && <span>失败：{error}</span>}
     </form>
-  )
+  );
 }
 ```
 
@@ -149,14 +162,27 @@ function UpdateName() {
 
 更多内容请参阅[在 `<form>` 外调用服务器函数](/reference/rsc/use-server#calling-a-server-function-outside-of-form) 文档
 
-### 带有表单 Actions 的服务器函数 {/*using-server-functions-with-form-actions*/}
+### 将 Server Function 传递给 `<form>` 的 `action` 属性 {/*using-server-functions-with-form-actions*/}
 
-服务器函数可与 React 19 中新的表单特性配合使用。
+Server Function 可与 React 19 的新表单特性配合使用。
 
-你可以将服务器函数传递给表单，以自动将表单提交到服务器：
+将 Server Function 传递给 `<form>` 的 `action` 属性，即可将表单提交到服务器。React 会将提交的 [`FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) 作为第一个参数传给 Server Function：
 
+```js [[1, 4, "updateName"]]
+// actions.js
+"use server";
 
-```js [[1, 3, "updateName"], [1, 7, "updateName"]]
+export async function updateName(formData) {
+  const name = formData.get('name');
+  if (typeof name !== 'string' || !name) {
+    throw new Error('Name is required');
+  }
+  await db.users.updateName(name);
+}
+```
+
+```js [[1, 4, "updateName"], [1, 8, "updateName"]]
+// UpdateName.js
 "use client";
 
 import {updateName} from './actions';
@@ -166,21 +192,37 @@ function UpdateName() {
     <form action={updateName}>
       <input type="text" name="name" />
     </form>
-  )
+  );
 }
 ```
 
-当表单提交成功时，React 会自动重置表单。你可以添加 `useActionState` 来访问待处理状态、最后一次响应，或支持渐进增强。
+当传给 `<form>` `action` 属性的 Server Function 成功执行时，React 会自动重置表单中的非受控字段。即使表单的 JavaScript bundle 尚未加载，用户也可以提交表单。使用 `useActionState` 可以读取 Action 的待处理状态和最近一次返回值。
 
 更多内容请参阅[表单中的服务器函数](/reference/rsc/use-server#server-functions-in-forms) 文档。
 
-### 与 `useActionState` 配合使用的服务器函数 {/*server-functions-with-use-action-state*/}
+### 使用 `useActionState` 调用 Server Function {/*server-functions-with-use-action-state*/}
 
-对于只需要访问 action 的待处理状态和最后返回响应的常见场景，你可以使用 `useActionState` 调用服务器函数：
+使用 `useActionState` 调用 Server Function，可以读取 Action 的待处理状态和最近一次返回值。Server Function 会将上一次的 state 作为第一个参数，将提交的 [`FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) 作为第二个参数。它的返回值会成为下一个 state：
 
-```js [[1, 3, "updateName"], [1, 6, "updateName"], [2, 6, "submitAction"], [2, 9, "submitAction"]]
+```js [[1, 4, "updateName"]]
+// actions.js
+"use server";
+
+export async function updateName(previousState, formData) {
+  const name = formData.get('name');
+  if (typeof name !== 'string' || !name) {
+    return {error: 'Name is required'};
+  }
+  await db.users.updateName(name);
+  return {error: null};
+}
+```
+
+```js [[1, 5, "updateName"], [1, 8, "updateName"], [2, 8, "submitAction"], [2, 11, "submitAction"]]
+// UpdateName.js
 "use client";
 
+import {useActionState} from 'react';
 import {updateName} from './actions';
 
 function UpdateName() {
@@ -188,28 +230,32 @@ function UpdateName() {
 
   return (
     <form action={submitAction}>
-      <input type="text" name="name" disabled={isPending}/>
+      <input type="text" name="name" disabled={isPending} />
       {state.error && <span>失败：{state.error}</span>}
     </form>
   );
 }
 ```
 
-在将 `useActionState` 与服务器函数一起使用时，React 还会自动回放在水合完成前提交的表单。这意味着用户甚至可以在应用完成水合之前与你的应用交互。
+当传给 `useActionState` 的函数是 Server Function 时，用户可以在 hydration 完成前提交表单。React 可以在 JavaScript 加载之前显示 Server Function 的返回值。
 
 更多内容请参阅 [`useActionState`](/reference/react/useActionState) 文档。
 
-### 使用 `useActionState` 的渐进增强 {/*progressive-enhancement-with-useactionstate*/}
+如需保留已提交的值或控制表单重置时机，请参阅[在 Action 后保留表单值](/reference/react-dom/components/form#preserve-form-values-after-an-action)。
+
+### 使用 `useActionState` 支持渐进增强 {/*progressive-enhancement-with-useactionstate*/}
 
 服务器函数也支持通过 `useActionState` 的第三个参数实现渐进增强。
 
-```js [[1, 3, "updateName"], [1, 6, "updateName"], [2, 6, "/name/update"], [3, 6, "submitAction"], [3, 9, "submitAction"]]
+```js [[1, 5, "updateName"], [1, 8, "updateName"], [2, 8, "/name/update"], [3, 8, "submitAction"], [3, 11, "submitAction"]]
+// UpdateName.js
 "use client";
 
+import {useActionState} from 'react';
 import {updateName} from './actions';
 
 function UpdateName() {
-  const [, submitAction] = useActionState(updateName, null, `/name/update`);
+  const [, submitAction] = useActionState(updateName, {error: null}, `/name/update`);
 
   return (
     <form action={submitAction}>
@@ -219,6 +265,6 @@ function UpdateName() {
 }
 ```
 
-当将 <CodeStep step={2}>永久链接</CodeStep> 提供给 `useActionState` 时，如果表单在 JavaScript 包加载前就被提交，React 会重定向到提供的 URL。
+如果将 <CodeStep step={2}>`permalink`</CodeStep> 传给 `useActionState`，表单在 JavaScript bundle 加载前提交时，浏览器会导航到该 URL。在目标页面上，以相同的 Server Function 和 `permalink` 渲染同一个表单组件，这样 React 才能将返回的 state 传给它。
 
 更多内容请参阅 [`useActionState`](/reference/react/useActionState) 文档。

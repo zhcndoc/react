@@ -92,7 +92,7 @@ Transitions 让你即使在慢速设备上也能保持界面更新的响应性�
 
 <Note>
 
-`startTransition` 与 [`useTransition`](/reference/react/useTransition) 非常相似，不同之处在于它不提供 `isPending` 标志来跟踪 Transition 是否正在进行中。当 `useTransition` 不可用时，你可以调用 `startTransition`。例如，`startTransition` 可在组件外部使用，比如在数据库中。
+`startTransition` 与 [`useTransition`](/reference/react/useTransition) 非常相似，不同之处在于它不提供 `isPending` 标志来跟踪 Transition 是否正在进行中。这个独立函数也不关联任何组件，因此传给它的函数如果抛出错误或返回被拒绝的 Promise，React 会通过 [`reportError`](https://developer.mozilla.org/en-US/docs/Web/API/Window/reportError) 上报错误。当 `useTransition` 不可用时，你可以调用 `startTransition`。例如，`startTransition` 可在组件外部使用，比如在数据类库中。
 
 [了解 Transition，并在 `useTransition` 页面查看更多示例。](/reference/react/useTransition)
 

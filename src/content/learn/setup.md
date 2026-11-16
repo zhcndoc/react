@@ -17,7 +17,7 @@ TypeScript 是一种为 JavaScript 代码库添加类型定义的流行方式。
 
 ## React 开发者工具 {/*react-developer-tools*/}
 
-React 开发者工具是一个浏览器扩展，可以检查 React 组件、编辑 props 和 state，并识别性能问题。了解如何在[这里](learn/react-developer-tools)安装它。
+React 开发者工具是一个浏览器扩展，可以检查 React 组件、编辑 props 和 state，并识别性能问题。了解如何在[这里](/learn/react-developer-tools)安装它。
 
 ## React 编译器 {/*react-compiler*/}
 

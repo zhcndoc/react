@@ -18,6 +18,7 @@ title: "内置 React Hooks"
 
 * [`useState`](/reference/react/useState) 声明一个你可以直接更新的状态变量。
 * [`useReducer`](/reference/react/useReducer) 声明一个在 [reducer 函数](/learn/extracting-state-logic-into-a-reducer) 中包含更新逻辑的状态变量。
+* [`useOptimistic`](/reference/react/useOptimistic) 让你在异步 Action 处理中显示不同的状态。
 
 ```js
 function ImageGallery() {

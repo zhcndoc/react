@@ -54,7 +54,7 @@ export default function App() {
 
 一个包含以下属性的 `status` 对象：
 
-* `pending`：布尔值。如果为 `true`，表示父级 `<form>` 正在等待提交。否则为 `false`。
+* `pending`：布尔值。当父级 `<form>` 正在提交 Action 或[运行来自 `onSubmit` 的 Transition](#display-a-pending-state-with-an-onsubmit-handler)时为 `true`，否则为 `false`。
 
 * `data`：一个实现了 [`FormData interface`](https://developer.mozilla.org/en-US/docs/Web/API/FormData) 的对象，包含父级 `<form>` 正在提交的数据。如果没有正在进行的提交或没有父级 `<form>`，它将为 `null`。
 
@@ -72,7 +72,7 @@ export default function App() {
 
 ## 用法 {/*usage*/}
 
-### 在表单提交期间显示待处理状态 {/*display-a-pending-state-during-form-submission*/}
+### 使用 `action` 属性显示待处理状态 {/*display-a-pending-state-during-form-submission*/}
 要在表单提交时显示待处理状态，你可以在一个渲染于 `<form>` 内的组件中调用 `useFormStatus` Hook，并读取返回的 `pending` 属性。
 
 这里，我们使用 `pending` 属性来指示表单正在提交。
@@ -111,6 +111,64 @@ export async function submitForm(query) {
 }
 ```
 </Sandpack>
+
+---
+
+### 使用 `onSubmit` 处理函数显示待处理状态 {/*display-a-pending-state-with-an-onsubmit-handler*/}
+
+如果你需要在 `onSubmit` 事件处理函数中处理表单提交，而不是将函数传递给 [`<form action>` 属性](/reference/react-dom/components/form#handle-form-submission-with-an-action-prop)，请调用 [`event.preventDefault()`](https://developer.mozilla.org/en-US/docs/Web/API/Event/preventDefault)，并在同一个事件处理函数中[启动 Transition](/reference/react/startTransition)。随后，表单内的组件可以使用 `useFormStatus` 在 Action 运行期间读取待处理状态。
+
+<Sandpack>
+
+```js src/App.js
+import { startTransition } from 'react';
+import { useFormStatus } from 'react-dom';
+import { submitForm } from './submitForm.js';
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <button type='submit' disabled={pending}>
+      {pending ? 'Submitting...' : 'Submit'}
+    </button>
+  );
+}
+
+function Form({ submitAction }) {
+  function handleSubmit(e) {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    startTransition(async () => {
+      await submitAction(formData);
+    });
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <input name='query' />
+      <SubmitButton />
+    </form>
+  );
+}
+
+export default function App() {
+  async function submitAction(formData) {
+    await submitForm(formData);
+  }
+
+  return <Form submitAction={submitAction} />;
+}
+```
+
+```js src/submitForm.js hidden
+export async function submitForm(formData) {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+}
+```
+
+</Sandpack>
+
+通过这种方式处理提交时，与传递函数给 `<form action>` 属性不同，[表单不会自动重置](/reference/react-dom/components/form#other-ways-to-control-form-resets)。
 
 <Pitfall>
 

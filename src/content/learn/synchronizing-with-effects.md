@@ -733,7 +733,7 @@ function TodoList() {
 这份缺点列表并不只针对 React。它适用于任何库中在挂载时获取数据的做法。就像路由一样，做好数据获取并不简单，所以我们推荐以下方式：
 
 - **如果你使用的是[框架](/learn/creating-a-react-app#full-stack-frameworks)，请使用它内置的数据获取机制。** 现代 React 框架都集成了高效的数据获取机制，并且不会受到上面这些陷阱的影响。
-- **否则，考虑使用或构建一个客户端缓存。** 常见的开源方案包括 [TanStack Query](https://tanstack.com/query/latest)、[useSWR](https://swr.vercel.app/) 和 [React Router 6.4+](https://beta.reactrouter.com/en/main/start/overview)。你也可以自己构建解决方案，在这种情况下，底层同样会使用 Effect，但会额外加入请求去重、响应缓存，以及避免网络瀑布的逻辑（通过预加载数据或把数据需求提升到路由层）。
+- **否则，考虑使用或构建一个客户端缓存。** 常见的开源方案包括 [TanStack Query](https://tanstack.com/query/latest)、[useSWR](https://swr.vercel.app/) 和 [React Router](https://reactrouter.com/)。你也可以自己构建解决方案，在这种情况下，底层同样会使用 Effect，但会额外加入请求去重、响应缓存，以及避免网络瀑布的逻辑（通过预加载数据或把数据需求提升到路由层）。
 
 如果这两种方式都不适合你，你也可以继续直接在 Effect 中获取数据。
 

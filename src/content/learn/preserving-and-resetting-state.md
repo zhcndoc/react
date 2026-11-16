@@ -18,7 +18,7 @@ title: 保留和重置状态
 
 ## 状态与渲染树中的位置相关 {/*state-is-tied-to-a-position-in-the-tree*/}
 
-React 会为你 UI 中的组件结构构建 [渲染树](learn/understanding-your-ui-as-a-tree#the-render-tree)。
+React 会为你 UI 中的组件结构构建 [渲染树](/learn/understanding-your-ui-as-a-tree#the-render-tree)。
 
 当你给组件添加状态时，你可能会认为状态“存在”于组件内部。但实际上，状态是保存在 React 里面的。React 会根据组件在渲染树中的位置，将它持有的每一份状态与正确的组件关联起来。
 

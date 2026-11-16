@@ -50,6 +50,7 @@ function AppRoot() {
   *  `crossOrigin`：字符串。要使用的 [CORS 策略](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/crossorigin)。可选值为 `anonymous` 和 `use-credentials`。
   *  `integrity`：字符串。模块的加密哈希值，用于[验证其真实性](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity)。
   *  `nonce`：字符串。在使用严格内容安全策略时，用于允许该模块的加密[nonce](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/nonce)。
+  *  `fetchPriority`：字符串。建议获取资源的[相对优先级](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Attributes/fetchpriority)；可选值为 `auto`（默认值）、`high` 和 `low`。
 
 #### 返回值 {/*returns*/}
 

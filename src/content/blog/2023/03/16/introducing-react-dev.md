@@ -42,7 +42,7 @@ description: 今天我们非常高兴地推出 react.dev，这是 React 及其�
 **新文档从一开始就使用 Hooks 教授 React。** 文档分为两个主要部分：
 
 * **[学习 React](/learn)** 是一门自定进度的课程，从零开始教授 React。
-* **[API 参考](/reference)** 提供每个 React API 的细节和使用示例。
+* **[API 参考](/reference/react)** 提供每个 React API 的细节和使用示例。
 
 让我们更仔细地看看你可以在每个部分中找到什么。
 
@@ -462,7 +462,7 @@ export default function PackingList() {
 - 像 [`useState`](/reference/react/useState) 这样的内置 Hooks。
 - 像 [`<Suspense>`](/reference/react/Suspense) 这样的内置组件。
 - 像 [`<input>`](/reference/react-dom/components/input) 这样的内置浏览器组件。
-- 像 [`renderToPipeableStream`](/reference/react-dom/server/renderToReadableStream) 这样的面向框架的 API。
+- 像 [`renderToPipeableStream`](/reference/react-dom/server/renderToPipeableStream) 这样的面向框架的 API。
 - 像 [`memo`](/reference/react/memo) 这样的其他 React API。
 
 你会注意到，每个 API 页面都至少被分成两个部分：*参考* 和 *用法*。
@@ -607,7 +607,7 @@ button { display: block; margin-top: 10px; }
 
 </Recipes>
 
-一些 API 页面还包含 [故障排查](/reference/react/useEffect#troubleshooting)（用于常见问题）和 [替代方案](/reference/react-dom/findDOMNode#alternatives)（用于已弃用的 API）。
+一些 API 页面还包含 [故障排查](/reference/react/useEffect#troubleshooting)（用于常见问题）和 [替代方案](https://18.react.dev/reference/react-dom/findDOMNode#alternatives)（用于已弃用的 API）。
 
 我们希望这种方式不仅能让 API 参考用于查找参数，还能帮助你了解针对任意给定 API 可以做的各种事情，以及它如何与其他 API 关联。
 

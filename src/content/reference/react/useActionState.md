@@ -811,20 +811,20 @@ export default function Checkout() {
   const abortRef = useRef(null);
   const [count, dispatchAction, isPending] = useActionState(updateCartAction, 0);
 
-  async function addAction() {
+  function addAction() {
     if (abortRef.current) {
       abortRef.current.abort();
     }
     abortRef.current = new AbortController();
-    await dispatchAction({ type: 'ADD', signal: abortRef.current.signal });
+    dispatchAction({ type: 'ADD', signal: abortRef.current.signal });
   }
 
-  async function removeAction() {
+  function removeAction() {
     if (abortRef.current) {
       abortRef.current.abort();
     }
     abortRef.current = new AbortController();
-    await dispatchAction({ type: 'REMOVE', signal: abortRef.current.signal });
+    dispatchAction({ type: 'REMOVE', signal: abortRef.current.signal });
   }
 
   return (
@@ -1184,13 +1184,70 @@ hr {
 
 在这个示例中，当用户点击步进器箭头时，按钮会提交表单，而 `useActionState` 会使用表单数据调用 `updateCartAction`。该示例使用 `useOptimistic` 在服务器确认更新之前立即显示新数量。
 
+#### 显示验证错误并保留表单值 {/*displaying-validation-errors-and-preserving-form-values*/}
+
+让 Action 返回验证错误和已提交的值，就可以显示错误而不清空相关字段。试着提交一个少于三个字符的姓名：
+
+<Sandpack>
+
+```js src/App.js active
+import { useActionState } from 'react';
+import { updateName } from './api.js';
+
+const initialState = {
+  error: null,
+  submitted: null,
+};
+
+export default function UpdateName() {
+  const [state, submitAction, isPending] = useActionState(
+    updateName,
+    initialState
+  );
+
+  return (
+    <form action={submitAction}>
+      <label>
+        Name:{' '}
+        <input
+          name="name"
+          defaultValue={state.submitted?.get('name') ?? ''}
+          disabled={isPending}
+        />
+      </label>
+      <button type="submit" disabled={isPending}>Save</button>
+      {state.error && <p>{state.error}</p>}
+    </form>
+  );
+}
+```
+
+```js src/api.js
+export async function updateName(previousState, formData) {
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  const name = formData.get('name');
+  if (typeof name !== 'string' || name.trim().length < 3) {
+    return {
+      error: 'Name must be at least three characters long',
+      submitted: formData,
+    };
+  }
+  return {
+    error: null,
+    submitted: null,
+  };
+}
+```
+
+</Sandpack>
+
+验证失败时，`updateName` 会返回错误和已提交的 `FormData`。组件会将已提交的姓名作为输入框新的 `defaultValue`，因此 React 自动重置表单时会保留该值。验证成功时，`submitted` 为 `null`，自动重置会清空字段。
+
 <RSC>
 
-当与 [Server Function](/reference/rsc/server-functions) 一起使用时，`useActionState` 允许在 hydration（React 绑定到服务器渲染的 HTML）完成之前就显示服务器的响应。你也可以在具有动态内容的页面上使用可选的 `permalink` 参数进行渐进增强（允许表单在 JavaScript 加载前工作）。这通常由你的框架替你处理。
+上面的示例会在浏览器中运行 `updateName`。如果希望在 JavaScript 加载前就显示错误并保留已提交的姓名，请将 `updateName` 改为 [Server Function](/reference/rsc/server-functions)。继续将 `submitAction` 传给表单的 `action` 属性。这样 React 可以在 hydration 完成前显示 Server Function 返回的值。设置方法请参阅[在 JavaScript 加载前保留表单值](/reference/react-dom/components/form#preserving-form-values-before-javascript-loads)。对于动态内容页面，你也可以使用可选的 [`permalink`](#parameters) 参数来支持渐进增强。
 
 </RSC>
-
-有关在表单中使用 Actions 的更多信息，请参阅 [`<form>`](/reference/react-dom/components/form#handle-form-submission-with-a-server-function) 文档。
 
 ---
 
@@ -1200,7 +1257,7 @@ hr {
 
 对于已知错误，例如后端返回的“数量不可用”验证错误，你可以将其作为 `reducerAction` 状态的一部分返回并在 UI 中显示。
 
-对于未知错误，例如 `undefined is not a function`，你可以抛出错误。React 会取消所有排队中的 Actions，并通过从 `useActionState` hook 中重新抛出该错误来显示最近的 [Error Boundary](/reference/react/Component#catching-rendering-errors-with-an-error-boundary)。
+对于未知错误，例如 `undefined is not a function`，你可以抛出错误。React 会取消所有排队中的 Actions，并通过从 `useActionState` Hook 中重新抛出该错误来显示最近的 [Error Boundary](/reference/react/Component#catching-rendering-errors-with-an-error-boundary)。
 
 <Sandpack>
 

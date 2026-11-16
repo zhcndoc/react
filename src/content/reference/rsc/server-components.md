@@ -101,7 +101,7 @@ Server Components 也可以在请求页面时运行在 Web 服务器上，让你
 ```js
 // bundle.js
 function Note({id}) {
-  const [note, setNote] = useState('');
+  const [note, setNote] = useState(null);
   // 注意：在第一次渲染之后才加载。
   useEffect(() => {
     fetch(`/api/notes/${id}`).then(data => {
@@ -109,10 +109,14 @@ function Note({id}) {
     });
   }, [id]);
 
+  if (!note) {
+    return null;
+  }
+
   return (
     <div>
       <Author id={note.authorId} />
-      <p>{note}</p>
+      <p>{note.content}</p>
     </div>
   );
 }
@@ -156,7 +160,7 @@ async function Note({id}) {
   return (
     <div>
       <Author id={note.authorId} />
-      <p>{note}</p>
+      <p>{note.content}</p>
     </div>
   );
 }
@@ -179,6 +183,39 @@ async function Author({id}) {
 ```
 
 Server Components 可以通过从服务器重新获取它们来变为动态化，在服务器上它们可以再次访问数据并重新渲染。这个新的应用架构将服务端中心的多页应用简单的“请求/响应”心智模型，与客户端中心的单页应用无缝交互性结合在一起，为你提供两全其美的体验。
+
+### 在 Server Component 中渲染 context provider {/*rendering-a-context-provider-in-a-server-component*/}
+
+Server Component 不能创建 context，但可以渲染从 Client Component 模块导入的 context provider。
+
+在带有 [`'use client'`](/reference/rsc/use-client) 指令的文件中创建并导出 context：
+
+```js
+// user-context.js
+'use client';
+import { createContext } from 'react';
+
+export const UserContext = createContext(null);
+```
+
+然后在 Server Component 中直接导入并渲染该 context：
+
+```js
+// server-component.js
+import { UserContext } from './user-context';
+
+export async function Layout({ children }) {
+  const currentUser = await getCurrentUser();
+
+  return (
+    <UserContext value={currentUser}>
+      {children}
+    </UserContext>
+  );
+}
+```
+
+在此 provider 内渲染的 Client Component 可以使用 [`use`](/reference/react/use) 或 [`useContext`](/reference/react/useContext) 读取它的值。
 
 ### 为 Server Components 添加交互性 {/*adding-interactivity-to-server-components*/}
 
@@ -270,7 +307,7 @@ async function Page({id}) {
   const commentsPromise = db.comments.get(note.id);
   return (
     <div>
-      {note}
+      <p>{note.content}</p>
       <Suspense fallback={<p>正在加载评论...</p>}>
         <Comments commentsPromise={commentsPromise} />
       </Suspense>

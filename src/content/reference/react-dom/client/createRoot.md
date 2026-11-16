@@ -90,7 +90,7 @@ React 会在 `root` 中显示 `<App />`，并接管其内部 DOM 的管理。
 
 * 如果你在同一个 root 上多次调用 `render`，React 会根据需要更新 DOM，以反映你传入的最新 JSX。React 会通过与之前渲染的树进行["匹配"](/learn/preserving-and-resetting-state)来决定哪些 DOM 部分可以复用，哪些需要重新创建。在同一个 root 上再次调用 `render`，类似于在 root 组件上调用 [`set` 函数](/reference/react/useState#setstate)：React 会避免不必要的 DOM 更新。
 
-* 尽管渲染一旦开始就是同步的，但 `root.render(...)` 本身并不是同步的。这意味着在 `root.render()` 之后的代码，可能会在此次渲染的任何效果（`useLayoutEffect`、`useEffect`）执行之前运行。这通常没有问题，也很少需要调整。在极少数效果时序很重要的情况下，你可以将 `root.render(...)` 包裹在 [`flushSync`](https://react.dev/reference/react-dom/flushSync) 中，以确保初始渲染完全同步执行。
+* 尽管渲染一旦开始就是同步的，但 `root.render(...)` 本身并不是同步的。这意味着在 `root.render()` 之后的代码，可能会在此次渲染的任何效果（`useLayoutEffect`、`useEffect`）执行之前运行。这通常没有问题，也很少需要调整。在极少数效果时序很重要的情况下，你可以将 `root.render(...)` 包裹在 [`flushSync`](/reference/react-dom/flushSync) 中，以确保初始渲染完全同步执行。
 
   ```js
   const root = createRoot(document.getElementById('root'));

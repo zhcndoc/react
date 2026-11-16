@@ -7,7 +7,7 @@ title: resumeAndPrerender
 `resumeAndPrerender` 使用 [Web Stream](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API) 将预渲染的 React 树继续渲染为静态 HTML 字符串。
 
 ```js
-const { prelude,postpone } = await resumeAndPrerender(reactNode, postponedState, options?)
+const {prelude, postponed} = await resumeAndPrerender(reactNode, postponedState, options?)
 ```
 
 </Intro>
@@ -50,9 +50,10 @@ async function handler(request, response) {
 #### 参数 {/*parameters*/}
 
 * `reactNode`：你调用 `prerender`（或之前的 `resumeAndPrerender`）时传入的 React 节点。例如，一个像 `<App />` 这样的 JSX 元素。它应表示整个文档，因此 `App` 组件应该渲染 `<html>` 标签。
-* `postponedState`：由 [prerender API](/reference/react-dom/static/index) 返回的、不透明的 `postpone` 对象，从你保存它的任意位置加载而来（例如 redis、文件或 S3）。
+* `postponedState`：由 [prerender API](/reference/react-dom/static) 返回的、不透明的 `postpone` 对象，从你保存它的任意位置加载而来（例如 redis、文件或 S3）。
 * **可选** `options`：一个包含流式选项的对象。
   * **可选** `signal`：一个 [abort signal](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal)，可让你 [中止服务器渲染](#aborting-server-rendering) 并在客户端渲染剩余部分。
+  * **可选** `onBrowserBailout`：React 从 [`browser()`](/reference/react-dom/browser) 恢复时会调用的回调；此时 React 会留下一个 Suspense 回退内容，由浏览器替换。回调接收一个描述仅浏览器渲染的 `Error`，以及一个包含 `componentStack` 的 `errorInfo` 对象。如果向 `browser` 传入了原因，可以通过 `error.cause` 访问。默认情况下，React 不会执行任何操作。[了解如何在服务端报告仅浏览器渲染。](/reference/react-dom/browser#reporting-browser-only-rendering-on-the-server)
   * **可选** `onError`：每当发生服务器错误时触发的回调，无论错误是 [可恢复的](#recovering-from-errors-outside-the-shell) 还是 [不可恢复的。](#recovering-from-errors-inside-the-shell) 默认情况下，它只会调用 `console.error`。如果你重写它来 [记录崩溃报告，](#logging-crashes-on-the-server) 请确保你仍然调用 `console.error`。
 
 #### 返回值 {/*returns*/}
